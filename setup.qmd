@@ -59,7 +59,6 @@ Dr. Love is in the process of moving all of the data loads below to their indivi
 #| warning: false
 
 prost <- read_csv("data/prost.csv", show_col_types = FALSE) 
-pollution <- read_csv("data/pollution.csv", show_col_types = FALSE) 
 
 emphysema <- read_csv("data/emphysema.csv", show_col_types = FALSE) 
 resect <- read_csv("data/resect.csv", show_col_types = FALSE) 

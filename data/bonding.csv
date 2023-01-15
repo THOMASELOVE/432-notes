@@ -1,4 +1,4 @@
-run_ID,light,resin,strength
+runID,light,resin,strength
 R101,LED,B,12.8
 R102,Halogen,B,22.2
 R103,Halogen,B,24.6

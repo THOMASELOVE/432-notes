@@ -21,6 +21,7 @@ book:
     - 08-datasummaries.qmd
     - 09-anovasmart.qmd
     - 10-anovaexamples.qmd
+    - 11-nonlinearity.qmd
     - 90-incomplete.qmd
 
 format:

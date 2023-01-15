@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 11&nbsp; Adding Non-linear Terms to a Linear Regression Model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./90-incomplete.html" rel="next">
+<link href="./10-anovaexamples.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">11.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">11.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#the-pollution-data" id="toc-the-pollution-data" class="nav-link" data-scroll-target="#the-pollution-data"><span class="toc-section-number">11.2</span>  The <code>pollution</code> data</a></li>
+  <li><a href="#fitting-a-straight-line-model-to-predict-y-from-x2" id="toc-fitting-a-straight-line-model-to-predict-y-from-x2" class="nav-link" data-scroll-target="#fitting-a-straight-line-model-to-predict-y-from-x2"><span class="toc-section-number">11.3</span>  Fitting a straight line model to predict <code>y</code> from <code>x2</code></a></li>
+  <li><a href="#quadratic-polynomial-model-to-predict-y-using-x2" id="toc-quadratic-polynomial-model-to-predict-y-using-x2" class="nav-link" data-scroll-target="#quadratic-polynomial-model-to-predict-y-using-x2"><span class="toc-section-number">11.4</span>  Quadratic polynomial model to predict <code>y</code> using <code>x2</code></a>
+  <ul class="collapse">
+  <li><a href="#the-raw-quadratic-model" id="toc-the-raw-quadratic-model" class="nav-link" data-scroll-target="#the-raw-quadratic-model"><span class="toc-section-number">11.4.1</span>  The raw quadratic model</a></li>
+  <li><a href="#raw-quadratic-fit-after-centering-x2" id="toc-raw-quadratic-fit-after-centering-x2" class="nav-link" data-scroll-target="#raw-quadratic-fit-after-centering-x2"><span class="toc-section-number">11.4.2</span>  Raw quadratic fit after centering <code>x2</code></a></li>
+  </ul></li>
+  <li><a href="#orthogonal-polynomials" id="toc-orthogonal-polynomials" class="nav-link" data-scroll-target="#orthogonal-polynomials"><span class="toc-section-number">11.5</span>  Orthogonal Polynomials</a></li>
+  <li><a href="#fit-a-cubic-polynomial-to-predict-y-from-x3" id="toc-fit-a-cubic-polynomial-to-predict-y-from-x3" class="nav-link" data-scroll-target="#fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="toc-section-number">11.6</span>  Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></a></li>
+  <li><a href="#fitting-a-restricted-cubic-spline-in-a-linear-regression" id="toc-fitting-a-restricted-cubic-spline-in-a-linear-regression" class="nav-link" data-scroll-target="#fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="toc-section-number">11.7</span>  Fitting a restricted cubic spline in a linear regression</a></li>
+  <li><a href="#spending-degrees-of-freedom" id="toc-spending-degrees-of-freedom" class="nav-link" data-scroll-target="#spending-degrees-of-freedom"><span class="toc-section-number">11.8</span>  “Spending” Degrees of Freedom</a>
+  <ul class="collapse">
+  <li><a href="#overfitting-and-limits-on-the-of-predictors" id="toc-overfitting-and-limits-on-the-of-predictors" class="nav-link" data-scroll-target="#overfitting-and-limits-on-the-of-predictors"><span class="toc-section-number">11.8.1</span>  Overfitting and Limits on the # of Predictors</a></li>
+  <li><a href="#the-importance-of-collinearity" id="toc-the-importance-of-collinearity" class="nav-link" data-scroll-target="#the-importance-of-collinearity"><span class="toc-section-number">11.8.2</span>  The Importance of Collinearity</a></li>
+  <li><a href="#collinearity-in-an-explanatory-model" id="toc-collinearity-in-an-explanatory-model" class="nav-link" data-scroll-target="#collinearity-in-an-explanatory-model"><span class="toc-section-number">11.8.3</span>  Collinearity in an Explanatory Model</a></li>
+  <li><a href="#collinearity-in-a-prediction-model" id="toc-collinearity-in-a-prediction-model" class="nav-link" data-scroll-target="#collinearity-in-a-prediction-model"><span class="toc-section-number">11.8.4</span>  Collinearity in a Prediction Model</a></li>
+  </ul></li>
+  <li><a href="#spending-df-on-non-linearity-the-spearman-plot" id="toc-spending-df-on-non-linearity-the-spearman-plot" class="nav-link" data-scroll-target="#spending-df-on-non-linearity-the-spearman-plot"><span class="toc-section-number">11.9</span>  Spending DF on Non-Linearity: The Spearman Plot</a>
+  <ul class="collapse">
+  <li><a href="#fitting-a-big-model-to-the-pollution-data" id="toc-fitting-a-big-model-to-the-pollution-data" class="nav-link" data-scroll-target="#fitting-a-big-model-to-the-pollution-data"><span class="toc-section-number">11.9.1</span>  Fitting a Big Model to the <code>pollution</code> data</a></li>
+  <li><a href="#limitations-of-lm-for-fitting-complex-linear-regression-models" id="toc-limitations-of-lm-for-fitting-complex-linear-regression-models" class="nav-link" data-scroll-target="#limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="toc-section-number">11.9.2</span>  Limitations of <code>lm</code> for fitting complex linear regression models</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">11.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">11.1.1</span> Data Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/pollution.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="the-pollution-data" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="the-pollution-data"><span class="header-section-number">11.2</span> The <code>pollution</code> data</h2>
+<p>Consider the <code>pollution</code> data set, which contain 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961. The data come from <span class="citation" data-cites="McDonald1973">@McDonald1973</span>, and are available at http://www4.stat.ncsu.edu/~boos/var.select/pollution.html and our web site.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pollution</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 16
+      x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12   x13
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1    13    49    68   7    3.36  12.2  90.7  2702   3    51.9   9.7   105    32
+ 2    28    32    81   7    3.27  12.1  81    3665   7.5  51.6  13.2     4     2
+ 3    10    55    70   7.3  3.11  12.1  88.9  3033   5.9  51    14     144    66
+ 4    43    32    74  10.1  3.38   9.5  79.2  3214   2.9  43.7  12      11     7
+ 5    25    12    73   9.2  3.28  12.1  83.1  2095   2    51.9   9.8    20    11
+ 6    35    46    85   7.1  3.22  11.8  79.9  1441  14.8  51.2  16.1     1     1
+ 7    60    67    82  10    2.98  11.5  88.6  4657  13.5  47.3  22.4     3     1
+ 8    11    53    68   9.2  2.99  12.1  90.6  4700   7.8  48.9  12.3   648   319
+ 9    31    24    72   9    3.37  10.9  82.8  3226   5.1  45.2  12.3     5     3
+10    15    30    73   8.2  3.15  12.2  84.2  4824   4.7  53.1  12.7    17     8
+# … with 50 more rows, and 3 more variables: x14 &lt;dbl&gt;, x15 &lt;dbl&gt;, y &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Here’s a codebook:</p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 90%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>y</code></td>
+<td>Total Age Adjusted Mortality Rate</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x1</code></td>
+<td>Mean annual precipitation in inches</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x2</code></td>
+<td>Mean January temperature in degrees Fahrenheit</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x3</code></td>
+<td>Mean July temperature in degrees Fahrenheit</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x4</code></td>
+<td>Percent of 1960 SMSA population that is 65 years of age or over</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x5</code></td>
+<td>Population per household, 1960 SMSA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x6</code></td>
+<td>Median school years completed for those over 25 in 1960 SMSA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x7</code></td>
+<td>Percent of housing units that are found with facilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x8</code></td>
+<td>Population per square mile in urbanized area in 1960</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x9</code></td>
+<td>Percent of 1960 urbanized area population that is non-white</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x10</code></td>
+<td>Percent employment in white-collar occupations in 1960 urbanized area</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x11</code></td>
+<td>Percent of families with income under 3; 000 in 1960 urbanized area</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x12</code></td>
+<td>Relative population potential of hydrocarbons, HC</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x13</code></td>
+<td>Relative pollution potential of oxides of nitrogen, NOx</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>x14</code></td>
+<td>Relative pollution potential of sulfur dioxide, SO2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>x15</code></td>
+<td>Percent relative humidity, annual average at 1 p.m.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fitting-a-straight-line-model-to-predict-y-from-x2" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="fitting-a-straight-line-model-to-predict-y-from-x2"><span class="header-section-number">11.3</span> Fitting a straight line model to predict <code>y</code> from <code>x2</code></h2>
+<p>Consider the relationship between <code>y</code>, the age-adjusted mortality rate, and <code>x2</code>, the mean January temperature, across these 60 areas. I’ll include both a linear model (in blue) and a loess smooth (in red.) Does the relationship appear to be linear?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">se =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Suppose we plot the residuals that emerge from the linear model shown in blue, above. Do we see a curve in a plot of residuals against fitted values?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2, <span class="at">data =</span> pollution), <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="quadratic-polynomial-model-to-predict-y-using-x2" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="quadratic-polynomial-model-to-predict-y-using-x2"><span class="header-section-number">11.4</span> Quadratic polynomial model to predict <code>y</code> using <code>x2</code></h2>
+<p>A polynomial in the variable <code>x</code> of degree D is a linear combination of the powers of <code>x</code> up to D.</p>
+<p>For example:</p>
+<ul>
+<li>Linear: <span class="math inline">\(y = \beta_0 + \beta_1 x\)</span></li>
+<li>Quadratic: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2\)</span></li>
+<li>Cubic: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3\)</span></li>
+<li>Quartic: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4\)</span></li>
+<li>Quintic: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4 + \beta_5 x^5\)</span></li>
+</ul>
+<p>Fitting such a model creates a <strong>polynomial regression</strong>.</p>
+<section id="the-raw-quadratic-model" class="level3" data-number="11.4.1">
+<h3 data-number="11.4.1" class="anchored" data-anchor-id="the-raw-quadratic-model"><span class="header-section-number">11.4.1</span> The raw quadratic model</h3>
+<p>Let’s look at a <strong>quadratic model</strong> which predicts <code>y</code> using <code>x2</code> and the square of <code>x2</code>, so that our model is of the form:</p>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1 x_2 + \beta_2 x_2^2 + error
+\]</span></p>
+<p>There are several ways to fit this exact model.</p>
+<ul>
+<li>One approach is to calculate the square of <code>x2</code> within our <code>pollution</code> data set, and then feed both <code>x2</code> and <code>x2squared</code> to <code>lm</code>.</li>
+<li>Another approach uses the I function within our <code>lm</code> to specify the use of both <code>x2</code> and its square.</li>
+<li>Yet another approach uses the <code>poly</code> function within our <code>lm</code>, which can be used to specify raw models including <code>x2</code> and <code>x2squared</code>.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">x2squared =</span> x2<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mod2a <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> x2squared, <span class="at">data =</span> pollution)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>mod2b <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>mod2c <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x2, <span class="at">degree =</span> <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>), <span class="at">data =</span> pollution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Each of these approaches produces the same model, as they are just different ways of expressing the same idea.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x2 + x2squared, data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-148.977  -38.651    6.889   35.312  189.346 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 785.77449   79.54086   9.879 5.87e-14 ***
+x2            8.87640    4.27394   2.077   0.0423 *  
+x2squared    -0.11704    0.05429  -2.156   0.0353 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 60.83 on 57 degrees of freedom
+Multiple R-squared:  0.07623,   Adjusted R-squared:  0.04382 
+F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
+</div>
+</div>
+<p>And if we plot the fitted values for this <code>mod2</code> using whatever approach you like, we get exactly the same result.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mod2a_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod2a, pollution)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mod2a_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2a: Quadratic fit using x2 and x2^2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mod2b_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod2b, pollution)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>mod2c_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod2c, pollution)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mod2b_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2b: Quadratic fit"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mod2c_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2c: Quadratic fit"</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="raw-quadratic-fit-after-centering-x2" class="level3" data-number="11.4.2">
+<h3 data-number="11.4.2" class="anchored" data-anchor-id="raw-quadratic-fit-after-centering-x2"><span class="header-section-number">11.4.2</span> Raw quadratic fit after centering <code>x2</code></h3>
+<p>Sometimes, we’ll center (and perhaps rescale, too) the x2 variable before including it in a quadratic fit like this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">x2_c =</span> x2 <span class="sc">-</span> <span class="fu">mean</span>(x2))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>mod2d <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x2_c <span class="sc">+</span> <span class="fu">I</span>(x2_c<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x2_c + I(x2_c^2), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-148.977  -38.651    6.889   35.312  189.346 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 952.25941    9.59896  99.204   &lt;2e-16 ***
+x2_c          0.92163    0.93237   0.988   0.3271    
+I(x2_c^2)    -0.11704    0.05429  -2.156   0.0353 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 60.83 on 57 degrees of freedom
+Multiple R-squared:  0.07623,   Adjusted R-squared:  0.04382 
+F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
+</div>
+</div>
+<p>Note that this model looks very different, with the exception of the second order quadratic term. But, it produces the same fitted values as the models we fit previously.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mod2d_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod2d, pollution)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mod2d_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2d: Quadratic fit using centered x2 and x2^2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Or, if you don’t believe me yet, look at the four sets of fitted values another way.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> .fitted, <span class="at">data =</span> mod2a_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      min       Q1  median       Q3     max     mean       sd  n missing
+ 855.1041 936.7155 945.597 950.2883 954.073 940.3585 17.17507 60       0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> .fitted, <span class="at">data =</span> mod2b_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      min       Q1  median       Q3     max     mean       sd  n missing
+ 855.1041 936.7155 945.597 950.2883 954.073 940.3585 17.17507 60       0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> .fitted, <span class="at">data =</span> mod2c_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      min       Q1  median       Q3     max     mean       sd  n missing
+ 855.1041 936.7155 945.597 950.2883 954.073 940.3585 17.17507 60       0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> .fitted, <span class="at">data =</span> mod2d_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      min       Q1  median       Q3     max     mean       sd  n missing
+ 855.1041 936.7155 945.597 950.2883 954.073 940.3585 17.17507 60       0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="orthogonal-polynomials" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="orthogonal-polynomials"><span class="header-section-number">11.5</span> Orthogonal Polynomials</h2>
+<p>Now, let’s fit an orthogonal polynomial of degree 2 to predict <code>y</code> using <code>x2</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>mod2_orth <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x2, <span class="dv">2</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2_orth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ poly(x2, 2), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-148.977  -38.651    6.889   35.312  189.346 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   940.358      7.853 119.746   &lt;2e-16 ***
+poly(x2, 2)1  -14.345     60.829  -0.236   0.8144    
+poly(x2, 2)2 -131.142     60.829  -2.156   0.0353 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 60.83 on 57 degrees of freedom
+Multiple R-squared:  0.07623,   Adjusted R-squared:  0.04382 
+F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
+</div>
+</div>
+<p>Now this looks very different in the equation, but, again, we can see that this produces exactly the same fitted values as our previous models, and the same model fit summaries. Is it, in fact, the same model? Here, we’ll plot the fitted Model 2a in a red line, and this new Model 2 with Orthogonal Polynomials as blue points.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mod2orth_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod2_orth, pollution)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mod2orth_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> mod2a_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted),</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2 with Orthogonal Polynomial, degree 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Yes, it is again the same model in terms of the predictions it makes for <code>y</code>.</p>
+<p>By default, with <code>raw = FALSE</code>, the <code>poly()</code> function within a linear model computes what is called an <strong>orthogonal polynomial</strong>. An orthogonal polynomial sets up a model design matrix using the coding we’ve seen previously: <code>x2</code> and <code>x2</code>^2 in our case, and then scales those columns so that each column is <strong>orthogonal</strong> to the previous ones. This eliminates the collinearity (correlation between predictors) and lets our t tests tell us whether the addition of any particular polynomial term improves the fit of the model over the lower orders.</p>
+<p>Would the addition of a cubic term help us much in predicting <code>y</code> from <code>x2</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x2, <span class="dv">3</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ poly(x2, 3), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-146.262  -39.679    5.569   35.984  191.536 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   940.358      7.917 118.772   &lt;2e-16 ***
+poly(x2, 3)1  -14.345     61.328  -0.234   0.8159    
+poly(x2, 3)2 -131.142     61.328  -2.138   0.0369 *  
+poly(x2, 3)3   16.918     61.328   0.276   0.7837    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 61.33 on 56 degrees of freedom
+Multiple R-squared:  0.07748,   Adjusted R-squared:  0.02806 
+F-statistic: 1.568 on 3 and 56 DF,  p-value: 0.2073</code></pre>
+</div>
+</div>
+<p>It doesn’t appear that the cubic term adds much here, if anything. The <em>p</em> value is not significant for the third degree polynomial, the summaries of fit quality aren’t much improved, and as we can see from the plot below, the predictions don’t actually change all that much.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>mod3_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod3, pollution)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mod3_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> mod2orth_aug, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Quadratic (red) vs. Cubic (blue) Polynomial Fits"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="fit-a-cubic-polynomial-to-predict-y-from-x3" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="header-section-number">11.6</span> Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></h2>
+<p>What if we consider another predictor instead? Let’s look at <code>x3</code>, the Mean July temperature in degrees Fahrenheit. Here is the <code>loess</code> smooth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>That looks pretty curvy - perhaps we need a more complex polynomial. We’ll consider a linear model (<code>mod4_L</code>), a quadratic fit (<code>mod4_Q</code>) and a polynomial of degree 3: a <strong>cubic</strong> fit (<code>mod_4C</code>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>mod4_L <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x3, <span class="at">data =</span> pollution)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_L)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x3, data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-139.813  -34.341    4.271   38.197  149.587 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  670.529    123.140   5.445  1.1e-06 ***
+x3             3.618      1.648   2.196   0.0321 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 60.29 on 58 degrees of freedom
+Multiple R-squared:  0.07674,   Adjusted R-squared:  0.06082 
+F-statistic: 4.821 on 1 and 58 DF,  p-value: 0.03213</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mod4_Q <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x3, <span class="dv">2</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_Q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ poly(x3, 2), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-132.004  -42.184    4.069   47.126  157.396 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   940.358      7.553 124.503   &lt;2e-16 ***
+poly(x3, 2)1  132.364     58.504   2.262   0.0275 *  
+poly(x3, 2)2 -125.270     58.504  -2.141   0.0365 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 58.5 on 57 degrees of freedom
+Multiple R-squared:  0.1455,    Adjusted R-squared:  0.1155 
+F-statistic: 4.852 on 2 and 57 DF,  p-value: 0.01133</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mod4_C <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x3, <span class="dv">3</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ poly(x3, 3), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-148.004  -29.998    1.441   34.579  141.396 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   940.358      7.065 133.095  &lt; 2e-16 ***
+poly(x3, 3)1  132.364     54.728   2.419  0.01886 *  
+poly(x3, 3)2 -125.270     54.728  -2.289  0.02588 *  
+poly(x3, 3)3 -165.439     54.728  -3.023  0.00377 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 54.73 on 56 degrees of freedom
+Multiple R-squared:  0.2654,    Adjusted R-squared:  0.226 
+F-statistic: 6.742 on 3 and 56 DF,  p-value: 0.0005799</code></pre>
+</div>
+</div>
+<p>It looks like the cubic polynomial term is of some real importance here. Do the linear, quadratic and cubic model fitted values look different?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mod4_L_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod4_L, pollution)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>mod4_Q_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod4_Q, pollution)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>mod4_C_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod4_C, pollution)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> mod4_L_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted), </span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> mod4_Q_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted),</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> mod4_C_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted),</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">x =</span> <span class="dv">66</span>, <span class="at">y =</span> <span class="dv">930</span>, <span class="at">label =</span> <span class="st">"Linear Fit"</span>, <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">x =</span> <span class="dv">64</span>, <span class="at">y =</span> <span class="dv">820</span>, <span class="at">label =</span> <span class="st">"Quadratic Fit"</span>, <span class="at">col =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">x =</span> <span class="dv">83</span>, <span class="at">y =</span> <span class="dv">900</span>, <span class="at">label =</span> <span class="st">"Cubic Fit"</span>, <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear, Quadratic and Cubic Fits predicting y with x3"</span>) <span class="sc">+</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="fitting-a-restricted-cubic-spline-in-a-linear-regression" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="header-section-number">11.7</span> Fitting a restricted cubic spline in a linear regression</h2>
+<ul>
+<li>A <strong>linear spline</strong> is a continuous function formed by connecting points (called <strong>knots</strong> of the spline) by line segments.</li>
+<li>A <strong>restricted cubic spline</strong> is a way to build highly complicated curves into a regression equation in a fairly easily structured way.</li>
+<li>A restricted cubic spline is a series of polynomial functions joined together at the knots.
+<ul>
+<li>Such a spline gives us a way to flexibly account for non-linearity without over-fitting the model.</li>
+<li>Restricted cubic splines can fit many different types of non-linearities.</li>
+<li>Specifying the number of knots is all you need to do in R to get a reasonable result from a restricted cubic spline.</li>
+</ul></li>
+</ul>
+<p>The most common choices are 3, 4, or 5 knots. Each additional knot adds to the non-linearity, and spends an additional degree of freedom:</p>
+<ul>
+<li>3 Knots, 2 degrees of freedom, allows the curve to “bend” once.</li>
+<li>4 Knots, 3 degrees of freedom, lets the curve “bend” twice.</li>
+<li>5 Knots, 4 degrees of freedom, lets the curve “bend” three times.</li>
+</ul>
+<p>For most applications, three to five knots strike a nice balance between complicating the model needlessly and fitting data pleasingly. Let’s consider a restricted cubic spline model for our <code>y</code> based on <code>x3</code> again, but now with:</p>
+<ul>
+<li>in <code>mod5a</code>, 3 knots,</li>
+<li>in <code>mod5b</code>, 4 knots, and</li>
+<li>in <code>mod5c</code>, 5 knots</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mod5a_rcs <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">rcs</span>(x3, <span class="dv">3</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>mod5b_rcs <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">rcs</span>(x3, <span class="dv">4</span>), <span class="at">data =</span> pollution)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>mod5c_rcs <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">rcs</span>(x3, <span class="dv">5</span>), <span class="at">data =</span> pollution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here, for instance, is the summary of the 5-knot model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod5c_rcs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ rcs(x3, 5), data = pollution)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-141.522  -32.009    1.674   31.971  147.878 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)      468.113    396.319   1.181    0.243
+rcs(x3, 5)x3       6.447      5.749   1.121    0.267
+rcs(x3, 5)x3'    -25.633     46.810  -0.548    0.586
+rcs(x3, 5)x3''   323.137    293.065   1.103    0.275
+rcs(x3, 5)x3''' -612.578    396.270  -1.546    0.128
+
+Residual standard error: 54.35 on 55 degrees of freedom
+Multiple R-squared:  0.2883,    Adjusted R-squared:  0.2366 
+F-statistic: 5.571 on 4 and 55 DF,  p-value: 0.0007734</code></pre>
+</div>
+</div>
+<p>We’ll begin by storing the fitted values from these three models and other summaries, for plotting.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>mod5a_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod5a_rcs, pollution)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>mod5b_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod5b_rcs, pollution)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>mod5c_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod5c_rcs, pollution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">col =</span> <span class="st">"purple"</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Loess Smooth"</span>) <span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mod5a_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted), </span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"RCS, 3 knots"</span>) <span class="sc">+</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mod5b_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted), </span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"RCS, 4 knots"</span>) <span class="sc">+</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mod5c_aug, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> .fitted), </span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">1.25</span>) <span class="sc">+</span></span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"RCS, 5 knots"</span>) <span class="sc">+</span></span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>(p2 <span class="sc">+</span> p3) <span class="sc">/</span> (p4 <span class="sc">+</span> p5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Does it seem like the fit improves markedly (perhaps approaching the loess smooth result) as we increase the number of knots?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod5a_rcs, mod5b_rcs, mod5c_rcs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: y ~ rcs(x3, 3)
+Model 2: y ~ rcs(x3, 4)
+Model 3: y ~ rcs(x3, 5)
+  Res.Df    RSS Df Sum of Sq      F   Pr(&gt;F)   
+1     57 194935                                
+2     56 171448  1   23486.9 7.9503 0.006672 **
+3     55 162481  1    8967.2 3.0354 0.087057 . 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Based on an ANOVA comparison, the fourth knot adds significant predictive value (p = 0.0067), but the fifth knot is borderline (p = 0.0871). From the <code>glance</code> function in the <code>broom</code> package, we can also look at some key summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod5a_rcs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
+    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1   0.146   0.116  58.5    4.88  0.0111     2  -328.  663.  672. 194935.      57
+# … with 1 more variable: nobs &lt;int&gt;, and abbreviated variable names
+#   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod5b_rcs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
+    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1   0.249   0.209  55.3    6.19 0.00104     3  -324.  658.  668. 171448.      56
+# … with 1 more variable: nobs &lt;int&gt;, and abbreviated variable names
+#   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod5c_rcs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
+    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1   0.288   0.237  54.4    5.57 7.73e-4     4  -322.  657.  669. 162481.      55
+# … with 1 more variable: nobs &lt;int&gt;, and abbreviated variable names
+#   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
+</div>
+</div>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Model</th>
+<th style="text-align: right;">Knots</th>
+<th style="text-align: right;"><span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">Adj. <span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">BIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5a</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.146</td>
+<td style="text-align: right;">0.116</td>
+<td style="text-align: right;">663.4</td>
+<td style="text-align: right;">671.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5b</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.249</td>
+<td style="text-align: right;">0.209</td>
+<td style="text-align: right;">657.7</td>
+<td style="text-align: right;"><strong>668.2</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5c</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.288</td>
+<td style="text-align: right;"><strong>0.237</strong></td>
+<td style="text-align: right;"><strong>656.5</strong></td>
+<td style="text-align: right;">669.1</td>
+</tr>
+</tbody>
+</table>
+<p>Within our sample, the five-knot RCS outperforms the 3- and 4-knot versions on adjusted <span class="math inline">\(R^2\)</span> and AIC (barely) and does a little worse than the 4-knot RCS on BIC.</p>
+<p>Of course, we could also use the cross-validation methods we’ve developed for other linear regressions to assess predictive capacity of these models. I’ll skip that for now.</p>
+<p>To see the values of <code>x3</code> where the splines place their knots, we can use the <code>attributes</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(<span class="fu">rcs</span>(pollution<span class="sc">$</span>x3, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$dim
+[1] 60  4
+
+$dimnames
+$dimnames[[1]]
+NULL
+
+$dimnames[[2]]
+[1] "pollution"    "pollution'"   "pollution''"  "pollution'''"
+
+
+$class
+[1] "rms"
+
+$name
+[1] "pollution"
+
+$label
+[1] "pollution"
+
+$assume
+[1] "rcspline"
+
+$assume.code
+[1] 4
+
+$parms
+[1] 68 72 74 77 82
+
+$nonlinear
+[1] FALSE  TRUE  TRUE  TRUE
+
+$colnames
+[1] "pollution"    "pollution'"   "pollution''"  "pollution'''"</code></pre>
+</div>
+</div>
+<p>The knots in this particular 5-knot spline are placed by the computer at 68, 72, 74, 77 and 82, it seems.</p>
+<p>There are two kinds of Multivariate Regression Models</p>
+<ol type="1">
+<li>[Prediction] Those that are built so that we can make accurate predictions.</li>
+<li>[Explanatory] Those that are built to help understand underlying phenomena.</li>
+</ol>
+<p>While those two notions overlap considerably, they do imply different things about how we strategize about model-building and model assessment. Harrell’s primary concern is effective use of the available data for <strong>prediction</strong> - this implies some things that will be different from what we’ve seen in the past.</p>
+<p>Harrell refers to multivariable regression modeling strategy as the process of <strong>spending degrees of freedom</strong>. The main job in strategizing about multivariate modeling is to</p>
+<ol type="1">
+<li>Decide the number of degrees of freedom that can be spent</li>
+<li>Decide where to spend them</li>
+<li>Spend them, wisely.</li>
+</ol>
+<p>What this means is essentially linked to making decisions about predictor complexity, both in terms of how many predictors will be included in the regression model, and about how we’ll include those predictors.</p>
+</section>
+<section id="spending-degrees-of-freedom" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="spending-degrees-of-freedom"><span class="header-section-number">11.8</span> “Spending” Degrees of Freedom</h2>
+<ul>
+<li>“Spending” df includes
+<ul>
+<li>fitting parameter estimates in models, or</li>
+<li>examining figures built using the outcome variable Y that tell you how to model the predictors.</li>
+</ul></li>
+</ul>
+<p>If you use a scatterplot of Y vs.&nbsp;X or the residuals of the Y-X regression model vs.&nbsp;X to decide whether a linear model is appropriate, then how many degrees of freedom have you actually spent?</p>
+<p>Grambsch and O’Brien conclude that if you wish to preserve the key statistical properties of the various estimation and fitting procedures used in building a model, you can’t retrieve these degrees of freedom once they have been spent.</p>
+<section id="overfitting-and-limits-on-the-of-predictors" class="level3" data-number="11.8.1">
+<h3 data-number="11.8.1" class="anchored" data-anchor-id="overfitting-and-limits-on-the-of-predictors"><span class="header-section-number">11.8.1</span> Overfitting and Limits on the # of Predictors</h3>
+<p>Suppose you have a total sample size of <span class="math inline">\(n\)</span> observations, then you really shouldn’t be thinking about estimating more than <span class="math inline">\(n / 15\)</span> regression coefficients, at the most.</p>
+<ul>
+<li>If <span class="math inline">\(k\)</span> is the number of parameters in a full model containing all candidate predictors for a stepwise analysis, then <span class="math inline">\(k\)</span> should be no greater than <span class="math inline">\(n / 15\)</span>.</li>
+<li><span class="math inline">\(k\)</span> should include all variables screened for association with the response, including interaction terms.</li>
+<li>Sometimes I hold myself to a tougher standard, or <span class="math inline">\(n / 50\)</span> predictors, at maximum.</li>
+</ul>
+<p>So if you have 97 observations in your data, then you can probably just barely justify the use of a stepwise analysis using the main effects alone of 5 candidate variables (with one additional DF for the intercept term) using the <span class="math inline">\(n/15\)</span> limit.</p>
+<p><span class="citation" data-cites="Harrell2001">@Harrell2001</span> also mentions that if you have a <strong>narrowly distributed</strong> predictor, without a lot of variation to work with, then an even larger sample size <span class="math inline">\(n\)</span> should be required. See <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, Section 10.3 for more details.</p>
+</section>
+<section id="the-importance-of-collinearity" class="level3" data-number="11.8.2">
+<h3 data-number="11.8.2" class="anchored" data-anchor-id="the-importance-of-collinearity"><span class="header-section-number">11.8.2</span> The Importance of Collinearity</h3>
+<blockquote class="blockquote">
+<p>Collinearity denotes correlation between predictors high enough to degrade the precision of the regression coefficient estimates substantially for some or all of the correlated predictors</p>
+</blockquote>
+<ul>
+<li><p><span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, section 10.4.1</p></li>
+<li><p>Can one predictor in a model be predicted well using the other predictors in the model?</p>
+<ul>
+<li>Strong correlations (for instance, <span class="math inline">\(r \geq 0.8\)</span>) are especially troublesome.</li>
+</ul></li>
+<li><p>Effects of collinearity</p>
+<ul>
+<li>decreases precision, in the sense of increasing the standard errors of the parameter estimates</li>
+<li>decreases power</li>
+<li>increases the difficulty of interpreting individual predictor effects</li>
+<li>overall F test is significant, but individual t tests may not be</li>
+</ul></li>
+</ul>
+<p>Suppose we want to assess whether variable <span class="math inline">\(X_j\)</span> is collinear with the other predictors in a model. We run a regression predicting <span class="math inline">\(X_j\)</span> using the other predictors, and obtain the <span class="math inline">\(R^2\)</span>. The VIF is defined as 1 / (1 - this <span class="math inline">\(R^2\)</span>), and we usually interpret VIFs above 5 as indicating a serious multicollinearity problem (i.e.&nbsp;<span class="math inline">\(R^2\)</span> values for this predictor of 0.8 and above would thus concern us.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6, <span class="at">data =</span> pollution))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      x1       x2       x3       x4       x5       x6 
+2.238862 2.058731 2.153044 4.174448 3.447399 1.792996 </code></pre>
+</div>
+</div>
+<p>Occasionally, you’ll see the inverse of VIF reported, and this is called <em>tolerance</em>.</p>
+<ul>
+<li>tolerance = 1 / VIF</li>
+</ul>
+</section>
+<section id="collinearity-in-an-explanatory-model" class="level3" data-number="11.8.3">
+<h3 data-number="11.8.3" class="anchored" data-anchor-id="collinearity-in-an-explanatory-model"><span class="header-section-number">11.8.3</span> Collinearity in an Explanatory Model</h3>
+<ul>
+<li>When we are attempting to <strong>identify multiple independent predictors</strong> (the explanatory model approach), then we will need to choose between collinear variables
+<ul>
+<li>options suggested by <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, p.&nbsp;422, include choosing on the basis of plausibility as a causal factor,</li>
+<li>choosing the variable that has higher data quality (is measured more accurately or has fewer missing values.)</li>
+<li>Often, we choose to include a variable that is statistically significant as a predictor, and drop others, should we be so lucky.</li>
+</ul></li>
+<li>Larger effects, especially if they are associated with predictors that have minimal correlation with the other predictors under study, cause less trouble in terms of potential violation of the <span class="math inline">\(n/15\)</span> rule for what constitutes a reasonable number of predictors.</li>
+</ul>
+</section>
+<section id="collinearity-in-a-prediction-model" class="level3" data-number="11.8.4">
+<h3 data-number="11.8.4" class="anchored" data-anchor-id="collinearity-in-a-prediction-model"><span class="header-section-number">11.8.4</span> Collinearity in a Prediction Model</h3>
+<ul>
+<li>If we are primarily building a <strong>prediction model</strong> for which inference on the individual predictors is not of interest, then it is totally reasonable to use both predictors in the model, if doing so reduces prediction error.
+<ul>
+<li>Collinearity doesn’t affect predictions in our model development sample.</li>
+<li>Collinearity doesn’t affect predictions on new data so long as the new data have similar relationships between predictors.</li>
+<li>If our key predictor is correlated strongly with a confounder, then if the predictor remains significant after adjustment for the confounder, then this suggests a meaningful independent effect.
+<ul>
+<li>If the effects of the predictor are clearly confounded by the adjustment variable, we again have a clear result.</li>
+<li>If neither is statistically significant after adjustment, the data may be inadequate.</li>
+</ul></li>
+<li>If the collinearity is between adjustment variables, but doesn’t involve the key predictor, then inclusion of the collinear variables is unlikely to cause substantial problems.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="spending-df-on-non-linearity-the-spearman-plot" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="spending-df-on-non-linearity-the-spearman-plot"><span class="header-section-number">11.9</span> Spending DF on Non-Linearity: The Spearman Plot</h2>
+<p>We need a flexible approach to assessing non-linearity and fitting models with non-linear predictors. This will lead us to a measure of what <span class="citation" data-cites="Harrell2001">@Harrell2001</span> calls <strong>potential predictive punch</strong> which hides the true form of the regression from the analyst so as to preserve statistical properties, but that lets us make sensible decisions about whether a predictor should be included in a model, and the number of parameters (degrees of freedom, essentially) we are willing to devote to it.</p>
+<p>What if we want to consider where best to spend our degrees of freedom on non-linear predictor terms, like interactions, polynomial functions or curved splines to represent our input data? The approach we’ll find useful in the largest variety of settings is a combination of</p>
+<ol type="1">
+<li>a rank correlation assessment of potential predictive punch (using a Spearman <span class="math inline">\(\rho^2\)</span> plot, available in the <code>Hmisc</code> package), followed by</li>
+<li>the application of restricted cubic splines to fit and assess models.</li>
+</ol>
+<p>Let’s try such a plot for our fifteen predictors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sp2 <span class="ot">&lt;-</span> <span class="fu">spearman2</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>                   x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10 <span class="sc">+</span> x11 <span class="sc">+</span> x12 <span class="sc">+</span> x13 <span class="sc">+</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>                   x14 <span class="sc">+</span> x15, <span class="at">data =</span> pollution)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sp2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The variable with the largest adjusted squared Spearman <span class="math inline">\(\rho\)</span> statistic in this setting is <code>x9</code>, followed by <code>x6</code> and <code>x14</code>. With only 60 observations, we might well want to restrict ourselves to a very small model. What the Spearman plot suggests is that we focus any non-linear terms on <code>x9</code> first, and then perhaps <code>x6</code> and <code>x14</code> as they have some potential predictive power. It may or may not work out that the non-linear terms are productive.</p>
+<section id="fitting-a-big-model-to-the-pollution-data" class="level3" data-number="11.9.1">
+<h3 data-number="11.9.1" class="anchored" data-anchor-id="fitting-a-big-model-to-the-pollution-data"><span class="header-section-number">11.9.1</span> Fitting a Big Model to the <code>pollution</code> data</h3>
+<p>So, one possible model built in reaction this plot might be to fit:</p>
+<ul>
+<li>a restricted cubic spline with 5 knots on <code>x9</code>,</li>
+<li>a restricted cubic spline with 3 knots on <code>x6</code>,</li>
+<li>a quadratic polynomial on <code>x14</code>, and</li>
+<li>a linear fit to <code>x1</code> and <code>x13</code></li>
+</ul>
+<p>That’s way more degrees of freedom (4 for <code>x9</code>, 2 for <code>x6</code>, 2 for <code>x14</code> and 1 each for x1 and x13 makes a total of 10 without the intercept term) than we can really justify with a sample of 60 observations. But let’s see what happens.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>mod_big <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">rcs</span>(x9, <span class="dv">5</span>) <span class="sc">+</span> <span class="fu">rcs</span>(x6, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">poly</span>(x14, <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>                  x1 <span class="sc">+</span> x13, <span class="at">data =</span> pollution)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_big)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: y
+             Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+rcs(x9, 5)    4 100164 25040.9 17.8482 4.229e-09 ***
+rcs(x6, 3)    2  38306 19152.8 13.6513 1.939e-05 ***
+poly(x14, 2)  2  15595  7797.7  5.5579  0.006677 ** 
+x1            1   4787  4787.3  3.4122  0.070759 .  
+x13           1    712   711.9  0.5074  0.479635    
+Residuals    49  68747  1403.0                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>This <code>anova</code> suggests that we have at least some predictive value in each spline (<code>x9</code> and <code>x6</code>) and some additional value in <code>x14</code>, although it’s not as clear that the linear terms (<code>x1</code> and <code>x13</code>) did much good.</p>
+</section>
+<section id="limitations-of-lm-for-fitting-complex-linear-regression-models" class="level3" data-number="11.9.2">
+<h3 data-number="11.9.2" class="anchored" data-anchor-id="limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="header-section-number">11.9.2</span> Limitations of <code>lm</code> for fitting complex linear regression models</h3>
+<p>We can certainly assess this big, complex model using <code>lm</code> in comparison to other models:</p>
+<ul>
+<li>with in-sample summary statistics like adjusted <span class="math inline">\(R^2\)</span>, AIC and BIC,</li>
+<li>we can assess its assumptions with residual plots, and</li>
+<li>we can also compare out-of-sample predictive quality through cross-validation,</li>
+</ul>
+<p>But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we’ll probably want to fit the model using an alternative method for fitting linear models, called <code>ols</code>, from the <code>rms</code> package developed by Frank Harrell and colleagues. That’s where we’re heading.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./10-anovaexamples.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./90-incomplete.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

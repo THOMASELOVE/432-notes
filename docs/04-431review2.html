@@ -219,7 +219,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -403,12 +408,12 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">columns =</span> <span class="fu">c</span>(Now_losing_Wt, No))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="hnqfjsaapw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="xmntvlxzaz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#hnqfjsaapw) .gt_table {
+:where(#xmntvlxzaz) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -433,7 +438,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-left-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_heading {
+:where(#xmntvlxzaz) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -445,12 +450,12 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_caption {
+:where(#xmntvlxzaz) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#hnqfjsaapw) .gt_title {
+:where(#xmntvlxzaz) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -462,7 +467,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-width: 0;
 }
 
-:where(#hnqfjsaapw) .gt_subtitle {
+:where(#xmntvlxzaz) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -474,13 +479,13 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-top-width: 0;
 }
 
-:where(#hnqfjsaapw) .gt_bottom_border {
+:where(#xmntvlxzaz) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_col_headings {
+:where(#xmntvlxzaz) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -495,7 +500,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_col_heading {
+:where(#xmntvlxzaz) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -515,7 +520,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   overflow-x: hidden;
 }
 
-:where(#hnqfjsaapw) .gt_column_spanner_outer {
+:where(#xmntvlxzaz) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -527,15 +532,15 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 4px;
 }
 
-:where(#hnqfjsaapw) .gt_column_spanner_outer:first-child {
+:where(#xmntvlxzaz) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#hnqfjsaapw) .gt_column_spanner_outer:last-child {
+:where(#xmntvlxzaz) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#hnqfjsaapw) .gt_column_spanner {
+:where(#xmntvlxzaz) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -547,7 +552,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   width: 100%;
 }
 
-:where(#hnqfjsaapw) .gt_group_heading {
+:where(#xmntvlxzaz) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -573,7 +578,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   text-align: left;
 }
 
-:where(#hnqfjsaapw) .gt_empty_group_heading {
+:where(#xmntvlxzaz) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -588,15 +593,15 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   vertical-align: middle;
 }
 
-:where(#hnqfjsaapw) .gt_from_md > :first-child {
+:where(#xmntvlxzaz) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#hnqfjsaapw) .gt_from_md > :last-child {
+:where(#xmntvlxzaz) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#hnqfjsaapw) .gt_row {
+:where(#xmntvlxzaz) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -615,7 +620,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   overflow-x: hidden;
 }
 
-:where(#hnqfjsaapw) .gt_stub {
+:where(#xmntvlxzaz) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -628,7 +633,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_stub_row_group {
+:where(#xmntvlxzaz) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -642,11 +647,11 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   vertical-align: top;
 }
 
-:where(#hnqfjsaapw) .gt_row_group_first td {
+:where(#xmntvlxzaz) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#hnqfjsaapw) .gt_summary_row {
+:where(#xmntvlxzaz) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -656,16 +661,16 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_first_summary_row {
+:where(#xmntvlxzaz) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_first_summary_row.thick {
+:where(#xmntvlxzaz) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#hnqfjsaapw) .gt_last_summary_row {
+:where(#xmntvlxzaz) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -675,7 +680,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_grand_summary_row {
+:where(#xmntvlxzaz) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -685,7 +690,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_first_grand_summary_row {
+:where(#xmntvlxzaz) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -695,11 +700,11 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-top-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_striped {
+:where(#xmntvlxzaz) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#hnqfjsaapw) .gt_table_body {
+:where(#xmntvlxzaz) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -708,7 +713,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_footnotes {
+:where(#xmntvlxzaz) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -722,7 +727,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_footnote {
+:where(#xmntvlxzaz) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -731,7 +736,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_sourcenotes {
+:where(#xmntvlxzaz) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -745,7 +750,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#hnqfjsaapw) .gt_sourcenote {
+:where(#xmntvlxzaz) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -753,64 +758,64 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_left {
+:where(#xmntvlxzaz) .gt_left {
   text-align: left;
 }
 
-:where(#hnqfjsaapw) .gt_center {
+:where(#xmntvlxzaz) .gt_center {
   text-align: center;
 }
 
-:where(#hnqfjsaapw) .gt_right {
+:where(#xmntvlxzaz) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#hnqfjsaapw) .gt_font_normal {
+:where(#xmntvlxzaz) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#hnqfjsaapw) .gt_font_bold {
+:where(#xmntvlxzaz) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#hnqfjsaapw) .gt_font_italic {
+:where(#xmntvlxzaz) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#hnqfjsaapw) .gt_super {
+:where(#xmntvlxzaz) .gt_super {
   font-size: 65%;
 }
 
-:where(#hnqfjsaapw) .gt_footnote_marks {
+:where(#xmntvlxzaz) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#hnqfjsaapw) .gt_asterisk {
+:where(#xmntvlxzaz) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#hnqfjsaapw) .gt_indent_1 {
+:where(#xmntvlxzaz) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#hnqfjsaapw) .gt_indent_2 {
+:where(#xmntvlxzaz) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#hnqfjsaapw) .gt_indent_3 {
+:where(#xmntvlxzaz) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#hnqfjsaapw) .gt_indent_4 {
+:where(#xmntvlxzaz) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#hnqfjsaapw) .gt_indent_5 {
+:where(#xmntvlxzaz) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
