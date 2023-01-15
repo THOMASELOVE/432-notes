@@ -18,6 +18,7 @@ book:
     - 05-431review3.qmd
     - 06-smart.qmd
     - 07-singleimputation.qmd
+    - 08-datasummaries.qmd
     - 90-incomplete.qmd
 
 format:
