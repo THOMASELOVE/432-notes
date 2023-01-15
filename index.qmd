@@ -1,0 +1,20 @@
+# Introduction {.unnumbered}
+
+These Notes provide a series of examples using R to work through issues that are likely to come up in PQHS/CRSP/MPHP 432.
+
+While these Notes share some of the features of a textbook, they are neither comprehensive nor completely original. The main purpose is to give students in 432 a set of common materials on which to draw during the course. In class, we will sometimes:
+
+- reiterate points made in this document,
+- amplify what is here,
+- simplify the presentation of things done here,
+- use new examples to show some of the same techniques,
+- refer to issues not mentioned in this document,
+
+but what we don't (always) do is follow these notes very precisely. We assume instead that you will read the materials and try to learn from them, just as you will attend classes and try to learn from them. We welcome feedback of all kinds on this document or anything else via our [Campuswire discussion forum](https://campuswire.com/).
+
+What you will mostly find are brief explanations of a key idea or summary, accompanied (most of the time) by R code and a demonstration of the results of applying that code.
+
+Everything you see here is available to you in this HTML document. You will also have access to the Quarto files, which contain the code which generates everything in the document, including all of the R results. We will demonstrate the use of Quarto and R Studio (the "program" which we use to interface with the R language) in class. At the end of the semester, I hope to be able to get the PDF version of this document posted, but that may be a challenge.
+
+To download the data and R code related to these notes, visit the [432-data page](https://github.com/THOMASELOVE/432-data).
+

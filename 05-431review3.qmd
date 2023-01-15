@@ -116,14 +116,12 @@ m1
 We can use the `extract_eq()` function from the **equatiomatic** package to display the model attractively.
 
 ```{r}
-#| output: asis
-
 extract_eq(m1, use_coefs = TRUE, coef_digits = 3,
            wrap = TRUE, operator_location = "start")
 
 ```
 
-If Harry and Sally have the same values of SLPWKDAY, SBP and SLPTROUB, but Harry's PHQ9 is one point higher than Sally's, then model `m1` predicts that Harry will sleep 0.029 hours longer than Sally on the weekends.
+If Harry and Sally have the same values of SLPWKDAY, SBP and SLPTROUB, but Harry's PHQ9 is one point higher than Sally's, then model `m1` predicts that Harry will sleep 0.029 hours less than Sally on the weekends.
 
 A summary of the regression model `m1` provides lots of useful information about the parameters (including their standard errors) and the quality of fit (at least as measured by $R^2$ and adjusted $R^2$.)
 
@@ -146,6 +144,7 @@ tidy(m1, conf.int = TRUE, conf.level = 0.90) |>
   mutate(across(.cols = -c(term), num, digits = 3)) |>
   gt()
 ```
+
 
 Note that none of the 90% confidence intervals here cross zero. This just means that we have a pretty good handle on the direction of effects - for example, our estimate for the slope of SLPWKDAY is positive, suggesting that people who sleep more during the week also sleep more on the weekend, after accounting for SBP, PHQ9 and SLPTROUB.
 
@@ -288,8 +287,6 @@ m2
 ```
 
 ```{r}
-#| output: asis
-
 extract_eq(m2, use_coefs = TRUE, coef_digits = 3,
            wrap = TRUE, operator_location = "start")
 ```
@@ -459,12 +456,11 @@ m3 <- lm(log(HSCRP) ~ MEANPULSE + SROH + HOSPITAL,
 ```
 
 ```{r}
-#| output: asis
-
 extract_eq(m3, use_coefs = TRUE, coef_digits = 3,
            terms_per_line = 3, wrap = TRUE, 
            operator_location = "start")
 ```
+
 
 ```{r}
 tidy(m3, conf.int = TRUE, conf.level = 0.90) |>
@@ -499,8 +495,6 @@ m4 <- lm(log(HSCRP) ~ MEANPULSE,
 ```
 
 ```{r}
-#| output: asis
-
 extract_eq(m4, use_coefs = TRUE, coef_digits = 3,
            wrap = TRUE, operator_location = "start")
 ```

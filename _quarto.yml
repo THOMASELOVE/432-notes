@@ -8,7 +8,6 @@ book:
   author: "Thomas E. Love"
   date: last-modified
   date-format: iso
-  downloads: pdf
   chapters:
     - index.qmd
     - setup.qmd
@@ -17,11 +16,10 @@ book:
     - 03-431review1.qmd
     - 04-431review2.qmd
     - 05-431review3.qmd
+    - 90-incomplete.qmd
 
 format:
   html:
     theme: cosmo
     code-overflow: wrap
-  pdf:
-    documentclass: scrreprt
 
