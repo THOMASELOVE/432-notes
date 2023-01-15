@@ -1,0 +1,169 @@
+# Analysis of Covariance
+
+## An Emphysema Study
+
+My source for this example is @Riffenburgh2006, section 18.4. Serum theophylline levels (in mg/dl) were measured in 16 patients with emphysema at baseline, then 5 days later (at the end of a course of antibiotics) and then at 10 days after baseline. Clinicians anticipate that the antibiotic will increase the theophylline level. The data are stored in the `emphysema.csv` data file, and note that the age for patient 5 is not available. 
+
+### Codebook
+
+Variable  | Description
+--------: | --------------------------------------------------------
+`patient` | ID code
+`age`     | patient's age in years
+`sex`     | patient's sex (F or M)
+`st_base` | patient's serum theophylline at baseline (mg/dl)
+`st_day5` | patient's serum theophylline at day 5 (mg/dl)
+`st_day10` | patient's serum theophylline at day 10 (mg/dl)
+
+We're going to look at the change from baseline to day 5 as our outcome of interest, since the clinical expectation is that the antibiotic (azithromycin) will increase theophylline levels.
+
+```{r}
+emphysema <- emphysema %>% 
+    mutate(st_delta = st_day5 - st_base)
+
+emphysema
+```
+
+## Does `sex` affect the mean change in theophylline? 
+
+```{r}
+emphysema %$% mosaic::favstats(st_delta)
+```
+
+```{r}
+emphysema %$% mosaic::favstats(st_delta ~ sex)
+```
+
+Overall, the mean change in theophylline during the course of the antibiotic is -0.99, but this is -3.33 for female patients and 0.41 for male patients.
+
+A one-way ANOVA model looks like this:
+
+```{r}
+anova(lm(st_delta ~ sex, data = emphysema))
+```
+
+The ANOVA F test finds a statistically significant difference between the mean `st_delta` among males and the mean `st_delta` among females. But is there more to the story?
+
+## Is there an association between `age` and `sex` in this study?
+
+```{r}
+emphysema %$% mosaic::favstats(age ~ sex)
+```
+
+But we note that the male patients are also older than the female patients, on average (mean age for males is 66.4, for females 63.3) 
+
+- Does the fact that male patients are older affect change in theophylline level? 
+- And how should we deal with the one missing `age` value (in a male patient)?
+
+## Adding a quantitative covariate, `age`, to the model
+
+We could fit an ANOVA model to predict `st_delta` using `sex` and `age` directly, but only if we categorized `age` into two or more groups. Because `age` is not categorical, we cannot include it in an ANOVA. But if age is an influence, and we don't adjust for it, it may well bias the outcome of our initial ANOVA. With a quantitative variable like `age`, we will need a method called ANCOVA, for **analysis of covariance**.
+
+### The ANCOVA model
+
+ANCOVA in this case is just an ANOVA model with our outcome (`st_delta`) adjusted for a continuous covariate, called `age`. For the moment, we'll ignore the one subject with missing `age` and simply fit the regression model with `sex` and `age`.
+
+```{r}
+summary(lm(st_delta ~ sex + age, data = emphysema))
+```
+
+This model assumes that the slope of the regression line between `st_delta` and `age` is the same for both sexes. 
+
+Note that the model yields `st_delta` = -6.9 + 3.52 (`sex` = male) + 0.056 `age`, or 
+
+- `st_delta` = -6.9 + 0.056 `age` for female patients, and
+- `st_delta` = (-6.9 + 3.52) + 0.056 `age` = -3.38 + 0.056 `age` for male patients.
+
+Note that we can test this assumption of equal slopes by fitting an alternative model (with a product term between `sex` and `age`) that doesn't require the assumption, and we'll do that later. 
+
+### The ANCOVA Table 
+
+First, though, we'll look at the ANCOVA table.
+
+```{r}
+anova(lm(st_delta ~ sex + age, data = emphysema))
+```
+
+When we tested `sex` without accounting for `age`, we found a *p* value of 0.032, which is less than our usual cutpoint of 0.05. But when we adjusted for `age`, we find that `sex` loses significance, even though `age` is not a significant influence on `st_delta` by itself, according to the ANCOVA table.
+
+## Rerunning the ANCOVA model after simple imputation
+
+We could have *imputed* the missing `age` value for patient 5, rather than just deleting that patient. Suppose we do the simplest potentially reasonable thing to do: insert the mean `age` in where the NA value currently exists.
+
+```{r}
+emph_imp <- replace_na(emphysema, list(age = mean(emphysema$age, na.rm = TRUE)))
+
+emph_imp
+```
+
+More on simple imputation and missing data is coming soon.
+
+For now, we can rerun the ANCOVA model on this new data set, after imputation...
+
+```{r}
+anova(lm(st_delta ~ sex + age, data = emph_imp))
+```
+
+When we do this, we see that now the `sex` variable returns to a *p* value below 0.05. Our complete case analysis (which omitted patient 5) gives us a different result than the ANCOVA based on the data after mean imputation.
+
+## Looking at a factor-covariate interaction
+
+Let's run a model including the interaction (product) term between `age` and `sex`, which implies that the slope of `age` on our outcome (`st_delta`) depends on the patient's sex. We'll use the imputed data again. Here is the new ANCOVA table, which suggests that the interaction of `age` and `sex` is small (because it accounts for only a small amount of the total Sum of Squares) and not significant (p = 0.91).
+
+```{r}
+anova(lm(st_delta ~ sex * age, data = emph_imp))
+```
+
+Since the interaction term is neither substantial nor significant, we probably don't need it here. But let's look at its interpretation anyway, just to fix ideas. To do that, we'll need the coefficients from the underlying regression model.
+
+```{r}
+tidy(lm(st_delta ~ sex * age, data = emph_imp))
+```
+
+Our ANCOVA model for `st_delta` incorporating the `age` x `sex` product term is -5.65 + 1.72 (sex = M) + 0.037 age + 0.029 (sex = M)(age). So that means:
+
+- our model for females is `st_delta` = -5.65 + 0.037 `age`
+- our model for males is `st_delta` = (-5.65 + 1.72) + (0.037 + 0.029) `age`, or -3.93 + 0.066 `age`
+
+but, again, our conclusion from the ANCOVA table is that this increase in complexity (letting both the slope and intercept vary by `sex`) doesn't add much in the way of predictive value for our `st_delta` outcome.
+
+## Centering the Covariate to Facilitate ANCOVA Interpretation
+
+When developing an ANCOVA model, we will often **center** or even **center and rescale** the covariate to facilitate interpretation of the product term. In this case, let's center `age` and rescale it by dividing by two standard deviations. 
+
+```{r}
+emph_imp %$% mosaic::favstats(age)
+```
+
+Note that in our imputed data, the mean `age` is `r round(mean(emph_imp$age),1)` and the standard deviation of `age` is `r round(sd(emph_imp$age),1)` years.
+
+So we build the rescaled `age` variable that I'll call `age_z`, and then use it to refit our model.
+
+```{r}
+emph_imp <- emph_imp %>%
+    mutate(age_z = (age - mean(age))/ (2 * sd(age)))
+
+anova(lm(st_delta ~ sex * age_z, data = emph_imp))
+
+tidy(lm(st_delta ~ sex * age_z, data = emph_imp))
+```
+
+Comparing the two models, we have:
+
+- (unscaled): `st_delta` = -5.65 + 1.72 (`sex` = M) + 0.037 `age` + 0.029 (`sex` = M) x (`age`)
+- (rescaled): `st_delta` = -3.27 + 3.60 (`sex` = M) + 0.510 rescaled `age_z` + 0.402 (`sex` = M) x (rescaled `age_z`)
+
+In essence, the rescaled model on `age_z` is:
+
+- `st_delta` = -3.27 + 0.510 `age_z` for female subjects, and
+- `st_delta` = (-3.27 + 3.60) + (0.510 + 0.402) `age_z` = 0.33 + 0.912 `age_z` for male subjects
+
+Interpreting the centered, rescaled model, we have:
+
+- no change in the ANOVA results or R-squared or residual standard deviation compared to the uncentered, unscaled model, but
+- the intercept (-3.27) now represents the `st_delta` for a female of average age,
+- the `sex` slope (3.60) represents the (male - female) difference in predicted `st_delta` for a person of average age,
+- the `age_z` slope (0.510) represents the difference in predicted `st_delta` for a female one standard deviation older than the mean age as compared to a female one standard deviation younger than the mean age, and
+- the product term's slope (0.402) represents the male - female difference in the slope of `age_z`, so that if you add the `age_z` slope (0.510) and the interaction slope (0.402) you see the difference in predicted `st_delta` for a male one standard deviation older than the mean age as compared to a male one standard deviation younger than the mean age.
+
+

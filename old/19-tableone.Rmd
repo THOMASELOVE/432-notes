@@ -1,0 +1,328 @@
+# Building Table 1
+
+Many scientific articles involve direct comparison of results from various exposures, perhaps treatments. In 431, we studied numerous methods, including various sorts of hypothesis tests, confidence intervals, and descriptive summaries, which can help us to understand and compare outcomes in such a setting. One common approach is to present what's often called Table 1. Table 1 provides a summary of the characteristics of a sample, or of groups of samples, which is most commonly used to help understand the nature of the data being compared.
+
+## Data load
+
+Let's load two data sets for this Chapter. All data sets used in these notes are available on our [Data and Code website](https://github.com/THOMASELOVE/432-data).
+
+```{r}
+fakestroke <- read_csv("data/fakestroke.csv")
+bloodbrain <- read_csv("data/bloodbrain.csv")
+```
+
+## Two examples from the *New England Journal of Medicine*
+
+### A simple Table 1
+
+Table 1 is especially common in the context of clinical research. Consider the excerpt below, from a January 2015 article in the *New England Journal of Medicine* [@Tolaney2015].
+
+```{r Tolaney_table1_NEJM_fig, echo=FALSE, out.width='50%'}
+knitr::include_graphics("images/Tolaney-snip1.png")
+```
+
+This (partial) table reports baseline characteristics on age group, sex and race, describing 406 patients with HER2-positive^[HER2 = human epidermal growth factor receptor type 2. Over-expression of this occurs in 15-20%  of invasive breast cancers, and has been associated with poor outcomes.] invasive breast cancer that began the protocol therapy. Age, sex and race (along with severity of illness) are the most commonly identified characteristics in a Table 1.
+
+In addition to the measures shown in this excerpt, the full Table also includes detailed information on the primary tumor for each patient, including its size, nodal status and histologic grade. Footnotes tell us that the percentages shown are subject to rounding, and may not total 100, and that the race information was self-reported.
+
+### A group comparison
+
+A more typical Table 1 involves a group comparison, for example in this excerpt from @Roy2008. This Table 1 describes a multi-center randomized clinical trial comparing two different approaches to caring for patients with heart failure and atrial fibrillation^[The complete Table 1 appears on pages 2668-2669 of @Roy2008, but I have only reproduced the first page and the footnote in this excerpt.].
+
+```{r Roy_table1_NEJM_fig, echo=FALSE, out.width='90%'}
+knitr::include_graphics("images/Roy-snip1.png")
+```
+
+The article provides percentages, means and standard deviations across groups, but note that it does not provide p values for the comparison of baseline characteristics. This is a common feature of NEJM reports on randomized clinical trials, where we anticipate that the two groups will be well matched at baseline. Note that the patients in this study were *randomly* assigned to either the rhythm-control group or to the rate-control group, using blocked randomization stratified by study center.
+
+## The MR CLEAN trial
+
+@Berkhemer2015 reported on the MR CLEAN trial, involving 500 patients with acute ischemic stroke caused by a proximal intracranial arterial occlusion. The trial was conducted at 16 medical centers in the Netherlands, where 233 were randomly assigned to the intervention (intraarterial treatment plus usual care) and 267 to control (usual care alone.) The primary outcome was the modified Rankin scale score at 90 days; this categorical scale measures functional outcome, with scores ranging from 0 (no symptoms) to 6 (death). The fundamental conclusion of @Berkhemer2015 was that in patients with acute ischemic stroke caused by a proximal intracranial occlusion of the anterior circulation, intraarterial treatment administered within 6 hours after stroke onset was effective and safe. 
+
+Here's the Table 1 from @Berkhemer2015.
+
+```{r Berkhemer_table1_NEJM_fig, echo=FALSE, out.width='90%'}
+knitr::include_graphics("images/Berkhemer-snip4complete.png")
+```
+
+The Table was accompanied by the following notes.
+
+```{r Berkhemer_table1_NEJM_notes_fig, echo=FALSE, out.width='90%'}
+knitr::include_graphics("images/Berkhemer-snip4notes.png")
+```
+
+
+## Simulated `fakestroke` data
+
+Consider the simulated data, available on our [Data and Code website](https://github.com/THOMASELOVE/432-data) in the `fakestroke.csv` file, which I built to let us mirror the Table 1 for MR CLEAN [@Berkhemer2015]. The `fakestroke.csv` file contains the following 18 variables for 500 patients.
+
+Variable |	Description
+----------: | -----------------------------------------
+`studyid` |	Study ID # (z001 through z500)
+`trt`	| Treatment group (Intervention or Control)
+`age`	| Age in years
+`sex`	| Male or Female
+`nihss`	| NIH Stroke Scale Score (can range from 0-42; higher scores indicate more severe neurological deficits)
+`location` |	Stroke Location - Left or Right Hemisphere
+`hx.isch`	| History of Ischemic Stroke (Yes/No)
+`afib`	| Atrial Fibrillation (1 = Yes, 0 = No)
+`dm`	| Diabetes Mellitus (1 = Yes, 0 = No)
+`mrankin` |	Pre-stroke modified Rankin scale score (0, 1, 2 or > 2) indicating functional disability - complete range is 0 (no symptoms) to 6 (death)
+`sbp`	| Systolic blood pressure, in mm Hg
+`iv.altep`	| Treatment with IV alteplase (Yes/No)
+`time.iv`	| Time from stroke onset to start of IV alteplase (minutes) if iv.altep=Yes
+`aspects`	| Alberta Stroke Program Early Computed Tomography score, which measures extent of stroke from 0 - 10; higher scores indicate fewer early ischemic changes
+`ia.occlus`	| Intracranial arterial occlusion, based on vessel imaging - five categories^[The five categories are Intracranial ICA, ICA with involvement of the M1 middle cerebral artery segment, M1 middle cerebral artery segment, M2 middle cerebral artery segment, A1 or A2 anterior cerebral artery segment]
+`extra.ica`	| Extracranial ICA occlusion (1 = Yes, 0 = No)
+`time.rand`	| Time from stroke onset to study randomization, in minutes
+`time.punc`	| Time from stroke onset to groin puncture, in minutes (only if Intervention)
+
+Here's a quick look at the simulated data in `fakestroke`.
+
+```{r fakestroke_printtibble}
+fakestroke
+```
+
+## Building Table 1 for `fakestroke`: Attempt 1
+
+Our goal, then, is to take the data in `fakestroke.csv` and use it to generate a Table 1 for the study that compares the 233 patients in the Intervention group to the 267 patients in the Control group, on all of the other variables (except study ID #) available. I'll use the `tableone` package of functions available in R to help me complete this task. We'll make a first attempt, using the `CreateTableOne` function in the `tableone` package. To use the function, we'll need to specify:
+
+- the `vars` or variables we want to place in the rows of our Table 1 (which will include just about everything in the `fakestroke` data except the `studyid` code and the `trt` variable for which we have other plans, and the `time.punc` which applies only to subjects in the Intervention group.)
+    - A useful trick here is to use the `dput` function, specifically something like `dput(names(fakestroke))` can be used to generate a list of all of the variables included in the `fakestroke` tibble, and then this can be copied and pasted into the `vars` specification, saving some typing.
+- the `strata` which indicates the levels want to use in the columns of our Table 1 (for us, that's `trt`)
+
+```{r attempt1_fakestroke}
+fs.vars <- c("age", "sex", "nihss", "location", 
+          "hx.isch", "afib", "dm", "mrankin", "sbp",
+          "iv.altep", "time.iv", "aspects", 
+          "ia.occlus", "extra.ica", "time.rand")
+
+fs.trt <- c("trt")
+
+att1 <- CreateTableOne(data = fakestroke, 
+                       vars = fs.vars, 
+                       strata = fs.trt)
+print(att1)
+```
+
+### Some of this is very useful, and other parts need to be fixed. 
+
+1. The 1/0 variables (`afib`, `dm`, `extra.ica`) might be better if they were treated as the factors they are, and reported as the Yes/No variables are reported, with counts and percentages rather than with means and standard deviations.
+2. In some cases, we may prefer to re-order the levels of the categorical (factor) variables, particularly the `mrankin` variable, but also the `ia.occlus` variable. It would also be more typical to put the Intervention group to the left and the Control group to the right, so we may need to adjust our `trt` variable's levels accordingly.
+3. For each of the quantitative variables (`age`, `nihss`, `sbp`, `time.iv`, `aspects`, `extra.ica`, `time.rand` and `time.punc`) we should make a decision whether a summary with mean and standard deviation is appropriate, or whether we should instead summarize with, say, the median and quartiles. A mean and standard deviation really only yields an appropriate summary when the data are least approximately Normally distributed. This will make the *p* values a bit more reasonable, too. The `test` column in the first attempt will soon have something useful to tell us.
+4. If we'd left in the `time.punc` variable, we'd get some warnings, having to do with the fact that `time.punc` is only relevant to patients in the Intervention group. 
+
+### `fakestroke` Cleaning Up Categorical Variables
+
+Let's specify each of the categorical variables as categorical explicitly. This helps the `CreateTableOne` function treat them appropriately, and display them with counts and percentages. This includes all of the 1/0, Yes/No and multi-categorical variables.
+
+```{r specify_fs_factors}
+fs.factorvars <- c("sex", "location", "hx.isch", "afib", "dm", 
+                   "mrankin", "iv.altep", "ia.occlus", "extra.ica")
+```
+
+Then we simply add a `factorVars = fs.factorvars` call to the `CreateTableOne` function.
+
+We also want to re-order some of those categorical variables, so that the levels are more useful to us. Specifically, we want to:
+
+- place Intervention before Control in the `trt` variable,
+- reorder the `mrankin` scale as 0, 1, 2, > 2, and
+- rearrange the `ia.occlus` variable to the order^[We might also have considered reordering the `ia.occlus` factor by its frequency, using the `fct_infreq` function] presented in @Berkhemer2015.
+
+To accomplish this, we'll use the `fct_relevel` function from the `forcats` package (loaded with the rest of the core `tidyverse` packages) to reorder our levels manually.
+
+```{r adjust_factor_level_order}
+fakestroke <- fakestroke %>%
+    mutate(trt = fct_relevel(trt, "Intervention", "Control"),
+           mrankin = fct_relevel(mrankin, "0", "1", "2", "> 2"),
+           ia.occlus = fct_relevel(ia.occlus, "Intracranial ICA", 
+                                   "ICA with M1", "M1", "M2", 
+                                   "A1 or A2")
+           ) 
+```
+
+## `fakestroke` Table 1: Attempt 2
+
+```{r attempt2_fakestroke}
+att2 <- CreateTableOne(data = fakestroke, 
+                       vars = fs.vars,
+                       factorVars = fs.factorvars,
+                       strata = fs.trt)
+print(att2)
+```
+
+The categorical data presentation looks much improved. 
+
+### What summaries should we show?
+
+Now, we'll move on to the issue of making a decision about what type of summary to show for the quantitative variables. Since the `fakestroke` data are just simulated and only match the summary statistics of the original results, not the details, we'll adopt the decisions made by @Berkhemer2015, which were to use medians and interquartile ranges to summarize the distributions of all of the continuous variables **except** systolic blood pressure. 
+
+- Specifying certain quantitative variables as *non-normal* causes R to show them with medians and the 25th and 75th percentiles, rather than means and standard deviations, and also causes those variables to be tested using non-parametric tests, like the Wilcoxon signed rank test, rather than the t test. The `test` column indicates this with the word `nonnorm`.
+    - In real data situations, what should we do? The answer is to look at the data. I would not make the decision as to which approach to take without first plotting (perhaps in a histogram or a Normal Q-Q plot) the observed distributions in each of the two samples, so that I could make a sound decision about whether Normality was a reasonable assumption. If the means and medians are meaningfully different from each other, this is especially important.
+    - To be honest, though, if the variable in question is a relatively unimportant covariate and the *p* values for the two approaches are nearly the same, I'd say that further investigation is rarely important, 
+- Specifying *exact* tests for certain categorical variables (we'll try this for the `location` and `mrankin` variables) can be done, and these changes will be noted in the `test` column, as well.
+    - In real data situations, I would rarely be concerned about this issue, and often choose Pearson (approximate) options across the board. This is reasonable so long as the number of subjects falling in each category is reasonably large, say above 10. If not, then an exact test may be a tiny improvement.
+    - Paraphrasing @Rosenbaum2017, having an exact rather than an approximate test result is about as valuable as having a nice crease in your trousers. 
+
+To finish our Table 1, then, we need to specify which variables should be treated as non-Normal in the `print` statement - notice that we don't need to redo the `CreateTableOne` for this change.
+
+```{r attempt2_withprintchanges}
+print(att2, 
+      nonnormal = c("age", "nihss", "time.iv", "aspects", "time.rand"),
+      exact = c("location", "mrankin"))
+```
+
+## Obtaining a more detailed Summary
+
+If this was a real data set, we'd want to get a more detailed description of the data to make decisions about things like potentially collapsing categories of a variable, or whether or not a normal distribution was useful for a particular continuous variable, etc. You can do this with the `summary` command applied to a created Table 1, which shows, among other things, the effect of changing from normal to non-normal *p* values for continuous variables, and from approximate to "exact" *p* values for categorical factors.
+
+Again, as noted above, in a real data situation, we'd want to plot the quantitative variables (within each group) to make a smart decision about whether a t test or Wilcoxon approach is more appropriate.
+
+Note in the summary below that we have some missing values here. Often, we'll present this information within the Table 1, as well. 
+
+```{r summary_attempt2, warning = FALSE}
+summary(att2)
+```
+
+In this case, I have simulated the data to mirror the results in the published Table 1 for this study. In no way have I captured the full range of the real data, or any of the relationships in that data, so it's more important here to see what's available in the analysis, rather than to interpret it closely in the clinical context.
+
+## Exporting the Completed Table 1 from R to Excel or Word
+
+Once you've built the table and are generally satisfied with it, you'll probably want to be able to drop it into Excel or Word for final cleanup. 
+
+### Approach A: Save and open in Excel
+
+One option is to **save the Table 1** to a `.csv` file within our `data` subfolder (note that the `data` folder must already exist), which you can then open directly in Excel. This is the approach I generally use. Note the addition of some `quote`, `noSpaces` and `printToggle` selections here.
+
+```{r save_fs_table1_to_csv, eval = FALSE}
+fs.table1save <- print(att2, 
+      nonnormal = c("age", "nihss", "time.iv", "aspects", "time.rand"),
+      exact = c("location", "mrankin"),
+      quote = FALSE, noSpaces = TRUE, printToggle = FALSE)
+
+write.csv(fs.table1save, file = "data/fs-table1.csv")
+```
+
+When I then open the `fs-table1.csv` file in Excel, it looks like this:
+
+```{r fs_table1_csv_fig, echo=FALSE, out.width='90%'}
+knitr::include_graphics("images/fs-table1inExcel.png")
+```
+
+And from here, I can either drop it directly into Word, or present it as is, or start tweaking it to meet formatting needs.
+
+### Approach B: Produce the Table so you can cut and paste it
+
+```{r fs_table1_for_cut_paste, eval=FALSE}
+print(att2, 
+      nonnormal = c("age", "nihss", "time.iv", "aspects", "time.rand"),
+      exact = c("location", "mrankin"),
+      quote = TRUE, noSpaces = TRUE)
+```
+
+This will look like a mess by itself, but if you:
+
+1. copy and paste that mess into Excel
+2. select Text to Columns from the Data menu
+3. select Delimited, then Space and select Treat consecutive delimiters as one
+
+you should get something usable again.
+
+Or, in Word, 
+
+1. insert the text
+2. select the text with your mouse
+3. select Insert ... Table ... Convert Text to Table
+4. place a quotation mark in the "Other" area under Separate text at ...
+
+After dropping blank columns, the result looks pretty good.
+
+## A Controlled Biological Experiment - The Blood-Brain Barrier
+
+My source for the data and the following explanatory paragraph is page 307 from @RamseySchafer2002. The original data come from @Barnett1995.
+
+> The human brain (and that of rats, coincidentally) is protected from the bacteria and toxins that course through the bloodstream by something called the blood-brain barrier. After a method of disrupting the barrier was developed, researchers tested this new mechanism, as follows. A series of 34 rats were inoculated with human lung cancer cells to induce brain tumors. After 9-11 days they were infused with either the barrier disruption (BD) solution or, as a control, a normal saline (NS) solution. Fifteen minutes later, the rats received a standard dose of a particular therapeutic antibody (L6-F(ab')2. The key measure of the effectiveness of transmission across the brain-blood barrier is the ratio of the antibody concentration in the brain tumor to the antibody concentration in normal tissue outside the brain. The rats were then sacrificed, and the amounts of antibody in the brain tumor and in normal tissue from the liver were measured. The study's primary objective is to determine whether the antibody concentration in the tumor increased when the blood-barrier disruption infusion was given, and if so, by how much? 
+
+## The `bloodbrain.csv` file
+
+Consider the data, available on [our Data and Code website](https://github.com/THOMASELOVE/432-data) in the `bloodbrain.csv` file, which includes the following variables:
+
+Variable | Description
+-------: | --------------------------------------------
+`case`	 | identification number for the rat (1 - 34)
+`brain`	 | an outcome: Brain tumor antibody count (per gram)
+`liver`	 | an outcome: Liver antibody count (per gram)
+`tlratio`	 | an outcome: tumor / liver concentration ratio
+`solution` | the treatment: BD (barrier disruption) or NS (normal saline)
+`sactime`	 | a design variable: Sacrifice time (hours; either 0.5, 3, 24 or 72)
+`postin`	 | covariate: Days post-inoculation of lung cancer cells (9, 10 or 11)
+`sex`	     | covariate: M or F
+`wt.init`  | covariate: Initial weight (grams)
+`wt.loss`	 | covariate: Weight loss (grams)
+`wt.tumor` | covariate: Tumor weight (10^-4^ grams)
+
+And here's what the data look like in R.
+
+```{r bloodbrain_tibble}
+bloodbrain
+```
+
+## A Table 1 for `bloodbrain`
+
+@Barnett1995 did not provide a Table 1 for these data, so let's build one to compare the two `solutions` (`BD` vs. `NS`) on the covariates and outcomes, plus the natural logarithm of the tumor/liver concentration ratio (`tlratio`). We'll opt to treat the sacrifice time (`sactime`) and the days post-inoculation of lung cancer cells (`postin`) as categorical rather than quantitative variables.
+
+```{r bloodbrain_munge}
+bloodbrain <- bloodbrain %>%
+    mutate(logTL = log(tlratio))
+
+dput(names(bloodbrain))
+```
+
+OK - there's the list of variables we'll need. I'll put the outcomes at the bottom of the table.
+
+```{r bloodbrain_table1_att1}
+bb.vars <- c("sactime", "postin", "sex", "wt.init", "wt.loss", 
+             "wt.tumor", "brain", "liver", "tlratio", "logTL")
+
+bb.factors <- c("sactime", "sex", "postin")
+
+bb.att1 <- CreateTableOne(data = bloodbrain,
+                          vars = bb.vars,
+                          factorVars = bb.factors,
+                          strata = c("solution"))
+summary(bb.att1)
+```
+
+Note that, in this particular case, the decisions we make about normality vs. non-normality (for quantitative variables) and the decisions we make about approximate vs. exact testing (for categorical variables) won't actually change the implications of the *p* values. Each approach gives similar results for each variable. Of course, that's not always true.
+
+### Generate final Table 1 for `bloodbrain`
+
+I'll choose to treat `tlratio` and its logarithm as non-Normal, but otherwise, use t tests, but admittedly, that's an arbitrary decision, really.
+
+```{r attempt1_bloodbrain_table1}
+print(bb.att1, nonnormal = c("tlratio", "logTL"))
+```
+
+Or, we can get an Excel-readable version placed in a `data` subfolder, using
+
+```{r build_excel_version_of_bb_table1}
+bb.t1 <- print(bb.att1, nonnormal = c("tlratio", "logTL"), quote = FALSE,
+               noSpaces = TRUE, printToggle = FALSE)
+
+write.csv(bb.t1, file = "data/bb-table1.csv")
+```
+
+which, when dropped into Excel, will look like this:
+
+```{r bb_table1_csv_fig, echo=FALSE, out.width='90%'}
+knitr::include_graphics("images/bb-table1inExcel.png")
+```
+
+One thing I would definitely clean up here, in practice, is to change the presentation of the *p* value for `sex` from 1 to > 0.99, or just omit it altogether. I'd also drop the `computer-ese` where possible, add units for the measures, round **a lot**, identify the outcomes carefully, and use notes to indicate deviations from the main approach. 
+
+### A More Finished Version (after Cleanup in Word)
+
+```{r bb_table1_word_fig, echo=FALSE, out.width='95%'}
+knitr::include_graphics("images/bb-table1inWord.png")
+```
+

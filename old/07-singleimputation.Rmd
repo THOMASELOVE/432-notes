@@ -1,0 +1,403 @@
+# Dealing with Missingness: Single Imputation
+
+## Selecting Some Variables from the `smart_cle` data
+
+```{r}
+smart_cle <- readRDS("data/smart_cle.Rds")
+
+smart_cle1 <- smart_cle %>% 
+  select(SEQNO, physhealth, genhealth, bmi, 
+         age_imp, female, race_eth, internet30, 
+         smoke100, activity, drinks_wk, veg_day)
+```
+
+The `smart_cle.Rds` data file available on the Data and Code page of [our website](https://github.com/THOMASELOVE/2020-432) describes information on `r ncol(smart_cle)` variables for `r nrow(smart_cle)` respondents to the BRFSS 2017, who live in the Cleveland-Elyria, OH, Metropolitan Statistical Area. The variables in the `smart_cle1.csv` file are listed below, along with the items that generate these responses.
+
+Variable | Description
+---------: | --------------------------------------------------------
+`SEQNO` | respondent identification number (all begin with 2016)
+`physhealth` | Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?
+`genhealth` | Would you say that in general, your health is ... (five categories: Excellent, Very Good, Good, Fair or Poor)
+`bmi` | Body mass index, in kg/m^2^
+`age_imp` | Age, imputed, in years
+`female` | Sex, 1 = female, 0 = male
+`race_eth` | Race and Ethnicity, in five categories
+`internet30` | Have you used the internet in the past 30 days? (1 = yes, 0 = no)
+`smoke100` | Have you smoked at least 100 cigarettes in your life? (1 = yes, 0 = no)
+`activity` | Physical activity (Highly Active, Active, Insufficiently Active, Inactive)
+`drinks_wk` | On average, how many drinks of alcohol do you consume in a week?
+`veg_day` | How many servings of vegetables do you consume per day, on average?
+
+```{r smart_cle1_structure}
+str(smart_cle1)
+```
+
+## `smart_cle1`: Seeing our Missing Data
+
+The `naniar` package provides several useful functions for summarizing missingness in our data set. Like all tidy data sets, our `smart_cle1` tibble contains rows which describe observations, sometimes called *cases*, and also contains columns which describe variables. 
+
+Overall, there are `r nrow(smart_cle1)` cases, and `r nrow(smart_cle1)` observations in our `smart_cle1` tibble.
+
+- We can obtain a count of the number of missing cells in the entire tibble.
+
+```{r}
+smart_cle1 %>% n_miss()
+```
+
+- We can use the `miss_var_summary` function to get a sorted table of each variable by number missing.
+
+```{r}
+miss_var_summary(smart_cle1) %>% knitr::kable()
+```
+
+- Or we can use the `miss_var_table` function to tabulate the number of variables that have each observed level of missingness.
+
+```{r}
+miss_var_table(smart_cle1) 
+```
+
+- Or we can get a count for a specific variable, like `activity`:
+
+```{r}
+smart_cle1 %>% select(activity) %>% n_miss()
+```
+
+- We can also use `prop_miss_case` or `pct_miss_case` to specify the proportion (or percentage) of missing observations across an entire data set, or within a specific variable.
+
+```{r}
+prop_miss_case(smart_cle1)
+```
+
+```{r}
+smart_cle1 %>% select(activity) %>% pct_miss_case(.)
+```
+
+- We can also use `prop_miss_var` or `pct_miss_var` to specify the proportion (or percentage) of variables with missing observations across an entire data set.
+
+```{r}
+prop_miss_var(smart_cle1)
+pct_miss_var(smart_cle1)
+```
+
+- We use `miss_case_table` to identify the number of missing values for each of the cases (rows) in our tibble.
+
+```{r}
+miss_case_table(smart_cle1)
+```
+
+- Use `miss_case_summary` to specify individual observations and count their missing values.
+
+```{r}
+miss_case_summary(smart_cle1)
+```
+
+The case numbers identified here are row numbers. Extract the data for case 17, for instance, with the `slice` function.
+
+```{r}
+smart_cle1 %>% slice(17)
+```
+
+### Plotting Missingness
+
+The `gg_miss_var` function plots the number of missing observations in each variable in our data set.
+
+```{r}
+gg_miss_var(smart_cle1)
+```
+
+So the most commonly missing variable is `activity` which, as we've seen, has `r smart_cle1 %$% n_miss(activity)` missing values.
+
+To get a general sense of the missingness in our data, we might use either the `vis_dat` or the `vis_miss` function from the `visdat` package.
+
+```{r}
+vis_miss(smart_cle1)
+```
+
+```{r}
+vis_dat(smart_cle1)
+```
+
+## Missing-data mechanisms
+
+My source for this description of mechanisms is Chapter 25 of @GelmanHill2007, and that chapter is [available at this link](http://www.stat.columbia.edu/~gelman/arm/missing.pdf).
+
+1. **MCAR = Missingness completely at random**. A variable is missing completely at random if the probability of missingness is the same for all units, for example, if for each subject, we decide whether to collect the `diabetes` status by rolling a die and refusing to answer if a "6" shows up. If data are missing completely at random, then throwing out cases with missing data does not bias your inferences.
+2. **Missingness that depends only on observed predictors**. A more general assumption, called **missing at random** or **MAR**, is that the probability a variable is missing depends only on available information. Here, we would have to be willing to assume that the probability of nonresponse to `diabetes` depends only on the other, fully recorded variables in the data. It is often reasonable to model this process as a logistic regression, where the outcome variable equals 1 for observed cases and 0 for missing. When an outcome variable is missing at random, it is acceptable to exclude the missing cases (that is, to treat them as NA), as long as the regression controls for all the variables that affect the probability of missingness.
+3. **Missingness that depends on unobserved predictors**. Missingness is no longer "at random" if it depends on information that has not been recorded and this information also predicts the missing values. If a particular treatment causes discomfort, a patient is more likely to drop out of the study. This missingness is not at random (unless "discomfort" is measured and observed for all patients). If missingness is not at random, it must be explicitly modeled, or else you must accept some bias in your inferences.
+4. **Missingness that depends on the missing value itself.** Finally, a particularly difficult situation arises when the probability of missingness depends on the (potentially missing) variable itself. For example, suppose that people with higher earnings are less likely to reveal them.
+
+Essentially, situations 3 and 4 are referred to collectively as **non-random missingness**, and cause more trouble for us than 1 and 2.
+
+## Options for Dealing with Missingness
+
+There are several available methods for dealing with missing data that are MCAR or MAR, but they basically boil down to:
+
+- Complete Case (or Available Case) analyses
+- Single Imputation
+- Multiple Imputation
+
+## Complete Case (and Available Case) analyses
+
+In **Complete Case** analyses, rows containing NA values are omitted from the data before analyses commence. This is the default approach for many statistical software packages, and may introduce unpredictable bias and fail to include some useful, often hard-won information.
+
+- A complete case analysis can be appropriate when the number of missing observations is not large, and the missing pattern is either MCAR (missing completely at random) or MAR (missing at random.)
+- Two problems arise with complete-case analysis:
+    1. If the units with missing values differ systematically from the completely observed cases, this could bias the complete-case analysis.
+    2. If many variables are included in a model, there may be very few complete cases, so that most of the data would be discarded for the sake of a straightforward analysis.
+- A related approach is *available-case* analysis where different aspects of a problem are studied with different subsets of the data, perhaps identified on the basis of what is missing in them.
+
+## Single Imputation
+
+In **single imputation** analyses, NA values are estimated/replaced *one time* with *one particular data value* for the purpose of obtaining more complete samples, at the expense of creating some potential bias in the eventual conclusions or obtaining slightly *less* accurate estimates than would be available if there were no missing values in the data.
+
+- A single imputation can be just a replacement with the mean or median (for a quantity) or the mode (for a categorical variable.) However, such an approach, though easy to understand, underestimates variance and ignores the relationship of missing values to other variables.
+- Single imputation can also be done using a variety of models to try to capture information about the NA values that are available in other variables within the data set.
+- The `simputation` package can help us execute single imputations using a wide variety of techniques, within the pipe approach used by the `tidyverse`. Another approach I have used in the past is the `mice` package, which can also perform single imputations.
+
+## Multiple Imputation
+
+**Multiple imputation**, where NA values are repeatedly estimated/replaced with multiple data values, for the purpose of obtaining mode complete samples *and* capturing details of the variation inherent in the fact that the data have missingness, so as to obtain *more* accurate estimates than are possible with single imputation.
+
+- We'll postpone the discussion of multiple imputation for a while.
+
+## Approach 1: Building a Complete Case Analysis: `smart_cle1_cc`
+
+In the 431 course, we usually dealt with missing data by restricting our analyses to respondents with complete data on all variables. Let's start by doing that here. We'll create a new tibble called `smart_cle1_cc` which includes all respondents with complete data on all of these variables. 
+
+```{r create_smart_cle1_cc}
+smart_cle1_cc <- smart_cle1 %>% 
+  drop_na()
+
+dim(smart_cle1_cc)
+```
+
+Our `smart_cle1_cc` tibble now has many fewer observations than its predecessors, but all of the variables in this complete cases tibble have no missing observations.
+
+Data Set | Rows | Columns | Missingness?
+--------: | ----: | ----: | -------:
+`smart_cle` | `r nrow(smart_cle)` | `r ncol(smart_cle)` | Quite a bit.
+`smart_cle1` | `r nrow(smart_cle1)` | `r ncol(smart_cle1)` | Quite a bit.
+`smart_cle1_cc` | `r nrow(smart_cle1_cc)` | `r ncol(smart_cle1_cc)` | None.
+
+## Approach 2: Single Imputation to create `smart_cle1_sh`
+
+Next, we'll create a data set which has all of the rows in the original `smart_cle1` tibble, but deals with missingness by imputing (estimating / filling in) new values for each of the missing values. To do this, we'll make heavy use of the `simputation` package in R. 
+
+The `simputation` package is designed for single imputation work. Note that we'll eventually adopt a **multiple imputation** strategy in some of our modeling work, and we'll use some specialized tools to facilitate that later.
+
+To begin, we'll create a "shadow" in our tibble to track what we'll need to impute.
+
+```{r}
+smart_cle1_sh <- bind_shadow(smart_cle1)
+
+names(smart_cle1_sh)
+```
+
+Note that the `bind_shadow()` function doubles the number of variables in our tibble, specifically by creating a new variable for each that takes the value `!NA` or `NA`. For example, consider 
+
+```{r, warning = FALSE}
+smart_cle1_sh %>% count(activity, activity_NA)
+```
+
+The `activity_NA` variable takes the value `!NA` (meaning not missing) when the value of the `activity` variable is known, and takes the value `NA` for observations where the `activity` variable is missing. This background tracking will be helpful to us when we try to assess the impact of imputation on some of our summaries.
+
+### What Type of Missingness Do We Have?
+
+There are three types of missingness that we might assume in any given setting: missing completely at random (MCAR), missing at random (MAR) and missing not at random (MNAR). Together, MCAR and MAR are sometimes called *ignorable* non-response, which essentially means that imputation provides a way to useful estimates. MNAR or missing NOT at random is sometimes called non-ignorable missingness, implying that even high-quality imputation may not be sufficient to provide useful information to us.
+
+**Missing Completely at Random** means that the missing data points are a random subset of the data. Essentially, there is nothing that makes some data more likely to be missing than others. If the data truly match the standard for MCAR, then a complete-case analysis will be about as good as an analysis after single or multiple imputation.
+
+**Missing at Random** means that there is a systematic relationship between the observed data and the missingness mechanism. Another way to say this is that the missing value is not related to the reason why it is missing, but is related to the other variables collected in the study. The implication is that the missingness can be accounted for by studying the variables with complete information. Imputation strategies can be very helpful here, incorporating what we know (or think we know) about the relationships between the results that are missing and the results that we see.
+
+- Wikipedia provides a nice example. If men are less likely to fill in a depression survey, but this has nothing to do with their level of depression after accounting for the fact that they are male, then the missingess can be assumed MAR.
+- Determining whether missingness is MAR or MNAR can be tricky. We'll spend more time discussing this later.
+
+**Missing NOT at Random** means that the missing value is related to the reason why it is missing.
+
+- Continuing the Wikipedia example, if men failed to fill in a depression survey because of their level of depression, then this would be MNAR.
+
+- Single imputation is most helpful in the MAR situation, although it is also appropriate when we assume MCAR.
+- Multiple imputation will, similarly, be more helpful in MCAR and MAR situations than when data are missing NOT at random.
+
+It's worth noting that many people are unwilling to impute values for outcomes or key predictors in a modeling setting, but are happy to impute for less important covariates. For now, we'll assume MCAR or MAR for all of the missingness in our `smart_cle1` data, which will allow us to adopt a single imputation strategy.
+
+### Single imputation into `smart_cle1_sh`
+
+Which variables in `smart_cle1_sh` contain missing data?
+
+```{r}
+miss_var_summary(smart_cle1_sh)
+```
+
+We will impute these variables using several different strategies, all supported nicely by the `simputation` package. 
+
+These include imputation methods based solely on the distribution of the complete cases of the variable being imputed.
+
+- `impute_median`: impute the median value of all non-missing observations into the missing values for the variable
+- `impute_rhd`: random "hot deck" imputation involves drawing at random from the complete cases for that variable
+
+Also available are imputation strategies that impute predicted values from models using other variables in the data set besides the one being imputed.
+
+- `impute_pmm`: imputation using predictive mean matching
+- `impute_rlm`: imputation using robust linear models
+- `impute_cart`: imputation using classification and regression trees
+- `impute_knn`: imputation using k-nearest neighbors methods
+
+### Imputing Binary Categorical Variables
+
+Here, we'll arbitrarily impute our 1/0 variables as follows:
+
+- For `internet30` we'll use the `impute_rhd` approach to draw a random observation from the existing set of 1s and 0s in the complete `internet30` data.
+- For `smoke100` we'll use a method called predictive mean matching (`impute_pmm`) which takes the result from a model based on the (imputed) `internet30` value and whether or not the subject is `female`, and converts it to the nearest value in the observed `smoke100` data. This is a good approach for imputing discrete variables.
+
+These are completely arbitrary choices, for demonstration purposes.
+
+```{r}
+set.seed(2020001)
+smart_cle1_sh <- smart_cle1_sh %>%
+  data.frame() %>%
+    impute_rhd(., 
+               internet30 ~ 1) %>%
+    impute_pmm(., smoke100 ~ internet30 + female) %>%
+  tbl_df()
+
+smart_cle1_sh %>% count(smoke100, smoke100_NA)
+smart_cle1_sh %>% count(internet30, internet30_NA)
+```
+
+Other approaches that may be used with 1/0 variables include `impute_knn` and `impute_pmm`.
+
+### Imputing Quantitative Variables
+
+We'll demonstrate a different approach for imputing each of the quantitative variables with missing observations. Again, we're making purely arbitrary decisions here about what to include in each imputation. In practical work, we'd want to be a bit more thoughtful about this.
+
+Note that I'm choosing to use `impute_pmm` with the `physhealth` and `age_imp` variables. This is (in part) because I want my imputations to be integers, as the other observations are for those variables. `impute_rhd` would also accomplish this.
+
+```{r}
+set.seed(2020001)
+smart_cle1_sh <- smart_cle1_sh %>%
+  data.frame() %>%
+    impute_rhd(., veg_day ~ 1) %>%
+    impute_median(., drinks_wk ~ 1) %>%
+    impute_pmm(., physhealth ~ 
+                 drinks_wk + female + smoke100) %>%
+    impute_pmm(., age_imp ~ drinks_wk + physhealth) %>%
+    impute_rlm(., bmi ~ physhealth + smoke100) %>%
+  tbl_df()
+```
+
+### Imputation Results 
+
+Let's plot a few of these results, so we can see what imputation has done to the distribution of these quantities.
+
+1. `veg_day`
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = veg_day_NA, y = veg_day)) +
+  geom_count() + 
+  labs(title = "Imputation Results for veg_day")
+```
+
+```{r}
+smart_cle1_sh %$% 
+  mosaic::favstats(veg_day ~ veg_day_NA)
+```
+
+2. `drinks_wk` for which we imputed the median value...
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = drinks_wk_NA, y = drinks_wk)) +
+  geom_count() + 
+  labs(title = "Imputation Results for drinks_wk")
+```
+
+```{r}
+smart_cle1_sh %>% filter(drinks_wk_NA == "NA") %>%
+  tabyl(drinks_wk)
+```
+
+3. `physhealth`, a count between 0 and 30...
+
+```{r}
+ggplot(smart_cle1_sh, 
+       aes(x = physhealth, y = physhealth_NA)) +
+  geom_density_ridges() +
+  labs(title = "Imputation Results for physhealth")
+```
+
+```{r}
+smart_cle1_sh %>% filter(physhealth_NA == "NA") %>%
+  tabyl(physhealth)
+```
+
+4. `age_imp`, in (integer) years
+
+```{r}
+ggplot(smart_cle1_sh, 
+       aes(x = age_imp, color = age_imp_NA)) +
+  geom_freqpoly(binwidth = 2) +
+  labs(title = "Imputation Results for age_imp")
+```
+
+```{r}
+smart_cle1_sh %>% filter(age_imp_NA == "NA") %>%
+  tabyl(age_imp)
+```
+
+5. `bmi` or body mass index
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = bmi, fill = bmi_NA)) +
+  geom_histogram(bins = 30) + 
+  labs(title = "Histogram of BMI and imputed BMI")
+```
+
+```{r}
+smart_cle1_sh %$% mosaic::favstats(bmi ~ bmi_NA)
+```
+
+### Imputing Multi-Categorical Variables
+
+The three multi-categorical variables we have left to impute are `activity`, `race_eth` and `genhealth`, and each is  presented as a factor in R, rather than as a character variable.
+
+We'll arbitrarily decide to impute 
+
+- `activity` and `genhealth` with a classification tree using `physhealth`, `bmi` and `smoke100`,
+- and then impute `race_eth` with a random draw from the distribution of complete cases.
+
+```{r}
+set.seed(2020001)
+smart_cle1_sh <- smart_cle1_sh %>%
+  data.frame() %>%
+    impute_cart(., activity + genhealth ~ 
+                  physhealth + bmi + smoke100) %>%
+    impute_rhd(., race_eth ~ 1) %>%
+  tbl_df()
+```
+
+Let's check our results.
+
+```{r}
+smart_cle1_sh %>% count(activity_NA, activity)
+```
+
+```{r}
+smart_cle1_sh %>% count(race_eth_NA, race_eth)
+```
+
+```{r}
+smart_cle1_sh %>% count(genhealth_NA, genhealth)
+```
+
+And now, we should have no missing values in the data, at all.
+
+```{r}
+miss_case_table(smart_cle1_sh)
+```
+
+### Saving the new tibbles
+
+```{r}
+saveRDS(smart_cle1_cc, here("data", "smart_cle1_cc.Rds"))
+saveRDS(smart_cle1_sh, here("data", "smart_cle1_sh.Rds"))
+```

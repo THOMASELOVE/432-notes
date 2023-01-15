@@ -1,0 +1,164 @@
+# Colorectal Cancer Screening and Some Special Cases
+
+In this Chapter, we discuss two issues not yet raised regarding regression on a binary outcome.
+
+1. What do we do if our binary outcome is not available for each subject individually, but instead aggregated?
+
+2. What is probit regression, and how can we use it as an alternative to logistic regression on a binary outcome?
+
+
+## Logistic Regression for Aggregated Data
+
+### Colorectal Cancer Screening Data
+
+The `screening.csv` data (imported into the R tibble `colscr` are simulated. They mirror a subset of the actual results from the [Better Health Partnership](http://www.betterhealthpartnership.org/data_center/)'s pilot study of colorectal cancer screening in primary care clinics in Northeast Ohio, but the numbers have been fuzzed slightly, and the clinics have been de-identified and moved around from system to system.
+
+Available to us are the following variables:
+
+Variable | Description 
+----------:| ------------------------------------------
+`location` | clinic code 
+`subjects` | number of subjects reported by clinic 
+`screen_rate` | proportion of `subjects` who were screened 
+`screened` | number of `subjects` who were screened 
+`notscreened` | number of `subjects` not screened 
+`meanage` | mean age of clinic's subjects, years 
+`female` | % of clinic's subjects who are female 
+`pct_lowins` | % of clinic's subjects who have Medicaid or are uninsured 
+`system` | system code
+
+
+```{r}
+describe(colscr)
+```
+
+### Fitting a Logistic Regression Model to Proportion Data
+
+Here, we have a binary outcome (was the subject screened or not?) but we have aggregated results. We can use the counts of the numbers of subjects at each clinic (in `subjects`) and the proportion who were screened (in `screen_rate`) to fit a logistic regression model, as follows:
+
+```{r}
+m_screen1 <-  glm(screen_rate ~ meanage + female + 
+                    pct_lowins + system, family = binomial, 
+                  weights = subjects, data = colscr)
+
+summary(m_screen1)
+```
+
+### Fitting a Logistic Regression Model to Counts of Successes and Failures
+
+```{r}
+m_screen2 <-  glm(cbind(screened, notscreened) ~ 
+                    meanage + female + pct_lowins + system, 
+           family = binomial, data = colscr)
+summary(m_screen2)
+```
+
+### How does one address this problem in `rms`?
+
+We can use `Glm`. As an example to mirror `m_screen1`, we have the following...
+
+```{r}
+d <- datadist(colscr)
+options(datadist = "d")
+
+mod_screen_1 <-  Glm(screen_rate ~ meanage + female + 
+                         pct_lowins + system, 
+                     family = binomial, weights = subjects, 
+                     data = colscr, x = T, y = T)
+
+mod_screen_1
+```
+
+## Probit Regression
+
+### Colorectal Cancer Screening Data on Individuals
+
+The data in the `colscr2` data frame describe (disguised) data on the status of 172 adults who were eligible for colon cancer screening, with the following information included:
+
+Variable  | Description
+----------: | --------------------------------------
+`subject` | subject ID code
+`age` | subject's age (years)
+`race` | subject's race (White/Black/Other)
+`hispanic` | subject of Hispanic ethnicity (1 = yes / 0 = no)
+`insurance` | Commercial, Medicaid, Medicare, Uninsured
+`bmi` | body mass index at most recent visit
+`sbp` | systolic blood pressure at most recent visit
+`up_to_date` | meets colon cancer screening standards
+
+The goal is to use the other variables (besides subject ID) to predict whether or not a subject is up to date. 
+
+```{r}
+colscr2 %>% describe()
+```
+
+### A logistic regression model
+
+Here is a logistic regression model.
+
+```{r}
+m_scr2_logistic <- glm(up_to_date ~ age + race + hispanic + 
+                    insurance + bmi + sbp, 
+                family = binomial, data = colscr2)
+
+summary(m_scr2_logistic)
+confint(m_scr2_logistic)
+```
+
+In this model, there appears to be some link between `sbp` and screening, as well as, perhaps, some statistically significant differences between some race groups and some insurance groups. We won't look at this much further for now, though. Instead, we'll simply describe predictions for two subjects, Harry and Sally.
+
+### Predicting status for Harry and Sally
+
+- Harry is age 65, White, non-Hispanic, with Medicare insurance, a BMI of 28 and SBP of 135.
+- Sally is age 60, Black, Hispanic, with Medicaid insurance, a BMI of 22 and SBP of 148.
+
+```{r}
+newdat_s2 <- tibble(subject = c("Harry", "Sally"),
+                     age = c(65, 60),
+                     race = c("White", "Black"),
+                     hispanic = c(0, 1),
+                     insurance = c("Medicare", "Medicaid"),
+                     bmi = c(28, 22),
+                     sbp = c(135, 148))
+
+predict(m_scr2_logistic, newdata = newdat_s2, 
+        type = "response")
+```
+
+The prediction for Harry is 0.59, and for Sally, 0.42, by this logistic regression model.
+
+### A probit regression model
+
+Now, consider a probit regression, fit by changing the default link for the `binomial` family as follows:
+
+```{r}
+m_scr2_probit <- glm(up_to_date ~ age + race + hispanic + 
+                    insurance + bmi + sbp, 
+                family = binomial(link = "probit"), 
+                data = colscr2)
+
+summary(m_scr2_probit)
+confint(m_scr2_probit)
+```
+
+### Interpreting the Probit Model's Coefficients
+
+It is possible to use any number of link functions to ensure that predicted values in a generalized linear model fall between 0 and 1. The probit regression model, for instance, uses the inverse of the cumulative distribution function of the Normal model as its link function. Let's look more closely at the coefficients of the probit model we just fit.
+
+```{r}
+m_scr2_probit$coef
+```
+
+The probit regression coefficients give the change in the z-score of the outcome of interest (here, `up_to_date`) for a one-unit change in the target predictor, holding all other predictors constant.
+
+- So, for a one-year increase in age, holding all other predictors constant, the z-score for `up_to_date` increases by 0.013
+- And for a Medicaid subject as compared to a Commercial subject of the same age, race, ethnicity, bmi and sbp, the z-score for the Medicaid subject is predicted to be -0.619 lower, according to this model.
+
+### What about Harry and Sally?
+
+Do the predictions for Harry and Sally change much with this probit model, as compared to the logistic regression?
+
+```{r}
+predict(m_scr2_probit, newdata = newdat_s2, type = "response")
+```
+

@@ -1,0 +1,713 @@
+# Modeling an Ordinal Categorical Outcome in Ohio SMART
+
+## Preliminaries
+
+```{r, message = FALSE}
+library(gmodels)
+library(nnet)
+```
+
+```{r}
+smart_oh <- readRDS(here("data", "smart_ohio.Rds"))
+```
+
+## A subset of the Ohio SMART data
+
+Let's consider the following data. The outcome we'll study now is `genhealth`, which has five ordered categories. I'll include the subset of all observations in `smart_oh` with complete data on these 7 variables.
+
+Variable | Description
+--------: | -----------------------------------------------
+`SEQNO` | Subject identification code
+`genhealth` | Five categories (1 = Excellent, 2 = Very Good, 3 = Good, 4 = Fair, 5 = Poor) on general health
+`physhealth` | Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?
+`veg_day` | mean number of vegetable servings consumed per day
+`costprob` | 1 indicates Yes to "Was there a time in the past 12 months when you needed to see a doctor but could not because of cost?", and 0 otherwise.
+`incomegroup` | 8 income groups from < 10,000 to 75,000 or more
+`bmi` | body-mass index
+
+To make my life easier later, I'm going to drop any subjects with missing data on these variables. I'm also going to drop the subjects who have no missing data, but have a listed `bmi` above 60.
+
+```{r}
+sm1 <- smart_oh %>%
+    select(SEQNO, genhealth, physhealth, costprob, veg_day,
+           incomegroup, bmi) %>%
+    filter(bmi <= 60) %>%
+    drop_na
+```
+
+In total, we have `r nrow(sm1)` subjects in the `sm1` sample.
+
+### Several Ways of Storing Multi-Categorical data
+
+We will store the information in our outcome, `genhealth` in both a numeric form (`gen_n`) and an ordered factor (`gen_h`) with some abbreviated labels) because we'll have some use for each approach in this material.
+
+```{r}
+sm1 <- sm1 %>%
+    mutate(genh = fct_recode(genhealth,
+                             "1-E" = "1_Excellent",
+                             "2_VG" = "2_VeryGood",
+                             "3_G" = "3_Good",
+                             "4_F" = "4_Fair",
+                             "5_P" = "5_Poor"),
+           genh = factor(genh, ordered = TRUE),
+           gen_n = as.numeric(genhealth))
+
+sm1 %>% count(genh, gen_n, genhealth)
+```
+
+## Building Cross-Tabulations
+
+Is income group associated with general health?
+
+### Using base `table` functions
+
+```{r}
+addmargins(table(sm1$incomegroup, sm1$genh))
+```
+
+More people answer Very Good and Good than choose the other categories. It might be easier to look at percentages here. 
+
+#### Adding percentages within each row
+
+Here are the percentages giving each `genhealth` response within each income group.
+
+```{r}
+addmargins(
+    round(100*prop.table(
+        table(sm1$incomegroup, sm1$genh)
+        ,1)
+        ,1)
+    )
+```
+
+So, for example, 11.3% of the `genhealth` responses in subjects with incomes between 25 and 34 thousand dollars were Excellent.
+
+#### Adding percentages within each column
+
+Here are the percentages in each `incomegroup` within each `genhealth` response.
+
+```{r}
+addmargins(
+    round(100*prop.table(
+        table(sm1$incomegroup, sm1$genh)
+        ,2)
+        ,1)
+    )
+```
+
+From this table, we see that 7.4% of the Excellent `genhealth` responses were given by people with incomes between 25 and 34 thousand dollars.
+
+### Using `xtabs`
+
+The `xtabs` function provides a formula method for obtaining cross-tabulations.
+
+```{r}
+xtabs(~ incomegroup + genh, data = sm1)
+```
+
+### Storing a table in a tibble
+
+We can store the elements of a cross-tabulation in a tibble, like this:
+
+```{r}
+(sm1.tableA <- sm1 %>% count(incomegroup, genh))
+```
+
+From such a tibble, we can visualize the data in many ways, but we can also return to `xtabs` and include the frequencies (`n`) in that setup.
+
+```{r}
+xtabs(n ~ incomegroup + genh, data = sm1.tableA)
+```
+
+And, we can get the $\chi^2$ test of independence, with:
+
+```{r}
+summary(xtabs(n ~ incomegroup + genh, data = sm1.tableA))
+```
+
+### Using `CrossTable` from the `gmodels` package
+
+The `CrossTable` function from the `gmodels` package produces a cross-tabulation with various counts and proportions like people often generate with SPSS and SAS.
+
+```{r}
+CrossTable(sm1$incomegroup, sm1$genh, chisq = T)
+```
+
+## Graphing Categorical Data
+
+### A Bar Chart for a Single Variable
+
+```{r}
+ggplot(sm1, aes(x = genhealth, fill = genhealth)) + 
+    geom_bar() +
+    scale_fill_brewer(palette = "Set1") +
+    guides(fill = "none")
+```
+
+or, you might prefer to plot percentages, perhaps like this:
+
+```{r}
+ggplot(sm1, aes(x = genhealth, fill = genhealth)) + 
+    geom_bar(aes(y = (..count..)/sum(..count..))) +
+    geom_text(aes(y = (..count..)/sum(..count..), 
+                  label = scales::percent((..count..) / 
+                                        sum(..count..))),
+              stat = "count", vjust = 1, 
+              color = "white", size = 5) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_brewer(palette = "Dark2") +
+    guides(fill = "none") + 
+    labs(y = "Percentage")
+```
+
+Use bar charts, rather than pie charts.
+
+### A Counts Chart for a 2-Way Cross-Tabulation
+
+```{r}
+ggplot(sm1, aes(x = genhealth, y = incomegroup)) + 
+    geom_count() 
+```
+
+## Building a Model for `genh` using `veg_day`
+
+To begin, we'll predict each subject's `genh` response using just one predictor, `veg_day`. 
+
+### A little EDA
+
+Let's start with a quick table of summary statistics.
+
+```{r}
+sm1 %>% group_by(genh) %>%
+    summarize(n(), mean(veg_day), sd(veg_day), median(veg_day))
+```
+
+To actually see what's going on, we might build a comparison boxplot, or violin plot. The plot below shows both, together, with the violin plot helping to indicate the skewed nature of the `veg_day` data and the boxplot indicating quartiles and outlying values within each `genhealth` category.
+
+```{r}
+ggplot(sm1, aes(x = genhealth, y = veg_day)) +
+    geom_violin(aes(fill = genhealth), trim = TRUE) +
+    geom_boxplot(width = 0.2) +
+    guides(fill = "none", color = "none") +
+    theme_bw()
+```
+
+### Describing the Proportional-Odds Cumulative Logit Model
+
+To fit the ordinal logistic regression model (specifically, a proportional-odds cumulative-logit model) in this situation, we'll use the `polr` function in the `MASS` library.
+
+- Our outcome is `genh`, which has five ordered levels, with `1-E` best and `5-P` worst.
+- Our model will include one quantitative predictor, `veg_day`.
+
+The model will have four logit equations: 
+
+- one estimating the log odds that `genh` will be less than or equal to 1 (i.e. `genhealth` = 1_Excellent,) 
+- one estimating the log odds that `genh` $\leq$ 2 (i.e. `genhealth` = 1_Excellent or 2_VeryGood,) 
+- another estimating the log odds that `genh` $\leq$ 3 (i.e. `genhealth` = 1_Excellent, 2_VeryGood or 3_Good,) and, finally,
+- one estimating the log odds that `genh` $\leq$ 4 (i.e. `genhealth` = 1_Excellent, 2_VeryGood, 3_Good or 4_Fair)
+
+That's all we need to estimate the five categories, since Pr(`genh` $\leq$ 5) = 1, because (5_Poor) is the maximum category for `genhealth`.
+
+We'll have a total of five free parameters when we add in the slope for `veg_day`, and I'll label these parameters as $\zeta_1, \zeta_2, \zeta_3, \zeta_4$ and $\beta_1$. The $\zeta$s are read as "zeta" values, and the people who built the `polr` function use that term.
+
+The four logistic equations that will be fit differ only by their intercepts. They are:
+
+$$ 
+logit[Pr(genh \leq 1)] = log \frac{Pr(genh \leq 1}{Pr(genh > 1)} = \zeta_1 - \beta_1 veg_day
+$$
+
+which describes the log odds of a `genh` value of 1 (Excellent) as compared to a `genh` value greater than 1 (which includes Very Good, Good, Fair and Poor).
+
+The second logit model is:
+
+$$ 
+logit[Pr(genh \leq 2)] = log \frac{Pr(genh \leq 2}{Pr(genh > 2)} = \zeta_2 - \beta_1 veg_day
+$$
+
+which describes the log odds of a `genh` value of 1 (Excellent) or 2 (Very Good) as compared to a `genh` value greater than 2 (which includes Good, Fair and Poor).
+
+Next we have:
+
+$$ 
+logit[Pr(genh \leq 3)] = log \frac{Pr(genh \leq 3}{Pr(genh > 3)} = \zeta_3 - \beta_1 veg_day
+$$
+
+which describes the log odds of a `genh` value of 1 (Excellent) or 2 (Very Good) or 3 (Good) as compared to a `genh` value greater than 3 (which includes Fair and Poor).
+
+Finally, we have
+
+$$ 
+logit[Pr(genh \leq 4)] = log \frac{Pr(genh \leq 4}{Pr(genh > 4)} = \zeta_4 - \beta_1 veg_day
+$$
+
+which describes the log odds of a `genh` value of 4 or less, which includes Excellent, Very Good, Good and Fair as compared to a `genh` value greater than 4 (which is Poor).
+
+Again, the intercept term is the only piece that varies across the four equations. 
+
+In this case, a positive coefficient $\beta_1$ for `veg_day` means that increasing the value of `veg_day` would increase the `genh` category (describing a worse level of general health, since higher values of `genh` are associated with worse health.)
+
+### Fitting a Proportional Odds Logistic Regression with `polr`
+
+Our model `m1` will use proportional odds logistic regression (sometimes called an *ordered logit* model) to predict `genh` on the basis of `veg_day`. The `polr` function can help us do this. Note that we include `Hess = TRUE` to retain what is called the *Hessian* matrix, which lets R calculate standard errors more effectively in `summary` and other follow-up descriptions of the model.
+
+```{r}
+m1 <- polr(genh ~ veg_day, 
+            data = sm1, Hess = TRUE)
+
+summary(m1)
+
+confint(m1)
+```
+
+## Interpreting Model `m1`
+
+### Looking at Predictions
+
+Consider two individuals:
+
+- Harry, who eats an average of 2.0 servings of vegetables per day, so Harry's `veg_day` = 2, and
+- Sally, who eats an average of 1.0 serving of vegetables per day, so Sally's `veg_day` = 1.
+
+We're going to start by using our model `m1` to predict the `genh` for Harry and Sally, so we can see the effect (on the predicted `genh` probabilities) of a change of one unit in `veg_day`.
+
+For example, what are the log odds that Harry, with `veg_day` = 2, will describe his `genh` as Excellent (`genh` $\leq$ 1)?
+
+$$
+logit[Pr(genh \leq 1)] = \zeta_1 - \beta_1 veg\_day \\
+logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg\_day \\
+logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) (2) = -1.7172
+$$
+
+That's not much help. So we'll convert it to a probability by taking the inverse logit. The formula is
+
+$$
+Pr(genh \leq 1) = \frac{exp(\zeta_1 + \beta_1 veg_day)}{1 + exp(\zeta_1 + \beta_1 veg_day)} = 
+\frac{exp(-1.7172)}{1 + exp(-1.7172)} = \frac{0.180}{1.180} = 0.15
+$$
+
+So the model estimates a 15% probability that Harry will describe his `genh` as Excellent.
+
+OK. Now, what are the log odds that Harry, who eats 2 servings per day, will describe his `genh` as either Excellent or Very Good (`genh` $\leq$ 2)?
+
+$$
+logit[Pr(genh \leq 2)] = \zeta_2 - \beta_1 veg\_day \\
+logit[Pr(genh \leq 2)] = -0.4065 - (-0.1847) veg\_day \\
+logit[Pr(genh \leq 2)] = -0.4065 - (-0.1847) (2) = -0.0371
+$$
+
+Again, we'll convert this to a probability by taking the inverse logit. 
+
+$$
+Pr(genh \leq 2) = \frac{exp(\zeta_2 + \beta_1 veg_day)}{1 + exp(\zeta_2 + \beta_1 veg_day)} = 
+\frac{exp(-0.0371)}{1 + exp(-0.0371)} = \frac{0.964}{1.964} = 0.49
+$$
+
+So, the model estimates a probability of .49 that Harry will describe his `genh` as either Excellent or Very Good, so by subtraction, that's a probability of .34 that Harry describes his `genh` as Very Good.
+
+Happily, that's the last time we'll calculate this by hand.
+
+### Making Predictions for Harry (and Sally) with `predict`
+
+Suppose Harry eats 2 servings of vegetables per day on average, and Sally eats 1.
+
+```{r}
+temp.dat <- data.frame(name = c("Harry", "Sally"), 
+                       veg_day = c(2,1))
+
+predict(m1, temp.dat, type = "p")
+```
+
+The predicted probabilities of falling into each category of `genh` are:
+
+Subject | `veg_day` | Pr(1_E) | Pr(2_VG) | Pr(3_G) | Pr(4_F) | Pr(5_P)
+-------: | ---: | ---: | ---: | ---: | ---: | ---:
+Harry | 2 | 15.2 | 33.9 | 31.0 | 14.6 | 5.4
+Sally | 1 | 13.0 | 31.4 | 32.5 | 16.7 | 6.4
+
+- Harry has a higher predicted probability of lower (healthier) values of `genh`. Specifically, Harry has a higher predicted probability than Sally of falling into the Excellent and Very Good categories, and a lower probability than Sally of falling into the Good, Fair and Poor categories.
+- This means that Harry, with a higher `veg_day` is predicted to have, on average, a lower (that is to say, healthier) value of `genh`.
+- As we'll see, this association will be indicated by a negative coefficient of `veg_day` in the proportional odds logistic regression model.
+
+### Predicting the actual classification of `genh`
+
+The default prediction approach actually returns the predicted `genh` classification for Harry and Sally, which is just the classification with the largest predicted probability. Here, for Harry that is Very Good, and for Sally, that's Good.
+
+```{r}
+predict(m1, temp.dat)
+```
+
+### A Cross-Tabulation of Predictions?
+
+```{r}
+addmargins(table(predict(m1), sm1$genh))
+```
+
+The `m1` model classifies all subjects in the `sm1` sample as either Excellent, Very Good or Good, and most subjects as Very Good or Good.
+
+### The Fitted Model Equations
+
+```{r}
+summary(m1)
+```
+
+The first part of the output provides coefficient estimates for the `veg_day` predictor, and these are followed by the estimates for the various model intercepts. Plugging in the estimates, we have:
+
+$$ 
+logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg_day \\
+logit[Pr(genh \leq 2)]  = -0.4065 - (-0.1847) veg_day \\
+logit[Pr(genh \leq 3)]  =  1.0202 - (-0.1847) veg_day \\
+logit[Pr(genh \leq 4)] =  2.5002 - (-0.1847) veg_day 
+$$
+
+Note that we can obtain these pieces separately as follows:
+
+```{r}
+m1$zeta
+```
+
+shows the boundary intercepts, and 
+
+```{r}
+m1$coefficients
+```
+
+shows the regression coefficient for `veg_day`.
+
+### Interpreting the `veg_day` coefficient
+
+The first part of the output provides coefficient estimates for the `veg_day` predictor. 
+
+- The estimated slope for `veg_day` is -0.1847 
+    + Remember Harry and Sally, who have the same values of `bmi` and `costprob`, but Harry eats one more serving than Sally does. We noted that Harry is predicted by the model to have a smaller (i.e. healthier) `genh` response than Sally.
+    + So a negative coefficient here means that higher values of `veg_day` are associated with more of the probability distribution falling in lower values of `genh`.
+    + We usually don't interpret this slope (on the log odds scale) directly, but rather exponentiate it.
+    
+### Exponentiating the Slope Coefficient to facilitate Interpretation
+
+We can compute the odds ratio associated with `veg_day` and its confidence interval as follows...
+
+```{r}
+exp(coef(m1))
+exp(confint(m1))
+```
+
+- So, if Harry eats one more serving of vegetables than Sally, our model predicts that Harry will have 83.1% of the odds of Sally of having a larger `genh` score. That means that Harry is likelier to have a smaller `genh` score. 
+    - Since `genh` gets larger as a person's general health gets worse (moves from Excellent towards Poor), this means that since Harry is predicted to have smaller odds of a larger `genh` score, he is also predicted to have smaller odds of worse general health.
+    - Our 95% confidence interval around that estimated odds ratio of 0.831 is (0.796, 0.867). Since that interval is entirely below 1, the odds of having the larger (worse) `genh` for Harry are detectably lower than the odds for Sally.
+    - So, an increase in `veg_day` is associated with smaller (better) `genh` scores. 
+
+### Comparison to a Null Model
+
+We can fit a model with intercepts only to test the significance of `veg_day` in our model `m1`, using the `anova` function.
+
+```{r}
+m0 <- polr(genh ~ 1, data = sm1)
+
+anova(m1, m0)
+```
+
+We could also compare model `m1` to the null model `m0` with AIC or BIC.
+
+```{r}
+AIC(m1, m0)
+```
+
+```{r}
+BIC(m1,m0)
+```
+
+## The Assumption of Proportional Odds
+
+Let us calculate the odds for all levels of `genh` if a person eats two servings of vegetables. First, we'll get the probabilities, in another way, to demonstrate how to do so...
+
+```{r}
+(prob.2 <- exp(m1$zeta - 2*m1$coefficients)/(1 + exp(m1$zeta - 2*m1$coefficients)))
+(prob.1 <- exp(m1$zeta - 1*m1$coefficients)/(1 + exp(m1$zeta - 1*m1$coefficients)))
+```
+
+Now, we'll calculate the odds, first for a subject eating two servings:
+
+```{r}
+(odds.2 = prob.2/(1-prob.2))
+```
+
+And here are the odds, for a subject eating one serving per day:
+
+```{r}
+(odds.1 = prob.1/(1-prob.1))
+```
+
+
+Now, let's take the ratio of the odds for someone who eats two servings over the odds for someone who eats one.
+
+```{r}
+odds.2/odds.1
+```
+
+They are all the same. The odds ratios are equal, which means they are proportional. For any level of `genh`, the estimated odds that a person who eats 2 servings has better (lower) `genh` is about 1.2 times the odds for someone who eats one serving. Those who eat more vegetables have higher odds of better (lower) `genh`. Less than 1 means lower odds, and more than 1 means greater odds.
+
+Now, let's take the log of the odds ratios:
+
+```{r}
+log(odds.2/odds.1)
+```
+
+That should be familiar. It is the slope coefficient in the model summary, without the minus sign. R tacks on a minus sign so that higher levels of predictors correspond to the ordinal outcome falling in the higher end of its scale.
+
+If we exponentiate the slope estimated by R (-0.1847), we get 0.83. If we have two people, and A eats one more serving of vegetables on average than B, then the estimated odds of A having a higher 'genh' (i.e. worse general health) are 83% as high as B's.
+
+### Testing the Proportional Odds Assumption
+
+One way to test the proportional odds assumption is to compare the fit of the proportional odds logistic regression to a model that does not make that assumption. A natural candidate is a **multinomial logit** model, which is typically used to model unordered multi-categorical outcomes, and fits a slope to each level of the `genh` outcome in this case, as opposed to the proportional odds logit, which fits only one slope across all levels.
+
+Since the proportional odds logistic regression model is nested in the multinomial logit, we can perform a likelihood ratio test. To do this, we first fit the multinomial logit model, with the `multinom` function from the `nnet` package.
+
+```{r}
+(m1_multi <- multinom(genh ~ veg_day, data = sm1))
+```
+
+The multinomial logit fits four intercepts and four slopes, for a total of 8 estimated parameters. The proportional odds logit, as we've seen, fits four intercepts and one slope, for a total of 5. The difference is 3, and we use that number in the sequence below to build our test of the proportional odds assumption.
+
+```{r}
+LL_1 <- logLik(m1)
+LL_1m <- logLik(m1_multi)
+(G <- -2 * (LL_1[1] - LL_1m[1]))
+pchisq(G, 3, lower.tail = FALSE)
+```
+
+The *p* value is very large, so it indicates that the proportional odds model fits about as well as the more complex multinomial logit. A non-significant *p* value here isn't always the best way to assess the proportional odds assumption, but it does provide some evidence of model adequacy.
+
+## Can model `m1` be fit using `rms` tools?
+
+Yes.
+
+```{r}
+d <- datadist(sm1)
+options(datadist = "d")
+m1_lrm <- lrm(genh ~ veg_day, data = sm1, x = T, y = T)
+
+m1_lrm
+```
+
+The model is highly significant (remember the large sample size) but very weak, with a Nagelkerke $R^2$ of 0.015, and a C statistic of 0.555.
+
+```{r}
+summary(m1_lrm)
+```
+
+A change from 1.21 to 2.36 servings in `veg_day` is associated with an odds ratio of 0.81, with 95% confidence interval (0.77, 0.85). Since these values are all below 1, we have a clear indication of a statistically detectable effect of `veg_day` with higher `veg_day` associated with lower `genh`, which means, in this case, better health.
+
+There is also a tool in `rms` called `orm` which may be used to fit a wide array of ordinal regression models. I suggest you read Frank Harrell's book on *Regression Modeling Strategies* if you want to learn more.
+
+## Building a Three-Predictor Model
+
+Now, we'll model `genh` using `veg_day`, `bmi` and `costprob`.
+
+### Scatterplot Matrix
+
+```{r, message = FALSE}
+GGally::ggpairs(sm1 %>% 
+                    select(bmi, veg_day, costprob, genh))
+```
+
+We might choose to plot the `costprob` data as a binary factor, rather than the raw 0-1 numbers included above, but not at this time.
+
+### Our Three-Predictor Model, `m2`
+
+```{r}
+m2 <- polr(genh ~ veg_day + bmi + costprob, data = sm1)
+
+summary(m2)
+```
+
+This model contains four intercepts (to cover the five `genh` categories) and three slopes (one each for `veg_day`, `bmi` and `costprob`.) 
+
+### Does the three-predictor model outperform `m1`?
+
+```{r}
+anova(m1, m2)
+```
+
+There is a statistically significant improvement in fit from model 1 to model 2. The AIC and BIC are also better for the three-predictor model than they were for the model with `veg_day` alone.
+
+```{r}
+AIC(m1, m2)
+
+BIC(m1, m2)
+```
+
+### Wald tests for individual predictors
+
+To obtain the appropriate Wald tests, we can use `lrm` to fit the model instead.
+
+```{r}
+d <- datadist(sm1)
+options(datadist = "d")
+m2_lrm <- lrm(genh ~ veg_day + bmi + costprob, 
+              data = sm1, x = T, y = T)
+m2_lrm
+```
+
+It appears that each of the added predictors (`bmi` and `costprob`) adds statistically detectable value to the model. 
+
+### A Cross-Tabulation of Predictions?
+
+```{r}
+addmargins(table(predict(m2), sm1$genh))
+```
+
+At least the `m2` model predicted that a few of the cases will fall in the Fair and Poor categories, but still, this isn't impressive.
+
+### Interpreting the Effect Sizes
+
+We can do this in two ways:
+
+- By exponentiating the `polr` output, which shows the effect of increasing each predictor by a single unit
+    - Increasing `veg_day` by 1 serving while holding the other predictors constant is associated with reducing the odds (by a factor of 0.84 with 95% CI 0.81, 0.88)) of higher values of `genh`: hence increasing `veg_day` is associated with increasing the odds of a response indicating better health. 
+    - Increasing `bmi` by 1 kg/m^2^ while holding the other predictors constant is associated with increasing the odds (by a factor of 1.07 with 95% CI 1.06, 1.08)) of higher values of `genh`: hence increasing `bmi` is associated with reducing the odds of a response indicating better health.
+    - Increasing `costprob` from 0 to 1 while holding the other predictors constant is associated with an increase (by a factor of 2.63 with 95% CI 2.23, 3.11)) of a higher `genh` value. Since higher `genh` values indicate worse health, those with `costprob` = 1 are modeled to have generally worse health.
+
+```{r}
+exp(coef(m2))
+exp(confint(m2))
+```
+
+- Or by looking at the summary provided by `lrm`, which like all such summaries produced by `rms` shows the impact of moving from the 25th to the 75th percentile on all continuous predictors.
+
+```{r}
+summary(m2_lrm)
+plot(summary(m2_lrm))
+```
+
+### Quality of the Model Fit
+
+Model `m2`, as we can see from the `m2_lrm` output, is still weak, with a Nagelkerke $R^2$ of 0.10, and a C statistic of 0.63.
+
+### Validating the Summary Statistics in `m2_lrm`
+
+```{r}
+set.seed(43203); validate(m2_lrm)
+```
+
+As in our work with binary logistic regression, we can convert the index-corrected Dxy to an index-corrected C with C = 0.5 + (Dxy/2). Both the $R^2$ and C statistics are pretty consistent with what we saw above.
+
+### Testing the Proportional Odds Assumption
+
+Again, we'll fit the analogous multinomial logit model, with the `multinom` function from the `nnet` package.
+
+```{r}
+(m2_multi <- multinom(genh ~ veg_day + bmi + costprob, 
+                      data = sm1))
+```
+
+The multinomial logit fits four intercepts and 12 slopes, for a total of 16 estimated parameters. The proportional odds logit in model `m2`, as we've seen, fits four intercepts and three slopes, for a total of 7. The difference is 9, and we use that number in the sequence below to build our test of the proportional odds assumption.
+
+```{r}
+LL_2 <- logLik(m2)
+LL_2m <- logLik(m2_multi)
+(G <- -2 * (LL_2[1] - LL_2m[1]))
+pchisq(G, 9, lower.tail = FALSE)
+```
+
+The result is highly significant, suggesting that we have a problem somewhere with the proportional odds assumption. When this happens, I suggest you build the following plot of score residuals:
+
+```{r}
+par(mfrow = c(2,2))
+resid(m2_lrm, 'score.binary', pl=TRUE)
+par(mfrow= c(1,1))
+```
+
+From this plot, `bmi` (especially) and `costprob` vary as we move from the Very Good toward the Poor cutpoints, relative to `veg_day`, which is more stable.
+
+### Plotting the Fitted Model
+
+#### Nomogram
+
+```{r, fig.height = 7, fig.width = 10}
+fun.ge3 <- function(x) plogis(x - m2_lrm$coef[1] + m2_lrm$coef[2])
+fun.ge4 <- function(x) plogis(x - m2_lrm$coef[1] + m2_lrm$coef[3])
+fun.ge5 <- function(x) plogis(x - m2_lrm$coef[1] + m2_lrm$coef[4])
+
+plot(nomogram(m2_lrm, fun=list('Prob Y >= 2 (VG or worse)' = plogis, 
+                               'Prob Y >= 3 (Good or worse)' = fun.ge3,
+                               'Prob Y >= 4 (Fair or Poor)' = fun.ge4,
+                               'Prob Y = 5 (Poor)' = fun.ge5)))
+```
+
+#### Using Predict and showing mean prediction on 1-5 scale
+
+```{r}
+ggplot(Predict(m2_lrm, fun = Mean(m2_lrm, code = TRUE)))
+```
+
+The nomogram and Predict results would be more interesting, of course, if we included a spline or interaction term. Let's do that in model `m3_lrm`, and also add the `incomegroup` information.
+
+## A Larger Model, including income group
+
+```{r}
+m3_lrm <- lrm(gen_n ~ rcs(veg_day,3) + rcs(bmi, 4) + 
+                  incomegroup + catg(costprob) + 
+                  bmi %ia% costprob, 
+              data = sm1, x = T, y = T)
+
+m3_lrm
+```
+
+Another option here would have been to consider building `incomegroup` as a `scored` variable, with an order on its own, but I won't force that here. Here's the `polr` version...
+
+```{r}
+m3 <- polr(genh ~ rcs(veg_day,3) + rcs(bmi, 4) + 
+               incomegroup + costprob + 
+               bmi %ia% costprob, data = sm1)
+```
+
+### Cross-Tabulation of Predicted/Observed Classifications
+
+```{r}
+addmargins(table(predict(m3), sm1$genh))
+```
+
+This model predicts more Fair results, but still far too many Very Good with no Excellent at all.
+
+### Nomogram
+
+```{r, fig.height = 7, fig.width = 10}
+fun.ge3 <- function(x) plogis(x - m3_lrm$coef[1] + m3_lrm$coef[2])
+fun.ge4 <- function(x) plogis(x - m3_lrm$coef[1] + m3_lrm$coef[3])
+fun.ge5 <- function(x) plogis(x - m3_lrm$coef[1] + m3_lrm$coef[4])
+
+plot(nomogram(m3_lrm, fun=list('Prob Y >= 2 (VG or worse)' = plogis, 
+                               'Prob Y >= 3 (Good or worse)' = fun.ge3,
+                               'Prob Y >= 4 (Fair or Poor)' = fun.ge4,
+                               'Prob Y = 5 (Poor)' = fun.ge5)))
+```
+
+### Using Predict and showing mean prediction on 1-5 scale
+
+```{r}
+ggplot(Predict(m3_lrm, fun = Mean(m3_lrm, code = TRUE)))
+```
+
+Here, we're plotting the mean score on the 1-5 `gen_n` scale.
+
+### Validating the Summary Statistics in `m3_lrm`
+
+```{r}
+set.seed(43221); validate(m3_lrm)
+```
+
+Still not very impressive, but much better than where we started. It's not crazy to suggest that in new data, we might expect a Nagelkerke $R^2$ of 0.205 and a C statistic of 0.5 + (0.3886/2) = 0.6943.
+
+
+## References for this Chapter
+
+1. Some of the material here is adapted from http://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/. 
+
+2. I also found great guidance at http://data.library.virginia.edu/fitting-and-interpreting-a-proportional-odds-model/
+
+3. Other parts are based on the work of Jeffrey S. Simonoff (2003) *Analyzing Categorical Data* in Chapter 10. Related data and R code are available at http://people.stern.nyu.edu/jsimonof/AnalCatData/Splus/. 
+
+4. Another good source for a simple example is https://onlinecourses.science.psu.edu/stat504/node/177. 
+
+5. Also helpful is https://onlinecourses.science.psu.edu/stat504/node/178 which shows a more complex example nicely.
+

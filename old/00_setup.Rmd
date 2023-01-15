@@ -1,0 +1,96 @@
+# R Packages used in these notes {-}
+
+Here, we'll load in some packages used in these notes. The list of R Packages we will use in 432 is more extensive, and is [available on our course website](https://thomaselove.github.io/432/r_packages.html).
+
+```{r load_packages, message = FALSE, warning = FALSE}
+
+library(here)
+library(janitor) 
+library(magrittr)
+library(conflicted)
+
+library(tableone) 
+
+library(broom) 
+library(haven)
+library(janitor)
+library(patchwork)
+library(Hmisc)
+library(rms)
+
+library(MASS)
+library(visdat) 
+library(naniar) 
+library(caret)
+library(simputation)
+library(car)
+library(mice)
+library(leaps)
+library(lars)
+library(Epi)
+library(pROC)
+library(ROCR)
+library(VGAM)
+library(ggridges)
+library(pander)
+library(arm)
+library(survival)
+library(survminer)
+library(kableExtra)
+
+## and of course, we conclude with...
+
+library(tidymodels)
+library(tidyverse) 
+```
+
+## Dealing with Conflicts {-}
+
+I'm loading a lot of packages here, and sometimes individual functions are in conflict. R's default conflict resolution system gives precedence to the most recently loaded package. This can make it hard to detect conflicts, particularly when introduced by an update to an existing package.
+
+Using the code below helps the entire book run properly. You may or may not need to look into [the `conflicted` package](https://github.com/r-lib/conflicted) for your work.
+
+```{r}
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("Predict", "rms")
+conflict_prefer("impute_median", "simputation")
+conflict_prefer("summarize", "dplyr")
+```
+
+
+```{r special_functions}
+specify_decimal <- function(x, k) format(round(x, k), nsmall=k)
+```
+
+## General Theme for `ggplot` work {-}
+
+```{r}
+theme_set(theme_bw())
+```
+
+
+## Data used in these notes {-}
+
+All data sets used in these notes are available on our [Data and Code website](https://github.com/THOMASELOVE/432-data).
+
+Dr. Love is in the process of moving all of the data loads below to their individual chapters.
+
+```{r load_data, message = FALSE, warning = FALSE}
+prost <- read_csv("data/prost.csv") 
+pollution <- read_csv("data/pollution.csv") 
+
+bonding <- read_csv("data/bonding.csv") 
+cortisol <- read_csv("data/cortisol.csv") 
+emphysema <- read_csv("data/emphysema.csv") 
+resect <- read_csv("data/resect.csv") 
+colscr <- read_csv("data/screening.csv") 
+colscr2 <- read_csv("data/screening2.csv") 
+authorship <- read_csv("data/authorship.csv") 
+hem <- read_csv("data/hem.csv") 
+leukem <- read_csv("data/leukem.csv") 
+
+```
+
+
+

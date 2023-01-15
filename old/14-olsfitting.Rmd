@@ -1,0 +1,215 @@
+# Using `ols` from the `rms` package to fit linear models
+
+At the end of the previous chapter, we had fit a model to the `pollution` data that predicted our outcome `y` = Age-Adjusted Mortality Rate, using:
+
+- a restricted cubic spline with 5 knots on `x9`
+- a restricted cubic spline with 3 knots on `x6`
+- a polynomial in 2 degrees on `x14`
+- linear terms for `x1` and `x13`
+
+but this model was hard to evaluate in some ways. Now, instead of using `lm` to fit this model, we'll use a new function called `ols` from the `rms` package developed by Frank Harrell and colleagues, in part to support ideas developed in @Harrell2001 for clinical prediction models.
+
+## Fitting a model with `ols`
+
+We will use the `datadist` approach when fitting a linear model with `ols` from the `rms` package, so as to store additional important elements of the model fit.
+
+```{r}
+library(rms)
+
+d <- datadist(pollution)
+options(datadist = "d")
+```
+
+Next, we'll fit the model using `ols` and place its results in `newmod`.
+
+```{r}
+newmod <- ols(y ~ rcs(x9, 5) + rcs(x6, 3) + pol(x14, 2) + 
+                  x1 + x13, 
+              data = pollution, x = TRUE, y = TRUE)
+newmod
+```
+
+Some of the advantages and disadvantages of fitting linear regression models with `ols` or `lm` will reveal themselves over time. For now, one advantage for `ols` is that the entire variance-covariance matrix is saved. Most of the time, there will be some value to considering both `ols` and `lm` approaches.
+
+Most of this output should be familiar, but a few pieces are different.
+
+### The Model Likelihood Ratio Test
+
+The **Model Likelihood Ratio Test** compares `newmod` to the null model with only an intercept term. It is a goodness-of-fit test that we'll use in several types of model settings this semester.
+
+- In many settings, the logarithm of the likelihood ratio, multiplied by -2, yields a value which can be compared to a $\chi^2$ distribution. So here, the value 72.02 is -2(log likelihood), and is compared to a $\chi^2$ distribution with 10 degrees of freedom. We reject the null hypothesis that `newmod` is no better than the null model, and conclude instead that at least one of these predictors adds statistically significant value.
+    + For `ols`, interpret the model likelihood ratio test like the global (ANOVA) F test in `lm`.
+    + The likelihood function is the probability of observing our data under the specified model.
+    + We can compare two nested models by evaluating the difference in their likelihood ratios and degrees of freedom, then comparing the result to a $\chi^2$ distribution.
+
+### The g statistic
+
+The **g statistic** is new and is referred to as the g-index. it's based on Gini's mean difference and is purported to be a robust and highly efficient measure of variation. 
+
+- Here, g = 58.9, which implies that if you randomly select two of the 60 areas included in the model, the average difference in predicted `y` (Age-Adjusted Mortality Rate) using this model will be 58.9.
+    + Technically, g is Gini's mean difference of the predicted values.
+
+## ANOVA for an `ols` model
+
+One advantage of the `ols` approach is that when you apply an `anova` to it, it separates out the linear and non-linear components of restricted cubic splines and polynomial terms (as well as product terms, if your model includes them.)
+
+```{r}
+anova(newmod)
+```
+
+Unlike the `anova` approach in `lm`, in `ols` ANOVA, *partial* F tests are presented - each predictor is assessed as "last predictor in" much like the usual *t* tests in `lm`. In essence, the partial sums of squares and F tests here describe the marginal impact of removing each covariate from `newmod`.
+
+We conclude that the non-linear parts of `x9` and `x6` and `x14` combined don't seem to add much value, but that overall, `x9`, `x6` and `x14` seem to be valuable. So it must be the linear parts of those variables within our model that are doing the lion's share of the work.
+
+## Effect Estimates
+
+A particularly useful thing to get out of the `ols` approach that is not as easily available in `lm` (without recoding or standardizing our predictors) is a summary of the effects of each predictor in an interesting scale.
+
+```{r}
+summary(newmod)
+```
+
+This "effects summary" shows the effect on `y` of moving from the 25th to the 75th percentile of each variable (along with a standard error and 95% confidence interval) while holding the other variable at the level specified at the bottom of the output. 
+
+The most useful way to look at this sort of analysis is often a plot.
+
+```{r}
+plot(summary(newmod))
+```
+
+For `x9` note from the `summary` above that the 25th percentile is 4.95 and the 75th is 15.65. Our conclusion is that the estimated effect of moving `x9` from 4.95 to 15.65 is an increase of 40.4 on `y`, with a 95% CI of (12.1, 68.7).
+
+For a categorical variable, the low level is shown first and then the high level. 
+
+The plot shows the point estimate (arrow head) and then the 90\% (narrowest bar), 95\% (middle bar) and 99\% (widest bar in lightest color) confidence intervals for each predictor's effect. 
+
+- It's easier to distinguish this in the `x9` plot than the one for `x13`. 
+- Remember that what is being compared is the first value to the second value's impact on the outcome, with other predictors held constant.
+
+### Simultaneous Confidence Intervals
+
+These confidence intervals make no effort to deal with the multiple comparisons problem, but just fit individual 95\% (or whatever level you choose) confidence intervals for each predictor. The natural alternative is to make an adjustment for multiple comparisons in fitting the confidence intervals, so that the set of (in this case, five - one for each predictor) confidence intervals for effect sizes has a family-wise 95% confidence level. You'll note that the effect estimates and standard errors are unchanged from those shown above, but the confidence limits are a bit wider.
+
+```{r}
+summary(newmod, conf.type=c('simultaneous'))
+```
+
+Remember that if you're looking for the usual `lm` summary for an `ols` object, use `summary.lm`, and that the `display` function from `arm` does not recognize `ols` objects.
+
+## The `Predict` function for an `ols` model
+
+The `Predict` function is very flexible, and can be used to produce individual or simultaneous confidence limits.
+
+```{r}
+Predict(newmod, x9 = 12, x6 = 12, x14 = 40, x1 = 40, x13 = 20) # individual limits
+Predict(newmod, x9 = 5:15) # individual limits
+Predict(newmod, x9 = 5:15, conf.type = 'simult')
+```
+
+The plot below shows the individual effects in `newmod` in five subpanels, using the default approach of displaying the same range of values as are seen in the data. Note that each panel shows point and interval estimates of the effects, and spot the straight lines in `x1` and `x13`, the single bends in `x14` and `x6` and the wiggles in `x9`, corresponding to the amount of non-linearity specified in the model.
+
+```{r}
+ggplot(Predict(newmod))
+```
+
+## Checking Influence via `dfbeta` 
+
+For an `ols` object, we have several tools for looking at residuals. The most interesting to me is `which.influence` which is reliant on the notion of `dfbeta`. 
+
+- DFBETA is estimated for each observation in the data, and each coefficient in the model. 
+- The DFBETA is the difference in the estimated coefficient caused by deleting
+the observation, scaled by the coefficient's standard error estimated with the
+observation deleted.
+- The `which.influence` command applied to an `ols` model produces a list of all of the predictors estimated by the model, including the intercept. 
+    + For each predictor, the command lists all observations (by row number) that, if removed from the model, would cause the estimated coefficient (the "beta") for that predictor to change by at least some particular cutoff.
+    + The default is that the DFBETA for that predictor is 0.2 or more.
+
+```{r}
+which.influence(newmod)
+```
+
+The implication here, for instance, is that if we drop row 3 from our data frame, and refit the model, this will have a meaningful impact on the estimate of `x9` but not on the other coefficients. But if we drop, say, row 37, we will affect the estimates of the intercept, `x6`, `x14`, `x1`, and `x13`.
+
+### Using the `residuals` command for `dfbetas`
+
+To see the `dfbeta` values, standardized according to the approach I used above, you can use the following code (I'll use `head` to just show the first few rows of results) to get a matrix of the results.
+
+```{r}
+head(residuals(newmod, type = "dfbetas"))
+```
+
+### Using the `residuals` command for other summaries
+
+The `residuals` command will also let you get ordinary residuals, leverage values and `dffits` values, which are the normalized differences in predicted values when observations are omitted. See `?residuals.ols` for more details.
+
+```{r}
+temp <- data.frame(area = 1:60)
+temp$residual <- residuals(newmod, type = "ordinary")
+temp$leverage <- residuals(newmod, type = "hat")
+temp$dffits <- residuals(newmod, type = "dffits")
+tbl_df(temp)
+
+ggplot(temp, aes(x = area, y = dffits)) +
+    geom_point() +
+    geom_line()
+```
+
+It appears that point 37 has the largest (positive) `dffits` value. Recall that point 37 seemed influential on several predictors and the intercept term. Point 32 has the smallest (or largest negative) `dffits`, and also appears to have been influential on several predictors and the intercept.
+
+```{r}
+which.max(temp$dffits)
+which.min(temp$dffits)
+```
+
+## Model Validation and Correcting for Optimism
+
+In 431, we learned about splitting our regression models into **training** samples and **test** samples, performing variable selection work on the training sample to identify two or three candidate models (perhaps via a stepwise approach), and then comparing the predictions made by those models in a test sample.
+
+At the final project presentations, I mentioned (to many folks) that there was a way to automate this process a bit in 432, that would provide some ways to get the machine to split the data for you multiple times, and then average over the results, using a bootstrap approach. This is it.
+
+The `validate` function allows us to perform cross-validation of our models for some summary statistics (and then correct those statistics for optimism in describing likely predictive accuracy) in an easy way.
+
+`validate` develops:
+
+- Resampling validation with or without backward elimination of variables
+- Estimates of the *optimism* in measures of predictive accuracy
+- Estimates of the intercept and slope of a calibration model
+
+\begin{center}
+(observed y) = Intercept + Slope (predicted y)
+\end{center}
+
+with the following code... 
+
+```{r}
+set.seed(432002); validate(newmod, method = "boot", B = 40)
+```
+
+So, for `R-square` we see that our original estimate was 0.6989
+
+- Our estimated `R-square` across `n` = 40 training samples was 0.7426, but in the resulting tests, the average `R-square` was only 0.5749
+- This suggests an optimism of 0.7426 - 0.5749 = 0.1676 (after rounding).
+- We then apply that optimism to obtain a new estimate of $R^2$ corrected for overfitting, at 0.5312, which is probably a better estimate of what our results might look like in new data that were similar to (but not the same as) the data we used in building `newmod` than our initial estimate of 0.6989
+
+We also obtain optimism-corrected estimates of the mean squared error (square of the residual standard deviation), the g index, and the intercept and slope of the calibration model. The "corrected" slope is a shrinkage factor that takes overfitting into account.
+
+## Building a Nomogram for Our Model
+
+Another nice feature of an `ols` model object is that we can picture the model with a **nomogram** easily. Here is model `newmod`.
+
+```{r}
+plot(nomogram(newmod))
+```
+
+For this model, we can use this plot to predict `y` as follows:
+
+1. find our values of `x9` on the appropriate line
+2. draw a vertical line up to the points line to count the points associated with our subject
+3. repeat the process to obtain the points associated with `x6`, `x14`, `x1`, and `x13`. Sum the points.
+4. draw a vertical line down from that number in the Total Points line to estimate `y` (the Linear Predictor) = Age-Adjusted Mortality Rate.
+
+The impact of the non-linearity is seen in the `x6` results, for example, which turn around from 9-10 to 11-12. We also see non-linearity's effects in the scales of the non-linear terms in terms of points awarded.
+
+An area with a combination of predictor values leading to a total of 100 points, for instance, would lead to a prediction of a Mortality Rate near 905. An area with a total of 140 points would have a predicted Mortality Rate of 955, roughly.
+
+

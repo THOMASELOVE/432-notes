@@ -1,0 +1,278 @@
+# Cox Regression Models for Survival Data: Example 1
+
+The Cox proportional hazards (Cox regression) model fits survival data with a constant (i.e. not varying over time) covariate $x$ to a hazard function of the form:
+
+$$
+h(t | x) = h_0(t) exp[\beta_1 x]
+$$
+
+where we will estimate the unknown value of $\beta_1$ and where $h_0(t)$ is the baseline hazard, which is a non-parametric and unspecified value which depends on $t$ but not on $x$.
+
+- For particular $x$ values, we will be able to estimate the survival function if we have an estimate of the baseline survival function, $\hat{S_0}(t)$.
+
+The estimated survival function for an individual with covariate value $x_k$ turns out to be
+
+$$
+\hat{S}(t | x_k) = [\hat{S_0}(t)]^{exp(\beta_1 x_k)}
+$$
+
+From Wikipedia (yes, really) ...
+
+> Survival models can be viewed as consisting of two parts: the underlying hazard function, describing how the risk of event per time unit changes over time at baseline levels of covariates; and the effect parameters, describing how the hazard varies in response to explanatory covariates. 
+
+The key assumption in a Cox model is that the hazards are **proportional** - other types of survival models need not have this restriction.  Quoting the always reliable (well, it's better than you think) Wikipedia ...
+
+> In a proportional hazards model, the unique effect of a unit increase in a covariate is multiplicative with respect to the hazard rate. For example, taking a drug may halve one's hazard rate for a stroke occurring, or, changing the material from which a manufactured component is constructed may double its hazard rate for failure. 
+
+There are two main approaches to fitting Cox models in R.
+
+- the `coxph` function in the `survival` package, and 
+- the `cph` function in the `rms` package.
+
+## Sources used in building this material
+
+- David Diez's excellent supplement for the OpenIntro Statistics project, on [Survival Analysis in R](https://www.openintro.org/stat/surv.php). I've posted it on our web site, as well.
+- Some tools in R to do some fancier work can be viewed at https://cran.r-project.org/web/views/Survival.html
+- You might also look at these two blog posts, originally from the Just Another Data blog.
+    - https://www.r-bloggers.com/survival-analysis-1/  
+    - https://www.r-bloggers.com/survival-analysis-2/
+- https://rpubs.com/daspringate/survival has some great slides, and I've stolen from them quite a bit here.
+
+## Fitting a Cox Model in R with `coxph`
+
+As a first example, I'll fit a model to predict time to recurrence in the `hem` data, on the basis of a single predictor: `genotype`.
+
+```{r surv_hem_cfit_setup}
+cfit <- with(hem, coxph(Surv(time, recur) ~ genotype))
+cfit
+```
+
+This summary provides an overall comparison of the two genotypes, using a proportional hazards model.
+
+- The default approach in R is to use the "efron" method of breaking ties: other options include "breslow" and "exact".
+
+### Summarizing the Fit 
+
+```{r surv_hem_cfit_summary}
+summary(cfit)
+```
+
+This provides estimates of the $\beta$ value for `genotype`, including standard errors and $p$ values for a Wald test. Also included is an estimate of the hazard ratio and its confidence interval.
+
+- Here we have a hazard ratio estimate of `exp(coef) = 3.787`, with 95\% CI (1.24, 11.57).
+- The hazard ratio is the multiplicative effect of the covariate (here, having at least one of the $\epsilon 2$ or $\epsilon 4$ allele) on the hazard function for recurrent hemorrhage
+    + A hazard ratio of 1 indicates no effect
+    + A hazard ratio > 1 indicates an increase in the hazard as the covariate rises
+    + A hazard ratio < 1 indicates a decrease in the hazard as the covariate rises
+
+We can also `tidy` the hazard ratio estimate with the `broom` package.
+
+```{r surv_hem_cfit_tidy}
+tidy(cfit, exponentiate = TRUE)
+```
+
+In addition, we have several other summaries:
+
+- The *concordance* measure is only appropriate when we have at least one continuous predictor in our Cox model.
+- The Cox & Snell pseudo-$R^2$ reflects the improvement of the model we've fit over the model with an intercept alone, but isn't a proportion of anything (hence the listing of the maximum possible value).
+- The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall significance of the model.
+
+We can obtain a more detailed description of the likelihood-ratio test of the model with `anova`.
+
+```{r surv_hem_cfit_anova}
+anova(cfit)
+```
+
+### Glancing at the model?
+
+```{r}
+glance(cfit)
+```
+
+Here, we obtain several additional summaries of the model, including most of the important information from a summary of `cfit`.
+
+
+### Plot the baseline survival function
+
+Here, we'll plot the time in terms of months, but scaled to 12 month (one year) groups.
+
+```{r}
+plot(survfit(cfit), xscale = 12,
+     xlab = "Years after initial hemorrhage",
+     ylab = "Proportion without recurrent hemorrhage",
+     main = "Baseline Survival Function")
+```
+
+### Plot the genotype effect
+
+There are several ways to build these plots. One approach follows. Another uses a `cph` fit and the `survplot` function from the `rms` package.
+
+```{r}
+newdat <- with(hem, 
+               data.frame(
+                 genotype = c(1, 0)
+               )
+)
+
+newdat
+```
+
+```{r}
+plot(survfit(cfit, newdata = newdat), xscale = 12,
+     conf.int = TRUE,
+     col = c("red", "blue"),
+     xlab = "Years after initial hemorrhage",
+     ylab = "Proportion without recurrent hemorrhage",
+     main = "Plotting the genotype effects from the cfit Model")
+legend(0.5, 0.2, 
+       legend=c(
+         expression(paste("Homozygous ", epsilon, "3 / ", 
+                   epsilon, "3")), 
+         expression(paste("At least one ", epsilon,"2 or ",
+                   epsilon,"4 Allele"))
+       ),
+       lty = 1, 
+       col = c("red", "blue"),
+       text.col = c("red", "blue"))
+```
+
+### Testing the Key Assumption: Proportional Hazards
+
+The `cox.zph` function in the `survival` package will test the proportionality of all of the predictors included in your model by creating interactions with time. 
+
+- A small $p$ value would indicate a violation of the proportionality assumption.
+   
+```{r surv_hem_cfit_coxzph_test}
+cox.zph(cfit, transform="km", global=TRUE)
+```
+
+Since the *p* value here is not significant, we may be all right. But it's sensible to focus further on plots derived from the model fit, rather than relying solely on this test.
+
+### Plotting the `cox.zph` results for the `cfit` model
+
+`cox.zph` function can be used to generate a plot for each of the individual predictors in the model. Of course, in this case, we have just one predictor: `genotype`. If the proportional hazards assumption is appropriate, then we should see a slope of essentially zero in each such plot. A slope that is seriously different from zero suggests a violation of the proportional hazards assumption. 
+
+```{r surv_hem_cfit_coxzph_plot}
+plot(cox.zph(cfit, transform="km", global=TRUE))
+```
+
+The plot suggests only a slight rise in the plotted values over time, suggesting no serious problem with the proportional hazards assumption. This combined testing and plotting approach is a reasonable starting place for assessing the proportional hazards assumption, but it's likely insufficient for good practical work. 
+
+Should the proportional hazards assumption fit less well, we have two main options: (1) fit a non-linear term in the covariate in question, and (2) fit a different type of regression model that doesn't require the proportional hazards assumption.
+
+## Fitting a Cox Model using `cph` from the `rms` package
+
+To set up a `cph` fit for our comparison of genotypes in the `hem` data, we'll follow these steps.
+
+```{r}
+units(hem$time) <- "month"
+d <- datadist(hem)
+options(datadist = "d")
+
+hemsurv <- Surv(time = hem$time, event = hem$recur)
+
+model_hem <- cph(hemsurv ~ genotype, data = hem, 
+                 x = TRUE, y = TRUE, surv = TRUE)
+```
+
+Note that the `surv = TRUE` piece is required to get some of the follow-up analyses to work smoothly.
+
+### The Main `cph` results
+
+```{r}
+model_hem
+```
+
+Included here are likelihood ratio and score tests for the model as a whole (as compared to the intercept-only model), as well as the usual discrimination indexes. 
+
+- These include both an $R^2$ analog due to Nagelkerke (which can go all the way up to 1), and 
+- Somers' $Dxy$, which can also produce an estimate of the C statistic  (area under the curve) via the formula C = 0.5 + Dxy / 2, so here C = 0.5 + (.244/2) = 0.622
+- For lots more on survival analysis C statistics, look at the `survAUC` package in R.
+
+These results are followed by a table of Wald tests for each of the coefficients in the model.
+
+### Using `anova` with `cph`
+
+As in other `rms` fits, we can use `anova` to obtain more detailed (in terms of combining nonlinear terms and, if available, interactions) tests.
+
+```{r surv_anova_model_hem}
+anova(model_hem)
+```
+
+### Effect Sizes after `cph` fit
+
+We can use `summary` on a `cph` object to get and plot effect size estimates (here, these are hazard ratios.)
+
+```{r surv_hem_cph_summary, fig.height = 3}
+summary(model_hem)
+
+plot(summary(model_hem))
+```
+
+### Validating `cph` summaries
+
+For details on these last few indices (D, U, Q, etc.), visit `?validate.cph` in R.
+
+```{r surv_validate_hem_model}
+set.seed(43201); validate(model_hem)
+```
+
+### Plotting Survival Functions for each Genotype
+
+Here is the `survplot` approach I mentioned earlier.
+
+```{r survplot_model_hem_plot1}
+survplot(model_hem, genotype, 
+         lty = c(1,2), n.risk=TRUE, time.inc=12,
+         col=c("magenta", "dodgerblue"),
+         xlab="Hemorrhage-Free Survival in Months")
+```
+
+We can add, for instance, confidence interval bars, with:
+
+```{r survplot_model_hem_plot2}
+survplot(model_hem, genotype, 
+         lwd=3, lty = c(1,2), conf.int=.95,
+         n.risk=TRUE, time.inc = 12, conf='bars',
+         col=c("magenta", "dodgerblue"),
+         xlab="Hemorrhage-Free Survival Time in Months")
+```
+
+For more details, check out R's help file on `survplot`.
+
+### Genotype's effect on log relative hazard
+
+```{r log_rel_haz_hem_model_plot}
+ggplot(Predict(model_hem, genotype))
+```
+
+### Nomogram of our simple `hem` model
+
+We can estimate 1-year and 3-year hemorrhage-free survival probabilities, for example, with this model, and incorporate these results into our nomogram.
+
+```{r nomogram_model_hem}
+survx <- Survival(model_hem)
+plot(nomogram(model_hem, fun=list(function(x) survx(12, x),
+                            function(x) survx(36, x)),
+            funlabel=c("12-month Pr(Survival)", 
+                       "36-month Pr(Survival)")))
+```
+
+Again, this is just a very simple model, with one binary predictor.
+
+### Assessing the Proportional Hazards Assumption
+
+```{r surv_cox_zph_model_hem}
+cox.zph(model_hem, transform="km")
+```
+
+- Consider using `transform="rank"` to transform the survival times by their ranks prior to performing the test. 
+- Or use `transform="identity"` as we'll do in the plot below.
+
+### Plot to Check PH Assumption
+
+```{r ph_plot_check_zph}
+plot(cox.zph(model_hem, "identity"))
+```
+
+

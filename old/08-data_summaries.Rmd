@@ -1,0 +1,392 @@
+# Summarizing the `smart_cle1` data
+
+In this chapter, we'll work with the two data files we built in the previous chapter.
+
+```{r}
+smart_cle1_sh <- readRDS(here("data", "smart_cle1_sh.Rds"))
+smart_cle1_cc <- readRDS(here("data", "smart_cle1_sh.Rds"))
+```
+
+Those files (`_sh` contains single imputations, and a shadow set of variables which have _NA at the end of their names, while `_cc` contains only the complete cases) describe information on the following variables from the BRFSS 2017, who live in the Cleveland-Elyria, OH, Metropolitan Statistical Area. 
+
+Variable | Description
+---------: | --------------------------------------------------------
+`SEQNO` | respondent identification number (all begin with 2016)
+`physhealth` | Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?
+`genhealth` | Would you say that in general, your health is ... (five categories: Excellent, Very Good, Good, Fair or Poor)
+`bmi` | Body mass index, in kg/m^2^
+`age_imp` | Age, imputed, in years
+`female` | Sex, 1 = female, 0 = male
+`race_eth` | Race and Ethnicity, in five categories
+`internet30` | Have you used the internet in the past 30 days? (1 = yes, 0 = no)
+`smoke100` | Have you smoked at least 100 cigarettes in your life? (1 = yes, 0 = no)
+`activity` | Physical activity (Highly Active, Active, Insufficiently Active, Inactive)
+`drinks_wk` | On average, how many drinks of alcohol do you consume in a week?
+`veg_day` | How many servings of vegetables do you consume per day, on average?
+
+## General Approaches to Obtaining Numeric Summaries
+
+### `summary` for a data frame
+
+Of course, we can use the usual `summary` to get some basic information about the data.
+
+```{r}
+summary(smart_cle1_cc)
+```
+
+### The `inspect` function from the `mosaic` package
+
+```{r, warning = FALSE, message = FALSE}
+smart_cle1_cc %>% mosaic::inspect()
+```
+
+### The `describe` function in `Hmisc`
+
+This provides some useful additional summaries, including a list of the lowest and highest values (which is very helpful when checking data.) 
+
+```{r}
+smart_cle1_cc %>%
+  select(bmi, genhealth, female) %>%
+  Hmisc::describe()
+```
+
+- The `Info` measure is used for quantitative and binary variables. It is a relative information measure that increases towards 1 for variables with no ties, and is smaller for variables with many ties. 
+- The `Gmd` is the Gini mean difference. It is a measure of spread (or dispersion), where larger values indicate greater spread in the distribution, like the standard deviation or the interquartile range. It is defined as the mean absolute difference between any pairs of observations.
+
+See the Help file for `describe` in the `Hmisc` package for more details on these measures, and on the settings for `describe`.
+
+## Counting as exploratory data analysis
+
+Counting and/or tabulating things can be amazingly useful. Suppose we want to understand the `genhealth` values, after our single imputation.
+
+```{r}
+smart_cle1_sh %>% count(genhealth) %>%
+  mutate(percent = 100*n / sum(n))
+```
+
+We might use `tabyl` to do this job...
+
+```{r}
+smart_cle1_sh %>% 
+  tabyl(genhealth) %>%
+  adorn_pct_formatting(digits = 1) %>%
+  knitr::kable()
+```
+
+### Did `genhealth` vary by smoking status?
+
+```{r}
+smart_cle1_sh %>% 
+  count(genhealth, smoke100) %>% 
+  mutate(percent = 100*n / sum(n))
+```
+
+Suppose we want to find the percentage within each smoking status group. Here's one approach...
+
+```{r}
+smart_cle1_sh %>%
+    count(smoke100, genhealth) %>%
+    group_by(smoke100) %>%
+    mutate(prob = 100*n / sum(n)) 
+```
+
+And here's another ...
+
+```{r}
+smart_cle1_sh %>%
+  tabyl(smoke100, genhealth) %>%
+  adorn_totals(where = c("row", "col")) %>% 
+  adorn_percentages(denominator = "row") %>%
+  adorn_pct_formatting(digits = 1) %>%
+  adorn_ns(position = "front")
+```
+
+### What's the distribution of `physhealth`?
+
+We can count quantitative variables with discrete sets of possible values, like `physhealth`, which is captured as an integer (that must fall between 0 and 30.)
+
+```{r}
+smart_cle1_sh %>% count(physhealth)
+```
+
+Of course, a natural summary of a quantitative variable like this would be graphical.
+
+```{r}
+ggplot(smart_cle1_sh, aes(physhealth)) +
+    geom_histogram(binwidth = 1, 
+                   fill = "dodgerblue", col = "white") +
+    labs(title = "Days with Poor Physical Health in the Past 30",
+         subtitle = "Most subjects are pretty healthy in this regard, but there are some 30s")
+```
+
+### What's the distribution of `bmi`?
+
+`bmi` is the body-mass index, an indicator of size (thickness, really.)
+
+```{r}
+ggplot(smart_cle1_sh, aes(bmi)) +
+    geom_histogram(bins = 30, 
+                   fill = "firebrick", col = "white") + 
+    labs(title = paste0("Body-Mass Index for ", 
+                        nrow(smart_cle1_sh), 
+                        " BRFSS respondents"))
+```
+
+### How many of the respondents have a BMI below 30?
+
+```{r}
+smart_cle1_sh %>% count(bmi < 30) %>% 
+  mutate(proportion = n / sum(n))
+```
+
+### How many of the respondents with a BMI < 30 are highly active?
+
+```{r}
+smart_cle1_sh %>% 
+  filter(bmi < 30) %>% 
+  tabyl(activity) %>%
+  adorn_pct_formatting()
+```
+
+### Is obesity associated with smoking history?
+
+```{r}
+smart_cle1_sh %>% count(smoke100, bmi < 30) %>%
+    group_by(smoke100) %>%
+    mutate(percent = 100*n/sum(n))
+```
+
+### Comparing `drinks_wk` summaries by obesity status
+
+Can we compare the `drinks_wk` means, medians and 75^th^ percentiles for respondents whose BMI is below 30 to the respondents whose BMI is not?
+
+```{r}
+smart_cle1_sh %>%
+    group_by(bmi < 30) %>%
+    summarize(mean(drinks_wk), median(drinks_wk), 
+              q75 = quantile(drinks_wk, 0.75))
+```
+
+## Can `bmi` predict `physhealth`?
+
+We'll start with an effort to predict `physhealth` using `bmi`. A natural graph would be a scatterplot.
+
+```{r scatter_physhealth_bmi_1}
+ggplot(data = smart_cle1_sh, aes(x = bmi, y = physhealth)) +
+    geom_point()
+```
+
+A good question to ask ourselves here might be: "In what BMI range can we make a reasonable prediction of `physhealth`?"
+
+Now, we might take the plot above and add a simple linear model ...
+
+```{r c2_scatter_physhealth_bmi_2}
+ggplot(data = smart_cle1_sh, aes(x = bmi, y = physhealth)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, col = "red")
+```
+
+which shows the same least squares regression model that we can fit with the `lm` command.
+
+### Fitting a Simple Regression Model
+
+```{r}
+model_A <- lm(physhealth ~ bmi, data = smart_cle1_sh)
+
+model_A
+summary(model_A)
+confint(model_A, level = 0.95)
+```
+
+The model coefficients can be obtained by printing the model object, and the `summary` function provides several useful descriptions of the model's residuals, its statistical significance, and quality of fit.
+
+### Model Summary for a Simple (One-Predictor) Regression
+
+The fitted model predicts `physhealth` using a prediction equation we can read off from the model coefficient estimates. Specifically, we have:
+
+```{r}
+coef(model_A)
+```
+
+so the equation is `physhealth` = -2.82 + 0.265 `bmi`.
+
+Each of the `r nrow(smart_cle1_sh)` respondents included in the `smart_cle1_sh` data makes a contribution to this model. 
+
+#### Residuals
+
+Suppose Harry is one of the people in that group, and Harry's data is `bmi` = 20, and `physhealth` = 3.
+
+- Harry's *observed* value of `physhealth` is just the value we have in the data for them, in this case, observed `physhealth` = 3 for Harry.
+- Harry's *fitted* or *predicted* `physhealth` value is the result of calculating -2.82 + 0.265 `bmi` for Harry. So, if Harry's BMI was 20, then Harry's predicted `physhealth` value is -2.82 + 0.265 (20) = 2.48.
+- The *residual* for Harry is then his *observed* outcome minus his *fitted* outcome, so Harry has a residual of 3 - 2.48 = 0.52.
+- Graphically, a residual represents vertical distance between the observed point and the fitted regression line. 
+- Points above the regression line will have positive residuals, and points below the regression line will have negative residuals. Points on the line have zero residuals.
+
+The residuals are summarized at the top of the `summary` output for linear model.
+
+```{r}
+summary(model_A)
+```
+
+- The mean residual will always be zero in an ordinary least squares model, but a five number summary of the residuals is provided by the summary, as is an estimated standard deviation of the residuals (called here the Residual standard error.)
+- In the `smart_cle1_sh` data, the minimum residual was -10.53, so for one subject, the observed value was 10.53 days smaller than the predicted value. This means that the prediction was 10.53 days too large for that subject.
+- Similarly, the maximum residual was 29.30 days, so for one subject the prediction was 29.30 days too small. Not a strong performance.
+- In a least squares model, the residuals are assumed to follow a Normal distribution, with mean zero, and standard deviation (for the `smart_cle1_sh` data) of about 9.0 days. We know this because the residual standard error is specified as 8.968 later in the linear model output. Thus, by the definition of a Normal distribution, we'd expect 
+- about 68% of the residuals to be between -9 and +9 days,
+- about 95% of the residuals to be between -18 and +18 days,
+- about all (99.7%) of the residuals to be between -27 and +27 days.
+
+#### Coefficients section
+
+The `summary` for a linear model shows Estimates, Standard Errors, t values and *p* values for each coefficient fit.
+
+```{r}
+summary(model_A)
+```
+
+- The Estimates are the point estimates of the intercept and slope of `bmi` in our model.
+- In this case, our estimated slope is 0.265, which implies that if Harry's BMI is 20 and Sally's BMI is 21, we predict that Sally's `physhealth` will be 0.265 days larger than Harry's.
+- The Standard Errors are also provided for each estimate. We can create rough 95% uncertainty intervals for these estimated coefficients by adding and subtracting two standard errors from each coefficient, or we can get a slightly more accurate answer with the `confint` function.
+- Here, the 95% uncertainty interval for the slope of `bmi` is estimated to be (0.18, 0.35). This is a good measure of the uncertainty in the slope that is captured by our model. We are 95% confident in the process of building this interval, but this doesn't mean we're 95% sure that the true slope is actually in that interval.
+
+Also available are a *t* value (just the Estimate divided by the Standard Error) and the appropriate *p* value for testing the null hypothesis that the true value of the coefficient is 0 against a two-tailed alternative.
+
+- If a slope coefficient is statistically detectably different from 0, this implies that 0 will not be part of the uncertainty interval obtained through `confint`.
+- If the slope was zero, it would suggest that `bmi` would add no predictive value to the model. But that's unlikely here.
+
+If the `bmi` slope coefficient is associated with a small *p* value, as in the case of our `model_A`, it suggests that the model including `bmi` is statistically detectably better at predicting `physhealth` than the model without `bmi`.
+
+- Without `bmi` our `model_A` would become an *intercept-only* model, in this case, which would predict the mean `physhealth` for everyone, regardless of any other information.
+
+#### Model Fit Summaries
+
+```{r}
+summary(model_A)
+```
+
+The `summary` of a linear model also displays:
+
+- The residual standard error and associated degrees of freedom for the residuals.
+- For a simple (one-predictor) least regression like this, the residual degrees of freedom will be the sample size minus 2.
+- The multiple R-squared (or coefficient of determination)
+- This is interpreted as the proportion of variation in the outcome (`physhealth`) accounted for by the model, and will always fall between 0 and 1 as a result.
+- Our model_A accounts for a mere 3.4% of the variation in `physhealth`.
+- The Adjusted R-squared value "adjusts" for the size of our model in terms of the number of coefficients included in the model.
+- The adjusted R-squared will always be smaller than the Multiple R-squared. 
+- We still hope to find models with relatively large adjusted $R^2$ values.
+- In particular, we hope to find models where the adjusted $R^2$ isn't substantially less than the Multiple R-squared.
+- The adjusted R-squared is usually a better estimate of likely performance of our model in new data than is the Multiple R-squared.
+- The adjusted R-squared result is no longer interpretable as a proportion of anything - in fact, it can fall below 0.
+- We can obtain the adjusted $R^2$ from the raw $R^2$, the number of observations *N* and the number of predictors *p* included in the model, as follows:
+    
+$$
+R^2_{adj} = 1 - \frac{(1 - R^2)(N - 1)}{N - p - 1},
+$$
+
+- The F statistic and *p* value from a global ANOVA test of the model.
+    - Obtaining a statistically significant result here is usually pretty straightforward, since the comparison is between our model, and a model which simply predicts the mean value of the outcome for everyone.
+    - In a simple (one-predictor) linear regression like this, the t statistic for the slope is just the square root of the F statistic, and the resulting *p* values for the slope's t test and for the global F test will be identical.
+- To see the complete ANOVA F test for this model, we can run `anova(model_A)`.
+
+```{r}
+anova(model_A)
+```
+
+### Using the `broom` package
+
+The `broom` package has three functions of particular use in a linear regression model:
+
+#### The `tidy` function
+
+`tidy` builds a data frame/tibble containing information about the coefficients in the model, their standard errors, t statistics and *p* values.
+
+```{r}
+tidy(model_A)
+```
+
+It's often useful to include other summaries in this tidying, for instance:
+
+```{r}
+tidy(model_A, conf.int = TRUE, conf.level = 0.9) %>%
+  select(term, estimate, conf.low, conf.high)
+```
+
+#### The `glance` function
+
+glance` builds a data frame/tibble containing summary statistics about the model, including
+
+- the (raw) multiple $R^2$ and adjusted R^2
+- `sigma` which is the residual standard error
+- the F `statistic`, `p.value` model `df` and `df.residual` associated with the global ANOVA test, plus
+- several statistics that will be useful in comparing models down the line:
+- the model's log likelihood function value, `logLik`
+- the model's Akaike's Information Criterion value, `AIC`
+- the model's Bayesian Information Criterion value, `BIC`
+- and the model's `deviance` statistic
+
+```{r }
+glance(model_A)
+```
+
+#### The `augment` function
+
+`augment` builds a data frame/tibble which adds fitted values, residuals and other diagnostic summaries that describe each observation to the original data used to fit the model, and this includes 
+
+- `.fitted` and `.resid`, the fitted and residual values, in addition to
+- `.hat`, the leverage value for this observation
+- `.cooksd`, the Cook's distance measure of *influence* for this observation
+- `.stdresid`, the standardized residual (think of this as a z-score - a measure of the residual divided by its associated standard deviation `.sigma`)
+- and `se.fit` which will help us generate prediction intervals for the model downstream
+
+Note that each of the new columns begins with `.` to avoid overwriting any data.
+
+```{r}
+head(augment(model_A))
+```
+
+For more on the `broom` package, you may want to look at [this vignette](https://cran.r-project.org/web/packages/broom/vignettes/broom.html).
+
+### How does the model do? (Residuals vs. Fitted Values)
+
+- Remember that the $R^2$ value was about 3.4%.
+
+```{r}
+plot(model_A, which = 1)
+```
+
+This is a plot of residuals vs. fitted values. The goal here is for this plot to look like a random scatter of points, perhaps like a "fuzzy football", and that's **not** what we have. Why?
+    
+If you prefer, here's a `ggplot2` version of a similar plot, now looking at standardized residuals instead of raw residuals, and adding a loess smooth and a linear fit to the result.
+
+```{r}
+ggplot(augment(model_A), aes(x = .fitted, y = .std.resid)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, col = "red", linetype = "dashed") +
+    geom_smooth(method = "loess", se = FALSE, col = "navy") +
+    theme_bw()
+```
+
+The problem we're having here becomes, I think, a little more obvious if we look at what we're predicting. Does `physhealth` look like a good candidate for a linear model?
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = physhealth)) +
+  geom_histogram(bins = 30, fill = "dodgerblue", 
+                 color = "royalblue")
+```
+
+```{r}
+smart_cle1_sh %>% count(physhealth == 0, physhealth == 30)
+```
+
+No matter what model we fit, if we are predicting `physhealth`, and most of the data are values of 0 and 30, we have limited variation in our outcome, and so our linear model will be somewhat questionable just on that basis.
+
+A normal Q-Q plot of the standardized residuals for our `model_A` shows this problem, too.
+
+```{r}
+plot(model_A, which = 2)
+```
+
+We're going to need a method to deal with this sort of outcome, that has both a floor and a ceiling. We'll get there eventually, but linear regression alone doesn't look promising.
+
+All right, so that didn't go anywhere great. We'll try again, with a new outcome, in the next chapter.
+

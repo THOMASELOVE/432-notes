@@ -1,0 +1,2227 @@
+# BRFSS SMART Data
+
+The Centers for Disease Control analyzes Behavioral Risk Factor Surveillance System (BRFSS) survey data for specific metropolitan and micropolitan statistical areas (MMSAs) in a program called the Selected Metropolitan/Micropolitan Area Risk Trends of BRFSS (SMART BRFSS.)
+
+In this work, we will focus on data from the 2017 SMART, and in particular on data from the state of Ohio, and from the Cleveland-Elyria, OH, Metropolitan Statistical Area. The purpose of this survey is to provide localized health information that can help public health practitioners identify local emerging health problems, plan and evaluate local responses, and efficiently allocate resources to specific needs.
+
+In this chapter, I describe some cleaning of the BRFSS SMART data, and break it out into national, statewide, and local samples.
+
+The data files produced by this chapter include:
+
+- `smart_ohio.Rds` which includes data on approximately 100 variables for over 7000 subjects in six MMSAs that are at least partially located in the state of Ohio.
+- `smart_cle.Rds` which includes data on those same variables for a little over 1000 subjects in the Cleveland-Elyria-Lorain OH MMSA.
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor) 
+library(Hmisc)
+library(patchwork)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+## Key resources
+
+- the "raw" data, in the form of the 2017 SMART BRFSS MMSA Data, found in a zipped [SAS Transport Format](https://www.cdc.gov/brfss/annual_data/2017/files/MMSA2017_XPT.zip) file. The data were released in October 2018.
+- the [MMSA Variable Layout](https://www.cdc.gov/brfss/annual_data/2017/MMSA_VarLayout_17.html) which simply lists the variables included in the data file
+- the [Calculated Variables PDF](https://www.cdc.gov/brfss/annual_data/2017/pdf/2017-calculated-variables-version4-508.pdf) which describes the risk factors by data variable names - there is also an [online summary matrix of these calculated variables](https://www.cdc.gov/brfss/annual_data/2017/Summary_Matrix_17.html).
+- the lengthy [2017 Survey Questions PDF](https://www.cdc.gov/brfss/questionnaires/pdf-ques/2017_BRFSS_Pub_Ques_508_tagged.pdf) which lists all questions asked as part of the BRFSS in 2017
+- the enormous [Codebook for the 2017 BRFSS Survey PDF](https://www.cdc.gov/brfss/annual_data/2017/pdf/codebook17_llcp-v2-508.pdf) which identifies the variables by name for us.
+
+Also, for each subject, we are also provided with a sampling weight, in `_MMSAWT`, which will help us incorporate the sampling design later. These weights are at the MMSA level, and are used for generating MMSA-level estimates for variables in the data set. [Details on the weighting methodology are available at this PDF](https://www.cdc.gov/brfss/annual_data/2017/pdf/2017_SMART_BRFSS_MMSA_Methodology-508.pdf).
+
+## Ingesting the Raw Data
+
+To create the data files we'll use, I used the `read_xpt` function from the `haven` package to bring in the SAS XPT data file that is provided by CDC. The codes I used (but won't use in these Notes) were:
+
+```{r}
+#| eval: false
+
+smart_raw <- read_xpt("MMSA2017/MMSA2017.xpt")
+```
+
+This gives the nationwide data, which has 230,875 rows and 177 columns.
+
+But for the purposes of putting these Notes online, I needed to crank down the sample size enormously. To that end, I created a new data file, which I developed by 
+
+- importing the MMSA2017.xpt file as above
+- filtering away all observations except those from MMSAs which include Ohio in their name, and
+- saving the result, which now has 7,412 rows and 177 columns.
+
+The code (again, not run here) that I used to filter to the OH-based MMSAs was:
+
+```{r}
+#| eval: false
+
+smart_ohio_raw <- smart_raw |> 
+    filter(str_detect(MMSANAME, "OH"))
+
+write_csv(smart_ohio_raw, "data/smart_ohio_raw.csv")
+```
+
+So, for purposes of these notes, our complete data set is actually coming from `smart_ohio_raw.csv` and consists only of the 7,412 observations associated with the six MMSAs that include Ohio in their names.
+
+## Ingesting from our CSV file
+
+Note that the `smart_ohio_raw.csv` and other data files we're developing in this Chapter are available on our [432-Data website](https://github.com/THOMASELOVE/432-data)
+
+```{r}
+#| message: false
+#| warning: false
+
+smart_ohio_raw <- read_csv("data/smart_ohio_raw.csv", show_col_types = FALSE)
+
+dim(smart_ohio_raw)
+```
+
+## What does the raw data look like?
+
+Here is a list of all variable names included in this file. We're not going to use all of those variables, but this will give you a sense of what is available.
+
+```{r}
+names(smart_ohio_raw)
+```
+
+## Cleaning the BRFSS Data
+
+### Identifying Information
+
+The identifying variables for each subject are gathered in `SEQNO`, which I'll leave alone.
+
+- Each statistical (geographic) area is identified by a `_MMSA` variable, which I'll rename `mmsa_code`, and by an `MMSANAME` which I'll rename as `mmsa_name`
+
+- For each subject, we are also provided with a sampling weight, in `_MMSAWT`, which will help us incorporate the sampling design later in the semester. We'll rename this as `mmsa_wt`. Details on the weighting methodology are available at https://www.cdc.gov/brfss/annual_data/2017/pdf/2017_SMART_BRFSS_MMSA_Methodology-508.pdf
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(mmsa_code = `_MMSA`,
+           mmsa_name = `MMSANAME`,
+           mmsa_wt = `_MMSAWT`)
+
+smart_ohio_raw |> count(mmsa_code, mmsa_name)
+```
+
+Those names are very long. I'll build some shorter ones, by dropping everything after the comma.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(mmsa = str_replace_all(string = mmsa_name, pattern="\\,.*$",replacement=" "))
+
+smart_ohio_raw |> count(mmsa, mmsa_name)
+```
+
+And here are the sampling weights for the subjects in the Cleveland-Elyria MSA.
+
+```{r}
+smart_ohio_raw |> 
+    filter(mmsa_code == 17460) %>%
+    ggplot(., aes(x = mmsa_wt)) +
+    geom_histogram(bins = 30, fill = "blue", col = "white")
+```
+
+
+### Survey Method
+
+#### `DISPCODE` and its cleanup to `completed` 
+
+`DISPCODE` which is 1100 if the subject completed the interview, and 1200 if they partially completed the interview. We'll create a variable called `completed` that indicates (1 = complete, 0 = not) whether the subject completed the interview.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(completed = 12 - (DISPCODE/100))
+
+smart_ohio_raw |> count(DISPCODE, completed)
+```
+
+#### `STATERE1` and `SAFETIME` and their reduction to `landline` 
+
+BRFSSS is conducted by telephone. The next two variables help us understand whether the subject was contacted via land line or via cellular phone.
+
+- `STATERE1` is 1 if the subject is a resident of the state (only asked of people in the land line version of the survey).
+- `SAFETIME` is 1 if this is a safe time to talk (only asked of people in the cell phone version of the survey).
+- We'll use `STATERE1` and `SAFETIME` to create an indicator variable `landline` that specifies how the respondent was surveyed (1 = land line, 0 = cell phone), as follows...
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(landline = replace_na(STATERE1, 0))
+
+smart_ohio_raw |> count(STATERE1, SAFETIME, landline)
+```
+
+#### `HHADULT` and its cleanup to `hhadults` 
+
+- `HHADULT` is the response to "How many members of your household, including yourself, are 18 years of age or older?"
+    - The permitted responses range from 1-76, with special values 77 for Don't Know/Not Sure and 99 for refused, with BLANK for missing or not asked.
+    - So we should change all numerical values above 76 to NA for our analyses (the blanks are already regarded as NAs by R in the ingestion process.)
+    
+```{r}
+smart_ohio_raw |> tabyl(HHADULT)
+```
+    
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hhadults = HHADULT,
+           hhadults = replace(hhadults, hhadults > 76, NA))
+
+smart_ohio_raw |> count(HHADULT, hhadults) |> tail()
+```
+
+### Health Status (1 item)
+
+The next variable describes relate to the subject's health status.
+
+#### `GENHLTH` and its cleanup to `genhealth` 
+
+- `GENHLTH`, the General Health variable, which is the response to "Would you say that in general your health is ..."
+    - 1 = Excellent
+    - 2 = Very good
+    - 3 = Good
+    - 4 = Fair
+    - 5 = Poor
+    - 7 = Don't know/Not sure
+    - 9 = Refused
+    - BLANK = Not asked or missing
+
+To clean up the `GENHLTH` data into a new variable called `genhealth` we'll need to 
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and perhaps change the variable to a factor and incorporate the names into the levels.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(genhealth = fct_recode(factor(GENHLTH), 
+                                "1_Excellent" = "1",
+                                "2_VeryGood" = "2",
+                                "3_Good" = "3",
+                                "4_Fair" = "4", 
+                                "5_Poor" = "5",
+                                NULL = "7",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(GENHLTH, genhealth)
+```
+
+### Healthy Days - Health-Related Quality of Life (3 items)
+
+The next three variables describe the subject's health-related quality of life.
+
+#### `PHYSHLTH` and its cleanup to `physhealth` 
+
+PHYSHLTH`, the Number of Days Physical Health Not Good variable, which is the response to "Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?"
+
+- Values of 1-30 are numeric and reasonable.
+- A value of 88 indicates "none" and should be recoded to 0.
+- 77 is the code for Don't know/Not sure
+- 99 is the code for Refused
+- BLANK indicates Not asked or missing, and R recognizes this as `NA` properly.
+
+To clean up `PHYSHLTH` to a new variable called `physhealth`, we'll need:
+    - to convince R that the 77 and 99 values are in fact best interpreted as `NA`, and 
+    - to convince R that the 88 should be interpreted as 0.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(physhealth = PHYSHLTH,
+           physhealth = replace(physhealth, physhealth %in% c(77, 99), NA),
+           physhealth = replace(physhealth, physhealth == 88, 0))
+
+smart_ohio_raw |> count(PHYSHLTH, physhealth) |> tail()
+```
+
+Note that we present the `tail` of the counts in this case so we can see what happens to the key values (77, 88, 99) of our original variable `PHYSHLTH`.
+
+#### `MENTHLTH` and its cleanup to `menthealth` 
+
+MENTHLTH`, the Number of Days Mental Health Not Good variable, which is the response to "Now thinking about your mental health, which includes stress, depression, and problems with emotions, for how many days during the past 30 days was your mental health not good?"
+
+- This is coded just like the `PHYSHLTH` variable, so we need to do the same cleaning we did there.
+
+To clean up `MENTHLTH` to a new variable called `menthealth`, we'll need:
+    - to convince R that the 77 and 99 values are in fact best interpreted as `NA`, and 
+    - to convince R that the 88 should be interpreted as 0.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(menthealth = MENTHLTH,
+           menthealth = replace(menthealth, menthealth %in% c(77, 99), NA),
+           menthealth = replace(menthealth, menthealth == 88, 0))
+
+smart_ohio_raw |> count(MENTHLTH, menthealth) |> tail()
+```
+
+#### `POORHLTH` and its cleanup to `poorhealth` 
+
+`POORHLTH`, the Poor Physical or Mental Health variable, which is the response to "During the past 30 days, for about how many days did poor physical or mental health keep you from doing your usual activities, such as self-care, work, or recreation?"
+
+- Again, we recode just like the `PHYSHLTH` variable.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(poorhealth = POORHLTH,
+           poorhealth = replace(poorhealth, poorhealth %in% c(77, 99), NA),
+           poorhealth = replace(poorhealth, poorhealth == 88, 0))
+
+smart_ohio_raw |> count(POORHLTH, poorhealth) |> tail()
+```
+
+There's a lot more missingness in the `poorhealth` counts than in the other health-related quality of life measures. There's also a strong mode at 0, and a smaller mode at 30 in each variable.
+
+```{r}
+#| warning: false
+
+p1 <- ggplot(smart_ohio_raw, aes(x = physhealth)) +
+    geom_histogram(binwidth = 1, fill = "orange") + 
+    labs(title = paste0("Bad Physical Health Days (",
+                        sum(is.na(smart_ohio_raw$physhealth)),
+                        " NA)"))
+
+p2 <- ggplot(smart_ohio_raw, aes(x = menthealth)) +
+    geom_histogram(binwidth = 1, fill = "blue") + 
+    labs(title = paste0("Bad Mental Health Days (",
+                        sum(is.na(smart_ohio_raw$menthealth)), 
+                        " NA)"))
+
+p3 <- ggplot(smart_ohio_raw, aes(x = poorhealth)) +
+    geom_histogram(binwidth = 1, fill = "red") + 
+    labs(title = paste0("Unable to Do Usual Activities Days (",
+                        sum(is.na(smart_ohio_raw$poorhealth)), 
+                        " NA)"))
+
+(p1 + p2) / p3 +
+    plot_annotation(title = "Health Related Quality of Life Measures in BRFSS/SMART (Ohio MMSAs)")
+```
+
+### Health Care Access (4 items)
+
+The next four variables relate to the subject's health care access.
+
+#### `HLTHPLN1` and its cleanup to `healthplan` 
+
+`HLTHPLN1`, the Have any health care coverage variable, is the response to "Do you have any kind of health care coverage, including health insurance, prepaid plans such as HMOs, or government plans such as Medicare, or Indian Health Service?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+To clean up the `HLTHPLN1` data into a new variable called `healthplan` we'll  
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and turn it into an indicator variable, e.g., we will leave the variable as numeric, but change the values to 1 = Yes and 0 = No.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(healthplan = HLTHPLN1,
+           healthplan = replace(healthplan, healthplan %in% c(7, 9), NA),
+           healthplan = replace(healthplan, healthplan == 2, 0))
+
+smart_ohio_raw |> count(HLTHPLN1, healthplan)
+```
+
+#### `PERSDOC2` and its cleanup to `hasdoc` and to `numdocs2` 
+
+`PERSDOC2`, the Multiple Health Care Professionals variable, is the response to "Do you have one person you think of as your personal doctor or health care provider?" where if the response is "No", the survey then asks "Is there more than one or is there no person who you think of as your personal doctor or health care provider?"
+
+- 1 = Yes, only one
+- 2 = More than one
+- 3 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `PERSDOC2` data into a new variable called `hasdoc` we'll  
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and turn it into an indicator variable, e.g., we will leave the variable as numeric, but change the values to 1 = Yes and 0 = No, so that the original 1 and 2 become 1, and the original 3 becomes 0.
+    
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hasdoc = PERSDOC2,
+           hasdoc = replace(hasdoc, hasdoc %in% c(7, 9), NA),
+           hasdoc = replace(hasdoc, hasdoc %in% c(1, 2), 1),
+           hasdoc = replace(hasdoc, hasdoc == 3, 0))
+
+smart_ohio_raw |> count(PERSDOC2, hasdoc)
+```
+
+#### `MEDCOST` and its cleanup to `costprob` 
+
+`MEDCOST`, the Could Not See Doctor Because of Cost variable, is the response to "Was there a time in the past 12 months when you needed to see a doctor but could not because of cost?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+This is just like `HLTHPLAN`.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(costprob = MEDCOST,
+           costprob = replace(costprob, costprob %in% c(7, 9), NA),
+           costprob = replace(costprob, costprob == 2, 0))
+
+smart_ohio_raw |> count(MEDCOST, costprob)
+```
+
+#### `CHECKUP1` and its cleanup to `t_checkup` 
+
+`CHECKUP1`, the Length of time since last routine checkup variable, is the response to "About how long has it been since you last visited a doctor for a routine checkup? [A routine checkup is a general physical exam, not an exam for a specific injury, illness, or condition.]"
+
+- 1 = Within past year (anytime less than 12 months ago)
+- 2 = Within past 2 years (1 year but less than 2 years ago)
+- 3 = Within past 5 years (2 years but less than 5 years ago)
+- 4 = 5 or more years ago
+- 7 = Don't know/Not sure
+- 8 = Never
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `CHECKUP1` data into a new variable called `t_checkup` we'll
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - relabel options 1, 2, 3, 4 and 8 while turning the variable into a factor.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(t_checkup = fct_recode(factor(CHECKUP1),
+                                 "1_In-past-year" = "1",
+                                 "2_1-to-2-years" = "2",
+                                 "3_2-to-5-years" = "3",
+                                 "4_5_plus_years" = "4",
+                                 "8_Never" = "8",
+                                 NULL = "7",
+                                 NULL = "9"))
+
+smart_ohio_raw |> count(CHECKUP1, t_checkup)
+```
+
+### Blood Pressure (2 measures)
+
+#### `BPHIGH4` and its cleanup to `bp_high`
+
+`BPHIGH4` is asking about awareness of a hypertension diagnosis. It's the response to the question: "Have you EVER been told by a doctor, nurse or other health professional that you have high blood pressure?" In addition, if the answer was "Yes" and the respondent is female, they were then asked "Was this only when you were pregnant?"
+
+The available codes are:
+
+- 1 = Yes
+- 2 = Yes, but female told only during pregnancy
+- 3 = No
+- 4 = Told borderline high or pre-hypertensive
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `BPHIGH4` data into a new variable called `bp_high` we'll
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - relabel (and re-order) options 1, 2, 3, 4 while turning the variable into a factor.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(bp_high = fct_recode(factor(BPHIGH4),
+                                 "0_No" = "3",
+                                 "1_Yes" = "1",
+                                 "2_Only_while_pregnant" = "2",
+                                 "4_Borderline" = "4",
+                                 NULL = "7",
+                                 NULL = "9"),
+           bp_high = fct_relevel(bp_high,
+                                 "0_No", "1_Yes", 
+                                 "2_Only_while_pregnant", 
+                                 "4_Borderline"))
+
+smart_ohio_raw |> count(BPHIGH4, bp_high)
+```
+
+#### `BPMEDS` and its cleanup to `bp_meds`
+
+`BPMEDS` is the response to the question "Are you currently taking medicine for your high blood pressure?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `BPMEDS` data into a new variable called `bp_meds` we'll treat it just as we did with `HLTHPLN1` and
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and turn it into an indicator variable, e.g., we will leave the variable as numeric, but change the values to 1 = Yes and 0 = No.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(bp_meds = BPMEDS,
+           bp_meds = replace(bp_meds, bp_meds %in% c(7, 9), NA),
+           bp_meds = replace(bp_meds, bp_meds == 2, 0))
+
+smart_ohio_raw |> count(BPMEDS, bp_meds)
+```
+
+What is the relationship between our two blood pressure variables? Only the people with `bp_meds` = "1_Yes" were asked the `bp_meds` question.
+
+```{r}
+smart_ohio_raw |> tabyl(bp_high, bp_meds)
+```
+
+### Cholesterol (3 items)
+
+#### `CHOLCHK1` and its cleanup to `t_chol`
+
+`CHOLCHK1`, the Length of time since cholesterol was checked, is the response to "Blood cholesterol is a fatty substance found in the blood. About how long has it been since you last had your blood cholesterol checked?"
+
+- 1 = Never
+- 2 = Within past year (anytime less than 12 months ago)
+- 3 = Within past 2 years (1 year but less than 2 years ago)
+- 4 = Within past 5 years (2 years but less than 5 years ago)
+- 5 = 5 or more years ago
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `CHOLCHK1` data into a new variable called `t_chol` we'll
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - relabel options 1, 2, 3, 4 and 8 while turning the variable into a factor.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(t_chol = fct_recode(factor(CHOLCHK1),
+                                 "1_Never" = "1",
+                                 "2_In-past-year" = "2",
+                                 "3_1-to-2-years" = "3",
+                                 "4_2-to-5-years" = "4",
+                                 "5_5_plus_years" = "5",
+                                 NULL = "7",
+                                 NULL = "9"))
+
+smart_ohio_raw |> count(CHOLCHK1, t_chol)
+```
+
+The next two measures are not gathered from the people who answered "Never" to this question.
+
+#### `TOLDHI2` and its cleanup to `chol_high`
+
+`TOLDHI2` is asking about awareness of a diagnosis of high cholesterol. It's the response to the question: "Have you EVER been told by a doctor, nurse or other health professional that your blood cholesterol is high?"
+
+The available codes are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `TOLDHI2` data into a new variable called `chol_high` we'll  treat it like `BPMEDS` and `HLTHPLN1`
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and turn it into an indicator variable, e.g., we will leave the variable as numeric, but change the values to 1 = Yes and 0 = No.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(chol_high = TOLDHI2,
+           chol_high = replace(chol_high, chol_high %in% c(7, 9), NA),
+           chol_high = replace(chol_high, chol_high == 2, 0))
+
+smart_ohio_raw |> count(TOLDHI2, chol_high)
+```
+
+#### `CHOLMED1` and its cleanup to `chol_meds`
+
+`CHOLMED1` is the response to the question "Are you currently taking medicine prescribed by a doctor or other health professional for your blood cholesterol?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+To clean up the `CHOLMED1` data into a new variable called `chol_meds` we'll treat it just as we did with `HLTHPLN1` and
+    - convince R that the 7 and 9 values are in fact best interpreted as `NA`,
+    - and turn it into an indicator variable, e.g., we will leave the variable as numeric, but change the values to 1 = Yes and 0 = No.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(chol_meds = CHOLMED1,
+           chol_meds = replace(chol_meds, chol_meds %in% c(7, 9), NA),
+           chol_meds = replace(chol_meds, chol_meds == 2, 0))
+
+smart_ohio_raw |> count(CHOLMED1, chol_meds)
+```
+
+### Chronic Health Conditions (14 items)
+
+#### Self-reported diagnosis history (11 items)
+
+The next few variables describe whether or not the subject meets a particular standard, and are all coded in the raw data the same way:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+and we'll recode them all to 1 = Yes, 0 = No, otherwise NA, as we've done previously.
+
+The questions are all started with "Has a doctor, nurse, or other health professional ever told you that you had any of the following? For each, tell me Yes, No, or you're Not sure."
+
+Original | Revised  | Details
+-------- | -------- | -------------------------------------------
+`CVDINFR4` | `hx_mi`    | (Ever told) you had a heart attack, also called a myocardial infarction?
+`CVDCRHD4` | `hx_chd`   | (Ever told) you had angina or coronary heart disease?
+`CVDSTRK3` | `hx_stroke` | (Ever told) you had a stroke?
+`ASTHMA3` | `hx_asthma` | (Ever told) you had asthma?
+`ASTHNOW` | `now_asthma` | Do you still have asthma? (only asked of those with Yes in `ASTHMA3`)
+`CHCSCNCR` | `hx_skinc` | (Ever told) you had skin cancer?
+`CHCOCNCR` | `hx_otherc` | (Ever told) you had any other types of cancer?
+`CHCCOPD1` | `hx_copd` | (Ever told) you have Chronic Obstructive Pulmonary Disease or COPD, emphysema or chronic bronchitis?
+`HAVARTH3` | `hx_arthr` | (Ever told) you have some form of arthritis, rheumatoid arthritis, gout, lupus, or fibromyalgia? (Arthritis diagnoses include: rheumatism, polymyalgia rheumatica; osteoarthritis (not osteporosis); tendonitis, bursitis, bunion, tennis elbow; carpal tunnel syndrome, tarsal tunnel syndrome; joint infection, etc.)
+`ADDEPEV2` | `hx_depress` | (Ever told) you that you have a depressive disorder, including depression, major depression, dysthymia, or minor depression?
+`CHCKIDNY` | `hx_kidney` | (Ever told) you have kidney disease? Do NOT include kidney stones, bladder infection or incontinence.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hx_mi = CVDINFR4,
+           hx_mi = replace(hx_mi, hx_mi %in% c(7, 9), NA),
+           hx_mi = replace(hx_mi, hx_mi == 2, 0),
+           hx_chd = CVDCRHD4,
+           hx_chd = replace(hx_chd, hx_chd %in% c(7, 9), NA),
+           hx_chd = replace(hx_chd, hx_chd == 2, 0),
+           hx_stroke = CVDSTRK3,
+           hx_stroke = replace(hx_stroke, hx_stroke %in% c(7, 9), NA),
+           hx_stroke = replace(hx_stroke, hx_stroke == 2, 0),
+           hx_asthma = ASTHMA3,
+           hx_asthma = replace(hx_asthma, hx_asthma %in% c(7, 9), NA),
+           hx_asthma = replace(hx_asthma, hx_asthma == 2, 0),
+           now_asthma = ASTHNOW,
+           now_asthma = replace(now_asthma, now_asthma %in% c(7, 9), NA),
+           now_asthma = replace(now_asthma, now_asthma == 2, 0),
+           hx_skinc = CHCSCNCR,
+           hx_skinc = replace(hx_skinc, hx_skinc %in% c(7, 9), NA),
+           hx_skinc = replace(hx_skinc, hx_skinc == 2, 0),
+           hx_otherc = CHCOCNCR,
+           hx_otherc = replace(hx_otherc, hx_otherc %in% c(7, 9), NA),
+           hx_otherc = replace(hx_otherc, hx_otherc == 2, 0),
+           hx_copd = CHCCOPD1,
+           hx_copd = replace(hx_copd, hx_copd %in% c(7, 9), NA),
+           hx_copd = replace(hx_copd, hx_copd == 2, 0),
+           hx_arthr = HAVARTH3,
+           hx_arthr = replace(hx_arthr, hx_arthr %in% c(7, 9), NA),
+           hx_arthr = replace(hx_arthr, hx_arthr == 2, 0),
+           hx_depress = ADDEPEV2,
+           hx_depress = replace(hx_depress, hx_depress %in% c(7, 9), NA),
+           hx_depress = replace(hx_depress, hx_depress == 2, 0),
+           hx_kidney = CHCKIDNY,
+           hx_kidney = replace(hx_kidney, hx_kidney %in% c(7, 9), NA),
+           hx_kidney = replace(hx_kidney, hx_kidney == 2, 0))
+```
+
+We definitely should have written a function to do that, of course.
+
+#### `_ASTHMS1` and its cleanup to `asthma`
+
+`_ASTHMS1` categorizes subjects by asthma status as:
+
+- 1 = Current
+- 2 = Former
+- 3 = Never
+- 9 = Don't Know / Not Sure / Refused / Missing
+
+We'll turn this into a factor with appropriate levels and NA information.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(asthma = fct_recode(
+        factor(`_ASTHMS1`),
+        "Current" = "1",
+        "Former" = "2",
+        "Never" = "3",
+        NULL = "9"))
+
+smart_ohio_raw |> count(`_ASTHMS1`, asthma)
+
+```
+
+#### `DIABETE3` and its cleanup to `hx_diabetes` and `dm_status`
+
+`DIABETE3`, the (Ever told) you have diabetes variable, is the response to "(Ever told) you have diabetes (If Yes and respondent is female, ask Was this only when you were pregnant?. If Respondent says pre-diabetes or borderline diabetes, use response code 4.)"
+
+- 1 = Yes
+- 2 = Yes, but female told only during pregnancy
+- 3 = No
+- 4 = No, pre-diabetes or borderline diabetes
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+I'll create one variable called `hx_diabetes` which is 1 if `DIABETE3` = 1, and 0 otherwise, with appropriate NAs, like our other variables. Then I'll create `dm_status` to include all of this information in a factor, but again recode the missing values properly.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hx_diabetes = DIABETE3,
+           hx_diabetes = replace(hx_diabetes, hx_diabetes %in% c(7, 9), NA),
+           hx_diabetes = replace(hx_diabetes, hx_diabetes %in% 2:4, 0),
+           dm_status = fct_recode(factor(DIABETE3),
+                                  "Diabetes" = "1",
+                                  "Pregnancy-Induced" = "2",
+                                  "No-Diabetes" = "3",
+                                  "Pre-Diabetes" = "4",
+                                  NULL = "7",
+                                  NULL = "9"),
+           dm_status = fct_relevel(dm_status,
+                                   "No-Diabetes",
+                                   "Pre-Diabetes",
+                                   "Pregnancy-Induced",
+                                   "Diabetes"))
+
+smart_ohio_raw |> count(DIABETE3, hx_diabetes, dm_status)
+```
+
+
+#### `DIABAGE2` and its cleanup to `dm_age`
+
+`DIABAGE2`, the Age When Told Diabetic variable, is the response to "How old were you when you were told you have diabetes?" It is asked only of people with `DIABETE3 = 1` (Yes).
+
+- The response is 1-97, with special values 98 for Don't Know/Not Sure and 99 for refused, with BLANK for missing or not asked. People 97 years of age and above were listed as 97.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(dm_age = DIABAGE2,
+           dm_age = replace(dm_age, dm_age > 97, NA))
+
+smart_ohio_raw |> count(DIABAGE2, dm_age) |> tail()
+```
+
+### Arthritis Burden (4 items)
+
+The first two measures are only asked of people with `hx_arthr` = 1, and are coded as:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+and we'll recode them to 1 = Yes, 0 = No, otherwise NA, as we've done previously.
+
+#### `LMTJOIN3` (Limited because of joint symptoms), and its cleanup to `arth_lims`
+
+This is the response to "Are you now limited in any way in any of your usual activities because of arthritis or joint symptoms?"
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(arth_lims = LMTJOIN3,
+           arth_lims = replace(arth_lims, arth_lims %in% c(7, 9), NA),
+           arth_lims = replace(arth_lims, arth_lims == 2, 0))
+
+smart_ohio_raw |> count(hx_arthr, LMTJOIN3, arth_lims)
+```
+
+#### `ARTHDIS2` (Does Arthritis Affect Whether You Work), and its cleanup to `arth_work`
+
+This is the response to "Do arthritis or joint symptoms now affect whether you work, the type of work you do or the amount of work you do?"
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(arth_work = ARTHDIS2,
+           arth_work = replace(arth_work, arth_work %in% c(7, 9), NA),
+           arth_work = replace(arth_work, arth_work == 2, 0))
+
+smart_ohio_raw |> count(ARTHDIS2, arth_work)
+```
+
+#### `ARTHSOCL` (Social Activities Limited Because of Joint Symptoms) and its cleanup to `arth_soc`
+
+This is the response to "During the past 30 days, to what extent has your arthritis or joint symptoms interfered with your normal social activities, such as going shopping, to the movies, or to religious or social gatherings?"
+
+The responses are:
+
+- 1 = A lot
+- 2 = A little
+- 3 = Not at all
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(arth_soc = fct_recode(factor(ARTHSOCL),
+                                  "A lot" = "1",
+                                  "A little" = "2",
+                                  "Not at all" = "3",
+                                  NULL = "7",
+                                  NULL = "9"))
+
+smart_ohio_raw |> count(ARTHSOCL, arth_soc)
+```
+
+#### `JOINPAI1` (How Bad Was Joint Pain - scale of 0-10) and its cleanup to `joint_pain`
+
+This is the response to the following question: "Please think about the past 30 days, keeping in mind all of your joint pain or aching and whether or not you have taken medication. On a scale of 0 to 10 where 0 is no pain or aching and 10 is pain or aching as bad as it can be, DURING THE PAST 30 DAYS, how bad was your joint pain ON AVERAGE?"
+
+The available values are 0-10, plus codes 77 (Don't Know / Not Sure), 99 (Refused) and BLANK.
+
+To clean up `JOINPAI1` to a new variable called `joint_pain`, we'll need to convince R that the 77 and 99 values are, like `BLANK`, in fact best interpreted as `NA`.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(joint_pain = JOINPAI1,
+           joint_pain = replace(joint_pain, joint_pain %in% c(77, 99), NA))
+
+smart_ohio_raw |> count(JOINPAI1, joint_pain) |> tail()
+```
+
+### Demographics (25 items)
+
+#### `_AGEG5YR`, which we'll edit into `agegroup`
+
+The `_AGEG5YR` variable is a calculated variable (by CDC) obtained from the subject's age. Since the `age` data are not available, we instead get these groupings, which we'll rearrange into the `agegroup` factor.
+
+`_AGEG5YR` | Age range | `agegroup` 
+----------: | ---------------------------- | ------- 
+1 | 18 <= AGE <= 24 | 18-24
+2 | 25 <= AGE <= 29 | 25-29
+3 | 30 <= AGE <= 34 | 30-34
+4 | 35 <= AGE <= 39 | 35-39
+5 | 40 <= AGE <= 44 | 40-44
+6 | 45 <= AGE <= 49 | 45-49
+7 | 50 <= AGE <= 54 | 50-54
+8 | 55 <= AGE <= 59 | 55-59
+9 | 60 <= AGE <= 64 | 60-64
+10 | 65 <= AGE <= 69 | 65-69
+11 | 70 <= AGE <= 74 | 70-74 
+12 | 75 <= AGE <= 79 | 75-79
+13 | AGE >= 80 | 80plus 
+14 | Don't Know, Refused or Missing | NA 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(agegroup = fct_recode(factor(`_AGEG5YR`),
+                                "18-24" = "1",
+                                "25-29" = "2",
+                                "30-34" = "3",
+                                "35-39" = "4",
+                                "40-44" = "5",
+                                "45-49" = "6",
+                                "50-54" = "7",
+                                "55-59" = "8",
+                                "60-64" = "9",
+                                "65-69" = "10",
+                                "70-74" = "11",
+                                "75-79" = "12",
+                                "80-96" = "13",
+                                NULL = "14"))
+
+smart_ohio_raw |> count(`_AGEG5YR`, agegroup)
+```
+
+#### `_MRACE1` recoded to `race`
+
+We'll create three variables describing race/ethnicity. The first comes from the `_MRACE1` variable categorized by CDC, and the available responses are:
+
+- 1 = White only
+- 2 = Black or African-American only
+- 3 = American Indian or Alaskan Native only
+- 4 = Asian only
+- 5 = Native Hawaiian or Pacific Islander only
+- 6 = Other race only
+- 7 = Multiracial
+- 77 = Don't know / Not Sure
+- 99 = Refused
+- BLANK = Missing
+
+We'll create a factor out of this information, with appropriate level names.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(race = fct_recode(factor(`_MRACE1`),
+                                  "White" = "1",
+                                  "Black or African A" = "2",
+                                  "Amer Indian or Alaskan" = "3",
+                                  "Asian" = "4", 
+                                  "Hawaiian or Pac Island" = "5",
+                                  "Other Race" = "6",
+                                  "Multiracial" = "7",
+                                  NULL = "77",
+                                  NULL = "99"))
+
+smart_ohio_raw |> count(`_MRACE1`, race)
+```
+
+#### `_HISPANC` recoded to `hispanic`
+
+The `_HISPANC` variable specifies whether or not the respondent is of Hispanic or Latinx origin. The available responses are:
+
+- 1 = Hispanic, Latinx or Spanish origin
+- 2 = Not of Hispanic, Latinx or Spanish origin
+- 9 = Don't Know, Refused, or Missing
+
+We'll turn the 9s into NA, and create an indicator variable (1 = Hispanic or Latinx, 0 = not)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hispanic = 2 - `_HISPANC`,
+           hispanic = replace(hispanic, hispanic < 0, NA))
+
+smart_ohio_raw |> count(`_HISPANC`, hispanic)
+```
+
+#### `_RACEGR3` recoded to `race_eth`
+
+The `_RACEGR3` variable is a five-level combination of race and ethnicity. The responses are:
+
+- 1 = White non-Hispanic
+- 2 = Black non-Hispanic
+- 3 = Other race non-Hispanic
+- 4 = Multiracial non-Hispanic
+- 5 = Hispanic
+- 9 = Don't Know / Not Sure / Refused
+
+We'll create a factor out of this information, with appropriate level names.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(race_eth = fct_recode(
+        factor(`_RACEGR3`),
+        "White non-Hispanic" = "1",
+        "Black non-Hispanic" = "2",
+        "Other race non-Hispanic" = "3",
+        "Multiracial non-Hispanic" = "4", 
+        "Hispanic" = "5",
+        NULL = "9"))
+
+smart_ohio_raw |> count(`_RACEGR3`, race_eth)
+```
+
+
+#### `SEX` recoded to `female`
+
+The available levels of `SEX` are:
+
+- 1 = Male
+- 2 = Female
+- 9 = Refused
+
+We'll recode that to `female` = 1 for Female, 0 Male, otherwise NA. Note the trick here is to subtract one from the coded `SEX` to get the desired `female`, but this requires that we move 8 to NA, rather than 9.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(female = SEX - 1,
+           female = replace(female, female == 8, NA))
+
+smart_ohio_raw |> count(SEX, female)
+```
+
+#### `MARITAL` status, revised to `marital`
+
+The available levels of `MARITAL` are:
+
+- 1 = Married
+- 2 = Divorced
+- 3 = Widowed
+- 4 = Separated
+- 5 = Never married
+- 6 = A member of an unmarried couple
+- 9 = Refused
+- BLANK = Not asked or missing
+
+We'll just turn this into a factor, and move 9 to NA.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(marital = fct_recode(factor(MARITAL),
+                                "Married" = "1",
+                                "Divorced" = "2",
+                                "Widowed" = "3",
+                                "Separated" = "4",
+                                "Never_Married" = "5",
+                                "Unmarried_Couple" = "6",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(MARITAL, marital)
+```
+
+#### `EDUCA` recoded to `educgroup`
+
+The available levels of `EDUCA` (Education Level) are responses to: "What is the highest grade or year of school you completed?"
+
+- 1 = Never attended school or only kindergarten
+- 2 = Grades 1 through 8 (Elementary)
+- 3 = Grades 9 through 11 (Some high school)
+- 4 = Grade 12 or GED (High school graduate)
+- 5 = College 1 year to 3 years (Some college or technical school)
+- 6 = College 4 years or more (College graduate)
+- 9 = Refused
+- BLANK = Not asked or missing
+
+We'll just turn this into a factor, and move 9 to NA.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(educgroup = fct_recode(factor(EDUCA),
+                                "Kindergarten" = "1",
+                                "Elementary" = "2",
+                                "Some_HS" = "3",
+                                "HS_Grad" = "4",
+                                "Some_College" = "5",
+                                "College_Grad" = "6",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(EDUCA, educgroup)
+```
+
+#### `RENTHOM1` recoded to `home_own`
+
+The available levels of `RENTHOM1` (Own or Rent Home) are responses to: "Do you own or rent your home? (Home is defined as the place where you live most of the time/the majority of the year.)"
+
+- 1 = Own
+- 2 = Rent
+- 3 = Other Arrangement
+- 7 = Don't know/Not Sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+We'll recode as `home_own` = 1 if they own their home, and 0 otherwise, and dealing with missingness properly.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(home_own = RENTHOM1,
+           home_own = replace(home_own, home_own %in% c(7,9), NA),
+           home_own = replace(home_own, home_own %in% c(2,3), 0))
+
+smart_ohio_raw |> count(RENTHOM1, home_own)
+```
+
+#### `CPDEMO1A` and its cleanup to `cell_own`
+
+`CPDEMO1A` is the response to "Including phones for business and personal use, do you have a cell phone for personal use?"
+
+Available responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+and we'll recode them to 1 = Yes, 0 = No, otherwise NA, as we've done previously.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(cell_own = 2 - CPDEMO1A,
+           cell_own = replace(cell_own, cell_own < 0, NA))
+
+smart_ohio_raw |> count(CPDEMO1A, cell_own)
+```
+
+#### `VETERAN3` and its cleanup to `veteran`
+
+`VETERAN3`, the Are You A Veteran variable, is the response to "Have you ever served on active duty in the United States Armed Forces, either in the regular military or in a National Guard or military reserve unit? (Active duty does not include training for the Reserves or National Guard, but DOES include activation, for example, for the Persian Gulf War.)"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(veteran = VETERAN3,
+           veteran = replace(veteran, veteran %in% c(7, 9), NA),
+           veteran = replace(veteran, veteran == 2, 0))
+
+smart_ohio_raw |> count(VETERAN3, veteran)
+```
+
+#### `EMPLOY1` and its cleanup to `employment`
+
+`EMPLOY1`, the Employment Status variable, is the response to "Are you currently ... ?"
+
+- 1 = Employed for wages
+- 2 = Self-employed
+- 3 = Out of work for 1 year or more
+- 4 = Out of work for less than 1 year
+- 5 = A homemaker
+- 6 = A student
+- 7 = Retired
+- 8 = Unable to work
+- 9 = Refused
+- BLANK = Not asked or missing
+
+We'll just turn this into a factor, and move 9 to NA.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(employment = fct_recode(factor(EMPLOY1),
+                                "Employed_for_wages" = "1",
+                                "Self-employed" = "2",
+                                "Outofwork_1yearormore" = "3",
+                                "Outofwork_lt1year" = "4",
+                                "Homemaker" = "5",
+                                "Student" = "6",
+                                "Retired" = "7",
+                                "Unable_to_work" = "8",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(EMPLOY1, employment)
+```
+
+#### `CHILDREN` and its cleanup to `kids`
+
+`CHILDREN`, the Number of Children in Household variable, is the response to "How many children less than 18 years of age live in your household?"
+
+- 1-87 = legitimate responses
+- 88 = None
+- 99 = Refused
+- BLANK = Not asked or missing
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(kids = CHILDREN,
+           kids = replace(kids, kids == 99, NA),
+           kids = replace(kids, kids == 88, 0))
+
+smart_ohio_raw |> count(CHILDREN, kids) |> tail()
+```
+
+#### `INCOME2` to `incomegroup`
+
+The available levels of `INCOME2` (Income Level) are responses to: "Is your annual household income from all sources ..."
+
+- 1 = Less than \$10,000
+- 2 = \$10,000 to less than \$15,000
+- 3 = \$15,000 to less than \$20,000
+- 4 = \$20,000 to less than \$25,000
+- 5 = \$25,000 to less than \$35,000
+- 6 = \$35,000 to less than \$50,000
+- 7 = \$50,000 to less than \$75,000
+- 8 = \$75,000 or more
+- 77 = Don't know/Not sure
+- 99 = Refused
+- BLANK = Not asked or missing
+
+We'll just turn this into a factor, and move 77 and 99 to NA.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(incomegroup = fct_recode(factor(`INCOME2`),
+                                "0-9K" = "1",
+                                "10-14K" = "2",
+                                "15-19K" = "3",
+                                "20-24K" = "4",
+                                "25-34K" = "5",
+                                "35-49K" = "6",
+                                "50-74K" = "7",
+                                "75K+" = "8",
+                                NULL = "77",
+                                NULL = "99"))
+
+smart_ohio_raw |> count(`INCOME2`, incomegroup)
+```
+
+#### `INTERNET` and its cleanup to `internet30`
+
+`INTERNET`, the Internet use in the past 30 days variable, is the response to "Have you used the internet in the past 30 days?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(internet30 = INTERNET,
+           internet30 = replace(internet30, internet30 %in% c(7, 9), NA),
+           internet30 = replace(internet30, internet30 == 2, 0))
+
+smart_ohio_raw |> count(INTERNET, internet30)
+```
+
+#### `WTKG3` is `weight_kg`
+
+`WTKG3` is computed by CDC, as the respondent's weight in kilograms with two implied decimal places. We calculate the actual weight in kg, with the following:
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(weight_kg = WTKG3/100)
+
+smart_ohio_raw |> count(WTKG3, weight_kg) |> tail()
+```
+
+#### `HEIGHT3` is replaced with `height_m`
+
+`HEIGHT3` is strangely gathered to allow people to specify their height in either feet and inches or in meters and centimeters.
+
+- 200-711 indicates height in feet (first digit) and inches (second two digits)
+- 9000 - 9998 indicates  height in meters (second digit) and centimeters (last two digits)
+- 7777 = Don't know/Not sure
+- 9999 = Refused
+
+Note that there is one impossible value of 575 in the data set. We'll make that an NA, and we'll also make NA any heights below 3 feet, or above 2.24 meters. Specifically, we calculate the actual height in meters, with the following:
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(height_m = case_when(
+        HEIGHT3 >= 300 & HEIGHT3 <= 511 ~ round((12*floor(HEIGHT3/100) + (HEIGHT3 - 100*floor(HEIGHT3/100)))*0.0254,2),
+        HEIGHT3 >= 600 & HEIGHT3 <= 711 ~ round((12*floor(HEIGHT3/100) + (HEIGHT3 - 100*floor(HEIGHT3/100)))*0.0254,2),
+        HEIGHT3 >= 9000 & HEIGHT3 <= 9224 ~ ((HEIGHT3 - 9000)/100)))
+
+smart_ohio_raw |> count(HEIGHT3, height_m) |> tail()
+```
+
+#### `bmi` is calculated from `height_m` and `weight_kg`
+
+We'll calculate body-mass index from height and weight.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(bmi = round(weight_kg/(height_m)^2,2))
+
+smart_ohio_raw |> count(height_m, weight_kg, bmi)# |> tail()
+```
+
+#### `bmigroup` is calculated from `bmi`
+
+We'll then divide the respondents into adult BMI categories, in the usual way.
+
+- BMI < 18.5 indicates underweight
+- BMI from 18.5 up to 25 indicates normal weight
+- BMI from 25 up to 30 indicates overweight
+- BMI of 30 and higher indicates obesity
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(bmigroup = factor(cut2(as.numeric(bmi), 
+                           cuts = c(18.5, 25.0, 30.0))))
+
+smart_ohio_raw |> count(bmigroup)
+```
+
+#### `PREGNANT` and its cleanup to `pregnant`
+
+`PREGNANT`, the Pregnancy Status variable, is the response to "To your knowledge, are you now pregnant?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing (includes SEX = male)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(pregnant = PREGNANT,
+           pregnant = replace(pregnant, pregnant %in% c(7, 9), NA),
+           pregnant = replace(pregnant, pregnant == 2, 0))
+
+smart_ohio_raw |> count(PREGNANT, pregnant)
+```
+
+#### `DEAF` and its cleanup to `deaf`
+
+`DEAF`, the Are you deaf or do you have serious difficulty hearing variable, is the response to "Are you deaf or do you have serious difficulty hearing?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(deaf = DEAF,
+           deaf = replace(deaf, deaf %in% c(7, 9), NA),
+           deaf = replace(deaf, deaf == 2, 0))
+
+smart_ohio_raw |> count(DEAF, deaf)
+```
+
+#### `BLIND` and its cleanup to `blind`
+
+`BLIND`, the Blind or Difficulty seeing variable, is the response to "Are you blind or do you have serious difficulty seeing, even when wearing glasses?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(blind = BLIND,
+           blind = replace(blind, blind %in% c(7, 9), NA),
+           blind = replace(blind, blind == 2, 0))
+
+smart_ohio_raw |> count(BLIND, blind)
+```
+
+#### `DECIDE` and its cleanup to `decide`
+
+`DECIDE`, the Difficulty Concentrating or Remembering variable, is the response to "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(decide = DECIDE,
+           decide = replace(decide, decide %in% c(7, 9), NA),
+           decide = replace(decide, decide == 2, 0))
+
+smart_ohio_raw |> count(DECIDE, decide)
+```
+
+#### `DIFFWALK` and its cleanup to `diffwalk`
+
+`DIFFWALK`, the Difficulty Walking or Climbing Stairs variable, is the response to "Do you have serious difficulty walking or climbing stairs?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(diffwalk = DIFFWALK,
+           diffwalk = replace(diffwalk, diffwalk %in% c(7, 9), NA),
+           diffwalk = replace(diffwalk, diffwalk == 2, 0))
+
+smart_ohio_raw |> count(DIFFWALK, diffwalk)
+```
+
+#### `DIFFDRES` and its cleanup to `diffdress`
+
+`DIFFDRES`, the Difficulty Dressing or Bathing variable, is the response to "Do you have difficulty dressing or bathing?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(diffdress = DIFFDRES,
+           diffdress = replace(diffdress, diffdress %in% c(7, 9), NA),
+           diffdress = replace(diffdress, diffdress == 2, 0))
+
+smart_ohio_raw |> count(DIFFDRES, diffdress)
+```
+
+#### `DIFFALON` and its cleanup to `diffalone`
+
+`DIFFALON`, the Difficulty Doing Errands Alone variable, is the response to "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(diffalone = DIFFALON,
+           diffalone = replace(diffalone, diffalone %in% c(7, 9), NA),
+           diffalone = replace(diffalone, diffalone == 2, 0))
+
+smart_ohio_raw |> count(DIFFALON, diffalone)
+```
+
+### Tobacco Use (2 items)
+
+#### `SMOKE100` and its cleanup to `smoke100`
+
+`SMOKE100`, the Smoked at Least 100 Cigarettes variable, is the response to "Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(smoke100 = SMOKE100,
+           smoke100 = replace(smoke100, smoke100 %in% c(7, 9), NA),
+           smoke100 = replace(smoke100, smoke100 == 2, 0))
+
+smart_ohio_raw |> count(SMOKE100, smoke100)
+```
+
+#### `_SMOKER3` and its cleanup to `smoker`
+
+`_SMOKER3`, is a calculated variable which categorizes subjects by their smoking status:
+
+- 1 = Current smoker who smokes daily
+- 2 = Current smoker but not every day
+- 3 = Former smoker
+- 4 = Never smoked
+- 9 = Don't Know / Refused / Missing
+
+We'll reclassify this as a factor with appropriate labels and NAs.
+
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(smoker = fct_recode(factor(`_SMOKER3`),
+                                "Current_daily" = "1",
+                                "Current_not_daily" = "2",
+                                "Former" = "3",
+                                "Never" = "4",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(`_SMOKER3`, smoker)
+```
+
+### E-Cigarettes (2 items)
+
+#### `ECIGARET` and its cleanup to `ecig_ever`
+
+`ECIGARET`, the Ever used an e-cigarette variable, is the response to "Have you ever used an e-cigarette or other electronic vaping product, even just one time, in your entire life?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(ecig_ever = ECIGARET,
+           ecig_ever = replace(ecig_ever, ecig_ever %in% c(7, 9), NA),
+           ecig_ever = replace(ecig_ever, ecig_ever == 2, 0))
+
+smart_ohio_raw |> count(ECIGARET, ecig_ever)
+```
+
+#### `_ECIGSTS` and its cleanup to `ecigs`
+
+`_ECIGSTS`, is a calculated variable which categorizes subjects by their smoking status:
+
+- 1 = Current and uses daily
+- 2 = Current user but not every day
+- 3 = Former user
+- 4 = Never used e-cigarettes
+- 9 = Don't Know / Refused / Missing
+
+We'll reclassify this as a factor with appropriate labels and NAs.
+
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(ecigs = fct_recode(factor(`_ECIGSTS`),
+                                "Current_daily" = "1",
+                                "Current_not_daily" = "2",
+                                "Former" = "3",
+                                "Never" = "4",
+                                NULL = "9"))
+
+smart_ohio_raw |> count(`_ECIGSTS`, ecigs)
+```
+
+
+### Alcohol Consumption (6 items)
+
+#### `ALCDAY5` and its cleanup to `alcdays`
+
+`ALCDAY5`, the Days in past 30 had alcoholic beverage variable, is the response to "During the past 30 days, how many days per week or per month did you have at least one drink of any alcoholic beverage such as beer, wine, a malt beverage or liquor?"
+
+- 101-107 = # of days per week (101 = 1 day per week, 107 = 7 days per week)
+- 201-230 = # of days in past 30 days (201 = 1 day in last 30, 230 = 30 days in last 30)
+- 777 = Don't know/Not sure
+- 888 = No drinks in past 30 days
+- 999 = Refused
+- BLANK = Not asked or Missing
+
+We're going to convert this to a single numeric value. Answers in days per week (in the past 7 days) will be converted (after rounding) to days in the past 30. This is a little bit of a mess, really, but we can do it.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(alcdays = as.numeric(ALCDAY5)) |>
+    mutate(alcdays = replace(alcdays, alcdays == 888, 0),
+           alcdays = replace(alcdays, alcdays %in% c(777, 999), NA)) |>
+    mutate(alcdays = case_when(ALCDAY5 > 199 & ALCDAY5 < 231 ~ ALCDAY5 - 200,
+                               ALCDAY5 > 100 & ALCDAY5 < 108 ~ round((ALCDAY5 - 100)*30/7,0),
+                               TRUE ~ alcdays))
+
+smart_ohio_raw |> count(ALCDAY5, alcdays)
+```
+
+#### `AVEDRNK2` and its cleanup to `avgdrinks`
+
+`AVEDRNK2`, the Avg alcoholic drinks per day in past 30 variable, is the response to "One drink is equivalent to a 12-ounce beer, a 5-ounce glass of wine, or a drink with one shot of liquor. During the past 30 days, on the days when you drank, about how many drinks did you drink on the average? (A 40 ounce beer would count as 3 drinks, or a cocktail drink with 2 shots would count as 2 drinks.)"
+
+- 1-76 = # of drinks per day
+- 77 = Don't know/Not sure
+- 99 = Refused
+- BLANK = Not asked or Missing (always happens when ALCDAY5 = 777, 888 or 999)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(avgdrinks = AVEDRNK2,
+           avgdrinks = replace(avgdrinks, avgdrinks > 76, NA))
+
+smart_ohio_raw |> count(AVEDRNK2, avgdrinks) |> tail()
+```
+
+#### `MAXDRNKS` and its cleanup to `maxdrinks`
+
+`MAXDRINKS`, the most drinks on a single occasion in the past 30 days variable, is the response to "During the past 30 days, what is the largest number of drinks you had on any occasion?"
+
+- 1-76 = # of drinks
+- 77 = Don't know/Not sure
+- 99 = Refused
+- BLANK = Not asked or Missing (always happens when ALCDAY5 = 777, 888 or 999)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(maxdrinks = MAXDRNKS,
+           maxdrinks = replace(maxdrinks, maxdrinks > 76, NA))
+
+smart_ohio_raw |> count(MAXDRNKS, maxdrinks) |> tail()
+```
+
+#### `_RFBING5` and its cleanup to `binge`
+
+`_RFBING5` identifies binge drinkers (males having five or more drinks on one occasion, females having four or more drinks on one occasion in the past 30 days)
+
+The values are 
+
+- 1 = No
+- 2 = Yes
+- 9 = Don't Know / Refused / Missing
+
+People who reported no `alcdays` are reported here as "No", so we'll adjust this into an indicator variable, and create the necessary NAs.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(binge = `_RFBING5` - 1,
+           binge = replace(binge, binge > 1, NA))
+
+smart_ohio_raw |> count(`_RFBING5`, binge)
+```
+
+#### `_DRNKWEK` and its cleanup to `drinks_wk`
+
+`_DRNKWEK` provides the computed number of alcoholic drinks per week, with two implied decimal places. The code 99900 is used for "Don't know / Not sure / Refused / Missing" so we'll fix that, and also divide by 100 to get an average with a decimal point. 
+
+**Note**: We're also going to treat all results of 100 or more drinks per week as incorrect, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(drinks_wk = `_DRNKWEK` / 100,
+           drinks_wk = replace(drinks_wk, drinks_wk > 99, NA))
+
+smart_ohio_raw |> count(`_DRNKWEK`, drinks_wk) |> tail(12)
+```
+
+#### `_RFDRHV5` and its cleanup to `drink_heavy`
+
+`_RFDRHV5` identifies heavy drinkers (males having 14 or more drinks per week, females having 7 or more drinks per week)
+
+The values are 
+
+- 1 = No
+- 2 = Yes
+- 9 = Don't Know / Refused / Missing
+
+People who reported no `alcdays` are reported here as "No", so we'll adjust this into an indicator variable, and create the necessary NAs.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(drink_heavy = `_RFDRHV5` - 1,
+           drink_heavy = replace(drink_heavy, drink_heavy > 1, NA))
+
+smart_ohio_raw |> count(`_RFDRHV5`, drink_heavy)
+```
+
+### Fruits and Vegetables (8 items)
+
+#### `_FRUTSU1` and its cleanup to `fruit_day`
+
+`_FRUTSU1` provides the computed number of fruit servings consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here, following some CDC procedures.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(fruit_day = `_FRUTSU1` / 100,
+           fruit_day = replace(fruit_day, fruit_day > 16, NA))
+
+smart_ohio_raw |> count(`_FRUTSU1`, fruit_day) |> tail()
+```
+
+#### `_VEGESU1` and its cleanup to `veg_day`
+
+`_VEGESU1` provides the computed number of vegetable servings consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 23 servings per day as implausible, and thus indicate them as missing data here, following some CDC procedures.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(veg_day = `_VEGESU1` / 100,
+           veg_day = replace(veg_day, veg_day > 23, NA))
+
+smart_ohio_raw |> count(`_VEGESU1`, veg_day) |> tail()
+```
+
+#### `FTJUDA2_` and its cleanup to `eat_juice`
+
+`FTJUDA2_` provides the servings of fruit juice consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_juice = `FTJUDA2_` / 100,
+           eat_juice = replace(eat_juice, eat_juice > 16, NA))
+
+smart_ohio_raw |> count(`FTJUDA2_`, eat_juice) |> tail()
+```
+
+#### `FRUTDA2_` and its cleanup to `eat_fruit`
+
+`FRUTDA2_` provides the servings of fruit consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_fruit = `FRUTDA2_` / 100,
+           eat_fruit = replace(eat_fruit, eat_fruit > 16, NA))
+
+smart_ohio_raw |> count(`FRUTDA2_`, eat_fruit) |> tail()
+```
+
+#### `GRENDA1_` and its cleanup to `eat_greenveg`
+
+`GRENDA1_` provides the servings of dark green vegetables consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_greenveg = `GRENDA1_` / 100,
+           eat_greenveg = replace(eat_greenveg, eat_greenveg > 16, NA))
+
+smart_ohio_raw |> count(`GRENDA1_`, eat_greenveg) |> tail()
+```
+
+#### `FRNCHDA_` and its cleanup to `eat_fries`
+
+`FRNCHDA_` provides the servings of french fries consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_fries = `FRNCHDA_` / 100,
+           eat_fries = replace(eat_fries, eat_fries > 16, NA))
+
+smart_ohio_raw |> count(`FRNCHDA_`, eat_fries) |> tail()
+```
+
+#### `POTADA1_` and its cleanup to `eat_potato`
+
+`POTADA1_` provides the servings of potatoes consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_potato = `POTADA1_` / 100,
+           eat_potato = replace(eat_potato, eat_potato > 16, NA))
+
+smart_ohio_raw |> count(`POTADA1_`, eat_potato) |> tail()
+```
+
+#### `VEGEDA2_` and its cleanup to `eat_otherveg`
+
+`VEGEDA2_` provides the servings of other vegetables consumed per day, with two implied decimal places. We'll divide by 100 to insert the decimal point. 
+
+**Note**: We're also going to treat all results exceeding 16 servings per day as implausible, and thus indicate them as missing data here.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(eat_otherveg = `VEGEDA2_` / 100,
+           eat_otherveg = replace(eat_otherveg, eat_otherveg > 16, NA))
+
+smart_ohio_raw |> count(`VEGEDA2_`, eat_otherveg) |> tail()
+```
+
+### Exercise and Physical Activity (8 items)
+
+#### `_TOTINDA` and its cleanup to `exerany` 
+
+`_TOTINDA`, the Exercise in Past 30 Days variable, is the response to "During the past month, other than your regular job, did you participate in any physical activities or exercises such as running, calisthenics, golf, gardening, or walking for exercise?"
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+- BLANK = Not asked or missing
+
+This is just like `HLTHPLAN`.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(exerany = `_TOTINDA`,
+           exerany = replace(exerany, exerany %in% c(7, 9), NA),
+           exerany = replace(exerany, exerany == 2, 0))
+
+smart_ohio_raw |> count(`_TOTINDA`, exerany)
+```
+
+#### `_PACAT1` and its cleanup to `activity`
+
+`_PACAT1` contains physical activity categories, estimated from responses to the BRFSS. The categories are:
+
+- 1 = Highly Active
+- 2 = Active
+- 3 = Insufficiently Active
+- 4 = Inactive
+- 9 = Don't Know / Not Sure / Refused / Missing
+
+So we'll create a factor.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(activity = factor(`_PACAT1`),
+           activity = fct_recode(activity,
+                               "Highly_Active" = "1",
+                               "Active" = "2",
+                               "Insufficiently_Active" = "3",
+                               "Inactive" = "4",
+                               NULL = "9"))
+
+smart_ohio_raw |> count(`_PACAT1`, activity)
+```
+
+#### `_PAINDX1` and its cleanup to `rec_aerobic`
+
+`_PAINDX1` indicates whether the respondent's stated levels of physical activity meet recommendations for aerobic activity. The responses are:
+
+- 1 = Yes
+- 2 = No
+- 9 = Don't know/Not sure/Refused/Missing
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(rec_aerobic = 2 - `_PAINDX1`,
+           rec_aerobic = replace(rec_aerobic, rec_aerobic < 0, NA))
+
+smart_ohio_raw |> count(`_PAINDX1`, rec_aerobic)
+```
+
+#### `_PASTRNG` and its cleanup to `rec_strength`
+
+`_PASTRNG` indicates whether the respondent's stated levels of physical activity meet recommendations for strength-building activity. The responses are:
+
+- 1 = Yes
+- 2 = No
+- 9 = Don't know/Not sure/Refused/Missing
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(rec_strength = 2 - `_PASTRNG`,
+           rec_strength = replace(rec_strength, rec_strength < 0, NA))
+
+smart_ohio_raw |> count(`_PASTRNG`, rec_strength)
+```
+
+#### `EXRACT11` and its cleanup to `exer1_type`
+
+Respondents are asked "What type of physical activity or exercise did you spend the most time doing during the past month?" and these responses are gathered into a set of 76 named categories, including an "other" category. Codes 77 (Don't Know / Not Sure) and 99 (Refused) are dropped into NA in my code below, and Code 98 ("Other type of activity") remains. Then I went through the tedious work of converting the factor levels from numbers to names, following the value labels provided by BRFSS. 
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(exer1_type = factor(EXRACT11),
+           exer1_type = fct_recode(
+               exer1_type,
+               "Active Gaming Devices" = "1",
+               "Aerobics video or class" = "2",
+               "Backpacking" = "3",
+               "Badminton" = "4",
+               "Basketball" = "5",
+               "Bicycling machine" = "6",
+               "Bicycling" = "7",
+               "Boating" = "8",
+               "Bowling" = "9",
+               "Boxing" = "10",
+               "Calisthenics" = "11",
+               "Canoeing" = "12",
+               "Carpentry" = "13",
+               "Dancing" = "14",
+               "Elliptical machine" = "15",
+               "Fishing" = "16",
+               "Frisbee" = "17",
+               "Gardening" = "18",
+               "Golf with cart" = "19",
+               "Golf without cart" = "20",
+               "Handball" = "21",
+               "Hiking" = "22",
+               "Hockey" = "23",
+               "Horseback riding" = "24",
+               "Hunting large game" = "25",
+               "Hunting small game" = "26",
+               "Inline skating" = "27",
+               "Jogging" = "28",
+               "Lacrosse" = "29",
+               "Mountain climbing" = "30",
+               "Mowing lawn" = "31",
+               "Paddleball" = "32",
+               "Painting house" = "33",
+               "Pilates" = "34",
+               "Racquetball" = "35",
+               "Raking lawn" = "36",
+               "Running" = "37",
+               "Rock climbing" = "38",
+               "Rope skipping" = "39",
+               "Rowing machine" = "40",
+               "Rugby" = "41",
+               "Scuba diving" = "42",
+               "Skateboarding" = "43",
+               "Skating" = "44",
+               "Sledding" = "45",
+               "Snorkeling" = "46",
+               "Snow blowing" = "47",
+               "Snow shoveling" = "48",
+               "Snow skiing" = "49",
+               "Snowshoeing" = "50",
+               "Soccer" = "51",
+               "Softball/Baseball" = "52",
+               "Squash" = "53",
+               "Stair Climbing" = "54",
+               "Stream fishing" = "55",
+               "Surfing" = "56",
+               "Swimming" = "57",
+               "Swimming in laps" = "58",
+               "Table tennis" = "59",
+               "Tai Chi" = "60",
+               "Tennis" = "61",
+               "Touch football" = "62",
+               "Volleyball" = "63",
+               "Walking" = "64",
+               "Waterskiing" = "66",
+               "Weight lifting" = "67",
+               "Wrestling" = "68",
+               "Yoga" = "69",
+               "Child Care" = "71",
+               "Farm Work" = "72",
+               "Household Activities" = "73",
+               "Martial Arts" = "74",
+               "Upper Body Cycle" = "75",
+               "Yard Work" = "76",
+               "Other Activities" = "98",
+               NULL = "77", 
+               NULL = "99")
+    )
+```
+
+The warning generated here is caused by the fact that some of the available types of exercise were not mentioned by people in our sample. Looking at the last few results, we can see how many people fell into several categories.
+
+```{r}
+smart_ohio_raw |> count(EXRACT11, exer1_type) |> tail()
+```
+
+The most common activities are:
+
+```{r}
+smart_ohio_raw |> count(exer1_type, sort = TRUE) |> head(10)
+```
+
+#### `EXRACT21` and its cleanup to `exer2_type`
+
+As a follow-up, respondents are asked "What other type of physical activity gave you the next most exercise during the past month?" and these responses are also gathered into the same set of 76 named categories, including an "other" category, but now also adding a "No Other Activity" category (code 88). Codes 77 (Don't Know / Not Sure) and 99 (Refused) are dropped into NA in my code below, and Code 98 ("Other type of activity") remains. Then I went through the tedious work of converting the factor levels from numbers to names, following the value labels provided by BRFSS. I'm sure there's a better way to do this.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(exer2_type = factor(EXRACT21),
+           exer2_type = fct_recode(
+               exer2_type,
+               "Active Gaming Devices" = "1",
+               "Aerobics video or class" = "2",
+               "Backpacking" = "3",
+               "Badminton" = "4",
+               "Basketball" = "5",
+               "Bicycling machine" = "6",
+               "Bicycling" = "7",
+               "Boating" = "8",
+               "Bowling" = "9",
+               "Boxing" = "10",
+               "Calisthenics" = "11",
+               "Canoeing" = "12",
+               "Carpentry" = "13",
+               "Dancing" = "14",
+               "Elliptical machine" = "15",
+               "Fishing" = "16",
+               "Frisbee" = "17",
+               "Gardening" = "18",
+               "Golf with cart" = "19",
+               "Golf without cart" = "20",
+               "Handball" = "21",
+               "Hiking" = "22",
+               "Hockey" = "23",
+               "Horseback riding" = "24",
+               "Hunting large game" = "25",
+               "Hunting small game" = "26",
+               "Inline skating" = "27",
+               "Jogging" = "28",
+               "Lacrosse" = "29",
+               "Mountain climbing" = "30",
+               "Mowing lawn" = "31",
+               "Paddleball" = "32",
+               "Painting house" = "33",
+               "Pilates" = "34",
+               "Racquetball" = "35",
+               "Raking lawn" = "36",
+               "Running" = "37",
+               "Rock climbing" = "38",
+               "Rope skipping" = "39",
+               "Rowing machine" = "40",
+               "Rugby" = "41",
+               "Scuba diving" = "42",
+               "Skateboarding" = "43",
+               "Skating" = "44",
+               "Sledding" = "45",
+               "Snorkeling" = "46",
+               "Snow blowing" = "47",
+               "Snow shoveling" = "48",
+               "Snow skiing" = "49",
+               "Snowshoeing" = "50",
+               "Soccer" = "51",
+               "Softball/Baseball" = "52",
+               "Squash" = "53",
+               "Stair Climbing" = "54",
+               "Stream fishing" = "55",
+               "Surfing" = "56",
+               "Swimming" = "57",
+               "Swimming in laps" = "58",
+               "Table tennis" = "59",
+               "Tai Chi" = "60",
+               "Tennis" = "61",
+               "Touch football" = "62",
+               "Volleyball" = "63",
+               "Walking" = "64",
+               "Waterskiing" = "66",
+               "Weight lifting" = "67",
+               "Wrestling" = "68",
+               "Yoga" = "69",
+               "Child Care" = "71",
+               "Farm Work" = "72",
+               "Household Activities" = "73",
+               "Martial Arts" = "74",
+               "Upper Body Cycle" = "75",
+               "Yard Work" = "76",
+               "No Other Activity" = "88",
+               "Other Activities" = "98",
+               NULL = "77", 
+               NULL = "99")
+    )
+
+smart_ohio_raw |> count(EXRACT21, exer2_type) |> tail()
+```
+
+The most common activity types in this group are:
+
+```{r}
+smart_ohio_raw |> count(exer2_type, sort = TRUE) |> head(10)
+```
+
+#### `_MINAC11` and its cleanup to `exer1_min`
+
+`_MINAC11` is minutes of physical activity per week for the first activity (listed as `exer1_type` above.) Since there are only about 10,080 minutes in a typical week, we'll treat as implausible any values larger than 4200 minutes (which would indicate 70 hours per week.)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(exer1_min = `_MINAC11`,
+           exer1_min = replace(exer1_min, exer1_min > 4200, NA))
+
+smart_ohio_raw |> count(`_MINAC11`, exer1_min) |> tail()
+```
+
+#### `_MINAC21` and its cleanup to `exer2_min`
+
+`_MINAC21` is minutes of physical activity per week for the second activity (listed as `exer2_type` above.) Again, we'll treat as implausible any values larger than 4200 minutes (which would indicate 70 hours per week.)
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(exer2_min = `_MINAC21`,
+           exer2_min = replace(exer2_min, exer2_min > 4200, NA))
+
+smart_ohio_raw |> count(`_MINAC21`, exer2_min) |> tail()
+```
+
+### Seatbelt Use (1 item)
+
+#### `SEATBELT` and its cleanup to `seatbelt`
+
+This question asks "How often do you use seat belts when you drive or ride in a car?" Possible responses are:
+
+- 1 = Always
+- 2 = Nearly always
+- 3 = Sometimes
+- 4 = Seldom
+- 5 = Never
+- 7 = Don't know / Not sure
+- 8 = Never drive or ride in a car
+- 9 = Refused
+
+We'll treat codes 7, 8 and 9 as NA, and turn this into a factor.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(seatbelt = fct_recode(factor(SEATBELT),
+                                  "Always" = "1",
+                                  "Nearly_always" = "2",
+                                  "Sometimes" = "3",
+                                  "Seldom" = "4", 
+                                  "Never" = "5",
+                                  NULL = "7",
+                                  NULL = "8",
+                                  NULL = "9"))
+
+smart_ohio_raw |> count(SEATBELT, seatbelt)
+```
+
+
+### Immunization (3 items)
+
+#### `FLUSHOT6` and its cleanup to `vax_flu`
+
+`FLUSHOT6` gives the response to "During the past 12 months, have you had either a flu shot or a flu vaccine that was sprayed in your nose?" The responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(vax_flu = 2 - FLUSHOT6,
+           vax_flu = replace(vax_flu, vax_flu < 0, NA))
+
+smart_ohio_raw |> count(FLUSHOT6, vax_flu)
+```
+
+#### `PNEUVAC3` and its cleanup to `vax_pneumo`
+
+`PNEUVAC3` gives the response to "A pneumonia shot or pneumococcal vaccine is usually given only once or twice in a person's lifetime and is different from the flu shot. Have you ever had a pneumonia shot?" The responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(vax_pneumo = 2 - PNEUVAC3,
+           vax_pneumo = replace(vax_pneumo, vax_pneumo < 0, NA))
+
+smart_ohio_raw |> count(PNEUVAC3, vax_pneumo)
+```
+
+#### `SHINGLE2` and its cleanup to `vax_shingles`
+
+`SHINGLE2` gives the response to "Have you ever had the shingles or zoster vaccine?" The responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(vax_shingles = 2 - SHINGLE2,
+           vax_shingles = replace(vax_shingles, vax_shingles < 0, NA))
+
+smart_ohio_raw |> count(SHINGLE2, vax_shingles)
+```
+
+### HIV/AIDS (2 items)
+
+#### `HIVTST6` and its cleanup to `hiv_test`
+
+`HIVTST6` gives the response to "Have you ever been tested for HIV? Do not count tests you may have had as part of a blood donation. Include testing fluid from your mouth." The responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hiv_test = 2 - HIVTST6,
+           hiv_test = replace(hiv_test, hiv_test < 0, NA))
+
+smart_ohio_raw |> count(HIVTST6, hiv_test)
+```
+
+#### `HIVRISK5` and its cleanup to `hiv_risk`
+
+`HIVRISK5` gives the response to "I am going to read you a list. When I am done, please tell me if any of the situations apply to you. You do not need to tell me which one. You have injected any drug other than those prescribed for you in the past year. You have been treated for a sexually transmitted disease or STD in the past year. You have given or received money or drugs in exchange for sex in the past year." The responses are:
+
+- 1 = Yes
+- 2 = No
+- 7 = Don't know/Not sure
+- 9 = Refused
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> 
+    mutate(hiv_risk = 2 - HIVRISK5,
+           hiv_risk = replace(hiv_risk, hiv_risk < 0, NA))
+
+smart_ohio_raw |> count(HIVRISK5, hiv_risk)
+```
+
+## Imputing Age and Income as Quantitative from Thin Air
+
+This section is purely for teaching purposes. I would never use the variables created in this section for research work.
+
+### `age_imp`: Imputing Age Data
+
+I want a quantitative age variable, so I'm going to create an imputed `age_imp` value for each subject based on their `agegroup`. For each age group, I will assume that each of the ages represented by a value in that age group will be equally likely, and will draw from the relevant uniform distribution to impute age. 
+
+```{r create_age_imp, warning = FALSE}
+set.seed(2020432002)
+
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(age_low = as.numeric(str_sub(as.character(agegroup), 1, 2))) |>
+    mutate(age_high = as.numeric(str_sub(as.character(agegroup), 4, 5))) |>
+    rowwise() |>
+    mutate(age_imp = ifelse(!is.na(agegroup), 
+                            round(runif(1, min = age_low, max = age_high),0),
+                            NA)) 
+
+smart_ohio_raw |> count(agegroup, age_imp) #|> tail()
+```
+
+Here is a histogram of the `age_imp` variable.
+
+```{r}
+#| warning: false
+ggplot(smart_ohio_raw, aes(x = age_imp)) +
+    geom_histogram(fill = "navy", col = "white",
+                   binwidth = 1) +
+    scale_x_continuous(breaks = c(18, 25, 35, 45, 55, 65, 75, 85, 96)) +
+    labs(x = "Imputed Age in Years",
+         title = paste0("Imputed Income: ", 
+                        sum(is.na(smart_ohio_raw$age_imp)), 
+                        " respondents have missing age group"))
+```
+
+
+### `inc_imp`: Imputing Income Data
+
+I want a quantitative income variable, so I'm going to create an imputed `inc_imp` value for each subject based on their `incomegroup`. For most income groups, I will assume that each of the incomes represented by a value in that income group will be equally likely, and will draw from the relevant uniform distribution to impute income. The exception is the highest income group, where I will impute a value drawn from a distribution that places all values at \$75,000 or more, but has a substantial right skew and long tail.
+
+```{r}
+#| warning: false
+set.seed(2020432001)
+
+smart_ohio_raw <- smart_ohio_raw |>
+    mutate(inc_imp = case_when(
+        incomegroup == "0-9K" ~ round(runif(1, min = 100, max = 9999)),
+        incomegroup == "10-14K" ~ round(runif(1, min = 10000, max = 14999)),
+        incomegroup == "15-19K" ~ round(runif(1, min = 15000, max = 19999)),
+        incomegroup == "20-24K" ~ round(runif(1, min = 20000, max = 24999)),
+        incomegroup == "25-34K" ~ round(runif(1, min = 25000, max = 34999)),
+        incomegroup == "35-49K" ~ round(runif(1, min = 35000, max = 49999)),
+        incomegroup == "50-74K" ~ round(runif(1, min = 50000, max = 74999)),
+        incomegroup == "75K+" ~ round((rnorm(n = 1, mean = 0, sd = 300)^2) + 74999)))
+
+smart_ohio_raw |> count(incomegroup, inc_imp) |> tail()
+```
+
+Here are density plots of the `inc_imp` variable. The top picture shows the results on a linear scale, and the bottom shows them on a log (base 10) scale.
+
+```{r}
+#| warning: false
+
+p1 <- ggplot(smart_ohio_raw, aes(x = inc_imp/1000)) +
+    geom_density(fill = "darkgreen", col = "white") +
+    labs(x = "Imputed Income in Thousands of Dollars",
+         title = "Imputed Income on the Linear scale") + 
+    scale_x_continuous(breaks = c(25, 75, 250, 1000))
+
+p2 <- ggplot(smart_ohio_raw, aes(x = inc_imp/1000)) +
+    geom_density(fill = "darkgreen", col = "white") +
+    labs(x = "Imputed Income in Thousands of Dollars",
+         title = "Imputed Income on the Log (base 10) scale") + 
+    scale_x_log10(breaks = c(0.1, 1, 5, 25, 75, 250, 1000))
+
+p1 / p2 + 
+    plot_annotation(title = 
+                        paste0("Imputed Income: ", sum(is.na(smart_ohio_raw$inc_imp)), " respondents have missing income group"))
+```
+
+
+## Clean Data in the State of Ohio
+
+There are six MMSAs associated with the state of Ohio. We're going to create a `smart_ohio` that includes each of them. First, I'll ungroup the data that I created earlier, so I get a clean tibble.
+
+```{r}
+smart_ohio_raw <- smart_ohio_raw |> ungroup()
+```
+
+
+Next, I'll select the variables I want to retain (they are the ones I created, plus `SEQNO`.)
+
+```{r}
+smart_ohio <- smart_ohio_raw |>
+    select(SEQNO, mmsa, mmsa_code, mmsa_name, mmsa_wt, completed,
+           landline, hhadults, 
+           genhealth, physhealth, menthealth, poorhealth, 
+           agegroup, age_imp, race, hispanic, race_eth, 
+           female, marital, kids, educgroup, home_own, 
+           veteran, employment, incomegroup, inc_imp,
+           cell_own, internet30, 
+           weight_kg, height_m, bmi, bmigroup, 
+           pregnant, deaf, blind, decide, 
+           diffwalk, diffdress, diffalone, 
+           smoke100, smoker, ecig_ever, ecigs, 
+           healthplan, hasdoc, costprob, t_checkup, 
+           bp_high, bp_meds, 
+           t_chol, chol_high, chol_meds,
+           asthma, hx_asthma, now_asthma, 
+           hx_mi, hx_chd, hx_stroke, hx_skinc, hx_otherc, 
+           hx_copd, hx_depress, hx_kidney, 
+           hx_diabetes, dm_status, dm_age, 
+           hx_arthr, arth_lims, arth_work, arth_soc, 
+           joint_pain, alcdays, avgdrinks, maxdrinks, 
+           binge, drinks_wk, drink_heavy, 
+           fruit_day, veg_day, eat_juice, eat_fruit, 
+           eat_greenveg, eat_fries, eat_potato, 
+           eat_otherveg, exerany, activity, rec_aerobic, 
+           rec_strength, exer1_type, exer2_type, 
+           exer1_min, exer2_min, seatbelt,
+           vax_flu, vax_pneumo, vax_shingles, 
+           hiv_test, hiv_risk)
+
+saveRDS(smart_ohio, "data/smart_ohio.Rds")
+
+write_csv(smart_ohio, "data/smart_ohio.csv")
+```
+
+The `smart_ohio` file should contain `r ncol(smart_ohio)` variables, describing `r nrow(smart_ohio)` respondents.
+
+## Clean Cleveland-Elyria Data
+
+### Cleveland - Elyria Data
+
+The `mmsa_name` variable is probably the simplest way for us to filter our data down to the MMSA we are interested in. Here, I'm using the `str_detect` function to identify the values of `mmsa_name` that contain the text "Cleveland". 
+
+```{r}
+smart_cle <- smart_ohio |> 
+  filter(str_detect(mmsa_name, 'Cleveland')) 
+
+saveRDS(smart_cle, "data/smart_cle.Rds")
+```
+
+In the Cleveland-Elyria MSA, we have `r nrow(smart_cle)` observations on the same `r ncol(smart_cle)` variables.
+
+We'll build a variety of smaller subsets from these data, eventually.
+

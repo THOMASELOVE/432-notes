@@ -1,0 +1,625 @@
+# Multiple Imputation and Linear Regression
+
+## Developing a `smart_16` data set
+
+In this chapter, we'll return to the `smart_ohio` file based on data from BRFSS 2017 that we built and cleaned back at the start of these Notes.
+
+```{r}
+smart_ohio <- readRDS(here("data", "smart_ohio.Rds"))
+```
+
+We're going to look at a selection of variables from this tibble, among subjects who have been told they have diabetes, and who also provided a response to our `physhealth` (Number of Days Physical Health Not Good) variable, which asks "Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?" We'll build two models. In this chapter, we'll look at a linear model for `physhealth` and in the next chapter, we'll look at a logistic regression describing whether or not the subject's `physhealth` response was at least 1.
+
+```{r}
+smart_16 <- smart_ohio %>%
+    filter(dm_status == "Diabetes") %>%
+    filter(complete.cases(physhealth)) %>%
+    mutate(bad_phys = ifelse(physhealth > 0, 1, 0),
+           comor = hx_mi + hx_chd + hx_stroke + hx_asthma +
+               hx_skinc + hx_otherc + hx_copd + hx_arthr) %>%
+    select(SEQNO, mmsa, physhealth, bad_phys, age_imp, smoke100,
+           comor, hx_depress, bmi, activity)
+```
+
+The variables included in this `smart_16` tibble are:
+
+Variable | Description
+---------: | --------------------------------------------------------
+`SEQNO` | respondent identification number (all begin with 2016)
+`mmsa` | 
+`physhealth` | Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?
+`bad_phys` | Is `physhealth` 1 or more?
+`age_imp` | Age in years (imputed from age categories)
+`smoke100` | Have you smoked at least 100 cigarettes in your life? (1 = yes, 0 = no)
+`hx_depress` | Has a doctor, nurse, or other health professional ever told you that you have a depressive disorder, including depression, major depression, dysthymia, or minor depression?
+`bmi` | Body mass index, in kg/m^2^
+`activity` | Physical activity (Highly Active, Active, Insufficiently Active, Inactive)
+`comor` | Sum of 8 potential groups of comorbidities (see below)
+
+The `comor` variable is the sum of the following 8 variables, each of which is measured on a 1 = Yes, 0 = No scale, and begin with "Has a doctor, nurse, or other health professional ever told you that you had ..."
+
+- `hx_mi`: a heart attack, also called a myocardial infarction?
+- `hx_chd`: angina or coronary heart disease?
+- `hx_stroke`: a stroke?
+- `hx_asthma`: asthma?
+- `hx_skinc`: skin cancer?
+- `hx_otherc`: any other types of cancer?
+- `hx_copd`: Chronic Obstructive Pulmonary Disease or COPD, emphysema or chronic bronchitis?
+- `hx_arthr`: some form of arthritis, rheumatoid arthritis, gout, lupus, or fibromyalgia? 
+
+```{r}
+smart_16 %>% tabyl(comor)
+```
+
+### Any missing values?
+
+We have `r nrow(smart_16)` observations (rows) in the `smart_16` data set, of whom `r n_case_complete(smart_16)` have complete data on all variables.
+
+```{r}
+dim(smart_16)
+n_case_complete(smart_16)
+```
+
+Which variables are missing?
+
+```{r}
+miss_var_summary(smart_16)
+```
+
+Note that our outcomes (`physhealth` and the derived `bad_phys`) have no missing values here, by design. We will be performing multiple imputation to account appropriately for missingness in the predictors with missing values.
+
+## Obtaining a Simple Imputation with `mice`
+
+The `mice` package provides several approaches we can use for imputation in building models of all kinds. Here, we'll use it just to obtain a single set of imputed results that we can apply to "complete" our data for the purposes of thinking about (a) transforming our outcome and (b) considering the addition of non-linear predictor terms.
+
+```{r}
+# requires library(mice)
+
+set.seed(432)
+
+# create small data set including only variables to
+# be used in building the imputation model
+
+sm16 <- smart_16 %>% 
+    select(physhealth, activity, age_imp, bmi, comor, 
+           hx_depress, smoke100)
+
+smart_16_mice1 <- mice(sm16, m = 1)
+
+smart_16_imp1 <- mice::complete(smart_16_mice1)
+
+n_case_miss(smart_16_imp1)
+```
+
+And now we'll use this completed `smart_16_imp1` data set (the product of just a single imputation) to help us address the next two issues.
+
+## Linear Regression: Considering a Transformation of the Outcome
+
+A plausible strategy here would be to try to identify an outcome transformation only after some accounting for missing predictor values, perhaps through a simple imputation approach. However, to keep things simple here, I'll just use the complete cases in this section.
+
+Recall that our outcome here, `physhealth` can take the value 0, and is thus not strictly positive.
+
+```{r}
+mosaic::favstats(~ physhealth, data = smart_16_imp1)
+```
+
+So, if we want to investigate a potential transformation with a Box-Cox plot, we'll have to add a small value to each `physhealth` value. We'll add 1, so that the range of potential values is now from 1-31.
+
+```{r}
+# requires library(car)
+
+smart_16_imp1 %$% 
+    boxCox((physhealth + 1) ~ age_imp + comor + smoke100 + 
+               hx_depress + bmi + activity)
+```
+
+It looks like the logarithm is a reasonable transformation in this setting. So we'll create a new outcome, that is the natural logarithm of (`physhealth` + 1), which we'll call `phys_tr` to remind us that a transformation is involved that we'll eventually need to back out of to make predictions. We'll build this new variable in both our original `smart_16` data set and in the simply imputed data set we're using for just these early stages.
+
+```{r}
+smart_16_imp1 <- smart_16_imp1 %>%
+    mutate(phys_tr = log(physhealth + 1))
+
+smart_16 <- smart_16 %>%
+    mutate(phys_tr = log(physhealth + 1))
+```
+
+So we have `phys_tr` = log(`physhealth` + 1)
+
+- where we are referring above to the natural (base $e$ logarithm). 
+
+We can also specify our back-transformation to the original `physhealth` values from our new `phys_tr` as `physhealth` = exp(`phys_tr`) - 1.
+
+## Linear Regression: Considering Non-Linearity in the Predictors
+
+Consider the following Spearman $\rho^2$ plot.
+
+```{r}
+# requires rms package 
+# (technically Hmisc, which is loaded by rms)
+
+smart_16_imp1 %$% 
+    plot(spearman2(phys_tr ~ age_imp + comor + smoke100 + 
+           hx_depress + bmi + activity))
+```
+
+After our single imputation, we have the same `N` value in all rows of this plot, which is what we want to see. It appears that in considering potential non-linear terms, `comor` and `hx_depress` and perhaps `activity` are worthy of increased attention. I'll make a couple of arbitrary choices, to add a raw cubic polynomial to represent the `comor` information, and we'll add an interaction term between `hx_depress` and `activity`.
+
+## "Main Effects" Linear Regression with `lm` on the Complete Cases
+
+Recall that we have `r n_case_complete(smart_16)` complete cases in our `smart_16` data, out of a total of `r nrow(smart_16)` observations in total. A model using only the complete cases should thus drop the remaining `r n_case_miss(smart_16)` subjects. Let's see if a main effects only model for our newly transformed `phys_tr` outcome does in fact do this.
+
+```{r}
+m_1cc <- smart_16 %$% 
+    lm(phys_tr ~ age_imp + comor + smoke100 + 
+           hx_depress + bmi + activity)
+
+summary(m_1cc)
+```
+
+Note that the appropriate number of observations are listed as "deleted due to missingness."
+
+### Quality of Fit Statistics
+
+```{r}
+glance(m_1cc) %>%
+    select(r.squared, adj.r.squared, sigma, AIC, BIC) %>%
+    kable(digits = c(3, 3, 2, 1, 1))
+```
+
+### Interpreting Effect Sizes
+
+```{r}
+tidy(m_1cc, conf.int = TRUE) %>%
+    select(term, estimate, std.error, conf.low, conf.high) %>%
+    kable(digits = 3)
+```
+
+We'll interpret three of the predictors here to demonstrate ideas: `comor`, `hx_depress` and `activity`.
+
+```{r, echo = FALSE}
+a <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "comor")
+```
+
+- If we have two subjects with the same values of `age_imp`, `smoke100`, `hx_depress`, `bmi`, and `activity`, but Harry has a `comor` score that is one point higher than Sally's, then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
+
+```{r, echo = FALSE}
+a <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress")
+```
+
+- If we have two subjects with the same values of `age_imp`, `comor`, `smoke100`, `bmi`, and `activity`, but Harry has a history of depression (`hx_depress` = 1) while Sally does not have such a history (so Sally's `hx_depress` = 0), then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
+
+```{r, echo = FALSE}
+a <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress")
+```
+
+- The `activity` variable has four categories as indicated in the table below. The model uses the "Highly_Active" category as the reference group.
+
+```{r}
+smart_16_imp1 %>% tabyl(activity)
+```
+
+```{r, echo = FALSE}
+a <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "activityActive")
+
+a2 <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "activityInsufficiently_Active")
+
+a3 <- tidy(m_1cc, conf.int = TRUE) %>%
+    filter(term == "activityInactive")
+```
+
+- From the tidied set of coefficients, we can describe the `activity` effects as follows.
+    - If Sally is "Highly Active" and Harry is "Active" but they otherwise have the same values of all predictors, then our prediction is that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r abs(round(a$estimate, 3))` lower than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
+    - If instead Harry is "Insufficiently Active" but nothing else changes, then our prediction is that Harry's transformed outcome will be `r abs(round(a2$estimate, 3))` lower than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a2$conf.low,3)`, `round(a2$conf.high,3)`).
+    - If instead Harry is "Inactive" but nothing else changes, then our prediction is that Harry's transformed outcome will be `r round(a2$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a2$conf.low,3)`, `round(a2$conf.high,3)`).
+    
+### Making Predictions with the Model
+
+Let's describe two subjects, and use this model (and the ones that follow) to predict their `physhealth` values.
+
+- Sheena is age 50, has 2 comorbidities, has smoked 100 cigarettes in her life, has no history of depression, a BMI of 25, and is Highly Active.
+- Jacob is age 65, has 4 comorbidities, has never smoked, has a history of depression, a BMI of 32 and is Inactive.
+
+We'll first build predictions for Sheena and Jacob (with 95% prediction intervals) for `phys_tr`.
+
+```{r}
+new2 <- tibble(
+    name = c("Sheena", "Jacob"),
+    age_imp = c(50, 65),
+    comor = c(2, 4),
+    smoke100 = c(1, 0),
+    hx_depress = c(0, 1),
+    bmi = c(25, 32),
+    activity = c("Highly_Active", "Inactive")
+)
+
+preds_m_1cc <- predict(m_1cc, newdata = new2, 
+                       interval = "prediction")
+
+preds_m_1cc
+```
+
+The model makes predictions for our transformed outcome, `phys_tr`. Now, we need to back-transform the predictions and the confidence intervals to build predictions for `physhealth`.
+
+```{r}
+preds_m_1cc <- preds_m_1cc %>%
+    tbl_df() %>%
+    mutate(names = c("Sheena", "Jacob"),
+           pred_physhealth = exp(fit) - 1,
+           conf_low = exp(lwr) - 1,
+           conf_high = exp(upr) - 1) %>%
+    select(names, pred_physhealth, conf_low, conf_high, 
+           everything())
+
+preds_m_1cc %>% kable(digits = 3)
+```
+
+## "Augmented" Linear Regression with `lm` on the Complete Cases
+
+Now, we'll add the non-linear terms we discussed earlier. We'll add a (raw) cubic polynomial to represent the `comor` information, and we'll add an interaction term between `hx_depress` and `activity`.
+
+```{r}
+# requires rms package (and co-loading Hmisc)
+
+m_2cc <- smart_16 %$% 
+    lm(phys_tr ~ age_imp + pol(comor, 3) + smoke100 + 
+           bmi + hx_depress*activity)
+
+summary(m_2cc)
+```
+
+Note again that the appropriate number of observations are listed as "deleted due to missingness."
+
+### Quality of Fit Statistics
+
+```{r}
+glance(m_2cc) %>%
+    select(r.squared, adj.r.squared, sigma, AIC, BIC) %>%
+    kable(digits = c(3, 3, 2, 1, 1))
+```
+
+### ANOVA assessing the impact of the non-linear terms
+
+```{r}
+anova(m_1cc, m_2cc)
+```
+
+The difference between the models doesn't meet the standard for statistical detectabilty at our usual $\alpha$ levels.
+
+### Interpreting Effect Sizes
+
+```{r}
+tidy(m_2cc, conf.int = TRUE) %>%
+    select(term, estimate, std.error, conf.low, conf.high) %>%
+    kable(digits = 3)
+```
+
+Let's focus first on interpreting the interaction terms between `hx_depress` and `activity`.
+
+Assume first that we have a set of subjects with the same values of `age_imp`, `smoke100`, `bmi`, and `comor`.
+
+- Arnold has `hx_depress` = 1 and is Inactive
+- Betty has `hx_depress` = 1 and is Insufficiently Active
+- Carlos has `hx_depress` = 1 and is Active
+- Debbie has `hx_depress` = 1 and is Highly Active
+- Eamon has `hx_depress` = 0 and is Inactive
+- Florence has `hx_depress` = 0 and is Insufficiently Active
+- Garry has `hx_depress` = 0 and is Active
+- Harry has `hx_depress` = 0 and is Highly Active
+
+So the model, essentially can be used to compare each of the first seven people on that list to Harry (who has the reference levels of both `hx_depress` and `activity`.) Let's compare Arnold to Harry.
+
+For instance, as compared to Harry, Arnold is expected to have a transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) that is:
+
+```{r, echo = FALSE}
+a <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress")
+a2 <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "activityInactive")
+a3 <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress:activityInactive")
+```
+
+- `r round(a$estimate, 3)` higher because Arnold's `hx_depress` = 1, and
+- `r round(a2$estimate, 3)` higher still because Arnold's `activity` is "Inactive", and
+- `r abs(round(a3$estimate, 3))` lower because of the combination (see the `hx_depress:activityInactive" row)
+
+So, in total, we expect Arnold's transformed outcome to be `r round(a$estimate, 3)` + `r round(a2$estimate, 3)` + (`r round(a3$estimate, 3)`), or `r round(a$estimate, 3) + round(a2$estimate, 3) + round(a3$estimate, 3)` higher than Harry's.
+
+If we want to compare Arnold to, for instance, Betty, we first calculate Betty's difference from Harry, and then compare the two differences.
+
+As compared to Harry, Betty is expected to have a transformed outcome (specifically the natural logarithm of (her `physhealth` days + 1)) that is:
+
+```{r, echo = FALSE}
+b <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress")
+b2 <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "activityInsufficiently_Active")
+b3 <- tidy(m_2cc, conf.int = TRUE) %>%
+    filter(term == "hx_depress:activityInsufficiently_Active")
+```
+
+- `r round(b$estimate, 3)` higher because Betty's `hx_depress` = 1, and
+- `r abs(round(b2$estimate, 3))` lower still because Betty's `activity` is "Insufficiently Active", and
+- `r abs(round(b3$estimate, 3))` lower because of the combination (see the `hx_depress:activityInsufficiently_Active" row)
+
+So, in total, we expect Betty's transformed outcome to be `r round(b$estimate, 3)` + (`r round(b2$estimate, 3)`) + (`r round(b3$estimate, 3)`), or `r round(b$estimate, 3) + round(b2$estimate, 3) + round(b3$estimate, 3)` higher than Harry's.
+
+And thus we can compare Betty and Arnold directly.
+
+- Arnold is predicted to have an outcome that is `r round(a$estimate, 3) + round(a2$estimate, 3) + round(a3$estimate, 3)` higher than Harry's.
+- Betty is predicted to have an outcome that is `r round(b$estimate, 3) + round(b2$estimate, 3) + round(b3$estimate, 3)` higher than Harry's.
+- And so Arnold's predicted outcome (`phys_tr`) is `r round(a$estimate, 3) + round(a2$estimate, 3) + round(a3$estimate, 3) - (round(b$estimate, 3) + round(b2$estimate, 3) + round(b3$estimate, 3))` larger than Betty's.
+
+Now, suppose we want to look at our cubic polynomial in `comor`.
+
+- Suppose Harry and Sally have the same values for all other predictors in the model, but Harry has 1 comorbidity where Sally has none. Then the three terms in the model related to `comor` will be 1 for Harry and 0 for Sally, and the interpretation becomes pretty straightforward.
+- But suppose instead that nothing has changed except Harry has 2 comorbidities and Sally has just 1. The size of the impact of this Harry - Sally difference is far larger in this situation, because the `comor` variable enters the model in a non-linear way. This is an area where fitting the model using `ols` can be helpful because of the ability to generate plots (of effects, nomograms, etc.) that can show this non-linearity in a clear way.
+
+Suppose for instance, that Harry and Sally share the following values for the other predictors: each is age 40, has never smoked, has no history of depression, a BMI of 30 and is Highly Active.
+
+- Now, if Harry has 1 comorbidity and Sally has none, the predicted `phys_tr` values for Harry and Sally are as indicated below.
+
+```{r}
+hands1 <- tibble(
+    name = c("Harry", "Sally"),
+    age_imp = c(40, 40),
+    comor = c(1, 0),
+    smoke100 = c(0, 0),
+    hx_depress = c(0, 0),
+    bmi = c(30, 30),
+    activity = c("Highly_Active", "Highly_Active")
+)
+
+predict(m_2cc, newdata = hands1)
+```
+
+But if Harry has 2 comorbidities and Sally 1, the predictions are:
+
+```{r}
+hands2 <- tibble(
+    name = c("Harry", "Sally"),
+    age_imp = c(40, 40),
+    comor = c(2, 1), # only thing that changes
+    smoke100 = c(0, 0),
+    hx_depress = c(0, 0),
+    bmi = c(30, 30),
+    activity = c("Highly_Active", "Highly_Active")
+)
+
+predict(m_2cc, newdata = hands2)
+```
+
+Note that the difference in predictions between Harry and Sally is much smaller now than it was previously.
+
+### Making Predictions with the Model
+
+As before, we'll use the new model to predict  `physhealth` values for Sheena and Jacob.
+
+- Sheena is age 50, has 2 comorbidities, has smoked 100 cigarettes in her life, has no history of depression, a BMI of 25, and is Highly Active.
+- Jacob is age 65, has 4 comorbidities, has never smoked, has a history of depression, a BMI of 32 and is Inactive.
+
+We'll first build predictions for Sheena and Jacob (with 95% prediction intervals) for `phys_tr`.
+
+```{r}
+new2 <- tibble(
+    name = c("Sheena", "Jacob"),
+    age_imp = c(50, 65),
+    comor = c(2, 4),
+    smoke100 = c(1, 0),
+    hx_depress = c(0, 1),
+    bmi = c(25, 32),
+    activity = c("Highly_Active", "Inactive")
+)
+
+preds_m_2cc <- predict(m_2cc, newdata = new2, 
+                       interval = "prediction")
+
+preds_m_2cc
+```
+
+Now, we need to back-transform the predictions and the confidence intervals that describe `phys_tr` to build predictions for `physhealth`.
+
+```{r}
+preds_m_2cc <- preds_m_2cc %>%
+    tbl_df() %>%
+    mutate(names = c("Sheena", "Jacob"),
+           pred_physhealth = exp(fit) - 1,
+           conf_low = exp(lwr) - 1,
+           conf_high = exp(upr) - 1) %>%
+    select(names, pred_physhealth, conf_low, conf_high, 
+           everything())
+
+preds_m_2cc %>% kable(digits = 3)
+```
+
+
+## Using `mice` to perform Multiple Imputation
+
+Let's focus on the main effects model, and look at the impact of performing multiple imputation to account for the missing data. Recall that in our `smart_16` data, the most "missingness" is shown in the `activity` variable, which is still missing less than 10% of the time. So we'll try a set of 10 imputations, using the default settings in the `mice` package.
+
+```{r}
+# requires library(mice)
+
+set.seed(432)
+
+# create small data set including only variables to
+# be used in building the imputation model
+
+sm16 <- smart_16 %>% 
+    select(physhealth, phys_tr, activity, age_imp, bmi, comor, 
+           hx_depress, smoke100)
+
+smart_16_mice10 <- mice(sm16, m = 10)
+
+summary(smart_16_mice10)
+```
+
+## Running the Linear Regression in `lm` with Multiple Imputation
+
+Next, we'll run the linear model (main effects) on each of the 10 imputed data sets.
+
+```{r}
+m10_mods <- 
+    with(smart_16_mice10, lm(phys_tr ~ age_imp + comor + 
+                                 smoke100 + hx_depress + 
+                                 bmi + activity))
+
+summary(m10_mods)
+```
+
+Then, we'll pool results across the 10 imputations
+
+```{r}
+m10_pool <- pool(m10_mods)
+summary(m10_pool, conf.int = TRUE) %>%
+    select(-statistic, -df) %>%
+    kable(digits = 3)
+```
+
+And we can compare these results to the complete case analysis we completed earlier.
+
+```{r}
+tidy(m_1cc, conf.int = TRUE) %>%
+    select(term, estimate, std.error, p.value, conf.low, conf.high) %>%
+    kable(digits = 3)
+```
+
+Note that there are some sizeable differences here, although nothing enormous.
+
+If we want the pooled $R^2$ or pooled adjusted $R^2$ after imputation, R will provide it (and a 95% confidence interval around the estimate) with ...
+
+```{r}
+pool.r.squared(m10_mods)
+```
+
+```{r}
+pool.r.squared(m10_mods, adjusted = TRUE)
+```
+
+We can see the fraction of missing information about each coefficient due to non-response (`fmi`) and other details with the following code...
+
+```{r}
+m10_pool
+```
+
+## Fit the Multiple Imputation Model with `aregImpute`
+
+Here, we'll use `aregImpute` to deal with missing values through multiple imputation, and use the `ols` function in the `rms` package to fit the model. 
+
+The first step is to fit the multiple imputation model. We'll use `n.impute` = 10 imputations, with `B` = 10 bootstrap samples for the preditive mean matching, and fit both linear models and models with restricted cubic splines with 3 knots (`nk = c(0, 3)`) allowing the target variable to have a non-linear transformation when `nk` is 3, via `tlinear = FALSE`. 
+
+```{r}
+set.seed(43201602)
+dd <- datadist(smart_16)
+options(datadist = "dd")
+
+fit16_imp <- 
+    aregImpute(~ phys_tr + age_imp + comor + smoke100 + 
+                   hx_depress + bmi + activity,
+               nk = c(0, 3), tlinear = FALSE, 
+               data = smart_16, B = 10, n.impute = 10)
+```
+
+Here are the results of that imputation model.
+
+```{r}
+fit16_imp
+```
+
+```{r, fig.height = 8}
+par(mfrow = c(3,2))
+plot(fit16_imp)
+par(mfrow = c(1,1))
+```
+
+The plot helps us see where the imputations are happening.
+
+## Fit Linear Regression using `ols` and `fit.mult.impute`
+
+```{r}
+m16_imp <- 
+    fit.mult.impute(phys_tr ~ age_imp + comor + smoke100 +
+                        hx_depress + bmi + activity,
+                    fitter = ols, xtrans = fit16_imp,
+                    data = smart_16, x = TRUE, y = TRUE)
+```
+
+### Summaries and Coefficients
+
+Here are the results:
+
+```{r}
+m16_imp
+```
+
+### Effect Sizes
+
+We can plot and summarize the effect sizes using the usual `ols` tools:
+
+```{r}
+summary(m16_imp)
+
+plot(summary(m16_imp))
+```
+
+### Making Predictions with this Model
+
+Once again, let's make predictions for our two subjects, and use this model (and the ones that follow) to predict their `physhealth` values.
+
+- Sheena is age 50, has 2 comorbidities, has smoked 100 cigarettes in her life, has no history of depression, a BMI of 25, and is Highly Active.
+- Jacob is age 65, has 4 comorbidities, has never smoked, has a history of depression, a BMI of 32 and is Inactive.
+
+```{r}
+new2 <- tibble(
+    name = c("Sheena", "Jacob"),
+    age_imp = c(50, 65),
+    comor = c(2, 4),
+    smoke100 = c(1, 0),
+    hx_depress = c(0, 1),
+    bmi = c(25, 32),
+    activity = c("Highly_Active", "Inactive")
+)
+
+preds_m_16imp <- predict(m16_imp, 
+                         newdata = data.frame(new2))
+
+preds_m_16imp
+```
+
+```{r}
+preds_m_16imp <- preds_m_16imp %>%
+    tbl_df() %>%
+    mutate(names = c("Sheena", "Jacob"),
+           pred_physhealth = exp(value) - 1) %>%
+    select(names, pred_physhealth)
+
+preds_m_16imp %>% kable(digits = 3)
+```
+
+### Nomogram
+
+We can also develop a nomogram, if we like. As a special touch, we'll add a prediction at the bottom which back-transforms out of the predicted `phys_tr` back to the `physhealth` days.
+
+```{r, fig.height = 7}
+plot(nomogram(m16_imp, 
+              fun = list(function(x) exp(x) - 1),
+              funlabel = "Predicted physhealth days",
+              fun.at = seq(0, 30, 3)))
+```
+
+We can see the big role of `comor` and `hx_depress` in this model.
+
+### Validating Summary Statistics
+
+We can cross-validate summary measures, like $R^2$...
+
+```{r}
+validate(m16_imp)
+```
+
+

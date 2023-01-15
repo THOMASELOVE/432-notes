@@ -1,0 +1,247 @@
+# Analyzing Literary Styles with Multinomial Logistic Regression
+
+```{r add libraries you need, echo=FALSE, message=FALSE}
+library(nnet)
+library(MASS)
+library(tidyverse)
+```
+
+## The Authorship Example
+
+This example is based on the work of Jeffrey S. Simonoff (2003) *Analyzing Categorical Data* in Chapter 10. Related data and R code are available at http://people.stern.nyu.edu/jsimonof/AnalCatData/Splus/. Meanwhile, the data set and analysis are based on the work of Peng RD and Hengartner NW (2002) Quantitative analysis of literary styles, *The American Statistician*, 56, 175-185.
+
+The `authorship.csv` data file contains 841 rows. Each row describes a block of text that contains 1700 total words from one of several books by four authors: Jane Austen (samples from 7 books), Jack London (6 books), John Milton (2 books), or William Shakespeare (12 books). The data include counts within the blocks of text of 69 function words, such as "a", "by", "no", "that" and "with". The goal of our analysis, mirroring that of Simonoff, will be to use the incidence of these function words to build a model that distinguishes the authors.
+
+```{r}
+authorship$Author <- factor(authorship$Author, 
+    levels = c("Shakespeare", "Austen", "London", "Milton"))
+
+authorship
+```
+
+> To-morrow, and to-morrow, and to-morrow,
+Creeps in this petty pace from day to day,
+To the last syllable of recorded time;
+And all our yesterdays have lighted fools
+The way to dusty death. Out, out, brief candle!
+Life's but a walking shadow, a poor player,
+That struts and frets his hour upon the stage,
+And then is heard no more. It is a tale
+Told by an idiot, full of sound and fury,
+Signifying nothing.
+
+## Focus on 11 key words
+
+Again, following Simonoff, we will focus on 11 words from the set of 69 potential predictors in the data, specifically...
+
+- "be", "been", "had", "it", "may", "not", "on", "the", "upon", "was" and "which"
+
+```{r}
+auth2 <- authorship %>%
+    select(Author, BookID, be, been, had, it, may, not, 
+           on, the, upon, was, which)
+
+auth2.long <- auth2 %>%
+    gather("word", "n", 3:13)
+
+auth2.long
+```
+
+### Side by Side Boxplots
+
+```{r, fig.height = 10}
+ggplot(auth2.long, aes(x = Author, y = n)) +
+    geom_boxplot() +
+    facet_wrap(~ word, ncol = 3, scales = "free_y") + 
+    theme_bw() +
+    labs(x = "", y = "")
+```
+
+> Oh! do not attack me with your watch. A watch is always too fast or too slow. I cannot be dictated to by a watch.
+
+## A Multinomial Logistic Regression Model
+
+Let's start with a multinomial model to predict `Author` on the basis of these 11 key predictors, using the `multinom` function from the `nnet` package.
+
+```{r}
+authnom1 <- multinom(Author ~ be + been + had + it + may + not + on + 
+                         the + upon + was + which, data=authorship, 
+                     maxit=200)
+summary(authnom1)
+```
+
+
+### Testing Model 1
+
+```{r tests for model 1}
+z1 <- summary(authnom1)$coefficients/summary(authnom1)$standard.errors
+round(z1,2)
+
+p1 <- (1 - pnorm(abs(z1), 0, 1)) * 2
+pander(round(p1,3))
+```
+
+Simonoff suggests that "been" and "may" can be dropped. What do we think?
+
+> The proper function of man is to live, not to exist. I shall not waste my days in trying to prolong them. I shall use my time.
+
+## Model 2
+
+```{r}
+authnom2 <- multinom(Author ~ be + had + it + not + on + 
+                         the + upon + was + which, data=authorship, 
+                     maxit=200)
+summary(authnom2)
+```
+
+### Comparing Model 2 to Model 1
+
+```{r}
+anova(authnom1, authnom2)
+```
+
+### Testing Model 2
+
+```{r}
+z2 <- summary(authnom2)$coefficients/summary(authnom2)$standard.errors
+round(z2,2)
+
+p2 <- (1 - pnorm(abs(z2), 0, 1)) * 2
+round(p2,3)
+```
+
+### A little history
+
+Simonoff has an interesting note: Consider the lifetimes of these four authors:
+
+- William Shakespeare was born in 1564 and died in 1616
+- John Milton was born in 1608 (44 years after Shakespeare) and died in 1674
+- Jane Austen was born in 1775 (211 years after Shakespeare) and died in 1817
+- Jack London was born in 1876 (312 years after Shakespeare) and died in 1916
+
+How many significant coefficients does each author display relative to Shakespeare?
+
+## Classification Table
+
+How well does this model (model 2) distinguish these authors based on blocks of 1700 words of text?
+
+```{r}
+table(authorship$Author, predict(authnom2))
+```
+
+Based on this classification table, I'd say it does a nice job. Almost 98% of the blocks of text are correctly classified.
+
+>  Fly, envious Time, till thou run out thy race;
+Call on the lazy leaden-stepping hours,
+Whose speed is but the heavy plummet's pace;
+And glut thyself with what thy womb devours,
+Which is no more then what is false and vain,
+And merely mortal dross;
+So little is our loss,
+So little is thy gain.
+For when, as each thing bad thou hast entomb'd
+And last of all thy greedy self consumed,
+Then long Eternity shall greet our bliss,
+With an individual kiss;
+And Joy shall overtake us, as a flood,
+When every thing that is sincerely good,
+And perfectly divine,
+With truth, and peace, and love, shall ever shine,
+About the supreme throne
+Of Him, to whose happy-making sight, alone,
+When once our heavenly-guided soul shall climb,
+Then all this earthly grossness quit,
+Attired with stars, we shall for ever sit,
+Triumphing over Death, and Chance, and thee, O Time!
+
+## Probability Curves based on a Single Predictor
+
+In situations where only one predictor is used, we can develop nice plots of estimated probabilities for each group as a function of the predictor. Suppose we look at the single word "been" (note that this was left out of Model 2.)
+
+Note that the possible values for counts of "been" in the data range from 0 to 27...
+
+```{r}
+summary(authorship$been)
+```
+
+Now, we'll build a model to predict the author based solely on the counts of the word "been".
+
+```{r}
+authnom3 <- multinom(Author ~ been, 
+                     data=authorship, maxit=200)
+```
+
+Next, we'll build a grid of the predicted log odds for each author (as compared to Shakespeare) using the fitted coefficients. The grid will cover every possible value from 0 to 27, increasing by 0.1, using the following trick in R.
+
+```{r}
+beengrid <- cbind(1,c(0:270)/10)
+austenlogit <- beengrid %*% coef(authnom3)[1,]
+londonlogit <- beengrid %*% coef(authnom3)[2,]
+miltonlogit <- beengrid %*% coef(authnom3)[3,]
+```
+
+Next, we'll use that grid of logit values to estimate the fitted probabilities for each value of "been" between 0 and 27.
+
+```{r}
+austenprob <- exp(austenlogit)/ 
+    (exp(austenlogit) + exp(londonlogit) + 
+         exp(miltonlogit) + 1)
+londonprob <- exp(londonlogit)/ 
+    (exp(austenlogit) + exp(londonlogit) + 
+         exp(miltonlogit) + 1)
+miltonprob <- exp(miltonlogit)/ 
+    (exp(austenlogit) + exp(londonlogit) + 
+         exp(miltonlogit) + 1)
+shakesprob <- 1 - austenprob - londonprob - miltonprob
+
+been_dat <- data_frame(been_count = beengrid[,2], 
+                       austen = austenprob[,1], 
+                       london = londonprob[,1], 
+                       milton = miltonprob[,1], 
+                       shakespeare = shakesprob[,1])
+been_dat
+```
+
+Now, we gather the data by author name and probability
+
+```{r}
+been_dat_long <- been_dat %>%
+    gather("name", "prob", 2:5)
+been_dat_long
+```
+
+### Produce the Plot of Estimated Probabilities based on "been" counts
+
+```{r plot of estimated probabilities}
+ggplot(been_dat_long, aes(x = been_count, y = prob, 
+                          col = name)) +
+    geom_line(size = 1.5) + 
+    theme_bw() + 
+    labs(x = "Count of the word `been`", 
+         y = "Model probability")
+```
+
+### Boxplot of "been" counts
+
+Compare this to what we see in the raw counts of the word "been".
+
+```{r side by side boxplot of been by author}
+been.long <- filter(auth2.long, word == "been")
+been.long$Auth <- fct_relevel(been.long$Author, 
+            "Austen", "London", "Milton", "Shakespeare")
+# releveling to make the colors match the model plot
+
+ggplot(been.long, aes(x = Auth, y = n, fill = Auth)) +
+    geom_boxplot() +
+    guides(fill = "none") +
+    theme_bw() +
+    labs(x = "", y = "Count of the word `been`")
+```
+
+
+### Quote Sources
+
+1. To-morrow, and to-morrow, and to-morrow ... Shakespeare *Macbeth* Act 5.
+2. Oh! do not attack me with your watch. ... Jane Austen *Mansfield Park*
+3. The proper function of man is to live, not to exist. ... Jack London *The Bulletin* San Francisco 1916-12-02.
+4. Fly, envious Time, till thou run out thy race ... John Milton *On Time*
