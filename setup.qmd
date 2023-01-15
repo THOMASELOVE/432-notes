@@ -61,8 +61,6 @@ Dr. Love is in the process of moving all of the data loads below to their indivi
 prost <- read_csv("data/prost.csv", show_col_types = FALSE) 
 pollution <- read_csv("data/pollution.csv", show_col_types = FALSE) 
 
-bonding <- read_csv("data/bonding.csv", show_col_types = FALSE) 
-cortisol <- read_csv("data/cortisol.csv", show_col_types = FALSE) 
 emphysema <- read_csv("data/emphysema.csv", show_col_types = FALSE) 
 resect <- read_csv("data/resect.csv", show_col_types = FALSE) 
 colscr <- read_csv("data/screening.csv", show_col_types = FALSE) 

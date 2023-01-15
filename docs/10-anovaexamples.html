@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 10&nbsp; Two-Way ANOVA and Interaction</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./90-incomplete.html" rel="next">
+<link href="./09-anovasmart.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-anovaexamples.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">10.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">10.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#the-bonding-data-a-designed-dental-experiment" id="toc-the-bonding-data-a-designed-dental-experiment" class="nav-link" data-scroll-target="#the-bonding-data-a-designed-dental-experiment"><span class="toc-section-number">10.2</span>  The <code>bonding</code> data: A Designed Dental Experiment</a></li>
+  <li><a href="#a-one-factor-analysis-of-variance" id="toc-a-one-factor-analysis-of-variance" class="nav-link" data-scroll-target="#a-one-factor-analysis-of-variance"><span class="toc-section-number">10.3</span>  A One-Factor Analysis of Variance</a>
+  <ul class="collapse">
+  <li><a href="#look-at-the-data" id="toc-look-at-the-data" class="nav-link" data-scroll-target="#look-at-the-data"><span class="toc-section-number">10.3.1</span>  Look at the Data!</a></li>
+  <li><a href="#table-of-summary-statistics" id="toc-table-of-summary-statistics" class="nav-link" data-scroll-target="#table-of-summary-statistics"><span class="toc-section-number">10.3.2</span>  Table of Summary Statistics</a></li>
+  </ul></li>
+  <li><a href="#a-two-way-anova-looking-at-two-factors" id="toc-a-two-way-anova-looking-at-two-factors" class="nav-link" data-scroll-target="#a-two-way-anova-looking-at-two-factors"><span class="toc-section-number">10.4</span>  A Two-Way ANOVA: Looking at Two Factors</a></li>
+  <li><a href="#a-means-plot-with-standard-deviations-to-check-for-interaction" id="toc-a-means-plot-with-standard-deviations-to-check-for-interaction" class="nav-link" data-scroll-target="#a-means-plot-with-standard-deviations-to-check-for-interaction"><span class="toc-section-number">10.5</span>  A Means Plot (with standard deviations) to check for interaction</a>
+  <ul class="collapse">
+  <li><a href="#summarizing-the-data-after-grouping-by-resin-and-light" id="toc-summarizing-the-data-after-grouping-by-resin-and-light" class="nav-link" data-scroll-target="#summarizing-the-data-after-grouping-by-resin-and-light"><span class="toc-section-number">10.5.1</span>  Summarizing the data after grouping by <code>resin</code> and <code>light</code></a></li>
+  </ul></li>
+  <li><a href="#fitting-the-two-way-anova-model-with-interaction" id="toc-fitting-the-two-way-anova-model-with-interaction" class="nav-link" data-scroll-target="#fitting-the-two-way-anova-model-with-interaction"><span class="toc-section-number">10.6</span>  Fitting the Two-Way ANOVA model with Interaction</a>
+  <ul class="collapse">
+  <li><a href="#the-anova-table-for-our-model" id="toc-the-anova-table-for-our-model" class="nav-link" data-scroll-target="#the-anova-table-for-our-model"><span class="toc-section-number">10.6.1</span>  The ANOVA table for our model</a></li>
+  <li><a href="#is-the-interaction-important" id="toc-is-the-interaction-important" class="nav-link" data-scroll-target="#is-the-interaction-important"><span class="toc-section-number">10.6.2</span>  Is the interaction important?</a></li>
+  <li><a href="#interpreting-the-interaction" id="toc-interpreting-the-interaction" class="nav-link" data-scroll-target="#interpreting-the-interaction"><span class="toc-section-number">10.6.3</span>  Interpreting the Interaction</a></li>
+  </ul></li>
+  <li><a href="#comparing-individual-combinations-of-resin-and-light" id="toc-comparing-individual-combinations-of-resin-and-light" class="nav-link" data-scroll-target="#comparing-individual-combinations-of-resin-and-light"><span class="toc-section-number">10.7</span>  Comparing Individual Combinations of <code>resin</code> and <code>light</code></a></li>
+  <li><a href="#the-bonding-model-without-interaction" id="toc-the-bonding-model-without-interaction" class="nav-link" data-scroll-target="#the-bonding-model-without-interaction"><span class="toc-section-number">10.8</span>  The <code>bonding</code> model without Interaction</a></li>
+  <li><a href="#cortisol-a-hypothetical-clinical-trial" id="toc-cortisol-a-hypothetical-clinical-trial" class="nav-link" data-scroll-target="#cortisol-a-hypothetical-clinical-trial"><span class="toc-section-number">10.9</span>  <code>cortisol</code>: A Hypothetical Clinical Trial</a>
+  <ul class="collapse">
+  <li><a href="#codebook-and-raw-data-for-cortisol" id="toc-codebook-and-raw-data-for-cortisol" class="nav-link" data-scroll-target="#codebook-and-raw-data-for-cortisol"><span class="toc-section-number">10.9.1</span>  Codebook and Raw Data for <code>cortisol</code></a></li>
+  </ul></li>
+  <li><a href="#creating-a-factor-combining-sex-and-waist" id="toc-creating-a-factor-combining-sex-and-waist" class="nav-link" data-scroll-target="#creating-a-factor-combining-sex-and-waist"><span class="toc-section-number">10.10</span>  Creating a factor combining sex and waist</a></li>
+  <li><a href="#a-means-plot-for-the-cortisol-trial-with-standard-errors" id="toc-a-means-plot-for-the-cortisol-trial-with-standard-errors" class="nav-link" data-scroll-target="#a-means-plot-for-the-cortisol-trial-with-standard-errors"><span class="toc-section-number">10.11</span>  A Means Plot for the <code>cortisol</code> trial (with standard errors)</a></li>
+  <li><a href="#a-two-way-anova-model-for-cortisol-with-interaction" id="toc-a-two-way-anova-model-for-cortisol-with-interaction" class="nav-link" data-scroll-target="#a-two-way-anova-model-for-cortisol-with-interaction"><span class="toc-section-number">10.12</span>  A Two-Way ANOVA model for <code>cortisol</code> with Interaction</a>
+  <ul class="collapse">
+  <li><a href="#notes-on-this-question" id="toc-notes-on-this-question" class="nav-link" data-scroll-target="#notes-on-this-question"><span class="toc-section-number">10.12.1</span>  Notes on this Question</a></li>
+  </ul></li>
+  <li><a href="#a-two-way-anova-model-for-cortisol-without-interaction" id="toc-a-two-way-anova-model-for-cortisol-without-interaction" class="nav-link" data-scroll-target="#a-two-way-anova-model-for-cortisol-without-interaction"><span class="toc-section-number">10.13</span>  A Two-Way ANOVA model for <code>cortisol</code> without Interaction</a>
+  <ul class="collapse">
+  <li><a href="#the-graph" id="toc-the-graph" class="nav-link" data-scroll-target="#the-graph"><span class="toc-section-number">10.13.1</span>  The Graph</a></li>
+  <li><a href="#the-anova-model" id="toc-the-anova-model" class="nav-link" data-scroll-target="#the-anova-model"><span class="toc-section-number">10.13.2</span>  The ANOVA Model</a></li>
+  <li><a href="#the-regression-summary" id="toc-the-regression-summary" class="nav-link" data-scroll-target="#the-regression-summary"><span class="toc-section-number">10.13.3</span>  The Regression Summary</a></li>
+  <li><a href="#tukey-hsd-comparisons" id="toc-tukey-hsd-comparisons" class="nav-link" data-scroll-target="#tukey-hsd-comparisons"><span class="toc-section-number">10.13.4</span>  Tukey HSD Comparisons</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">10.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">10.1.1</span> Data Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bonding <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/bonding.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cortisol <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cortisol.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="the-bonding-data-a-designed-dental-experiment" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="the-bonding-data-a-designed-dental-experiment"><span class="header-section-number">10.2</span> The <code>bonding</code> data: A Designed Dental Experiment</h2>
+<p>The <code>bonding</code> data describe a designed experiment into the properties of four different resin types (<code>resin</code> = A, B, C, D) and two different curing light sources (<code>light</code> = Halogen, LED) as they relate to the resulting bonding strength (measured in MPa<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>) on the surface of teeth. The source is <span class="citation" data-cites="Kim2014">@Kim2014</span>.</p>
+<p>The experiment involved making measurements of bonding strength under a total of 80 experimental setups, or runs, with 10 runs completed at each of the eight combinations of a light source and a resin type. The data are gathered in the <code>bonding.csv</code> file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bonding</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 4
+   run_ID light   resin strength
+   &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;
+ 1 R101   LED     B         12.8
+ 2 R102   Halogen B         22.2
+ 3 R103   Halogen B         24.6
+ 4 R104   LED     A         17  
+ 5 R105   LED     C         32.2
+ 6 R106   Halogen B         27.1
+ 7 R107   LED     A         23.4
+ 8 R108   Halogen A         23.5
+ 9 R109   Halogen D         37.3
+10 R110   Halogen A         19.7
+# … with 70 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="a-one-factor-analysis-of-variance" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="a-one-factor-analysis-of-variance"><span class="header-section-number">10.3</span> A One-Factor Analysis of Variance</h2>
+<p>Suppose we are interested in the distribution of the <code>strength</code> values for the four different types of <code>resin</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bonding <span class="sc">|&gt;</span> <span class="fu">group_by</span>(resin) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="fu">mean</span>(strength), <span class="fu">median</span>(strength))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  resin     n `mean(strength)` `median(strength)`
+  &lt;chr&gt; &lt;int&gt;            &lt;dbl&gt;              &lt;dbl&gt;
+1 A        20             18.4               18.0
+2 B        20             22.2               22.7
+3 C        20             25.2               25.7
+4 D        20             32.1               35.3</code></pre>
+</div>
+</div>
+<p>I’d begin serious work with a plot.</p>
+<section id="look-at-the-data" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="look-at-the-data"><span class="header-section-number">10.3.1</span> Look at the Data!</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bonding, <span class="fu">aes</span>(<span class="at">x =</span> resin, <span class="at">y =</span> strength)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">fill =</span> resin)) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Another good plot for this purpose is a ridgeline plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bonding, <span class="fu">aes</span>(<span class="at">x =</span> strength, <span class="at">y =</span> resin, <span class="at">fill =</span> resin)) <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density_ridges2</span>() <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Picking joint bandwidth of 3.09</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="table-of-summary-statistics" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="table-of-summary-statistics"><span class="header-section-number">10.3.2</span> Table of Summary Statistics</h3>
+<p>With the small size of this experiment (<em>n</em> = 20 for each <code>resin</code> type), graphical summaries may not perform as well as they often do. We’ll also produce a quick table of summary statistics for <code>strength</code> within each <code>resin</code> type.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(strength <span class="sc">~</span> resin, <span class="at">data =</span> bonding)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  resin  min     Q1 median    Q3  max   mean       sd  n missing
+1     A  9.3 15.725  17.95 20.40 28.0 18.415 4.805948 20       0
+2     B 11.8 18.450  22.70 25.75 35.2 22.230 6.748263 20       0
+3     C 14.5 20.650  25.70 30.70 34.5 25.155 6.326425 20       0
+4     D 17.3 21.825  35.30 40.15 47.2 32.075 9.735063 20       0</code></pre>
+</div>
+</div>
+<p>Since the means and medians within each group are fairly close, and the distributions (with the possible exception of <code>resin</code> D) are reasonably well approximated by the Normal, I’ll fit an ANOVA model<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(strength <span class="sc">~</span> resin, <span class="at">data =</span> bonding))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: strength
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+resin      3 1999.7  666.57  13.107 5.52e-07 ***
+Residuals 76 3865.2   50.86                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>It appears that the <code>resin</code> types have a significant association with mean <code>strength</code> of the bonds. Can we identify which <code>resin</code> types have generally higher or lower <code>strength</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>t_bond <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(strength <span class="sc">~</span> resin, <span class="at">data =</span> bonding), </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">ordered =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(t_bond) <span class="sc">|&gt;</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(term, null.value)) <span class="sc">|&gt;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="sc">-</span>contrast, num, <span class="at">digits =</span> <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(estimate)) <span class="sc">|&gt;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Comparing Mean Bond Strength across pairs of resin types"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">subtitle =</span> <span class="st">"90% Tukey HSD Confidence Intervals"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(<span class="at">footnote =</span> <span class="fu">glue</span>(<span class="fu">nrow</span>(bonding), <span class="st">" teeth in bonding data"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="tvewzlzgkm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#tvewzlzgkm) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#tvewzlzgkm) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#tvewzlzgkm) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#tvewzlzgkm) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#tvewzlzgkm) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#tvewzlzgkm) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#tvewzlzgkm) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#tvewzlzgkm) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#tvewzlzgkm) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#tvewzlzgkm) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#tvewzlzgkm) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#tvewzlzgkm) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#tvewzlzgkm) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#tvewzlzgkm) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#tvewzlzgkm) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#tvewzlzgkm) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#tvewzlzgkm) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#tvewzlzgkm) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#tvewzlzgkm) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_left {
+  text-align: left;
+}
+
+:where(#tvewzlzgkm) .gt_center {
+  text-align: center;
+}
+
+:where(#tvewzlzgkm) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#tvewzlzgkm) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#tvewzlzgkm) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#tvewzlzgkm) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#tvewzlzgkm) .gt_super {
+  font-size: 65%;
+}
+
+:where(#tvewzlzgkm) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#tvewzlzgkm) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#tvewzlzgkm) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#tvewzlzgkm) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#tvewzlzgkm) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#tvewzlzgkm) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#tvewzlzgkm) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="">Comparing Mean Bond Strength across pairs of resin types</td>
+    </tr>
+    <tr>
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">90% Tukey HSD Confidence Intervals</td>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="contrast">contrast</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="estimate">estimate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="conf.low">conf.low</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="conf.high">conf.high</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="adj.p.value">adj.p.value</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="contrast" class="gt_row gt_left">D-A</td>
+<td headers="estimate" class="gt_row gt_center">13.660</td>
+<td headers="conf.low" class="gt_row gt_center">8.403</td>
+<td headers="conf.high" class="gt_row gt_center">18.917</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.000</td></tr>
+    <tr><td headers="contrast" class="gt_row gt_left">D-B</td>
+<td headers="estimate" class="gt_row gt_center">9.845</td>
+<td headers="conf.low" class="gt_row gt_center">4.588</td>
+<td headers="conf.high" class="gt_row gt_center">15.102</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.000</td></tr>
+    <tr><td headers="contrast" class="gt_row gt_left">D-C</td>
+<td headers="estimate" class="gt_row gt_center">6.920</td>
+<td headers="conf.low" class="gt_row gt_center">1.663</td>
+<td headers="conf.high" class="gt_row gt_center">12.177</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.015</td></tr>
+    <tr><td headers="contrast" class="gt_row gt_left">C-A</td>
+<td headers="estimate" class="gt_row gt_center">6.740</td>
+<td headers="conf.low" class="gt_row gt_center">1.483</td>
+<td headers="conf.high" class="gt_row gt_center">11.997</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.019</td></tr>
+    <tr><td headers="contrast" class="gt_row gt_left">B-A</td>
+<td headers="estimate" class="gt_row gt_center">3.815</td>
+<td headers="conf.low" class="gt_row gt_center">-1.442</td>
+<td headers="conf.high" class="gt_row gt_center">9.072</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.335</td></tr>
+    <tr><td headers="contrast" class="gt_row gt_left">C-B</td>
+<td headers="estimate" class="gt_row gt_center">2.925</td>
+<td headers="conf.low" class="gt_row gt_center">-2.332</td>
+<td headers="conf.high" class="gt_row gt_center">8.182</td>
+<td headers="adj.p.value" class="gt_row gt_center">0.568</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="5"> 80 teeth in bonding data</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(t_bond) <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">contrast =</span> <span class="fu">fct_reorder</span>(contrast, estimate, <span class="at">.desc =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> contrast, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round_half_up</span>(estimate, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparing Mean Bond Strength across pairs of resin types"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"90% Tukey HSD Confidence intervals"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="fu">glue</span>(<span class="fu">nrow</span>(bonding), <span class="st">" teeth in bonding data"</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Pairwise Difference between resin types"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Difference in Mean Bond Strength"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Based on these confidence intervals (which have a family-wise 90% confidence level), we see that D shows arger mean <code>strength</code> than A or B or C, and that C is also associated with larger mean <code>strength</code> than A.</p>
+</section>
+</section>
+<section id="a-two-way-anova-looking-at-two-factors" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="a-two-way-anova-looking-at-two-factors"><span class="header-section-number">10.4</span> A Two-Way ANOVA: Looking at Two Factors</h2>
+<p>Now, we’ll now add consideration of the <code>light</code> source into our study. We can look at the distribution of the <code>strength</code> values at the combinations of both <code>light</code> and <code>resin</code>, with a plot like this one.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bonding, <span class="fu">aes</span>(<span class="at">x =</span> resin, <span class="at">y =</span> strength, <span class="at">color =</span> light)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> light) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"purple"</span>, <span class="st">"darkorange"</span>)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="a-means-plot-with-standard-deviations-to-check-for-interaction" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="a-means-plot-with-standard-deviations-to-check-for-interaction"><span class="header-section-number">10.5</span> A Means Plot (with standard deviations) to check for interaction</h2>
+<p>Sometimes, we’ll instead look at a plot simply of the means (and, often, the standard deviations) of <code>strength</code> at each combination of <code>light</code> and <code>resin</code>. We’ll start by building up a data set with the summaries we want to plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bond.sum <span class="ot">&lt;-</span> bonding <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(resin, light) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">mean.str =</span> <span class="fu">mean</span>(strength), <span class="at">sd.str =</span> <span class="fu">sd</span>(strength))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'resin'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bond.sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 4
+# Groups:   resin [4]
+  resin light   mean.str sd.str
+  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+1 A     Halogen     17.8   4.02
+2 A     LED         19.1   5.63
+3 B     Halogen     19.9   5.62
+4 B     LED         24.6   7.25
+5 C     Halogen     22.5   6.19
+6 C     LED         27.8   5.56
+7 D     Halogen     40.3   4.15
+8 D     LED         23.8   5.70</code></pre>
+</div>
+</div>
+<p>Now, we’ll use this new data set to plot the means and standard deviations of <code>strength</code> at each combination of <code>resin</code> and <code>light</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## The error bars will overlap unless we adjust the position.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.2</span>) <span class="co"># move them .1 to the left and right</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bond.sum, <span class="fu">aes</span>(<span class="at">x =</span> resin, <span class="at">y =</span> mean.str, <span class="at">col =</span> light)) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean.str <span class="sc">-</span> sd.str, </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">ymax =</span> mean.str <span class="sc">+</span> sd.str),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> pd) <span class="sc">+</span> </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> light), <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"purple"</span>, <span class="st">"darkorange"</span>)) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Bonding Strength (MPa)"</span>, <span class="at">x =</span> <span class="st">"Resin Type"</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Observed Means (+/- SD) of Bonding Strength"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Is there evidence of a meaningful interaction between the resin type and the <code>light</code> source on the bonding strength in this plot?</p>
+<ul>
+<li>Sure. A meaningful interaction just means that the strength associated with different <code>resin</code> types depends on the <code>light</code> source.
+<ul>
+<li>With LED <code>light</code>, it appears that <code>resin</code> C leads to the strongest bonding strength.</li>
+<li>With Halogen <code>light</code>, though, it seems that <code>resin</code> D is substantially stronger.</li>
+</ul></li>
+<li>Note that the lines we see here connecting the <code>light</code> sources aren’t in parallel (as they would be if we had zero interaction between <code>resin</code> and <code>light</code>), but rather, they cross.</li>
+</ul>
+<section id="summarizing-the-data-after-grouping-by-resin-and-light" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="summarizing-the-data-after-grouping-by-resin-and-light"><span class="header-section-number">10.5.1</span> Summarizing the data after grouping by <code>resin</code> and <code>light</code></h3>
+<p>We might want to look at a numerical summary of the <code>strengths</code> within these groups, too.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(strength <span class="sc">~</span> resin <span class="sc">+</span> light, <span class="at">data =</span> bonding) <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(resin.light, median, mean, sd, n, missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  resin.light median  mean       sd  n missing
+1   A.Halogen  18.35 17.77 4.024108 10       0
+2   B.Halogen  21.75 19.90 5.617631 10       0
+3   C.Halogen  21.30 22.54 6.191069 10       0
+4   D.Halogen  40.40 40.30 4.147556 10       0
+5       A.LED  17.80 19.06 5.625181 10       0
+6       B.LED  24.45 24.56 7.246792 10       0
+7       C.LED  28.45 27.77 5.564980 10       0
+8       D.LED  21.45 23.85 5.704043 10       0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="fitting-the-two-way-anova-model-with-interaction" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="fitting-the-two-way-anova-model-with-interaction"><span class="header-section-number">10.6</span> Fitting the Two-Way ANOVA model with Interaction</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>c3_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(strength <span class="sc">~</span> resin <span class="sc">*</span> light, <span class="at">data =</span> bonding)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3_m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = strength ~ resin * light, data = bonding)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.760  -3.663  -0.320   3.697  11.250 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       17.770      1.771  10.033 2.57e-15 ***
+resinB             2.130      2.505   0.850   0.3979    
+resinC             4.770      2.505   1.904   0.0609 .  
+resinD            22.530      2.505   8.995 2.13e-13 ***
+lightLED           1.290      2.505   0.515   0.6081    
+resinB:lightLED    3.370      3.542   0.951   0.3446    
+resinC:lightLED    3.940      3.542   1.112   0.2697    
+resinD:lightLED  -17.740      3.542  -5.008 3.78e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.601 on 72 degrees of freedom
+Multiple R-squared:  0.6149,    Adjusted R-squared:  0.5775 
+F-statistic: 16.42 on 7 and 72 DF,  p-value: 9.801e-13</code></pre>
+</div>
+</div>
+<section id="the-anova-table-for-our-model" class="level3" data-number="10.6.1">
+<h3 data-number="10.6.1" class="anchored" data-anchor-id="the-anova-table-for-our-model"><span class="header-section-number">10.6.1</span> The ANOVA table for our model</h3>
+<p>In a two-way ANOVA model, we begin by assessing the interaction term. If it’s important, then our best model is the model including the interaction. If it’s not important, we will often move on to consider a new model, fit without an interaction.</p>
+<p>The ANOVA table is especially helpful in this case, because it lets us look specifically at the interaction effect.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(c3_m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: strength
+            Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+resin        3 1999.72  666.57 21.2499 5.792e-10 ***
+light        1   34.72   34.72  1.1067    0.2963    
+resin:light  3 1571.96  523.99 16.7043 2.457e-08 ***
+Residuals   72 2258.52   31.37                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="is-the-interaction-important" class="level3" data-number="10.6.2">
+<h3 data-number="10.6.2" class="anchored" data-anchor-id="is-the-interaction-important"><span class="header-section-number">10.6.2</span> Is the interaction important?</h3>
+<p>In this case, the interaction:</p>
+<ul>
+<li>is evident in the means plot, and</li>
+<li>is highly statistically significant, and</li>
+<li>accounts for a sizable fraction (27%) of the overall variation</li>
+</ul>
+<p><span class="math display">\[
+\eta^2_{interaction} = \frac{\mbox{SS(resin:light)}}{SS(Total)}
+= \frac{1571.96}{1999.72 + 34.72 + 1571.96 + 2258.52} = 0.268
+\]</span></p>
+<p>If the interaction were <em>either</em> large or significant we would be inclined to keep it in the model. In this case, it’s both, so there’s no real reason to remove it.</p>
+</section>
+<section id="interpreting-the-interaction" class="level3" data-number="10.6.3">
+<h3 data-number="10.6.3" class="anchored" data-anchor-id="interpreting-the-interaction"><span class="header-section-number">10.6.3</span> Interpreting the Interaction</h3>
+<p>Recall the model equation, which is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>c3_m1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = strength ~ resin * light, data = bonding)
+
+Coefficients:
+    (Intercept)           resinB           resinC           resinD  
+          17.77             2.13             4.77            22.53  
+       lightLED  resinB:lightLED  resinC:lightLED  resinD:lightLED  
+           1.29             3.37             3.94           -17.74  </code></pre>
+</div>
+</div>
+<p>So, if <code>light</code> = Halogen, our equation is:</p>
+<p><span class="math display">\[
+strength = 17.77 + 2.13 resinB + 4.77 resinC + 22.53 resinD
+\]</span></p>
+<p>And if <code>light</code> = LED, our equation is:</p>
+<p><span class="math display">\[
+strength = 19.06 + 5.50 resinB + 8.71 resinC + 4.79 resinD
+\]</span></p>
+<p>Note that both the intercept and the slopes change as a result of the interaction. The model yields a different prediction for every possible combination of a <code>resin</code> type and a <code>light</code> source.</p>
+</section>
+</section>
+<section id="comparing-individual-combinations-of-resin-and-light" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="comparing-individual-combinations-of-resin-and-light"><span class="header-section-number">10.7</span> Comparing Individual Combinations of <code>resin</code> and <code>light</code></h2>
+<p>To make comparisons between individual combinations of a <code>resin</code> type and a <code>light</code> source, using something like Tukey’s HSD approach for multiple comparisons, we first refit the model using the <code>aov</code> structure, rather than <code>lm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>c3m1_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(strength <span class="sc">~</span> resin <span class="sc">*</span> light, <span class="at">data =</span> bonding)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3m1_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+resin        3 1999.7   666.6  21.250 5.79e-10 ***
+light        1   34.7    34.7   1.107    0.296    
+resin:light  3 1572.0   524.0  16.704 2.46e-08 ***
+Residuals   72 2258.5    31.4                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>And now, we can obtain Tukey HSD comparisons (which will maintain an overall 90% family-wise confidence level) across the <code>resin</code> types, the <code>light</code> sources, and the combinations, with the TukeyHSD command. This approach is only completely appropriate if these comparisons are pre-planned, and if the design is balanced (as this is, with the same sample size for each combination of a <code>light</code> source and <code>resin</code> type.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(c3m1_aov, <span class="at">conf.level =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    90% family-wise confidence level
+
+Fit: aov(formula = strength ~ resin * light, data = bonding)
+
+$resin
+      diff        lwr       upr     p adj
+B-A  3.815 -0.3176052  7.947605 0.1461960
+C-A  6.740  2.6073948 10.872605 0.0016436
+D-A 13.660  9.5273948 17.792605 0.0000000
+C-B  2.925 -1.2076052  7.057605 0.3568373
+D-B  9.845  5.7123948 13.977605 0.0000026
+D-C  6.920  2.7873948 11.052605 0.0011731
+
+$light
+               diff       lwr       upr     p adj
+LED-Halogen -1.3175 -3.404306 0.7693065 0.2963128
+
+$`resin:light`
+                      diff         lwr        upr     p adj
+B:Halogen-A:Halogen   2.13  -4.9961962   9.256196 0.9893515
+C:Halogen-A:Halogen   4.77  -2.3561962  11.896196 0.5525230
+D:Halogen-A:Halogen  22.53  15.4038038  29.656196 0.0000000
+A:LED-A:Halogen       1.29  -5.8361962   8.416196 0.9995485
+B:LED-A:Halogen       6.79  -0.3361962  13.916196 0.1361092
+C:LED-A:Halogen      10.00   2.8738038  17.126196 0.0037074
+D:LED-A:Halogen       6.08  -1.0461962  13.206196 0.2443200
+C:Halogen-B:Halogen   2.64  -4.4861962   9.766196 0.9640100
+D:Halogen-B:Halogen  20.40  13.2738038  27.526196 0.0000000
+A:LED-B:Halogen      -0.84  -7.9661962   6.286196 0.9999747
+B:LED-B:Halogen       4.66  -2.4661962  11.786196 0.5818695
+C:LED-B:Halogen       7.87   0.7438038  14.996196 0.0473914
+D:LED-B:Halogen       3.95  -3.1761962  11.076196 0.7621860
+D:Halogen-C:Halogen  17.76  10.6338038  24.886196 0.0000000
+A:LED-C:Halogen      -3.48 -10.6061962   3.646196 0.8591455
+B:LED-C:Halogen       2.02  -5.1061962   9.146196 0.9922412
+C:LED-C:Halogen       5.23  -1.8961962  12.356196 0.4323859
+D:LED-C:Halogen       1.31  -5.8161962   8.436196 0.9995004
+A:LED-D:Halogen     -21.24 -28.3661962 -14.113804 0.0000000
+B:LED-D:Halogen     -15.74 -22.8661962  -8.613804 0.0000006
+C:LED-D:Halogen     -12.53 -19.6561962  -5.403804 0.0001014
+D:LED-D:Halogen     -16.45 -23.5761962  -9.323804 0.0000002
+B:LED-A:LED           5.50  -1.6261962  12.626196 0.3665620
+C:LED-A:LED           8.71   1.5838038  15.836196 0.0185285
+D:LED-A:LED           4.79  -2.3361962  11.916196 0.5471915
+C:LED-B:LED           3.21  -3.9161962  10.336196 0.9027236
+D:LED-B:LED          -0.71  -7.8361962   6.416196 0.9999920
+D:LED-C:LED          -3.92 -11.0461962   3.206196 0.7690762</code></pre>
+</div>
+</div>
+<p>One conclusion from this is that the combination of D and Halogen appears stronger than each of the other seven combinations.</p>
+</section>
+<section id="the-bonding-model-without-interaction" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="the-bonding-model-without-interaction"><span class="header-section-number">10.8</span> The <code>bonding</code> model without Interaction</h2>
+<p>It seems incorrect in this situation to fit a model without the interaction term, but we’ll do so just so you can see what’s involved.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>c3_m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(strength <span class="sc">~</span> resin <span class="sc">+</span> light, <span class="at">data =</span> bonding)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3_m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = strength ~ resin + light, data = bonding)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.1163  -4.9531   0.1187   4.4613  14.4663 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   19.074      1.787  10.676  &lt; 2e-16 ***
+resinB         3.815      2.260   1.688  0.09555 .  
+resinC         6.740      2.260   2.982  0.00386 ** 
+resinD        13.660      2.260   6.044 5.39e-08 ***
+lightLED      -1.317      1.598  -0.824  0.41229    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.147 on 75 degrees of freedom
+Multiple R-squared:  0.3469,    Adjusted R-squared:  0.312 
+F-statistic: 9.958 on 4 and 75 DF,  p-value: 1.616e-06</code></pre>
+</div>
+</div>
+<p>In the no-interaction model, if <code>light</code> = Halogen, our equation is:</p>
+<p><span class="math display">\[
+strength = 19.07 + 3.82 resinB + 6.74 resinC + 13.66 resinD
+\]</span></p>
+<p>And if <code>light</code> = LED, our equation is:</p>
+<p><span class="math display">\[
+strength = 17.75 + 3.82 resinB + 6.74 resinC + 13.66 resinD
+\]</span></p>
+<p>So, in the no-interaction model, only the intercept changes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(c3_m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: strength
+          Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+resin      3 1999.7  666.57 13.0514 6.036e-07 ***
+light      1   34.7   34.72  0.6797    0.4123    
+Residuals 75 3830.5   51.07                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>And, it appears, if we ignore the interaction, then <code>resin</code> type has a large impact on <code>strength</code> but <code>light</code> source doesn’t. This is clearer when we look at boxplots of the separated <code>light</code> and <code>resin</code> groups.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bonding, <span class="fu">aes</span>(<span class="at">x =</span> light, <span class="at">y =</span> strength)) <span class="sc">+</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>()</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bonding, <span class="fu">aes</span>(<span class="at">x =</span> resin, <span class="at">y =</span> strength)) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>()</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="cortisol-a-hypothetical-clinical-trial" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="cortisol-a-hypothetical-clinical-trial"><span class="header-section-number">10.9</span> <code>cortisol</code>: A Hypothetical Clinical Trial</h2>
+<p>156 adults who complained of problems with a high-stress lifestyle were enrolled in a hypothetical clinical trial of the effectiveness of a behavioral intervention designed to help reduce stress levels, as measured by salivary cortisol.</p>
+<p>The subjects were randomly assigned to one of three intervention groups (usual care, low dose, and high dose.) The “low dose” subjects received a one-week intervention with a follow-up at week 5. The “high dose” subjects received a more intensive three-week intervention, with follow up at week 5.</p>
+<p>Since cortisol levels rise and fall with circadian rhythms, the cortisol measurements were taken just after rising for all subjects. These measurements were taken at baseline, and again at five weeks. The difference (baseline - week 5) in cortisol level (in micrograms / l) serves as the primary outcome.</p>
+<section id="codebook-and-raw-data-for-cortisol" class="level3" data-number="10.9.1">
+<h3 data-number="10.9.1" class="anchored" data-anchor-id="codebook-and-raw-data-for-cortisol"><span class="header-section-number">10.9.1</span> Codebook and Raw Data for <code>cortisol</code></h3>
+<p>The data are gathered in the <code>cortisol</code> data set. Included are:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>subject</code></td>
+<td>subject identification code</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>interv</code></td>
+<td>intervention group (UC = usual care, Low, High)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>waist</code></td>
+<td>waist circumference at baseline (in inches)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>sex</code></td>
+<td>male or female</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>cort.1</code></td>
+<td>salivary cortisol level (microg/l) week 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>cort.5</code></td>
+<td>salivary cortisol level (microg/l) week 5</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cortisol</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 156 × 6
+   subject interv waist sex   cort.1 cort.5
+     &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1    1001 UC      48.3 M       13.4   13.3
+ 2    1002 Low     58.3 M       17.8   16.6
+ 3    1003 High    43   M       14.4   12.7
+ 4    1004 Low     44.9 M        9      9.8
+ 5    1005 High    46.1 M       14.2   14.2
+ 6    1006 UC      41.3 M       14.8   15.1
+ 7    1007 Low     51   F       13.7   16  
+ 8    1008 UC      42   F       17.3   18.7
+ 9    1009 Low     24.7 F       15.3   15.8
+10    1010 Low     59.4 M       12.4   11.7
+# … with 146 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="creating-a-factor-combining-sex-and-waist" class="level2" data-number="10.10">
+<h2 data-number="10.10" class="anchored" data-anchor-id="creating-a-factor-combining-sex-and-waist"><span class="header-section-number">10.10</span> Creating a factor combining sex and waist</h2>
+<p>Next, we’ll put the <code>waist</code> and <code>sex</code> data in the <code>cortisol</code> example together. We want to build a second categorical variable (called <code>fat_est</code>) combining this information, to indicate “healthy” vs.&nbsp;“unhealthy” levels of fat around the waist.</p>
+<ul>
+<li>Male subjects whose waist circumference is 40 inches or more, and</li>
+<li>Female subjects whose waist circumference is 35 inches or more, will fall in the “unhealthy” group.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>cortisol <span class="ot">&lt;-</span> cortisol <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">fat_est =</span> <span class="fu">factor</span>(<span class="fu">case_when</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>            sex <span class="sc">==</span> <span class="st">"M"</span> <span class="sc">&amp;</span> waist <span class="sc">&gt;=</span> <span class="dv">40</span> <span class="sc">~</span> <span class="st">"unhealthy"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>            sex <span class="sc">==</span> <span class="st">"F"</span> <span class="sc">&amp;</span> waist <span class="sc">&gt;=</span> <span class="dv">35</span> <span class="sc">~</span> <span class="st">"unhealthy"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>            <span class="cn">TRUE</span>                     <span class="sc">~</span> <span class="st">"healthy"</span>)),</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cort_diff =</span> cort<span class="fl">.1</span> <span class="sc">-</span> cort<span class="fl">.5</span>)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cortisol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    subject        interv              waist           sex           
+ Min.   :1001   Length:156         Min.   :20.80   Length:156        
+ 1st Qu.:1040   Class :character   1st Qu.:33.27   Class :character  
+ Median :1078   Mode  :character   Median :40.35   Mode  :character  
+ Mean   :1078                      Mean   :40.42                     
+ 3rd Qu.:1117                      3rd Qu.:47.77                     
+ Max.   :1156                      Max.   :59.90                     
+     cort.1           cort.5          fat_est      cort_diff      
+ Min.   : 6.000   Min.   : 4.2   healthy  : 56   Min.   :-2.3000  
+ 1st Qu.: 9.675   1st Qu.: 9.6   unhealthy:100   1st Qu.:-0.5000  
+ Median :12.400   Median :12.6                   Median : 0.2000  
+ Mean   :12.686   Mean   :12.4                   Mean   : 0.2821  
+ 3rd Qu.:16.025   3rd Qu.:15.7                   3rd Qu.: 1.2000  
+ Max.   :19.000   Max.   :19.7                   Max.   : 2.0000  </code></pre>
+</div>
+</div>
+</section>
+<section id="a-means-plot-for-the-cortisol-trial-with-standard-errors" class="level2" data-number="10.11">
+<h2 data-number="10.11" class="anchored" data-anchor-id="a-means-plot-for-the-cortisol-trial-with-standard-errors"><span class="header-section-number">10.11</span> A Means Plot for the <code>cortisol</code> trial (with standard errors)</h2>
+<p>Again, we’ll start by building up a data set with the summaries we want to plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>cort.sum <span class="ot">&lt;-</span> cortisol <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(interv, fat_est) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">mean.cort =</span> <span class="fu">mean</span>(cort_diff), </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">se.cort =</span> <span class="fu">sd</span>(cort_diff)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">n</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'interv'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>cort.sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+# Groups:   interv [3]
+  interv fat_est   mean.cort se.cort
+  &lt;chr&gt;  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1 High   healthy       0.695   0.217
+2 High   unhealthy     0.352   0.150
+3 Low    healthy       0.5     0.182
+4 Low    unhealthy     0.327   0.190
+5 UC     healthy       0.347   0.225
+6 UC     unhealthy    -0.226   0.155</code></pre>
+</div>
+</div>
+<p>Now, we’ll use this new data set to plot the means and standard errors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="do">## The error bars will overlap unless we adjust the position.</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.2</span>) <span class="co"># move them .1 to the left and right</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cort.sum, <span class="fu">aes</span>(<span class="at">x =</span> interv, <span class="at">y =</span> mean.cort, <span class="at">col =</span> fat_est)) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean.cort <span class="sc">-</span> se.cort, </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">ymax =</span> mean.cort <span class="sc">+</span> se.cort),</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> pd) <span class="sc">+</span> </span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> fat_est), <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"royalblue"</span>, <span class="st">"darkred"</span>)) <span class="sc">+</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Salivary Cortisol Level"</span>, <span class="at">x =</span> <span class="st">"Intervention Group"</span>,</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Observed Means (+/- SE) of Salivary Cortisol"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="a-two-way-anova-model-for-cortisol-with-interaction" class="level2" data-number="10.12">
+<h2 data-number="10.12" class="anchored" data-anchor-id="a-two-way-anova-model-for-cortisol-with-interaction"><span class="header-section-number">10.12</span> A Two-Way ANOVA model for <code>cortisol</code> with Interaction</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>c3_m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(cort_diff <span class="sc">~</span> interv <span class="sc">*</span> fat_est, <span class="at">data =</span> cortisol)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(c3_m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: cort_diff
+                Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+interv           2   7.847  3.9235  4.4698 0.01301 *
+fat_est          1   4.614  4.6139  5.2564 0.02326 *
+interv:fat_est   2   0.943  0.4715  0.5371 0.58554  
+Residuals      150 131.666  0.8778                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Does it seem like we need the interaction term in this case?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3_m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = cort_diff ~ interv * fat_est, data = cortisol)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.62727 -0.75702  0.08636  0.84848  2.12647 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)                  0.6950     0.2095   3.317  0.00114 **
+intervLow                   -0.1950     0.3001  -0.650  0.51689   
+intervUC                    -0.3479     0.3091  -1.126  0.26206   
+fat_estunhealthy            -0.3435     0.2655  -1.294  0.19774   
+intervLow:fat_estunhealthy   0.1708     0.3785   0.451  0.65256   
+intervUC:fat_estunhealthy   -0.2300     0.3846  -0.598  0.55068   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9369 on 150 degrees of freedom
+Multiple R-squared:  0.0924,    Adjusted R-squared:  0.06214 
+F-statistic: 3.054 on 5 and 150 DF,  p-value: 0.01179</code></pre>
+</div>
+</div>
+<section id="notes-on-this-question" class="level3" data-number="10.12.1">
+<h3 data-number="10.12.1" class="anchored" data-anchor-id="notes-on-this-question"><span class="header-section-number">10.12.1</span> Notes on this Question</h3>
+<p>When we’re evaluating a two-factor ANOVA model with an interaction, we are choosing between models with either:</p>
+<ol type="1">
+<li>just one factor</li>
+<li>both factors, but only as main effects</li>
+<li>both factors and an interaction between them</li>
+</ol>
+<p>But we don’t get to pick models that include any other combination of terms. For this two-way ANOVA, then, our choices are:</p>
+<ul>
+<li>a model with `interv only</li>
+<li>a model with `fat_est only</li>
+<li>a model with both <code>interv</code> and <code>fat_est</code> but not their interaction</li>
+<li>a model with <code>interv</code> and <code>fat_est</code> and their interaction</li>
+</ul>
+<p>Those are the only modeling options available to us.</p>
+<p>First, consider the ANOVA table, repeated below…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(c3_m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: cort_diff
+                Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+interv           2   7.847  3.9235  4.4698 0.01301 *
+fat_est          1   4.614  4.6139  5.2564 0.02326 *
+interv:fat_est   2   0.943  0.4715  0.5371 0.58554  
+Residuals      150 131.666  0.8778                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The conclusions here are as follows:</p>
+<ol type="1">
+<li><p>The interaction effect (<code>interv:fat_est</code>) has a large p value (0.58554) and assesses whether the two interaction terms (product terms) included in the model add detectable predictive value to the main effects model that includes only interv and fat_est alone. You are right to say that this ANOVA is sequential, which means that the p value for the interaction effect is looking at the additional effect of the interaction once we already have the main effects interv and fat_est included.</p></li>
+<li><p>The <code>interv</code> and <code>fat_est</code> terms aren’t usually evaluated with hypothesis tests or interpreted in the ANOVA for this setting, since if we intend to include the interaction term (as this model does) we also need these main effects. If we wanted to look at those terms individually in a model without the interaction, then we’d want to fit that model (without the interaction term) to do so.</p></li>
+</ol>
+<p>Next, let’s look at the summary of the c3_m3 model, specifically the coefficients…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3_m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = cort_diff ~ interv * fat_est, data = cortisol)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.62727 -0.75702  0.08636  0.84848  2.12647 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)                  0.6950     0.2095   3.317  0.00114 **
+intervLow                   -0.1950     0.3001  -0.650  0.51689   
+intervUC                    -0.3479     0.3091  -1.126  0.26206   
+fat_estunhealthy            -0.3435     0.2655  -1.294  0.19774   
+intervLow:fat_estunhealthy   0.1708     0.3785   0.451  0.65256   
+intervUC:fat_estunhealthy   -0.2300     0.3846  -0.598  0.55068   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9369 on 150 degrees of freedom
+Multiple R-squared:  0.0924,    Adjusted R-squared:  0.06214 
+F-statistic: 3.054 on 5 and 150 DF,  p-value: 0.01179</code></pre>
+</div>
+</div>
+<p>So here, we see two p values associated with the interaction terms (the two product terms at the bottom of the regression) but these aren’t especially helpful, because we’re either going to include the interaction (in which case both of these terms will be in the model) or we’re not going to include the interaction (in which case neither of these terms will be in the model.)</p>
+<p>So the p values provided here aren’t very helpful - like all such p values for t tests, they are looking at the value of the term in their row as the last predictor in to the model, essentially comparing the full model to the model without that specific component, but none of those tests enable us to decide which of the 4 available model choices is our best fit.</p>
+<p>Now, let’s consider the reason why, for example, the p value for <code>fat_est</code> in the <code>summary()</code> which is looking at comparing the following models …</p>
+<ul>
+<li>a model including interv (which has 2 coefficients to account for its 3 categories), <code>fat_est</code> (which has 1 coefficient to account for its 2 categories), and the <code>interv*fat_est</code> interaction terms (which are 2 terms)</li>
+<li>a model including <code>interv</code> and the <code>interv*fat_est</code> interaction (but somehow not the main effect of <code>fat_est</code>, which actually makes no sense: if we include the interaction we always include the main effect)</li>
+</ul>
+<p>to the p value for <code>fat_est</code> in the ANOVA which is looking at comparing</p>
+<ul>
+<li>the model with <code>interv</code> alone to</li>
+<li>the model with <code>interv</code> and <code>fat_est</code> as main effects, but no interaction</li>
+</ul>
+<p>Only the ANOVA p value is therefore in any way useful, and it suggests that once you have the main effect of <code>interv</code>, adding <code>fat_est</code>’s main effect adds statistically detectable value (p = 0.023)</p>
+</section>
+</section>
+<section id="a-two-way-anova-model-for-cortisol-without-interaction" class="level2" data-number="10.13">
+<h2 data-number="10.13" class="anchored" data-anchor-id="a-two-way-anova-model-for-cortisol-without-interaction"><span class="header-section-number">10.13</span> A Two-Way ANOVA model for <code>cortisol</code> without Interaction</h2>
+<section id="the-graph" class="level3" data-number="10.13.1">
+<h3 data-number="10.13.1" class="anchored" data-anchor-id="the-graph"><span class="header-section-number">10.13.1</span> The Graph</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(cortisol, <span class="fu">aes</span>(<span class="at">x =</span> interv, <span class="at">y =</span> cort_diff)) <span class="sc">+</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>()</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(cortisol, <span class="fu">aes</span>(<span class="at">x =</span> fat_est, <span class="at">y =</span> cort_diff)) <span class="sc">+</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>()</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="10-anovaexamples_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="the-anova-model" class="level3" data-number="10.13.2">
+<h3 data-number="10.13.2" class="anchored" data-anchor-id="the-anova-model"><span class="header-section-number">10.13.2</span> The ANOVA Model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>c3_m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(cort_diff <span class="sc">~</span> interv <span class="sc">+</span> fat_est, <span class="at">data =</span> cortisol)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(c3_m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: cort_diff
+           Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+interv      2   7.847  3.9235  4.4972 0.01266 *
+fat_est     1   4.614  4.6139  5.2886 0.02283 *
+Residuals 152 132.609  0.8724                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>How do these results compare to those we saw in the model with interaction?</p>
+</section>
+<section id="the-regression-summary" class="level3" data-number="10.13.3">
+<h3 data-number="10.13.3" class="anchored" data-anchor-id="the-regression-summary"><span class="header-section-number">10.13.3</span> The Regression Summary</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c3_m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = cort_diff ~ interv + fat_est, data = cortisol)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.55929 -0.74527  0.05457  0.86456  2.05489 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.70452    0.16093   4.378 2.22e-05 ***
+intervLow        -0.08645    0.18232  -0.474  0.63606    
+intervUC         -0.50063    0.18334  -2.731  0.00707 ** 
+fat_estunhealthy -0.35878    0.15601  -2.300  0.02283 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.934 on 152 degrees of freedom
+Multiple R-squared:  0.0859,    Adjusted R-squared:  0.06785 
+F-statistic: 4.761 on 3 and 152 DF,  p-value: 0.00335</code></pre>
+</div>
+</div>
+</section>
+<section id="tukey-hsd-comparisons" class="level3" data-number="10.13.4">
+<h3 data-number="10.13.4" class="anchored" data-anchor-id="tukey-hsd-comparisons"><span class="header-section-number">10.13.4</span> Tukey HSD Comparisons</h3>
+<p>Without the interaction term, we can make direct comparisons between levels of the intervention, and between levels of the <code>fat_est</code> variable. This is probably best done here in a Tukey HSD comparison.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(cort_diff <span class="sc">~</span> interv <span class="sc">+</span> fat_est, <span class="at">data =</span> cortisol), <span class="at">conf.level =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    90% family-wise confidence level
+
+Fit: aov(formula = cort_diff ~ interv + fat_est, data = cortisol)
+
+$interv
+                diff        lwr         upr     p adj
+Low-High -0.09074746 -0.4677566  0.28626166 0.8724916
+UC-High  -0.51642619 -0.8952964 -0.13755598 0.0150150
+UC-Low   -0.42567873 -0.8063312 -0.04502625 0.0570728
+
+$fat_est
+                        diff        lwr       upr     p adj
+unhealthy-healthy -0.3582443 -0.6162415 -0.100247 0.0229266</code></pre>
+</div>
+</div>
+<p>What conclusions can we draw here?</p>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The MPa is defined as the failure load (in Newtons) divided by the entire bonded area, in mm<sup>2</sup>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If the data weren’t approximately Normally distributed, we might instead consider a rank-based alternative to ANOVA, like the Kruskal-Wallis test.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./09-anovasmart.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./90-incomplete.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

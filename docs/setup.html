@@ -208,7 +208,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./09-anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -291,15 +301,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>prost <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/prost.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/pollution.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>bonding <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/bonding.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>cortisol <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cortisol.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>emphysema <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/emphysema.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>resect <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/resect.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>colscr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/screening.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>colscr2 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/screening2.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>authorship <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/authorship.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>hem <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/hem.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>leukem <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/leukem.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>emphysema <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/emphysema.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>resect <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/resect.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>colscr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/screening.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>colscr2 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/screening2.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>authorship <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/authorship.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>hem <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/hem.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>leukem <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/leukem.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
