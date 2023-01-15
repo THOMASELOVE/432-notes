@@ -1,0 +1,460 @@
+# Two-Way ANOVA and Interaction
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(broom)
+library(ggridges)
+library(glue)
+library(gt)
+library(mosaic)
+library(patchwork)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+bonding <- read_csv("data/bonding.csv", show_col_types = FALSE) 
+cortisol <- read_csv("data/cortisol.csv", show_col_types = FALSE) 
+```
+
+## The `bonding` data: A Designed Dental Experiment
+
+The `bonding` data describe a designed experiment into the properties of four different resin types (`resin` = A, B, C, D) and two different curing light sources (`light` = Halogen, LED) as they relate to the resulting bonding strength (measured in MPa^[The MPa is defined as the failure load (in Newtons) divided by the entire bonded area, in mm^2^.]) on the surface of teeth. The source is @Kim2014.
+
+The experiment involved making measurements of bonding strength under a total of 80 experimental setups, or runs, with 10 runs completed at each of the eight combinations of a light source and a resin type. The data are gathered in the `bonding.csv` file.
+
+```{r}
+bonding
+```
+
+## A One-Factor Analysis of Variance
+
+Suppose we are interested in the distribution of the `strength` values for the four different types of `resin`. 
+
+```{r}
+bonding |> group_by(resin) |> 
+  summarise(n = n(), mean(strength), median(strength))
+```
+
+I'd begin serious work with a plot.
+
+### Look at the Data!
+
+```{r}
+ggplot(bonding, aes(x = resin, y = strength)) +
+    geom_violin(aes(fill = resin)) +
+    geom_boxplot(width = 0.2)
+```
+
+Another good plot for this purpose is a ridgeline plot.
+
+```{r}
+ggplot(bonding, aes(x = strength, y = resin, fill = resin)) +
+    geom_density_ridges2() +
+    guides(fill = "none")
+```
+
+### Table of Summary Statistics
+
+With the small size of this experiment (*n* = 20 for each `resin` type), graphical summaries may not perform as well as they often do. We'll also produce a quick table of summary statistics for `strength` within each `resin` type.
+
+```{r}
+favstats(strength ~ resin, data = bonding)
+```
+
+Since the means and medians within each group are fairly close, and the distributions (with the possible exception of `resin` D) are reasonably well approximated by the Normal, I'll fit an ANOVA model^[If the data weren't approximately Normally distributed, we might instead consider a rank-based alternative to ANOVA, like the Kruskal-Wallis test.].
+
+```{r}
+anova(lm(strength ~ resin, data = bonding))
+```
+
+It appears that the `resin` types have a significant association with mean `strength` of the bonds. Can we identify which `resin` types have generally higher or lower `strength`?
+
+```{r}
+t_bond <- TukeyHSD(aov(strength ~ resin, data = bonding), 
+                ordered = TRUE, conf.level = 0.90)
+
+tidy(t_bond) |> 
+  select(-c(term, null.value)) |>
+  mutate(across(.cols = -contrast, num, digits = 3)) |>
+  arrange(desc(estimate)) |>
+  gt() |>
+  tab_header(title = "Comparing Mean Bond Strength across pairs of resin types",
+             subtitle = "90% Tukey HSD Confidence Intervals") |>
+  tab_footnote(footnote = glue(nrow(bonding), " teeth in bonding data"))
+
+tidy(t_bond) |>
+  mutate(contrast = fct_reorder(contrast, estimate, .desc = TRUE)) %>%
+  ggplot(., aes(x = contrast, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange() +
+  geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
+  geom_label(aes(label = round_half_up(estimate, 2))) +
+  labs(title = "Comparing Mean Bond Strength across pairs of resin types",
+       subtitle = "90% Tukey HSD Confidence intervals",
+       caption = glue(nrow(bonding), " teeth in bonding data"),
+       x = "Pairwise Difference between resin types",
+       y = "Difference in Mean Bond Strength")
+```
+
+Based on these confidence intervals (which have a family-wise 90% confidence level), we see that D shows arger mean `strength` than A or B or C, and that C is also associated with larger mean `strength` than A. 
+
+## A Two-Way ANOVA: Looking at Two Factors
+
+Now, we'll now add consideration of the `light` source into our study. We can look at the distribution of the `strength` values at the combinations of both `light` and `resin`, with a plot like this one.
+
+```{r}
+ggplot(bonding, aes(x = resin, y = strength, color = light)) +
+    geom_point(size = 2, alpha = 0.5) +
+    facet_wrap(~ light) +
+    guides(color = "none") +
+    scale_color_manual(values = c("purple", "darkorange")) +
+    theme_bw() 
+```
+
+## A Means Plot (with standard deviations) to check for interaction
+
+Sometimes, we'll instead look at a plot simply of the means (and, often, the standard deviations) of `strength` at each combination of `light` and `resin`. We'll start by building up a data set with the summaries we want to plot.
+
+```{r}
+bond.sum <- bonding |> 
+    group_by(resin, light) |>
+    summarize(mean.str = mean(strength), sd.str = sd(strength))
+
+bond.sum
+```
+
+Now, we'll use this new data set to plot the means and standard deviations of `strength` at each combination of `resin` and `light`. 
+
+```{r}
+## The error bars will overlap unless we adjust the position.
+pd <- position_dodge(0.2) # move them .1 to the left and right
+
+ggplot(bond.sum, aes(x = resin, y = mean.str, col = light)) +
+    geom_errorbar(aes(ymin = mean.str - sd.str, 
+                      ymax = mean.str + sd.str),
+                  width = 0.2, position = pd) +
+    geom_point(size = 2, position = pd) + 
+    geom_line(aes(group = light), position = pd) +
+    scale_color_manual(values = c("purple", "darkorange")) +
+    theme_bw() +
+    labs(y = "Bonding Strength (MPa)", x = "Resin Type",
+         title = "Observed Means (+/- SD) of Bonding Strength")
+```
+
+Is there evidence of a meaningful interaction between the resin type and the `light` source on the bonding strength in this plot? 
+
+- Sure. A meaningful interaction just means that the strength associated with different `resin` types depends on the `light` source. 
+    - With LED `light`, it appears that `resin` C leads to the strongest bonding strength.
+    - With Halogen `light`, though, it seems that `resin` D is substantially stronger.
+- Note that the lines we see here connecting the `light` sources aren't in parallel (as they would be if we had zero interaction between `resin` and `light`), but rather, they cross.
+
+### Summarizing the data after grouping by `resin` and `light`
+
+We might want to look at a numerical summary of the `strengths` within these groups, too.
+
+```{r}
+favstats(strength ~ resin + light, data = bonding) |>
+    select(resin.light, median, mean, sd, n, missing)
+```
+
+## Fitting the Two-Way ANOVA model with Interaction
+
+```{r}
+c3_m1 <- lm(strength ~ resin * light, data = bonding)
+
+summary(c3_m1)
+```
+
+### The ANOVA table for our model
+
+In a two-way ANOVA model, we begin by assessing the interaction term. If it's important, then our best model is the model including the interaction. If it's not important, we will often move on to consider a new model, fit without an interaction.
+
+The ANOVA table is especially helpful in this case, because it lets us look specifically at the interaction effect.
+
+```{r}
+anova(c3_m1)
+```
+
+### Is the interaction important?
+
+In this case, the interaction:
+
+- is evident in the means plot, and
+- is highly statistically significant, and
+- accounts for a sizable fraction (27%) of the overall variation
+
+$$ 
+\eta^2_{interaction} = \frac{\mbox{SS(resin:light)}}{SS(Total)}
+= \frac{1571.96}{1999.72 + 34.72 + 1571.96 + 2258.52} = 0.268
+$$
+
+If the interaction were *either* large or significant we would be inclined to keep it in the model. In this case, it's both, so there's no real reason to remove it.
+
+### Interpreting the Interaction
+
+Recall the model equation, which is:
+
+```{r}
+c3_m1
+```
+
+So, if `light` = Halogen, our equation is:
+
+$$
+strength = 17.77 + 2.13 resinB + 4.77 resinC + 22.53 resinD 
+$$
+
+And if `light` = LED, our equation is:
+
+$$
+strength = 19.06 + 5.50 resinB + 8.71 resinC + 4.79 resinD 
+$$
+
+Note that both the intercept and the slopes change as a result of the interaction. The model yields a different prediction for every possible combination of a `resin` type and a `light` source.
+
+## Comparing Individual Combinations of `resin` and `light`
+
+To make comparisons between individual combinations of a `resin` type and a `light` source, using something like Tukey's HSD approach for multiple comparisons, we first refit the model using the `aov` structure, rather than `lm`.
+
+```{r}
+c3m1_aov <- aov(strength ~ resin * light, data = bonding)
+
+summary(c3m1_aov)
+```
+
+And now, we can obtain Tukey HSD comparisons (which will maintain an overall 90% family-wise confidence level) across the `resin` types, the `light` sources, and the combinations, with the TukeyHSD command. This approach is only completely appropriate if these comparisons are pre-planned, and if the design is balanced (as this is, with the same sample size for each combination of a `light` source and `resin` type.)
+
+```{r}
+TukeyHSD(c3m1_aov, conf.level = 0.9)
+```
+
+One conclusion from this is that the combination of D and Halogen appears stronger than each of the other seven combinations.
+
+## The `bonding` model without Interaction
+
+It seems incorrect in this situation to fit a model without the interaction term, but we'll do so just so you can see what's involved.
+
+```{r}
+c3_m2 <- lm(strength ~ resin + light, data = bonding)
+
+summary(c3_m2)
+```
+
+In the no-interaction model, if `light` = Halogen, our equation is:
+
+$$
+strength = 19.07 + 3.82 resinB + 6.74 resinC + 13.66 resinD
+$$
+
+And if `light` = LED, our equation is:
+
+$$
+strength = 17.75 + 3.82 resinB + 6.74 resinC + 13.66 resinD
+$$
+
+So, in the no-interaction model, only the intercept changes.
+
+```{r}
+anova(c3_m2)
+```
+
+And, it appears, if we ignore the interaction, then `resin` type has a large impact on `strength` but `light` source doesn't. This is clearer when we look at boxplots of the separated `light` and `resin` groups. 
+
+```{r}
+p1 <- ggplot(bonding, aes(x = light, y = strength)) + 
+    geom_boxplot()
+p2 <- ggplot(bonding, aes(x = resin, y = strength)) +
+    geom_boxplot()
+
+p1 + p2
+```
+
+## `cortisol`: A Hypothetical Clinical Trial
+
+156 adults who complained of problems with a high-stress lifestyle were enrolled in a hypothetical clinical trial of the effectiveness of a behavioral intervention designed to help reduce stress levels, as measured by salivary cortisol. 
+
+The subjects were randomly assigned to one of three intervention groups (usual care, low dose, and high dose.) The "low dose" subjects received a one-week intervention with a follow-up at week 5. The "high dose" subjects received a more intensive three-week intervention, with follow up at week 5. 
+
+Since cortisol levels rise and fall with circadian rhythms, the cortisol measurements were taken just after rising for all subjects. These measurements were taken at baseline, and again at five weeks. The difference (baseline - week 5) in cortisol level (in micrograms / l) serves as the primary outcome.
+
+### Codebook and Raw Data for `cortisol`
+
+The data are gathered in the `cortisol` data set. Included are:
+
+Variable  | Description
+--------: | --------------------------------
+`subject` | subject identification code
+`interv`  | intervention group (UC = usual care, Low, High)
+`waist`   | waist circumference at baseline (in inches)
+`sex`     | male or female
+`cort.1`  | salivary cortisol level (microg/l) week 1
+`cort.5`  | salivary cortisol level (microg/l) week 5
+
+```{r}
+cortisol
+```
+
+## Creating a factor combining sex and waist
+
+Next, we'll put the `waist` and `sex` data in the `cortisol` example together. We want to build a second categorical variable (called `fat_est`) combining this information, to indicate "healthy" vs. "unhealthy" levels of fat around the waist. 
+
+- Male subjects whose waist circumference is 40 inches or more, and
+- Female subjects whose waist circumference is 35 inches or more, will fall in the "unhealthy" group.
+
+```{r}
+cortisol <- cortisol |>
+    mutate(
+        fat_est = factor(case_when(
+            sex == "M" & waist >= 40 ~ "unhealthy",
+            sex == "F" & waist >= 35 ~ "unhealthy",
+            TRUE                     ~ "healthy")),
+        cort_diff = cort.1 - cort.5)
+
+summary(cortisol)
+```
+
+## A Means Plot for the `cortisol` trial (with standard errors)
+
+Again, we'll start by building up a data set with the summaries we want to plot.
+
+```{r}
+cort.sum <- cortisol |> 
+    group_by(interv, fat_est) |>
+    summarize(mean.cort = mean(cort_diff), 
+              se.cort = sd(cort_diff)/sqrt(n()))
+
+cort.sum
+```
+
+Now, we'll use this new data set to plot the means and standard errors. 
+
+```{r}
+## The error bars will overlap unless we adjust the position.
+pd <- position_dodge(0.2) # move them .1 to the left and right
+
+ggplot(cort.sum, aes(x = interv, y = mean.cort, col = fat_est)) +
+    geom_errorbar(aes(ymin = mean.cort - se.cort, 
+                      ymax = mean.cort + se.cort),
+                  width = 0.2, position = pd) +
+    geom_point(size = 2, position = pd) + 
+    geom_line(aes(group = fat_est), position = pd) +
+    scale_color_manual(values = c("royalblue", "darkred")) +
+    theme_bw() +
+    labs(y = "Salivary Cortisol Level", x = "Intervention Group",
+         title = "Observed Means (+/- SE) of Salivary Cortisol")
+```
+
+## A Two-Way ANOVA model for `cortisol` with Interaction
+
+```{r}
+c3_m3 <- lm(cort_diff ~ interv * fat_est, data = cortisol)
+
+anova(c3_m3)
+```
+
+Does it seem like we need the interaction term in this case?
+
+```{r}
+summary(c3_m3)
+```
+
+### Notes on this Question
+
+When we're evaluating a two-factor ANOVA model with an interaction, we are choosing between models with either:
+
+1. just one factor
+2. both factors, but only as main effects
+3. both factors and an interaction between them
+
+But we don't get to pick models that include any other combination of terms. For this two-way ANOVA, then, our choices are:
+
+- a model with `interv only
+- a model with `fat_est only
+- a model with both `interv` and `fat_est` but not their interaction
+- a model with `interv` and `fat_est` and their interaction
+
+Those are the only modeling options available to us. 
+
+First, consider the ANOVA table, repeated below...
+
+```{r}
+anova(c3_m3)
+```
+
+The conclusions here are as follows:
+
+1. The interaction effect (`interv:fat_est`) has a large p value (0.58554) and assesses whether the two interaction terms (product terms) included in the model add detectable predictive value to the main effects model that includes only interv and fat_est alone. You are right to say that this ANOVA is sequential, which means that the p value for the interaction effect is looking at the additional effect of the interaction once we already have the main effects interv and fat_est included.
+
+2. The `interv` and `fat_est` terms aren't usually evaluated with hypothesis tests or interpreted in the ANOVA for this setting, since if we intend to include the interaction term (as this model does) we also need these main effects. If we wanted to look at those terms individually in a model without the interaction, then we'd want to fit that model (without the interaction term) to do so.
+
+Next, let's look at the summary of the c3_m3 model, specifically the coefficients...
+
+```{r}
+summary(c3_m3)
+```
+
+So here, we see two p values associated with the interaction terms (the two product terms at the bottom of the regression) but these aren't especially helpful, because we're either going to include the interaction (in which case both of these terms will be in the model) or we're not going to include the interaction (in which case neither of these terms will be in the model.)
+
+So the p values provided here aren't very helpful - like all such p values for t tests, they are looking at the value of the term in their row as the last predictor in to the model, essentially comparing the full model to the model without that specific component, but none of those tests enable us to decide which of the 4 available model choices is our best fit.
+
+Now, let's consider the reason why, for example, the p value for `fat_est` in the `summary()` which is looking at comparing the following models ...
+
+- a model including interv (which has 2 coefficients to account for its 3 categories), `fat_est` (which has 1 coefficient to account for its 2 categories), and the `interv*fat_est` interaction terms (which are 2 terms)
+- a model including `interv` and the `interv*fat_est` interaction (but somehow not the main effect of `fat_est`, which actually makes no sense: if we include the interaction we always include the main effect)
+
+to the p value for `fat_est` in the ANOVA which is looking at comparing
+
+- the model with `interv` alone to
+- the model with `interv` and `fat_est` as main effects, but no interaction
+
+Only the ANOVA p value is therefore in any way useful, and it suggests that once you have the main effect of `interv`, adding `fat_est`'s main effect adds statistically detectable value (p = 0.023)
+
+## A Two-Way ANOVA model for `cortisol` without Interaction
+
+### The Graph
+
+```{r}
+p1 <- ggplot(cortisol, aes(x = interv, y = cort_diff)) + 
+    geom_boxplot()
+p2 <- ggplot(cortisol, aes(x = fat_est, y = cort_diff)) +
+    geom_boxplot()
+
+p1 + p2
+```
+
+### The ANOVA Model
+
+```{r}
+c3_m4 <- lm(cort_diff ~ interv + fat_est, data = cortisol)
+
+anova(c3_m4)
+```
+
+How do these results compare to those we saw in the model with interaction?
+
+### The Regression Summary
+
+```{r}
+summary(c3_m4)
+```
+
+### Tukey HSD Comparisons
+
+Without the interaction term, we can make direct comparisons between levels of the intervention, and between levels of the `fat_est` variable. This is probably best done here in a Tukey HSD comparison.
+
+```{r}
+TukeyHSD(aov(cort_diff ~ interv + fat_est, data = cortisol), conf.level = 0.9)
+```
+
+What conclusions can we draw here?
+

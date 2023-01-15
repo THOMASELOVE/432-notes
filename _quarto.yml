@@ -19,6 +19,8 @@ book:
     - 06-smart.qmd
     - 07-singleimputation.qmd
     - 08-datasummaries.qmd
+    - 09-anovasmart.qmd
+    - 10-anovaexamples.qmd
     - 90-incomplete.qmd
 
 format:

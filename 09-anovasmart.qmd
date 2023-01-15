@@ -1,0 +1,478 @@
+# Analysis of Variance with SMART
+
+In this chapter, we'll work with the `smart_cle1_sh` data file again.
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(broom)
+library(knitr)
+library(mosaic)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+smart_cle1_sh <- read_rds("data/smart_cle1_sh.Rds")
+```
+
+The variables we'll look at in this chapter are as follows.
+
+Variable | Description
+---------: | --------------------------------------------------------
+`SEQNO` | respondent identification number (all begin with 2016)
+`bmi` | Body mass index, in kg/m^2^
+`female` | Sex, 1 = female, 0 = male
+`smoke100` | Have you smoked at least 100 cigarettes in your life? (1 = yes, 0 = no)
+`activity` | Physical activity (Highly Active, Active, Insufficiently Active, Inactive)
+`drinks_wk` | On average, how many drinks of alcohol do you consume in a week?
+`physhealth` | Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?
+
+## A One-Factor Analysis of Variance
+
+We'll be predicting body mass index, at first using a single factor as a predictor: the `activity` level.
+
+### Can `activity` be used to predict `bmi`?
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = activity, y = bmi, 
+                          fill = activity)) +
+  geom_violin(alpha = 0.3) +
+  geom_boxplot(width = 0.3, notch = TRUE) + 
+  guides(fill = "none") +
+  coord_flip() +
+  labs(title = "BMI as a function of Activity Level",
+       subtitle = "Subjects in the SMART CLE data",
+       x = "", y = "Body Mass Index")
+```
+
+Here's a numerical summary of the distributions of `bmi` within each `activity` group.
+
+```{r}
+favstats(bmi ~ activity, data = smart_cle1_sh)
+```
+
+### Should we transform `bmi`?
+
+The analysis of variance is something of a misnomer. What we're doing is using the variance to say something about population means. In light of the apparent right skew of the `bmi` results in each `activity` group, might it be a better choice to use a logarithmic transformation? We'll use the natural logarithm here, which in R, is symbolized by `log`.
+
+```{r}
+ggplot(smart_cle1_sh, aes(x = activity, y = log(bmi), 
+                          fill = activity)) +
+  geom_violin(alpha = 0.3) +
+  geom_boxplot(width = 0.3, notch = TRUE) + 
+  guides(fill = "none") +
+  coord_flip() +
+  labs(title = "log(BMI) as a function of Activity Level",
+       subtitle = "Subjects in the SMART CLE data",
+       x = "", y = "log(Body Mass Index)")
+```
+
+The logarithmic transformation yields distributions that look much more symmetric in each `activity` group, so we'll proceed to build our regression model predicting `log(bmi)` using `activity`. Here's the numerical summary of these logged results:
+
+```{r}
+favstats(log(bmi) ~ activity, data = smart_cle1_sh)
+```
+
+### Building the ANOVA model
+
+```{r}
+model_5a <- lm(log(bmi) ~ activity, data = smart_cle1_sh)
+
+model_5a
+```
+
+The `activity` data is categorical and there are four levels. The model equation is:
+
+```
+log(bmi) = 3.279 + 0.013 (activity = Active)
+                 + 0.069 (activity = Insufficiently Active)
+                 + 0.097 (activity = Inactive)
+```
+
+where, for example, `(activity = Active)` is 1 if `activity` is Active, and 0 otherwise. The fourth level (Highly Active) is not shown here and is used as a baseline. Thus the model above can be interpreted as follows.
+
+`activity` | Predicted `log(bmi)`  | Predicted `bmi`
+:-----------: | :----------------: | :-------------:
+Highly Active | 3.279 | exp(3.279) = 26.55
+Active | 3.279 + 0.013 = 3.292 | exp(3.292) = 26.90
+Insufficiently Active | 3.279 + 0.069 = 3.348 | exp(3.348) = 28.45
+Inactive | 3.279 + 0.097 = 3.376 | exp(3.376) = 29.25
+
+Those predicted `log(bmi)` values should look familiar. They are just the means of `log(bmi)` in each group, but I'm sure you'll also notice that the predicted `bmi` values are not exact matches for the observed means of `bmi`.
+
+```{r}
+smart_cle1_sh |> group_by(activity) |>
+  summarise(mean(log(bmi)), mean(bmi))
+```
+
+### The ANOVA table
+
+Now, let's press on to look at the ANOVA results for this model.
+
+```{r}
+anova(model_5a)
+```
+
+- The total variation in `log(bmi)`, our outcome, is captured by the sums of squares here. SS(Total) = 2.058 + 47.770 = 49.828
+- Here, the `activity` variable (with 4 levels, so 4-1 = 3 degrees of freedom) accounts for 4.13% (2.058 / 49.828) of the variation in `log(bmi)`. Another way of saying this is that the model $R^2$ or $\eta^2$ is 0.0413.
+- The variation accounted for by the `activity` categories meets the standard for a statistically detectable result, according to the ANOVA F test, although that's not really important.
+- The square root of the Mean Square(Residuals) is the residual standard error, $\sigma$, we've seen in the past. MS(Residual) estimates the variance (0.0423), so the residual standard error is $\sqrt{0.0423} \approx 0.206$.
+
+### The Model Coefficients
+
+To address the question of effect size for the various levels of `activity` on `log(bmi)`, we could look directly at the regression model coefficients. For that, we might look at the model `summary`.
+
+```{r}
+summary(model_5a)
+```
+
+If we want to see the confidence intervals around these estimates, we could use
+
+```{r}
+confint(model_5a, conf.level = 0.95)
+```
+
+The model suggests, based on these 1133 subjects, that (remember that the baseline category is Highly Active)
+
+- a 95% confidence (uncertainty) interval for the difference between Active and Highly Active subjects in log(BMI) ranges from -0.024 to 0.049
+- a 95% confidence (uncertainty) interval for the difference between Insufficiently Active and Highly Active subjects in log(BMI) ranges from 0.035 to 0.104
+- a 95% confidence (uncertainty) interval for the difference between Inactive and Highly Active subjects in log(BMI) ranges from 0.068 to 0.127
+- the model accounts for 4.13% of the variation in log(BMI), so that knowing the respondent's activity level somewhat reduces the size of the prediction errors as compared to an intercept only model that would predict the overall mean log(BMI), regardless of activity level, for all subjects.
+- from the summary of residuals, we see that one subject had a residual of 0.88 - that means they were predicted to have a log(BMI) 0.88 lower than their actual log(BMI) and one subject had a log(BMI) that is 0.76 larger than their actual log(BMI), at the extremes.
+
+
+### Using `tidy` to explore the coefficients
+
+A better strategy for displaying  the coefficients in any regression model is to use the `tidy` function from the `broom` package.
+
+```{r}
+tidy(model_5a, conf.int = TRUE, conf.level = 0.95) |>
+  kable(digits = 3)
+```
+
+### Using `glance` to summarize the model's fit
+
+```{r}
+glance(model_5a) |> select(1:3) |> 
+  kable(digits = c(4, 4, 3))
+```
+
+- The `r.squared` or $R^2$ value is interpreted for a linear model as the percentage of variation in the outcome (here, `log(bmi)`) that is accounted for by the model.
+- The `adj.r.squared` or adjusted $R^2$ value incorporates a small penalty for the number of predictors included in the model. Adjusted $R^2$ is useful for models with more than one predictor, not simple regression models like this one. Like $R^2$ and most of these other summaries, its primary value comes when making comparisons between models for the same outcome.
+- The `sigma` or $\sigma$ is the residual standard error. Doubling this value gives us a good idea of the range of errors made by the model (approximately 95% of the time if the normal distribution assumption for the residuals holds perfectly.)
+
+```{r}
+glance(model_5a) |> select(4:7) |>
+  kable(digits = c(2, 3, 0, 2))
+```
+
+- The `statistic` and `p.value` shown here refer to the ANOVA F test and p value. They test the null hypothesis that the `activity` information is of no use in separating out the `bmi` data, or, equivalently, that the true $R^2$ is 0.
+- The `df` indicates the model degrees of freedom, and in this case simply specifies the number of parameters fitted attributed to the model. Models that require more `df` for estimation require larger sample sizes.
+- The `logLik` is the log likelihood for the model. This is a function of the sample size, but we can compare the fit of multiple models by comparing this value across different models for the same outcome. You want to maximize the log-likelihood.
+
+```{r}
+glance(model_5a) |> select(8:9) |>
+  kable(digits = 2)
+```
+
+- The `AIC` (or Akaike information criterion) and `BIC` (Bayes information criterion) are also used only to compare models. You want to minimize AIC and BIC in selecting a model. AIC and BIC are unique only up to a constant, so different packages or routines in R may give differing values, but in comparing two models - the difference in AIC (or BIC) should be consistent.
+
+### Using `augment` to make predictions
+
+We can obtain residuals and predicted (fitted) values for the points used to fit the model with `augment` from the `broom` package.
+
+```{r}
+augment(model_5a, se_fit = TRUE) |> 
+  select(1:5) |> slice(1:4) |>
+  kable(digits = 3)
+```
+
+- The `.fitted` value is the predicted value of `log(bmi)` for this subject.
+- The `.se.fit` value shows the standard error associated with the fitted value.
+- The `.resid` is the residual value (observed - fitted `log(bmi)`)
+
+```{r}
+augment(model_5a, se_fit = TRUE) |> 
+  select(1:2, 6:9) |> slice(1:4) |>
+  kable(digits = 3)
+```
+
+- The `.hat` value shows the leverage index associated with the observation (this is a function of the predictors - higher leveraged points have more unusual predictor values)
+- The `.sigma` value shows the estimate of the residual standard deviation if this observation were to be dropped from the model, and thus indexes how much of an outlier this observation's residual is.
+- The `.cooksd` or Cook's distance value shows the influence that the observation has on the model - it is one of a class of leave-one-out diagnostic measures. Larger values of Cook's distance indicate more influential points.
+- The `.std.resid` shows the standardized residual (which is designed to have mean 0 and standard deviation 1, facilitating comparisons across models for differing outcomes)
+
+## A Two-Factor ANOVA (without Interaction)
+
+Let's add `race_eth` to the predictor set for `log(BMI)`.
+
+```{r}
+model_5b <- lm(log(bmi) ~ activity + race_eth, data = smart_cle1_sh)
+
+anova(model_5b)
+```
+
+Notice that the ANOVA model assesses these variables sequentially, so the SS(activity) = 2.058 is accounted for before we consider the SS(race_eth) = 0.990. Thus, in total, the model accounts for 2.058 + 0.990 = 3.048 of the sums of squares in `log(bmi)` in these data.
+
+If we flip the order in the model, like this:
+
+```{r}
+lm(log(bmi) ~ race_eth + activity, data = smart_cle1_sh) |> 
+  anova()
+```
+
+- After flipping the order of the predictors, `race_eth` accounts for a larger Sum of Squares than it did previously, but `activity` accounts for a smaller amount, and the total between `race_eth` and `activity` remains the same, as 1.121 + 1.927 is still 3.048.
+
+### Model Coefficients
+
+The model coefficients are unchanged regardless of the order of the variables in our two-factor ANOVA model.
+
+```{r}
+tidy(model_5b, conf.int = TRUE, conf.level = 0.95) |>
+  select(term, estimate, std.error, conf.low, conf.high) |>
+  kable(digits = 3)
+```
+
+The `model_5b` equation is:
+
+```
+log(BMI) = 3.268
+      + 0.012 (activity = Active)
+      + 0.073 (activity = Insufficiently Active)
+      + 0.092 (activity = Inactive)
+      + 0.066 (race_eth = Black non-Hispanic)
+      - 0.086 (race_eth = Other race non-Hispanic)
+      + 0.020 (race_eth = Multiracial non-Hispanic)
+      + 0.012 (race_eth = Hispanic)
+```
+
+and we can make predictions by filling in appropriate 1s and 0s for the indicator variables in parentheses.
+
+For example, the predicted `log(BMI)` for a White Highly Active person is 3.268, as White and Highly Active are the baseline categories in our two factors.
+
+For all other combinations, we can make predictions as follows:
+
+```{r}
+new_dat = tibble(
+  race_eth = rep(c("White non-Hispanic",
+                   "Black non-Hispanic",
+                   "Other race non-Hispanic",
+                   "Multiracial non-Hispanic",
+                   "Hispanic"), 4),
+  activity = c(rep("Highly_Active", 5),
+               rep("Active", 5),
+               rep("Insufficiently_Active", 5),
+               rep("Inactive", 5))
+  )
+
+augment(model_5b, newdata = new_dat)
+```
+
+```{r}
+augment(model_5b, newdata = new_dat) |>
+  mutate(race_eth = fct_relevel(factor(race_eth),
+                                "White non-Hispanic",
+                                "Black non-Hispanic",
+                                "Other race non-Hispanic",
+                                "Multiracial non-Hispanic",
+                                "Hispanic"),
+         activity = fct_relevel(factor(activity),
+                                "Highly_Active",
+                                "Active",
+                                "Insufficiently_Active",
+                                "Inactive")) %>%
+  ggplot(., aes(x = activity, y = .fitted, 
+                col = race_eth, group = race_eth)) +
+  geom_point(size = 2) + 
+  geom_line() + 
+  labs(title = "Model 5b predictions for log(BMI)",
+       subtitle = "race_eth and activity, no interaction so lines are parallel",
+       y = "Model Predicted log(BMI)",
+       x = "")
+```
+
+The lines joining the points for each `race_eth` category are parallel to each other. The groups always hold the same position relative to each other, regardless of their activity levels, and vice versa. There is no interaction in this model allowing the predicted effects of, say, `activity` on `log(BMI)` values to differ for the various `race_eth` groups. To do that, we'd have to fit the two-factor ANOVA model incorporating an interaction term.
+
+## A Two-Factor ANOVA (with Interaction)
+
+Let's add the interaction of `activity` and `race_eth` (symbolized in R by `activity * race_eth`) to the model for `log(BMI)`.
+
+```{r}
+model_5c <-  
+  lm(log(bmi) ~ activity * race_eth, data = smart_cle1_sh)
+
+anova(model_5c)
+```
+
+The ANOVA model shows that the SS(interaction) = SS(activity:race_eth) is 0.324, and uses 12 degrees of freedom. The model including the interaction term now accounts for 2.058 + 0.990 + 0.324 = 3.372, which is 6.8% of the variation in `log(BMI)` overall (which is calculated as SS(Total) = 2.058 + 0.990 + 0.324 + 46.456 = 49.828.)
+
+### Model Coefficients
+
+The model coefficients now include additional product terms that incorporate indicator variables for both activity and race_eth. For each of the product terms to take effect, both their activity and race_eth status must yield a 1 in the indicator variables.
+
+```{r}
+tidy(model_5c, conf.int = TRUE, conf.level = 0.95) |>
+  select(term, estimate, std.error, conf.low, conf.high) |>
+  kable(digits = 3)
+```
+
+The `model_5c` equation is:
+
+```
+log(BMI) = 3.264
+  + 0.021 (activity = Active)
+  + 0.079 (activity = Insufficiently Active)
+  + 0.097 (activity = Inactive)
+  + 0.062 (race_eth = Black non-Hispanic)
+  - 0.070 (race_eth = Other race non-Hispanic)
+  + 0.067 (race_eth = Multiracial non-Hispanic)
+  + 0.110 (race_eth = Hispanic)
+  - 0.002 (activity = Active)(race_eth = Black non-Hispanic)
+  + 0.005 (Insufficiently Active)(Black non-Hispanic)
+  + 0.008 (Inactive)(Black non-Hispanic)
+  - 0.065 (Active)(Other race non-Hispanic)
+  - 0.035 (Insufficiently Active)(Other race non-Hispanic)
+  + 0.033 (Inactive)(Other race non-Hispanic)
+  - 0.208 (Active)(Multiracial non-Hispanic)
+  - 0.050 (Insufficiently Active)(Multiracial non-Hispanic)
+  - 0.056 (Inactive)(Multiracial non-Hispanic)
+  - 0.104 (Active)(Hispanic)
+  - 0.240 (Insufficiently Active)(Hispanic)
+  - 0.169 (Inactive)(Hispanic)
+  
+```
+
+and again, we can make predictions by filling in appropriate 1s and 0s for the indicator variables in parentheses.
+
+For example, the predicted `log(BMI)` for a White Highly Active person is 3.264, as White and Highly Active are the baseline categories in our two factors.
+
+But the predicted `log(BMI)` for a Hispanic Inactive person would be 3.264 + 0.097 + 0.110 - 0.169 = 3.302.
+
+Again, we'll plot the predicted `log(BMI)` predictions for each possible combination.
+
+```{r}
+new_dat = tibble(
+  race_eth = rep(c("White non-Hispanic",
+                   "Black non-Hispanic",
+                   "Other race non-Hispanic",
+                   "Multiracial non-Hispanic",
+                   "Hispanic"), 4),
+  activity = c(rep("Highly_Active", 5),
+               rep("Active", 5),
+               rep("Insufficiently_Active", 5),
+               rep("Inactive", 5))
+  )
+
+augment(model_5c, newdata = new_dat) |>
+  mutate(race_eth = fct_relevel(factor(race_eth),
+                                "White non-Hispanic",
+                                "Black non-Hispanic",
+                                "Other race non-Hispanic",
+                                "Multiracial non-Hispanic",
+                                "Hispanic"),
+         activity = fct_relevel(factor(activity),
+                                "Highly_Active",
+                                "Active",
+                                "Insufficiently_Active",
+                                "Inactive")) %>%
+  ggplot(., aes(x = activity, y = .fitted, 
+                col = race_eth, group = race_eth)) +
+  geom_point(size = 2) + 
+  geom_line() + 
+  labs(title = "Model 5c predictions for log(BMI)",
+       subtitle = "race_eth and activity, with interaction",
+       y = "Model Predicted log(BMI)",
+       x = "")
+```
+
+Note that the lines joining the points for each `race_eth` category are no longer parallel to each other. The race-ethnicity group relative positions on `log(BMI)` is now changing depending on the `activity` status.
+
+### Is the interaction term necessary?
+
+We can assess this in three ways, in order of importance:
+
+1. With an interaction plot
+2. By assessing the fraction of the variation in the outcome accounted for by the interaction
+3. By assessing whether the interaction accounts for statistically detectable outcome variation
+
+#### The Interaction Plot
+
+A simple interaction plot is just a plot of the unadjusted outcome means, stratified by the two factors. For example, consider this plot for our two-factor ANOVA model. To obtain this plot, we first summarize the means within each group.
+
+```{r}
+summaries_5 <- smart_cle1_sh |> 
+  group_by(activity, race_eth) |>
+  summarize(n = n(), mean = mean(log(bmi)), 
+            sd = sd(log(bmi)))
+
+summaries_5
+```
+
+```{r}
+ggplot(summaries_5, aes(x = activity, y = mean, 
+                        color = race_eth, 
+                        group = race_eth)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(title = "Simple Interaction Plot for log(BMI)",
+       subtitle = "SMART CLE means by activity and race_eth",
+       x = "", y = "Mean of log(BMI)")
+```
+
+The interaction plot suggests that there is a modest interaction here. The White non-Hispanic and Black non-Hispanic groups appear pretty parallel (and they are the two largest groups) and Other race non-Hispanic has a fairly similar pattern, but the other two groups (Hispanic and Multiracial non-Hispanic) bounce around quite a bit based on activity level.
+
+An alternative would be to include a small "dodge" for each point and include error bars (means $\pm$ standard deviation) for each combination.
+
+```{r}
+pd = position_dodge(0.2)
+ggplot(summaries_5, aes(x = activity, y = mean, 
+                        color = race_eth, 
+                        group = race_eth)) +
+  geom_errorbar(aes(ymin = mean - sd,
+                    ymax = mean + sd),
+                width = 0.2, position = pd) +
+  geom_point(size = 3, position = pd) +
+  geom_line(position = pd) +
+  labs(title = "Interaction Plot for log(BMI) with Error Bars",
+       subtitle = "SMART CLE means by activity and race_eth",
+       x = "", y = "Mean of log(BMI)")
+```
+
+Here, we see a warning flag because we have one combination (which turns out to be Insufficiently Active and Hispanic) with only one observation in it, so a standard deviation cannot be calculated. In general, I'll stick with the simpler means plot most of the time.
+
+#### Does the interaction account for substantial variation?
+
+In this case, we can look at the fraction of the overall sums of squares accounted for by the interaction.
+
+```{r}
+anova(model_5c)
+```
+
+Here we have
+
+$$
+\eta^2(Interaction) = \frac{0.324}{2.058+0.990+0.324+46.456} = 0.0065
+$$
+
+so the interaction accounts for 0.65% of the variation in `bmi`. That looks pretty modest.
+
+#### Does the interaction account for statistically detectable variation?
+
+We can test this directly with the p value from the ANOVA table, which shows p = 0.803, which is far above any of our usual standards for a statistically detectable effect.
+
+On the whole, I don't think the interaction term is especially helpful in improving this model.
+
+In the next chapter, we'll look at two different examples of ANOVA models, now in more designed experiments. We'll also add some additional details on how the analyses might proceed.
+
+We'll return to the SMART CLE data later in these Notes.
+
