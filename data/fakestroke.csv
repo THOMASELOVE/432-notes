@@ -1,0 +1,501 @@
+studyid,trt,age,sex,nihss,location,hx.isch,afib,dm,mrankin,sbp,iv.altep,time.iv,aspects,ia.occlus,extra.ica,time.rand,time.punc
+z001,Control,53,Male,21,Right,No,0,0,2,127,Yes,63,10,M1,0,139,NA
+z002,Intervention,51,Male,23,Left,No,1,0,0,137,Yes,68,10,M1,1,118,281
+z003,Control,68,Female,11,Right,No,0,0,0,138,No,NA,10,ICA with M1,1,178,NA
+z004,Control,28,Male,22,Left,No,0,0,0,122,Yes,78,10,ICA with M1,1,160,NA
+z005,Control,91,Male,24,Right,No,0,0,0,162,Yes,121,8,M1,0,214,NA
+z006,Control,34,Female,18,Left,No,0,0,2,166,Yes,78,5,A1 or A2,0,154,NA
+z007,Intervention,75,Male,25,Right,No,0,0,0,140,Yes,97,10,M1,0,122,268
+z008,Control,89,Female,18,Right,No,0,0,0,157,No,NA,9,M1,0,147,NA
+z009,Control,75,Male,25,Left,No,1,0,2,129,Yes,49,6,M1,0,271,NA
+z010,Intervention,26,Female,27,Right,No,0,0,0,143,Yes,99,10,M1,0,141,259
+z011,Control,35,Female,17,Right,No,1,0,2,148,Yes,50,9,M1,0,192,NA
+z012,Control,55,Male,13,Right,No,0,0,0,114,Yes,69,6,M1,0,175,NA
+z013,Control,59,Male,21,Right,No,0,0,0,140,Yes,120,10,ICA with M1,0,235,NA
+z014,Control,36,Female,18,Left,No,0,0,0,178,Yes,123,10,M1,0,313,NA
+z015,Control,91,Male,15,Right,No,0,0,1,144,Yes,60,10,ICA with M1,1,120,NA
+z016,Intervention,76,Male,16,Right,No,0,0,0,135,No,NA,9,M2,0,243,225
+z017,Control,92,Female,12,Right,No,0,0,0,99,Yes,107,10,M1,1,152,NA
+z018,Control,59,Male,22,Right,No,0,0,0,170,Yes,123,10,ICA with M1,1,354,NA
+z019,Control,58,Male,22,Left,No,1,0,0,130,Yes,81,NA,M2,0,139,NA
+z020,Intervention,73,Female,15,Right,No,1,1,0,169,No,NA,8,M1,0,198,183
+z021,Intervention,57,Male,17,Right,No,0,0,> 2,108,Yes,54,10,M1,0,138,287
+z022,Intervention,67,Male,27,Left,No,1,0,> 2,148,Yes,107,6,M2,1,291,183
+z023,Control,68,Male,22,Right,No,0,0,0,156,Yes,61,9,ICA with M1,1,214,NA
+z024,Control,92,Male,14,Left,No,0,1,2,122,No,NA,8,M1,0,215,NA
+z025,Control,83,Female,18,Left,No,0,0,> 2,154,Yes,49,10,M1,0,204,NA
+z026,Control,65,Female,15,Right,No,0,0,0,157,Yes,124,9,M2,0,182,NA
+z027,Intervention,69,Male,17,Left,No,0,0,0,156,Yes,47,9,M1,0,287,215
+z028,Intervention,68,Female,26,Right,Yes,0,0,2,159,Yes,87,10,M1,0,105,210
+z029,Intervention,46,Male,16,Right,No,0,0,0,121,No,NA,8,M2,1,251,232
+z030,Intervention,91,Male,14,Left,No,1,0,0,154,Yes,87,9,M1,1,131,302
+z031,Control,59,Female,12,Right,No,0,0,0,129,Yes,79,9,ICA with M1,0,120,NA
+z032,Control,53,Male,22,Right,No,0,1,0,157,Yes,99,10,M1,0,266,NA
+z033,Control,65,Male,14,Left,No,0,0,0,150,No,NA,9,ICA with M1,1,316,NA
+z034,Intervention,58,Male,15,Right,No,0,0,0,105,Yes,48,5,M1,0,270,312
+z035,Control,81,Male,25,Right,No,0,0,0,136,Yes,118,7,M1,0,195,NA
+z036,Control,74,Female,25,Left,No,0,0,> 2,104,Yes,115,6,M1,0,177,NA
+z037,Control,60,Female,16,Left,No,1,0,0,204,Yes,96,6,M1,0,213,NA
+z038,Intervention,74,Male,15,Right,No,0,0,0,109,Yes,110,9,ICA with M1,0,193,330
+z039,Intervention,59,Female,14,Right,No,0,1,0,148,Yes,46,9,M1,0,148,333
+z040,Intervention,56,Female,24,Left,No,0,0,0,144,Yes,151,10,M1,1,269,181
+z041,Control,80,Female,13,Left,No,1,0,0,180,No,NA,8,M1,1,250,NA
+z042,Control,66,Male,13,Left,No,0,0,0,123,Yes,82,10,M1,0,270,NA
+z043,Control,64,Female,14,Left,No,0,0,0,142,Yes,129,8,M1,1,311,NA
+z044,Intervention,42,Male,19,Right,No,0,0,0,149,Yes,67,10,ICA with M1,1,270,275
+z045,Intervention,93,Female,28,Right,No,0,0,1,162,Yes,75,10,M1,0,231,210
+z046,Intervention,44,Male,18,Left,No,0,0,0,142,Yes,218,6,M1,0,152,247
+z047,Control,58,Male,25,Right,No,1,1,0,142,Yes,87,9,M1,0,146,NA
+z048,Intervention,46,Female,10,Left,No,0,0,0,168,No,NA,9,ICA with M1,0,272,194
+z049,Control,72,Male,19,Left,No,0,0,0,165,Yes,80,10,M1,0,244,NA
+z050,Control,58,Male,25,Right,No,0,0,0,137,Yes,123,8,M1,0,183,NA
+z051,Control,76.4,Male,22,Right,No,0,0,0,171,Yes,117,9,ICA with M1,1,136,NA
+z052,Control,54.5,Male,12,Right,No,1,0,0,149,No,NA,8,M1,0,312,NA
+z053,Intervention,67,Male,17,Right,No,1,0,1,128,Yes,197,7,M1,1,246,348
+z054,Control,73,Female,24,Right,No,0,0,0,182,Yes,114,10,M1,0,120,NA
+z055,Intervention,75,Female,25,Right,No,0,0,0,127,Yes,64,9,M2,0,264,303
+z056,Control,54,Male,18,Right,No,0,0,0,144,Yes,57,10,M1,0,305,NA
+z057,Control,65.7,Female,14,Left,No,0,0,0,114,Yes,54,10,M1,0,252,NA
+z058,Intervention,67,Male,18,Left,No,0,0,0,138,Yes,64,8,M1,1,145,216
+z059,Control,58,Female,15,Left,No,1,0,1,130,Yes,80,10,M1,0,135,NA
+z060,Control,93,Female,18,Left,No,0,0,0,142,Yes,59,5,ICA with M1,1,173,NA
+z061,Intervention,70,Male,20,Right,No,1,0,0,123,Yes,81,7,ICA with M1,0,172,268
+z062,Intervention,56,Male,14,Left,No,0,1,0,146,No,NA,10,M1,1,228,297
+z063,Intervention,57,Male,26,Right,No,0,0,0,143,Yes,76,7,M1,0,132,313
+z064,Control,58,Female,21,Right,No,0,0,0,125,Yes,99,10,M1,0,194,NA
+z065,Control,81,Male,13,Right,No,1,0,0,144,Yes,68,10,M1,0,235,NA
+z066,Control,69,Female,18,Left,No,1,1,0,119,Yes,56,8,M2,0,192,NA
+z067,Intervention,93,Female,17,Right,No,1,0,0,156,Yes,175,10,M1,0,299,229
+z068,Intervention,73,Female,17,Left,No,0,0,0,160,Yes,103,7,ICA with M1,0,228,194
+z069,Intervention,73,Male,13,Right,No,0,1,0,151,Yes,99,10,M1,0,266,260
+z070,Intervention,47,Female,24,Right,No,1,0,0,172,Yes,156,6,M1,1,246,244
+z071,Intervention,72,Male,15,Right,Yes,1,0,0,171,Yes,85,10,M1,0,201,308
+z072,Control,55,Female,22,Right,No,0,0,0,151,Yes,116,10,M1,0,174,NA
+z073,Intervention,63,Female,15,Left,Yes,0,0,0,137,Yes,58,10,M1,1,150,279
+z074,Intervention,24,Female,14,Right,No,0,0,0,162,Yes,80,6,M1,0,280,202
+z075,Intervention,82,Female,15,Left,No,0,1,0,151,No,NA,10,M1,0,167,223
+z076,Intervention,50,Male,17,Left,No,0,0,0,121,Yes,43,9,M1,0,146,186
+z077,Intervention,79,Male,21,Right,Yes,0,0,0,186,Yes,157,9,M1,1,238,258
+z078,Control,89,Female,13,Left,No,0,0,0,172,Yes,94,8,ICA with M1,1,266,NA
+z079,Intervention,54,Female,28,Left,No,0,0,0,154,Yes,97,5,M1,0,112,200
+z080,Intervention,31,Male,10,Left,No,0,0,0,131,Yes,199,7,ICA with M1,1,292,190
+z081,Intervention,61,Male,20,Left,No,0,0,0,140,Yes,83,9,ICA with M1,0,246,224
+z082,Intervention,57,Male,21,Right,No,1,0,0,176,Yes,200,10,M1,0,276,219
+z083,Control,65,Male,25,Right,No,0,0,0,153,Yes,58,5,ICA with M1,0,243,NA
+z084,Intervention,67,Female,14,Right,Yes,0,0,0,145,Yes,114,10,ICA with M1,0,226,334
+z085,Intervention,64,Male,15,Left,No,0,1,0,174,Yes,162,7,M1,0,269,351
+z086,Intervention,96,Male,14,Right,No,0,1,0,139,Yes,85,8,ICA with M1,0,283,351
+z087,Control,65,Female,20,Left,No,1,0,0,87,Yes,87,10,M1,0,204,NA
+z088,Control,81,Male,14,Right,No,0,0,0,161,Yes,93,10,ICA with M1,0,350,NA
+z089,Intervention,51,Male,12,Left,No,0,0,0,152,Yes,71,5,M1,0,221,209
+z090,Control,55,Female,23,Left,No,0,0,0,112,Yes,88,10,M2,0,171,NA
+z091,Intervention,58,Male,14,Right,No,0,1,0,166,Yes,115,10,M1,1,274,328
+z092,Control,58,Female,14,Right,No,0,0,0,122,Yes,83,9,M1,0,255,NA
+z093,Control,56,Male,12,Left,No,0,0,0,157,Yes,92,10,ICA with M1,1,130,NA
+z094,Control,65,Male,23,Left,No,0,0,2,133,Yes,79,8,M2,0,229,NA
+z095,Intervention,60,Male,17,Right,No,1,0,0,141,Yes,185,10,ICA with M1,0,128,357
+z096,Intervention,83,Female,14,Left,No,0,0,0,209,Yes,119,8,ICA with M1,0,155,191
+z097,Intervention,72,Female,28,Left,Yes,0,0,0,163,Yes,62,10,M1,1,252,313
+z098,Control,84,Female,19,Right,No,0,0,0,143,No,NA,9,M1,0,360,NA
+z099,Control,51,Male,18,Left,No,0,0,0,146,Yes,114,9,M1,0,149,NA
+z100,Control,68,Female,18,Right,Yes,0,0,0,140,Yes,69,9,ICA with M1,0,266,NA
+z101,Control,35,Female,13,Right,No,0,0,0,119,Yes,61,9,M1,0,122,NA
+z102,Control,54,Female,18,Right,No,1,0,0,126,Yes,85,7,M2,0,288,NA
+z103,Control,54,Male,17,Left,No,0,0,> 2,155,Yes,98,6,ICA with M1,1,239,NA
+z104,Control,58,Female,12,Left,No,1,0,0,182,Yes,121,10,ICA with M1,0,206,NA
+z105,Control,88,Female,20,Left,No,0,0,0,181,Yes,107,9,ICA with M1,0,257,NA
+z106,Intervention,57,Female,21,Right,Yes,1,0,0,141,Yes,91,9,ICA with M1,0,196,343
+z107,Control,66,Male,20,Left,No,0,1,1,146,No,NA,9,M1,0,342,NA
+z108,Intervention,69,Male,12,Right,No,0,0,2,160,Yes,51,10,M1,1,107,320
+z109,Control,70,Male,24,Left,Yes,0,0,0,139,Yes,63,6,ICA with M1,1,208,NA
+z110,Control,65,Male,12,Left,No,0,0,0,152,Yes,50,10,M1,0,343,NA
+z111,Control,67,Male,18,Left,No,0,0,0,132,Yes,117,8,ICA with M1,1,157,NA
+z112,Intervention,73,Male,19,Right,No,0,0,0,138,Yes,81,8,ICA with M1,1,205,237
+z113,Control,38,Male,18,Left,No,0,0,0,150,Yes,120,8,ICA with M1,1,215,NA
+z114,Control,74,Male,14,Left,No,0,0,0,169,Yes,76,10,ICA with M1,0,295,NA
+z115,Intervention,89,Female,11,Right,No,1,0,1,78,Yes,106,10,M1,1,296,196
+z116,Intervention,90,Male,24,Right,No,0,0,0,161,Yes,186,10,M2,0,209,218
+z117,Control,56,Male,19,Left,No,1,0,1,135,Yes,50,9,M1,0,143,NA
+z118,Intervention,31,Female,25,Right,No,0,0,0,133,Yes,184,7,M1,1,121,285
+z119,Control,58,Male,18,Left,No,0,0,0,97,Yes,79,10,M1,0,221,NA
+z120,Control,53,Male,17,Left,No,1,0,> 2,127,Yes,55,10,M1,0,338,NA
+z121,Control,65,Female,24,Left,No,0,0,1,108,Yes,80,9,M1,0,134,NA
+z122,Intervention,27,Female,19,Left,No,1,1,2,195,Yes,48,7,M1,1,204,354
+z123,Intervention,85,Female,13,Right,No,0,0,1,182,Yes,98,10,M1,0,171,229
+z124,Intervention,70,Male,14,Left,No,1,0,0,164,Yes,67,5,M1,0,282,257
+z125,Intervention,74,Male,17,Right,No,0,0,0,136,Yes,68,7,ICA with M1,0,136,260
+z126,Intervention,84,Male,16,Left,No,0,1,0,182,Yes,55,7,ICA with M1,0,216,298
+z127,Control,92,Male,16,Right,Yes,0,0,0,105,Yes,46,10,ICA with M1,1,237,NA
+z128,Intervention,28,Male,15,Left,No,1,0,0,185,Yes,59,8,ICA with M1,1,186,284
+z129,Intervention,43,Male,28,Right,No,0,0,0,109,Yes,186,9,M1,1,281,203
+z130,Control,78,Male,22,Right,Yes,1,0,0,128,Yes,94,9,M1,0,142,NA
+z131,Control,68,Female,21,Left,No,0,1,0,NA,Yes,125,9,M1,1,330,NA
+z132,Control,61,Female,23,Left,No,0,0,0,127,Yes,97,10,M1,1,181,NA
+z133,Control,84,Male,17,Left,Yes,0,0,1,154,Yes,82,10,M1,0,233,NA
+z134,Control,36,Male,14,Left,Yes,1,1,0,150,Yes,120,7,M1,0,142,NA
+z135,Control,94,Female,18,Right,Yes,0,1,0,120,No,NA,10,ICA with M1,0,161,NA
+z136,Control,81,Male,16,Right,No,0,0,0,160,Yes,128,10,M1,0,195,NA
+z137,Control,93,Female,19,Left,No,0,0,0,91,Yes,63,10,M1,0,124,NA
+z138,Control,84,Female,14,Right,No,0,0,0,150,Yes,80,9,M1,0,240,NA
+z139,Control,87,Female,18,Left,No,0,0,0,153,Yes,58,8,M1,0,148,NA
+z140,Control,65,Female,23,Left,No,0,0,0,141,Yes,110,9,ICA with M1,0,159,NA
+z141,Control,66,Male,24,Right,No,0,0,0,125,Yes,99,10,M2,0,215,NA
+z142,Intervention,63,Female,22,Right,No,0,0,0,165,No,NA,9,ICA with M1,0,190,197
+z143,Intervention,31,Male,21,Right,No,0,0,0,194,Yes,94,7,M1,0,204,183
+z144,Intervention,88,Female,24,Right,No,0,0,0,166,Yes,110,5,M1,0,156,224
+z145,Intervention,88,Female,27,Right,No,1,0,1,173,Yes,153,5,M1,1,140,346
+z146,Control,90,Male,19,Left,No,0,0,1,145,Yes,50,8,M1,0,313,NA
+z147,Intervention,60,Male,22,Left,No,0,0,2,119,Yes,218,10,ICA with M1,0,195,182
+z148,Control,75,Male,23,Right,No,0,0,0,231,No,NA,9,M1,0,120,NA
+z149,Control,86,Female,14,Left,No,0,0,0,154,Yes,50,9,Intracranial ICA,0,186,NA
+z150,Control,82,Female,23,Left,No,0,0,0,123,Yes,84,10,M1,1,148,NA
+z151,Intervention,87,Female,17,Right,No,0,0,0,151,Yes,128,5,M1,0,216,243
+z152,Intervention,60,Male,24,Right,No,0,0,0,138,Yes,54,9,ICA with M1,0,234,242
+z153,Control,87,Male,13,Left,No,1,0,0,148,Yes,116,8,M1,0,136,NA
+z154,Control,92,Female,18,Left,No,0,0,0,132,Yes,55,10,M1,1,126,NA
+z155,Intervention,69,Female,16,Right,No,0,0,1,137,Yes,65,10,M1,0,286,334
+z156,Control,56,Male,19,Right,No,1,1,0,159,Yes,73,10,M1,0,236,NA
+z157,Control,56,Male,17,Left,No,1,0,0,184,Yes,98,8,M1,0,200,NA
+z158,Intervention,81,Male,23,Left,No,0,0,0,161,Yes,187,7,M1,1,197,283
+z159,Control,90,Male,12,Left,No,1,1,0,109,Yes,74,5,M1,0,273,NA
+z160,Intervention,89,Male,11,Right,No,0,1,0,173,Yes,95,10,ICA with M1,1,150,346
+z161,Intervention,60,Male,21,Left,No,0,0,1,147,Yes,108,10,M1,0,111,313
+z162,Intervention,88,Male,19,Left,No,0,0,0,117,Yes,83,10,M1,0,159,269
+z163,Intervention,60,Female,10,Right,No,0,1,0,176,Yes,76,7,M1,0,207,207
+z164,Control,85,Male,14,Left,No,0,0,0,134,Yes,99,10,M1,1,179,NA
+z165,Control,44,Female,21,Left,No,1,0,0,144,Yes,44,9,ICA with M1,0,212,NA
+z166,Control,85,Female,14,Left,No,0,1,0,117,Yes,50,5,ICA with M1,1,122,NA
+z167,Intervention,55,Female,13,Left,Yes,0,0,0,111,Yes,42,9,ICA with M1,1,276,295
+z168,Intervention,68,Male,11,Left,No,1,0,0,128,Yes,80,9,M1,0,152,300
+z169,Control,69,Male,18,Left,No,0,0,0,136,Yes,125,NA,M1,1,343,NA
+z170,Intervention,75,Male,18,Left,No,1,0,0,126,Yes,55,7,M1,1,127,311
+z171,Intervention,89,Male,14,Left,No,0,0,0,143,Yes,98,10,M1,0,103,192
+z172,Intervention,44,Female,18,Left,No,1,0,0,151,Yes,105,10,ICA with M1,1,220,307
+z173,Intervention,34,Female,18,Right,No,0,0,0,99,Yes,93,9,M1,0,142,319
+z174,Control,58,Male,11,Right,Yes,1,1,1,158,No,NA,8,ICA with M1,1,180,NA
+z175,Intervention,85,Male,15,Left,No,1,0,0,162,Yes,48,10,M1,0,208,358
+z176,Intervention,81,Female,26,Left,No,1,0,0,144,Yes,153,7,M1,1,182,208
+z177,Control,56,Male,16,Right,No,0,0,0,146,Yes,68,7,ICA with M1,1,149,NA
+z178,Control,76,Female,20,Right,No,0,0,0,152,Yes,53,8,M2,0,220,NA
+z179,Control,54,Male,25,Left,No,0,1,0,119,Yes,126,7,M1,0,208,NA
+z180,Control,75,Male,18,Right,No,0,0,0,177,Yes,54,5,M1,0,266,NA
+z181,Control,60,Male,17,Right,No,1,0,0,141,Yes,86,8,M1,0,153,NA
+z182,Control,55,Male,14,Left,No,0,0,0,136,Yes,47,8,ICA with M1,1,360,NA
+z183,Control,53,Male,13,Right,No,0,0,0,161,Yes,70,10,M1,0,338,NA
+z184,Intervention,38,Female,28,Left,No,1,0,0,131,Yes,76,6,M1,1,216,257
+z185,Intervention,64,Male,17,Left,No,0,0,> 2,166,Yes,85,9,M1,0,267,330
+z186,Control,38,Male,20,Left,No,0,0,> 2,135,Yes,121,10,ICA with M1,1,173,NA
+z187,Control,55,Female,12,Right,No,0,0,0,136,Yes,113,10,M1,0,148,NA
+z188,Control,84,Male,23,Left,No,0,0,0,159,Yes,64,5,M1,0,331,NA
+z189,Control,70,Female,21,Right,No,1,0,0,118,Yes,91,9,M1,1,182,NA
+z190,Control,64,Male,22,Left,No,0,0,0,161,Yes,47,9,M1,0,145,NA
+z191,Intervention,23,Male,20,Right,No,1,0,0,137,Yes,50,10,M1,0,152,183
+z192,Intervention,85,Female,17,Right,Yes,1,1,0,134,Yes,43,8,M1,0,138,267
+z193,Control,68,Male,23,Right,No,0,0,0,170,Yes,102,9,M2,0,271,NA
+z194,Intervention,42,Female,27,Left,No,0,0,0,135,Yes,163,7,M1,0,152,232
+z195,Intervention,76,Male,12,Right,Yes,0,0,0,162,Yes,71,8,M1,0,231,231
+z196,Intervention,57,Male,17,Left,No,0,0,0,147,No,NA,7,ICA with M1,0,245,320
+z197,Control,58,Female,19,Right,No,0,1,0,106,Yes,129,6,M1,1,270,NA
+z198,Intervention,64,Male,21,Left,No,0,0,0,150,Yes,52,6,M2,0,268,316
+z199,Control,70,Male,25,Left,No,1,0,0,127,Yes,80,9,M1,0,147,NA
+z200,Control,67,Female,12,Left,No,1,0,0,159,Yes,65,9,ICA with M1,1,271,NA
+z201,Control,71,Male,25,Right,No,0,0,0,152,Yes,111,NA,ICA with M1,0,124,NA
+z202,Intervention,76,Male,15,Left,No,0,0,0,139,Yes,50,7,M1,0,151,248
+z203,Control,58,Female,14,Left,No,0,0,0,156,Yes,126,10,ICA with M1,1,252,NA
+z204,Control,24,Female,22,Left,No,0,0,0,123,Yes,89,9,M1,0,321,NA
+z205,Intervention,53,Female,25,Right,No,0,0,0,119,Yes,68,7,M1,0,195,322
+z206,Control,68,Male,18,Right,No,0,0,0,156,Yes,112,10,M1,1,269,NA
+z207,Intervention,46,Female,16,Left,No,0,0,0,109,Yes,183,9,ICA with M1,0,224,220
+z208,Control,92,Female,24,Left,No,0,0,0,102,Yes,121,9,M1,0,295,NA
+z209,Control,91,Female,17,Left,No,0,0,0,141,Yes,91,5,M1,0,142,NA
+z210,Control,56,Female,11,Left,No,0,0,0,133,Yes,117,10,ICA with M1,1,188,NA
+z211,Intervention,37,Male,14,Left,No,1,0,0,119,Yes,53,6,M1,1,285,225
+z212,Intervention,40,Female,14,Right,No,0,1,0,131,No,NA,10,M1,1,112,304
+z213,Control,68,Male,15,Right,No,0,0,0,174,Yes,87,5,M1,0,125,NA
+z214,Control,53,Female,14,Right,No,0,0,0,115,Yes,104,10,M1,0,174,NA
+z215,Intervention,30,Female,13,Left,No,0,0,0,163,Yes,67,10,M2,0,286,355
+z216,Control,34,Female,14,Left,No,0,0,0,193,No,NA,10,ICA with M1,1,300,NA
+z217,Control,36,Female,16,Right,No,0,0,2,200,Yes,120,7,M1,0,152,NA
+z218,Intervention,56,Female,11,Left,No,1,0,0,167,Yes,70,10,M1,1,211,310
+z219,Intervention,93,Female,20,Right,No,0,0,0,146,Yes,85,10,M1,1,196,212
+z220,Intervention,66,Male,21,Right,No,0,0,0,92,Yes,85,7,M1,1,297,200
+z221,Intervention,90,Female,26,Right,No,0,0,0,165,Yes,62,9,M1,1,116,253
+z222,Control,33,Male,18,Left,No,0,1,2,145,Yes,61,NA,ICA with M1,0,122,NA
+z223,Intervention,30,Male,21,Left,No,0,0,0,200,Yes,108,7,ICA with M1,0,277,305
+z224,Intervention,51,Male,22,Left,No,0,0,2,164,No,NA,10,M1,0,119,184
+z225,Control,65,Female,15,Right,No,0,0,0,173,Yes,57,8,M1,0,144,NA
+z226,Intervention,66,Male,12,Right,No,1,0,0,188,Yes,75,8,M1,0,121,230
+z227,Intervention,93,Female,20,Left,No,0,0,0,134,Yes,82,10,M1,0,291,294
+z228,Intervention,63,Male,13,Right,No,0,0,0,180,Yes,67,5,M2,0,279,199
+z229,Intervention,61,Male,23,Right,No,0,0,0,118,Yes,60,6,M1,1,291,263
+z230,Intervention,62,Female,11,Left,No,0,0,0,152,Yes,90,6,ICA with M1,0,176,208
+z231,Control,60,Male,22,Right,No,0,0,0,105,Yes,117,7,ICA with M1,0,234,NA
+z232,Intervention,31,Male,14,Right,No,0,0,0,123,Yes,50,9,ICA with M1,0,159,187
+z233,Control,69,Male,19,Left,No,1,1,0,154,Yes,92,10,M1,0,358,NA
+z234,Intervention,56,Male,17,Left,No,0,0,0,147,Yes,86,5,M1,0,137,190
+z235,Control,90,Male,16,Right,No,0,0,0,162,No,NA,8,M1,0,196,NA
+z236,Intervention,76,Female,17,Right,No,1,0,0,110,Yes,183,6,M1,0,177,325
+z237,Intervention,68,Female,20,Left,No,1,0,0,169,Yes,110,9,M2,0,207,199
+z238,Intervention,45,Male,14,Right,No,0,0,0,125,No,NA,10,M1,0,145,283
+z239,Intervention,62,Male,13,Right,No,0,0,0,163,Yes,75,10,ICA with M1,1,240,340
+z240,Intervention,74,Female,14,Left,No,1,0,0,193,Yes,102,6,ICA with M1,0,221,300
+z241,Control,72,Female,25,Right,No,1,0,0,104,Yes,69,10,M2,0,184,NA
+z242,Intervention,52,Male,14,Left,No,0,0,0,139,Yes,44,10,M1,0,299,331
+z243,Intervention,54.5,Male,28,Right,No,0,0,0,130,Yes,72,6,M1,0,187,324
+z244,Control,28,Female,15,Right,No,1,0,1,171,Yes,94,9,M1,1,135,NA
+z245,Control,54,Male,11,Left,No,1,0,1,119,Yes,80,10,ICA with M1,0,274,NA
+z246,Control,66,Male,11,Right,No,0,0,0,140,Yes,80,10,ICA with M1,0,236,NA
+z247,Control,55.5,Male,25,Left,No,0,0,0,142,Yes,50,9,M1,0,131,NA
+z248,Intervention,41,Female,11,Right,No,0,0,0,148,Yes,101,7,ICA with M1,0,167,325
+z249,Control,54,Male,11,Right,Yes,0,0,1,132,No,NA,10,M1,0,346,NA
+z250,Intervention,85,Male,20,Left,No,1,0,0,129,No,NA,8,M1,1,201,280
+z251,Control,69,Male,17,Left,No,1,0,0,121,Yes,55,6,M1,0,124,NA
+z252,Intervention,38,Male,25,Right,No,0,0,0,100,Yes,89,9,ICA with M1,1,138,228
+z253,Intervention,72,Male,14,Left,No,1,1,0,142,Yes,85,7,ICA with M1,1,127,272
+z254,Intervention,56,Male,17,Left,No,0,0,0,99,Yes,91,10,M1,0,218,270
+z255,Control,69,Male,24,Left,Yes,0,0,0,126,Yes,54,10,M2,0,145,NA
+z256,Intervention,62,Female,28,Left,No,1,0,2,149,Yes,48,10,A1 or A2,0,293,241
+z257,Intervention,45,Female,17,Right,No,0,0,2,160,No,NA,5,M1,0,280,235
+z258,Control,81,Male,25,Right,Yes,0,0,0,129,Yes,104,7,M1,1,196,NA
+z259,Control,59,Male,15,Right,No,0,0,0,132,No,NA,10,M1,0,291,NA
+z260,Control,64,Female,18,Right,No,0,0,0,163,Yes,124,9,M1,0,256,NA
+z261,Intervention,77,Male,17,Right,No,0,0,0,128,Yes,136,10,M1,1,152,241
+z262,Control,66,Female,23,Right,No,0,0,0,169,Yes,67,9,M1,1,305,NA
+z263,Control,37,Female,14,Right,No,0,1,0,178,Yes,103,10,M1,0,196,NA
+z264,Intervention,76,Female,12,Right,Yes,1,0,0,129,No,NA,7,ICA with M1,0,169,196
+z265,Intervention,79,Male,13,Left,No,0,0,0,173,Yes,95,9,M1,0,228,256
+z266,Control,86,Male,25,Right,No,0,0,1,173,Yes,120,8,M1,0,321,NA
+z267,Intervention,68,Male,15,Left,No,0,0,0,105,Yes,47,7,M2,0,183,265
+z268,Intervention,57,Male,17,Right,No,0,0,> 2,117,Yes,87,10,ICA with M1,0,251,360
+z269,Control,73,Male,13,Right,No,0,0,0,133,Yes,126,10,M2,0,134,NA
+z270,Intervention,31,Male,14,Right,No,0,0,0,181,Yes,77,7,ICA with M1,1,170,204
+z271,Control,32,Male,25,Left,No,1,0,0,181,Yes,117,9,ICA with M1,0,294,NA
+z272,Intervention,87,Male,25,Left,No,0,0,0,123,No,NA,5,M1,0,236,322
+z273,Control,59,Male,15,Left,Yes,0,0,0,108,Yes,54,8,M1,0,285,NA
+z274,Control,54,Male,16,Right,No,0,1,0,142,Yes,95,8,M2,0,339,NA
+z275,Control,71,Male,21,Right,No,0,0,1,171,Yes,100,10,M1,0,359,NA
+z276,Intervention,76,Male,11,Right,No,0,0,0,97,Yes,64,10,ICA with M1,1,108,194
+z277,Control,72,Female,22,Left,No,0,0,0,124,Yes,106,10,ICA with M1,1,164,NA
+z278,Control,66,Male,22,Left,No,1,0,0,123,No,NA,5,M1,0,348,NA
+z279,Control,70,Male,22,Right,No,0,1,0,165,Yes,46,10,M2,0,128,NA
+z280,Intervention,66,Male,20,Right,No,0,0,2,164,No,NA,10,M1,0,134,277
+z281,Intervention,74,Male,28,Left,No,0,0,> 2,159,Yes,44,9,ICA with M1,0,189,327
+z282,Intervention,64,Female,19,Right,Yes,0,0,> 2,214,Yes,117,10,M2,1,186,197
+z283,Intervention,55,Male,19,Left,No,1,0,0,141,Yes,67,7,M2,0,217,347
+z284,Control,69,Male,16,Left,Yes,1,0,0,144,Yes,79,9,M1,0,134,NA
+z285,Control,55,Female,17,Right,No,0,0,0,139,Yes,82,8,ICA with M1,1,233,NA
+z286,Control,69,Male,25,Right,No,1,0,0,147,Yes,105,8,ICA with M1,1,253,NA
+z287,Control,67,Male,11,Left,Yes,0,0,0,145,Yes,69,8,M1,0,153,NA
+z288,Control,55,Female,11,Left,No,1,0,2,141,Yes,68,8,M1,0,237,NA
+z289,Control,34,Male,25,Right,No,1,0,0,142,Yes,120,9,ICA with M1,0,150,NA
+z290,Intervention,56,Female,28,Right,No,0,0,0,157,Yes,67,8,M1,0,237,260
+z291,Intervention,79,Female,18,Right,No,0,0,0,106,Yes,165,9,M1,0,169,288
+z292,Intervention,68,Male,22,Right,No,1,0,0,143,Yes,90,9,M1,0,196,217
+z293,Intervention,45,Male,19,Left,Yes,1,0,0,168,Yes,137,8,ICA with M1,0,271,206
+z294,Control,92,Male,11,Left,No,1,1,0,166,Yes,61,5,M1,0,258,NA
+z295,Control,67,Male,25,Left,No,0,0,1,188,Yes,115,5,M1,0,153,NA
+z296,Control,86,Male,14,Left,Yes,0,0,0,173,Yes,116,10,M1,0,131,NA
+z297,Intervention,40,Male,10,Left,Yes,0,0,0,134,Yes,109,10,M1,0,196,312
+z298,Intervention,72,Female,10,Left,No,0,0,0,183,Yes,96,9,ICA with M1,0,100,182
+z299,Intervention,76,Female,17,Right,No,0,0,0,139,Yes,200,9,M1,0,162,194
+z300,Control,73,Male,11,Left,No,0,0,0,167,Yes,121,10,M1,0,334,NA
+z301,Intervention,67,Male,10,Left,No,0,0,0,166,Yes,211,9,ICA with M1,0,235,260
+z302,Intervention,70,Male,15,Left,No,0,0,0,107,No,NA,7,M1,1,220,287
+z303,Intervention,82,Male,21,Right,No,1,0,0,164,Yes,71,6,ICA with M1,1,201,270
+z304,Intervention,71,Female,13,Right,No,0,0,0,116,Yes,179,9,M1,0,159,326
+z305,Control,66,Male,22,Right,No,1,0,0,143,Yes,124,10,M1,0,188,NA
+z306,Control,69,Male,18,Left,No,0,0,0,129,Yes,85,9,M1,0,155,NA
+z307,Intervention,74,Male,14,Right,No,0,0,2,135,No,NA,8,M1,1,199,180
+z308,Control,80,Male,14,Left,No,0,0,0,156,No,NA,7,M2,0,149,NA
+z309,Intervention,59,Female,21,Left,No,0,0,1,162,Yes,154,10,ICA with M1,0,180,332
+z310,Intervention,30,Male,10,Right,No,0,0,0,164,Yes,196,9,M1,1,248,212
+z311,Control,88,Male,22,Left,No,0,0,0,156,Yes,54,10,ICA with M1,1,144,NA
+z312,Control,82,Female,12,Right,No,1,1,0,127,Yes,57,9,ICA with M1,1,273,NA
+z313,Control,40,Male,21,Left,No,1,0,> 2,141,No,NA,6,M1,1,214,NA
+z314,Control,87,Female,14,Left,No,0,0,0,157,No,NA,10,M1,0,160,NA
+z315,Control,55,Male,24,Left,No,0,0,> 2,132,Yes,118,10,M1,0,160,NA
+z316,Intervention,92,Female,16,Left,No,0,1,0,139,Yes,70,10,M1,1,238,207
+z317,Control,78,Male,14,Left,No,0,0,0,130,Yes,57,9,M1,0,174,NA
+z318,Intervention,85,Female,12,Left,Yes,0,0,0,148,Yes,90,10,M1,0,226,239
+z319,Control,59,Male,21,Left,No,0,0,0,148,Yes,125,10,M1,0,187,NA
+z320,Control,57,Male,22,Right,No,0,0,0,142,Yes,125,10,M2,0,222,NA
+z321,Intervention,35,Male,20,Left,No,0,0,0,166,Yes,53,10,M1,1,283,218
+z322,Control,55,Male,19,Right,No,0,1,0,131,Yes,125,8,M2,0,226,NA
+z323,Intervention,55,Female,16,Left,Yes,0,0,0,162,Yes,163,10,M1,0,212,195
+z324,Intervention,76,Male,27,Right,Yes,0,0,0,164,Yes,98,7,M1,1,185,275
+z325,Intervention,81,Female,13,Right,Yes,0,0,1,154,Yes,89,6,M2,0,143,327
+z326,Intervention,47,Female,17,Right,No,0,1,0,142,No,NA,10,M1,0,156,200
+z327,Intervention,52,Female,14,Left,Yes,1,0,0,89,Yes,70,9,ICA with M1,0,191,258
+z328,Control,58,Female,17,Left,No,0,0,0,192,Yes,130,10,M1,0,132,NA
+z329,Control,38,Female,22,Left,No,0,1,0,115,Yes,72,8,M2,0,333,NA
+z330,Intervention,33,Male,10,Left,No,0,0,1,176,Yes,60,7,ICA with M1,0,128,244
+z331,Control,65,Male,20,Right,No,1,0,0,131,Yes,52,8,M1,0,285,NA
+z332,Control,58,Male,18,Left,No,0,0,0,116,Yes,52,10,M1,0,162,NA
+z333,Intervention,90,Female,24,Left,No,0,0,0,192,Yes,110,10,ICA with M1,0,164,213
+z334,Intervention,64,Male,10,Right,Yes,0,0,0,160,Yes,204,10,M1,0,300,184
+z335,Intervention,63,Male,18,Left,No,0,0,0,105,No,NA,7,M1,0,219,208
+z336,Control,92,Female,17,Right,No,0,0,0,191,Yes,120,10,M1,0,252,NA
+z337,Control,72,Female,14,Left,No,1,0,0,160,No,NA,9,M1,0,183,NA
+z338,Intervention,88,Male,18,Right,No,0,0,2,136,Yes,166,9,M1,0,110,245
+z339,Control,86,Male,22,Left,No,0,0,> 2,112,Yes,101,9,M2,0,280,NA
+z340,Intervention,95,Male,18,Left,No,1,0,> 2,188,Yes,67,9,M1,0,258,346
+z341,Intervention,58,Male,17,Left,Yes,0,0,1,174,Yes,79,10,M1,1,206,265
+z342,Intervention,56,Male,19,Left,Yes,0,1,0,129,Yes,46,10,ICA with M1,0,168,238
+z343,Intervention,75,Male,14,Left,No,0,0,0,162,Yes,110,6,M1,0,141,338
+z344,Control,75,Female,13,Left,Yes,0,1,0,125,Yes,70,9,M1,0,176,NA
+z345,Control,68,Female,22,Right,No,0,0,1,122,Yes,69,10,M1,0,149,NA
+z346,Control,87,Female,13,Right,No,0,0,0,146,Yes,85,9,ICA with M1,0,147,NA
+z347,Intervention,27,Female,20,Right,No,0,0,0,133,Yes,68,6,M1,0,243,233
+z348,Control,79,Female,22,Left,No,1,0,0,165,No,NA,8,M1,0,138,NA
+z349,Control,78,Male,23,Left,No,0,0,0,145,No,NA,7,ICA with M1,1,236,NA
+z350,Control,54,Male,11,Left,No,0,1,1,132,Yes,94,8,M1,0,247,NA
+z351,Control,55,Female,14,Left,No,0,0,0,137,Yes,119,8,M1,0,331,NA
+z352,Control,44,Male,21,Right,No,1,0,0,151,Yes,81,10,M1,0,214,NA
+z353,Intervention,79,Male,12,Left,No,0,1,0,154,No,NA,10,M1,0,211,314
+z354,Control,78,Male,13,Right,No,0,1,0,192,Yes,95,10,M1,0,125,NA
+z355,Intervention,86,Male,16,Left,No,1,0,0,97,No,NA,8,M1,0,106,187
+z356,Control,33,Male,24,Left,No,0,0,0,208,Yes,117,10,M1,0,205,NA
+z357,Intervention,94,Female,26,Right,No,0,0,0,200,Yes,82,9,M1,0,109,333
+z358,Control,63,Male,12,Left,No,0,0,1,159,Yes,47,8,M1,0,346,NA
+z359,Intervention,63,Female,14,Left,No,1,0,0,184,Yes,68,7,ICA with M1,1,266,289
+z360,Intervention,84,Female,16,Left,Yes,0,0,1,132,No,NA,5,M1,0,181,360
+z361,Intervention,58,Male,13,Left,No,1,0,0,165,Yes,104,5,M1,0,205,349
+z362,Control,84,Female,25,Left,No,0,0,0,174,Yes,58,10,M1,0,283,NA
+z363,Intervention,62,Female,12,Left,No,0,0,1,151,Yes,91,9,M2,0,155,275
+z364,Intervention,68,Female,26,Left,No,0,0,0,175,Yes,193,10,M1,1,152,253
+z365,Control,60,Male,12,Left,No,0,0,0,190,Yes,101,9,ICA with M1,0,138,NA
+z366,Control,73,Female,12,Left,No,0,1,0,139,Yes,123,8,ICA with M1,1,250,NA
+z367,Intervention,62,Male,22,Left,No,1,0,0,153,Yes,79,9,ICA with M1,0,273,196
+z368,Control,65,Male,18,Left,Yes,0,0,0,194,Yes,78,10,M1,0,149,NA
+z369,Intervention,82,Male,17,Right,No,0,0,0,117,Yes,139,7,M1,0,107,322
+z370,Control,69,Female,23,Left,No,1,0,0,131,Yes,127,6,M2,0,137,NA
+z371,Control,62,Female,12,Right,No,0,0,0,146,Yes,61,8,ICA with M1,1,247,NA
+z372,Intervention,27,Male,28,Left,No,1,0,1,94,Yes,74,10,M1,0,117,209
+z373,Control,60,Male,14,Right,Yes,0,0,0,178,Yes,92,9,M1,0,175,NA
+z374,Intervention,96,Male,26,Left,No,0,0,0,124,Yes,92,7,M1,0,230,263
+z375,Intervention,42,Female,28,Left,No,0,0,0,158,Yes,52,10,M1,1,124,220
+z376,Intervention,76,Male,15,Right,No,1,0,0,140,Yes,199,7,M2,1,267,198
+z377,Intervention,55,Male,14,Left,No,0,1,1,166,No,NA,10,M1,1,168,238
+z378,Control,50,Female,22,Left,No,0,0,1,130,Yes,123,10,ICA with M1,1,143,NA
+z379,Control,58,Male,25,Left,No,1,0,0,148,Yes,72,8,ICA with M1,1,324,NA
+z380,Control,67,Female,13,Left,No,1,0,0,126,Yes,121,8,ICA with M1,1,212,NA
+z381,Control,65,Female,18,Left,No,0,0,2,154,Yes,102,8,M1,0,120,NA
+z382,Control,62,Male,18,Left,No,0,0,0,130,Yes,72,10,M1,0,263,NA
+z383,Intervention,84,Male,21,Right,No,0,0,0,119,Yes,56,8,ICA with M1,1,277,297
+z384,Control,35,Male,24,Left,No,1,0,1,106,Yes,93,9,M1,0,210,NA
+z385,Intervention,89,Male,13,Left,No,0,0,0,158,Yes,140,10,M1,0,105,317
+z386,Control,65,Female,22,Right,No,1,0,0,82,Yes,47,10,M1,0,175,NA
+z387,Control,25,Male,17,Left,No,1,0,1,138,Yes,73,8,ICA with M1,1,322,NA
+z388,Intervention,44,Male,28,Left,No,0,0,0,158,Yes,99,10,M1,0,248,194
+z389,Intervention,69,Male,15,Left,No,0,0,1,200,Yes,63,10,M1,1,298,329
+z390,Intervention,66,Female,18,Right,Yes,0,1,0,182,Yes,90,6,M1,0,202,240
+z391,Intervention,66,Male,28,Right,No,1,0,> 2,128,Yes,69,10,M1,1,159,352
+z392,Control,65,Male,21,Right,No,0,0,0,172,Yes,62,5,A1 or A2,0,168,NA
+z393,Intervention,71,Male,25,Right,No,0,0,0,128,No,NA,10,M1,1,149,254
+z394,Control,78,Female,22,Right,No,1,0,0,111,Yes,105,9,M1,0,135,NA
+z395,Intervention,77,Female,17,Left,No,0,0,0,174,Yes,73,10,M1,0,295,344
+z396,Intervention,54,Female,14,Left,No,0,0,1,148,Yes,58,10,M1,0,225,228
+z397,Intervention,92,Female,16,Left,No,0,1,0,120,Yes,47,10,M1,0,211,323
+z398,Control,43,Female,15,Right,No,0,0,0,112,No,NA,10,M2,0,172,NA
+z399,Control,78,Male,22,Left,No,0,1,0,147,Yes,47,8,M1,0,243,NA
+z400,Intervention,50,Male,20,Right,No,0,0,0,135,Yes,45,6,M1,0,189,336
+z401,Control,75,Male,20,Left,No,0,0,0,176,Yes,99,10,M1,0,131,NA
+z402,Intervention,93,Male,18,Right,No,0,1,0,146,Yes,48,10,M2,0,252,317
+z403,Control,71,Female,19,Left,No,0,0,0,144,Yes,53,10,M1,0,137,NA
+z404,Control,75,Female,22,Left,No,0,0,0,154,Yes,120,5,NA,NA,154,NA
+z405,Control,71,Male,13,Left,No,0,0,0,130,Yes,93,10,M1,0,330,NA
+z406,Control,26,Male,15,Right,No,0,0,> 2,177,Yes,72,10,M1,1,148,NA
+z407,Control,57,Female,23,Left,No,0,0,0,148,Yes,127,8,M1,0,192,NA
+z408,Intervention,57,Female,20,Left,No,0,0,0,119,Yes,158,7,M2,0,276,198
+z409,Control,74,Male,18,Right,No,0,1,1,172,Yes,120,7,M1,0,123,NA
+z410,Control,92,Male,16,Left,No,1,0,0,159,Yes,91,10,ICA with M1,0,336,NA
+z411,Control,57,Male,18,Left,No,0,0,0,115,No,NA,10,ICA with M1,0,157,NA
+z412,Control,41,Male,13,Left,No,0,0,0,126,Yes,46,10,ICA with M1,0,341,NA
+z413,Intervention,32,Female,14,Right,No,1,1,0,137,Yes,64,6,M2,0,215,326
+z414,Control,70,Male,18,Left,Yes,0,0,1,122,Yes,116,9,M1,0,161,NA
+z415,Intervention,65,Female,24,Right,No,1,0,1,131,Yes,197,10,M1,0,300,200
+z416,Control,51,Female,14,Left,No,1,0,0,151,Yes,117,8,M1,0,296,NA
+z417,Intervention,60,Male,14,Right,No,1,0,0,170,Yes,99,9,M1,0,225,324
+z418,Control,87,Female,13,Left,No,0,0,0,95,Yes,119,8,M1,0,265,NA
+z419,Control,54,Female,22,Right,No,0,0,1,149,Yes,90,10,M1,1,202,NA
+z420,Intervention,72,Male,14,Left,No,0,0,0,187,Yes,105,8,M1,1,283,296
+z421,Intervention,72,Female,11,Left,Yes,1,0,0,171,Yes,83,6,M1,1,107,220
+z422,Control,35,Female,25,Right,No,1,0,0,172,Yes,125,9,ICA with M1,0,232,NA
+z423,Control,65,Female,20,Left,No,0,0,1,124,Yes,65,7,ICA with M1,1,209,NA
+z424,Intervention,68,Female,21,Right,No,0,0,0,153,Yes,84,6,ICA with M1,0,138,286
+z425,Control,93,Female,18,Right,No,1,0,1,147,Yes,102,9,M1,1,245,NA
+z426,Intervention,69,Male,14,Right,No,1,0,0,164,Yes,149,9,M1,0,135,219
+z427,Control,50,Female,22,Left,No,0,0,2,126,No,NA,8,M1,0,321,NA
+z428,Intervention,88,Female,12,Left,No,1,1,0,163,Yes,53,7,M1,0,256,308
+z429,Control,92,Male,13,Left,No,0,0,1,155,Yes,91,7,Intracranial ICA,1,124,NA
+z430,Control,72,Female,14,Left,No,0,0,1,172,Yes,125,10,ICA with M1,0,249,NA
+z431,Control,65,Male,23,Right,No,1,0,0,134,Yes,50,9,M1,0,323,NA
+z432,Control,73,Female,21,Left,No,0,0,0,124,Yes,75,8,M1,0,246,NA
+z433,Intervention,46,Male,14,Left,No,0,0,1,162,Yes,110,6,M1,0,220,305
+z434,Intervention,95,Female,19,Right,No,0,0,0,111,Yes,150,10,M1,0,NA,325
+z435,Intervention,56,Male,28,Right,No,0,0,0,146,Yes,83,5,M1,0,133,300
+z436,Control,73,Male,20,Right,No,0,0,1,174,Yes,120,9,Intracranial ICA,0,156,NA
+z437,Intervention,87,Male,14,Right,No,1,1,0,113,Yes,67,8,ICA with M1,0,140,234
+z438,Intervention,65,Male,13,Right,No,1,0,2,79,Yes,51,10,M1,0,172,212
+z439,Control,81,Female,14,Left,No,1,0,0,137,Yes,57,6,M1,0,240,NA
+z440,Control,93,Male,25,Right,No,0,0,0,129,Yes,65,9,M1,0,278,NA
+z441,Intervention,55,Female,15,Left,No,0,0,0,118,No,NA,10,M1,1,220,245
+z442,Control,68,Female,21,Right,No,0,0,0,164,Yes,77,8,M1,0,173,NA
+z443,Intervention,54.5,Male,16,Left,No,0,0,0,90,Yes,162,10,ICA with M1,0,239,239
+z444,Control,60,Male,20,Left,No,0,0,> 2,159,Yes,78,10,ICA with M1,1,351,NA
+z445,Control,59,Male,15,Left,No,0,1,0,147,Yes,128,9,M1,0,180,NA
+z446,Control,85,Male,15,Left,No,0,0,> 2,162,Yes,50,9,M1,0,216,NA
+z447,Intervention,29,Female,15,Right,No,1,0,0,154,Yes,212,8,M1,1,256,321
+z448,Control,54,Male,17,Left,No,0,0,0,163,Yes,78,9,ICA with M1,1,190,NA
+z449,Intervention,72,Female,11,Left,No,0,0,0,133,Yes,45,9,M1,0,299,329
+z450,Intervention,90,Male,15,Left,No,0,0,> 2,109,Yes,174,8,ICA with M1,0,268,256
+z451,Intervention,68,Male,23,Right,Yes,0,0,0,140,Yes,48,5,M1,0,273,193
+z452,Intervention,45,Male,21,Left,No,0,0,0,139,Yes,71,10,M1,0,141,215
+z453,Control,58,Female,21,Right,No,0,0,0,147,Yes,99,5,M1,1,173,NA
+z454,Intervention,40,Male,25,Left,No,0,0,0,194,Yes,69,10,ICA with M1,0,290,299
+z455,Control,52,Male,22,Right,Yes,0,1,0,106,Yes,119,8,M1,0,142,NA
+z456,Control,33,Female,13,Left,No,0,0,0,122,Yes,69,9,M1,0,188,NA
+z457,Control,39,Male,18,Left,No,1,0,0,100,Yes,47,5,M1,0,143,NA
+z458,Control,40,Female,17,Right,No,1,0,0,140,Yes,123,7,ICA with M1,1,208,NA
+z459,Intervention,66,Female,25,Right,No,1,0,0,123,Yes,80,7,M1,1,174,329
+z460,Intervention,64,Female,26,Left,No,1,1,0,154,Yes,147,9,M1,0,109,289
+z461,Control,90,Female,12,Left,No,0,0,2,107,Yes,67,9,ICA with M1,0,293,NA
+z462,Intervention,65.8,Male,21,Right,No,0,1,0,168,Yes,127,10,ICA with M1,1,258,287
+z463,Intervention,93,Female,17,Right,No,0,0,0,99,No,NA,8,M1,0,NA,210
+z464,Intervention,76,Female,22,Right,No,0,0,0,152,No,NA,9,M1,0,163,318
+z465,Intervention,67,Female,16,Left,No,0,0,0,152,Yes,110,7,M1,0,201,360
+z466,Control,70,Male,18,Right,Yes,0,0,0,173,Yes,70,7,ICA with M1,1,191,NA
+z467,Control,65,Male,15,Right,No,0,0,0,162,Yes,48,8,M1,0,348,NA
+z468,Intervention,56,Female,12,Left,No,1,0,> 2,141,Yes,68,7,M1,1,245,196
+z469,Control,73,Male,18,Right,No,1,0,0,189,Yes,83,8,ICA with M1,0,242,NA
+z470,Control,81,Male,22,Left,No,1,0,0,178,Yes,127,10,M1,0,149,NA
+z471,Intervention,79,Male,17,Right,No,0,0,1,156,No,NA,10,ICA with M1,1,275,304
+z472,Control,54,Male,25,Right,No,1,1,0,153,Yes,93,10,M1,0,309,NA
+z473,Control,82,Male,22,Left,No,0,0,0,150,Yes,118,10,M1,1,233,NA
+z474,Intervention,57,Male,17,Left,No,0,0,0,185,Yes,69,9,ICA with M1,1,135,285
+z475,Control,39,Male,22,Right,No,0,0,0,165,Yes,93,8,ICA with M1,1,144,NA
+z476,Control,64,Male,19,Left,Yes,0,0,0,128,Yes,96,6,ICA with M1,1,132,NA
+z477,Control,89,Female,22,Left,No,0,0,0,169,Yes,118,8,M1,0,278,NA
+z478,Control,52,Male,11,Right,No,0,1,0,189,Yes,112,9,M1,1,128,NA
+z479,Control,61,Male,23,Left,No,0,0,0,161,Yes,81,5,ICA with M1,0,150,NA
+z480,Control,86,Male,13,Right,Yes,1,0,1,165,Yes,74,10,M1,0,144,NA
+z481,Intervention,23,Male,12,Right,No,1,0,2,169,Yes,89,7,Intracranial ICA,1,204,349
+z482,Control,35,Male,14,Left,No,0,0,0,120,Yes,58,10,M1,0,159,NA
+z483,Intervention,81,Female,16,Right,No,0,0,0,200,Yes,50,9,M1,0,246,208
+z484,Control,54,Male,18,Right,No,1,0,0,145,Yes,58,10,ICA with M1,1,187,NA
+z485,Intervention,75,Male,20,Right,No,1,0,0,140,Yes,93,7,M1,0,145,190
+z486,Control,59,Male,11,Left,No,0,0,0,161,Yes,93,10,M1,0,184,NA
+z487,Control,56,Female,25,Right,Yes,0,0,0,137,Yes,117,10,ICA with M1,0,120,NA
+z488,Control,70,Male,17,Left,No,1,0,0,93,Yes,58,7,M1,1,196,NA
+z489,Control,70,Female,12,Left,No,0,1,2,100,Yes,84,8,ICA with M1,1,264,NA
+z490,Intervention,61,Female,18,Right,Yes,1,0,0,131,Yes,77,10,ICA with M1,1,182,326
+z491,Intervention,40,Female,11,Right,Yes,0,0,0,110,Yes,134,7,ICA with M1,0,213,197
+z492,Control,67,Female,11,Left,No,0,0,0,150,Yes,78,8,M1,0,336,NA
+z493,Control,82,Female,14,Right,No,0,0,0,164,Yes,54,9,M1,0,140,NA
+z494,Intervention,57,Male,17,Left,No,1,1,0,107,Yes,90,10,M1,1,225,180
+z495,Intervention,78,Female,19,Left,No,0,0,0,133,No,NA,7,M1,0,190,269
+z496,Control,64,Female,19,Right,No,0,0,0,162,Yes,68,8,M1,0,132,NA
+z497,Control,88,Male,13,Right,Yes,1,0,0,177,Yes,80,9,M1,0,325,NA
+z498,Intervention,61,Female,21,Right,No,1,0,1,121,Yes,94,8,M1,1,288,192
+z499,Intervention,23,Male,23,Left,Yes,1,0,0,123,Yes,67,9,M1,0,164,200
+z500,Control,66,Male,24,Left,No,1,0,0,190,Yes,98,10,ICA with M1,1,358,NA

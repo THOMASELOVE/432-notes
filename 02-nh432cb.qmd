@@ -1,0 +1,155 @@
+# Codebook for `nh432` {#sec-nh432-book}
+
+## R Setup
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor) 
+library(gt)
+library(gtsummary)
+library(Hmisc)
+library(mosaic)
+library(naniar)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+nh432 <- read_rds("data/nh432.Rds")
+```
+
+## Quantitative Variables in `nh432`
+
+```{r}
+#| warning: false
+t1_quantitative <- df_stats(~ AGE + WEIGHT + HEIGHT + WAIST + SBP + DBP +
+           PULSE1 + PULSE2 + WBC + PLATELET + HSCRP +
+           ESTHT + ESTWT + VIGWK_D + VIGREC_D + SEDATE + PHQ9 +
+           SLPWKDAY + SLPWKEND + DRINKS + SMOKE30 + 
+           FLOSS + PREGS, data = nh432) |>
+  mutate(across(.cols = -c(response, n, missing), 
+              round_half_up, digits = 1)) |> 
+  rename(med = median, "NA" = missing)
+
+t1_quantitative |>
+  mutate(description = 
+           c("Age (years)", "Weight (kg)", "Height (cm)", 
+             "Waist circumference (cm)", "Systolic BP (mm Hg)", 
+             "Diastolic BP (mm Hg)", "1st Pulse (beats/min)", 
+             "2nd Pulse (beats/min)", "White Blood Cell Count (1000 cells/uL)",
+             "Platelets (1000 cells/uL)", 
+             "High-Sensitivity C-Reactive Protein (mg/L)",
+             "Self Estimate: Height (in)", "Self-Estimate: Weight (lb)",
+             "Vigorous Work per week (days)", 
+             "Vigorous Recreation per week (days)",
+             "Sedentary Activity per day (minutes)",
+             "PHQ-9 Depression Screener Score (points)",
+             "Average weekday sleep (hours)", "Average weekend sleep (hours)",
+             "Average Alcohol per day (drinks)", 
+             "Days smoked cigarette in last 30",
+             "Days Flossed in last 7", "Pregnancies")) |>
+  select(response, description, everything()) |>
+  gt() |>
+  tab_header(title = "Quantitative Variables in nh432")
+```
+
+## Two-Category (1/0) Variables in `nh432`
+
+```{r}
+nh_dich_vars <- nh432 |>
+  select(HOSPITAL, MENTALH, EVERALC, INSURNOW, NOINSUR, DR_LOSE,
+         DR_EXER, NOW_LOSE, NOW_EXER, WORK_V, REC_V, EVERPREG,
+         SLPTROUB, CIG100, AWAYWORK, AWAYREST, AWAYBAR) 
+
+temp1 <- nh_dich_vars |>  summarise(across(.cols = everything(), 
+                                           ~ sum(.x, na.rm = TRUE)))
+
+temp2 <- nh_dich_vars |>  summarise(across(.cols = everything(), 
+                           ~ round_half_up(100*mean(.x, na.rm = TRUE), 1)))
+
+temp3 <- nh_dich_vars |>  summarise(across(.cols = everything(), 
+                                           ~ n_miss(.x)))
+
+nh_dichotomous_summary <- bind_rows(temp1, temp2, temp3) |>
+  mutate(summary = c("Yes", "% Yes", "# NA")) |>
+  relocate(summary) |>
+  pivot_longer(!summary, names_to = "variable") |>
+  pivot_wider(names_from = summary) |>
+  mutate(Description = 
+           c("Overnight hospital patient in past 12m?",
+             "Seen mental health professional past 12m?",
+             "Ever had a drink of alcohol?",
+             "Covered by health insurance now?",
+             "Time when no insurance in past year?",
+             "Doctor said to control/lose weight past 12m?",
+             "Doctor said to exercise in past 12m?",
+             "Are you now controlling or losing weight?",
+             "Are you now increasing exercise?",
+             "Vigorous work activity for 10 min/week?",
+             "Vigorous recreational activity for 10 min/week?",
+             "Ever been pregnant?",
+             "Ever told a doctor you had trouble sleeping?",
+             "Smoked at least 100 cigarettes in your life?",
+             "Last 7 days worked at a job not at home?",
+             "Last 7 days spent time in a restaurant?",
+             "Last 7 days spent time in a bar?"))
+
+nh_dichotomous_summary |> 
+  gt()
+```
+
+## Factor Variables in `nh432`
+
+```{r}
+nh_factor_vars <- nh432 |>
+  select(where(~ is.factor(.x)))
+
+tbl_summary(nh_factor_vars,
+            label = c(RACEETH = "RACEETH: Race/Ethnicity",
+                      EDUC = "EDUC: Educational Attainment",
+                      SROH = "SROH: Self-reported Overall Health",
+                      WTGOAL = "WTGOAL: Like to weigh more/less/the same?",
+                      DIETQUAL = "DIETQUAL: How healthy is your diet?",
+                      FOODSEC = "FOODSEC: Adult food security (last 12m)",
+                      PHQ9_CAT = "PHQ9_CAT: Depression Screen Category",
+                      DEPRDIFF = "DEPRDIFF: Difficulty with Depression?",
+                      SNORE = "SNORE: How often do you snore?",
+                      DENTAL = "DENTAL: Recommendation for Dental Care?",
+                      SUNSCR = "SUNSCR: Use sunscreen on very sunny day?"),
+            missing_text = "(# NA)")
+```
+
+## Detailed Numerical Description for `nh432`
+
+```{r}
+describe(nh432)
+```
+
+## Missingness in `nh432`
+
+```{r}
+miss_case_table(nh432) |> gt()
+```
+
+```{r}
+#| warning: false
+#| fig.height: 10
+
+gg_miss_var(nh432)
+```
+
+```{r}
+miss_var_summary(nh432) |> gt()
+```
+
+```{r}
+miss_var_table(nh432) |> gt()
+```
+

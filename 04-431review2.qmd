@@ -1,0 +1,427 @@
+# 431 Review: Comparing Rates {#sec-431-rates}
+
+In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled "431 Review" show elements of the two studies involved in a "[431 Project B](https://thomaselove.github.io/431-projectB-2022/)" using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called **nh432** that we developed in @sec-nh432-build and then summarized in @sec-nh432-book. Note that we'll ignore the issue of sampling weights and assume a "missing completely at random" (MCAR) mechanism in these "431 Review" chapters, so that we can work with complete cases.
+
+The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until 2023-06-01.
+
+## R Setup
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor) 
+library(broom)
+library(DescTools)
+library(Epi)
+library(gt)
+library(Hmisc)
+library(vcd)
+
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+nh432 <- read_rds("data/nh432.Rds")
+```
+
+## 2x2 Contingency Table: DR_LOSE and NOWLOSE
+
+Let's compare the probability that NOWLOSE is 1 (The subject is currently working on losing or controlling their body weight) between NHANES participants who have (vs. who have not) been told by a doctor to lose or control their weight in the past 12 months (DR_LOSE). Each of these (DR_LOSE and NOWLOSE) is stored in R as a numeric variable with non-missing values equal to 0 or 1.
+
+```{r}
+temp <- nh432 |> 
+  select(SEQN, DR_LOSE, NOW_LOSE) |> 
+  drop_na()
+```
+
+As with any categorical variable, we start by counting, and the natural way to display the counts of these two variables (DR_LOSE and NOW_LOSE) is in a table, rather than a graph, I think.
+
+```{r}
+temp |> 
+  tabyl(DR_LOSE, NOW_LOSE) |> 
+  adorn_totals(where = c("row", "col")) |> 
+  adorn_title() 
+```
+
+Now that we have a 2x2 table, we could consider obtaining some more detailed summary statistics, with a tool like the `twoby2()` function in the **Epi** package. There is a problem with this, though.
+
+```{r}
+twoby2(temp$DR_LOSE, temp$NOW_LOSE)
+```
+
+The code runs fine, but the table isn't really in a useful format. This table shows the probability that NOWLOSE = 0 ("No") comparing DR_LOSE = 0 ("No") to DR_LOSE = 1 ("Yes"), and that's just confusing.
+
+It would be much better if we did two things:
+
+1. used factors with meaningful labels to represent the 1/0 variables for this table
+2. set up the table in standard epidemiological format, and then made a better choice as to what combination should be in the top left of the 2x2 table.
+
+So let's do that.
+
+### Standard Epidemiological Format
+
+Standard Epidemiological Format for a 2x2 table places the exposure in the rows, and the outcome in the columns, with the top left representing the combination of interest when we obtain things like an odds ratio or probability difference. Typically this means we want to put the "Yes" and "Yes" combination in the top left.
+
+First, let's create factor versions (with more meaningful labels than 1 and 0) out of the two variables of interest: DR_LOSE and NOW_LOSE.
+
+```{r}
+dat1 <- nh432 |> 
+  select(SEQN, DR_LOSE, NOW_LOSE) |> 
+  drop_na() |>
+  mutate(DR_LOSE_f = fct_recode(factor(DR_LOSE), "Dr_said_Lose_Wt" = "1", No = "0"),
+         DR_LOSE_f = fct_relevel(DR_LOSE_f, "Dr_said_Lose_Wt", "No"),
+         NOW_LOSE_f = fct_recode(factor(NOW_LOSE), "Now_losing_Wt" = "1", No = "0"),
+         NOW_LOSE_f = fct_relevel(NOW_LOSE_f, "Now_losing_Wt", "No"))
+```
+
+Note that after recoding the levels to more meaningful labels, we also re-leveled the factors so that the "Yes" result comes first rather than last.
+
+This produces the following table, which is now in standard epidemiological format, where we are using the DR_LOSE_f information to predict NOW_LOSE_f.
+
+```{r}
+dat1 |> 
+  tabyl(DR_LOSE_f, NOW_LOSE_f) |> 
+  adorn_totals(where = c("row", "col")) |> 
+  adorn_title() 
+```
+
+We could, I suppose, make the table even prettier.
+
+```{r}
+tab1 <- dat1 |> 
+  tabyl(DR_LOSE_f, NOW_LOSE_f) |> 
+  adorn_totals(where = c("row", "col")) 
+
+gt(tab1, rowname_col = "DR_LOSE_f") |>
+  tab_header(title = "DR_LOSE vs. NOW_LOSE",
+             subtitle = "Standard Epidemiological Format") |>
+  tab_stubhead(label = "Dr said Lose Weight?") |>
+  tab_spanner(label = "Currently Losing Weight?", 
+              columns = c(Now_losing_Wt, No))
+```
+
+
+### Obtaining Key Summaries with `twoby2()`
+
+And, finally, we can obtain necessary summaries (including estimates and confidence intervals) using the `twoby2()` function.
+
+```{r}
+twoby2(dat1$DR_LOSE_f, dat1$NOW_LOSE_f, conf.level = 0.90)
+```
+
+Some brief descriptions of these results:
+
+- The probability that a participant is now losing weight (NOW_LOSE is 1) is estimated to be 0.79 (with 90% CI 0.77, 0.81) if the participant has been told to lose weight by a doctor in the past 12 months (DR_LOSE = 1), but only 0.56 (with 90% CI 0.55, 0.58) if the participant has not been told this.
+- The relative risk of a participant now losing weight is estimated to be $\frac{0.7931}{0.5626}$ = 1.41 (with 90% CI 1.36, 1.46) for a participant who has been told to lose weight vs. a participant who has not.
+- The odds of a participant now losing weight are $\frac{0.7931(1-0.5626)}{0.5626(1-0.7931)}$ = 2.98 times as high for a participant who has been told to lose weight than for one who has not, with 90% CI (2.61, 3.41).
+- The difference in probability is estimated to be 0.7931 - 0.5626 = 0.2305 (90% CI: 0.21, 0.25), indicating again that the true probability of now losing weight is higher in participants who have been told to lose weight than in those who have not.
+
+The "exact" p-value listed comes from the Fisher exact test, while the "asymptotic" p-value comes from a Pearson $\chi^2$ (chi-squared) test. I would focus on the meaningful estimates (those with confidence intervals) in making comparisons, rather than on trying to determine "statistical significance" with the p-values.
+
+## 2x2 Table: SEDATE category and NOW_EXER
+
+Let's now look at another example, where we compare the probability that a participant is "now exercising" (NOW_EXER = 1) on the basis of their level of sedentary activity in a typical day (collected in the SEDATE variable, in minutes.)
+
+```{r}
+dat2 <- nh432 |> 
+  select(SEQN, SEDATE, NOW_EXER) |> 
+  drop_na()
+
+summary(dat2 |> select(-SEQN))
+```
+
+As you can see above, the information in SEDATE is quantitative, and suppose we want to compare a High SEDATE group vs. a Low SEDATE group. 
+
+### Creating a Low and High Group on SEDATE
+
+We can use the `cut2()` function from the **Hmisc** package to partition the data by the SEDATE variable into three groups of equal sample size. At the same time, we'll make NOW_EXER into a more useful (for tabulation) factor with more meaningful level descriptions.
+
+```{r}
+dat2 <- dat2 |>
+  mutate(SED_f = cut2(SEDATE, g = 3),
+         NOW_EXER_f = fct_recode(factor(NOW_EXER), "Now_exercising" = "1", No = "0"),
+         NOW_EXER_f = fct_relevel(NOW_EXER_f, "Now_exercising", "No"))
+```
+
+As you can see, we now have three groups defined by their SEDATE values, of roughly equal sample sizes.
+
+```{r}
+dat2 |> tabyl(SED_f)
+```
+
+The group labeled [2, 200) contains the 1323 subjects who had SEDATE values ranging from 2 up to (but not including) 200 minutes, for example.
+
+```{r}
+ggplot(dat2, aes(x = SEDATE)) +
+  geom_histogram(aes(fill = SED_f), col = "black", bins = 25) +
+  scale_fill_manual(values = c("seagreen", "white", "seagreen")) +
+  labs(title = "Comparing Low SEDATE to High SEDATE",
+       subtitle = "Identification of Groups")
+```
+
+Now, we want to compare the Lowest SEDATE group (SED_F = [2, 200)) to the Highest SEDATE group (SED_F = [420, 1320]). To do that, we'll drop the middle group, and then look at the cross-tabulation of our two remaining SEDATE groups with our outcome: NOW_EXER (in factor form.)
+
+```{r}
+dat2 <- dat2 |>
+  filter(SED_f != "[200, 420)") |>
+  mutate(SED_f = fct_drop(SED_f))
+
+dat2 |> tabyl(SED_f, NOW_EXER_f)
+```
+
+### Two-by-Two Table Summaries
+
+Let's look at the analytic results for this table.
+
+```{r}
+twoby2(dat2$SED_f, dat2$NOW_EXER_f) 
+```
+
+Uh, oh. There's a bit of a problem here now. We have the right rows and the right columns, but they're not in the best possible order, since the estimated probability of Now Exercising for the group on top (SED = [2, 200)) is smaller than it is for the people in the high group in terms of sedentary activity As a result of this problem with ordering, our relative risk and odds ratio estimates are less than 1, and our probability difference is negative. 
+
+### Flipping Levels
+
+Since which exposure goes at the top is an arbitrary decision, let's switch the factor levels in SED_f, so that the people with high sedentary activity and who are now exercising are shown in the top left cell of the table. This should flip the point estimates of the relative risk and odds ratio above 1, and the estimated probability difference to a positive number. Note the use of the `fct_rev()` function from the **forcats** package to accomplish this.
+
+```{r}
+dat2 <- dat2 |>
+  mutate(SED_f = fct_rev(SED_f))
+
+dat2 |> tabyl(SED_f, NOW_EXER_f) |> 
+  adorn_totals(where = c("row", "col")) |> 
+  adorn_title() 
+
+twoby2(dat2$SED_f, dat2$NOW_EXER_f, conf.level = 0.90)
+```
+
+We conclude now that the participants who were in the high SEDATION group (as compared to those in the low SEDATION group) had:
+
+- a relative risk of 1.05 (90% CI: 0.995, 1.106) for Now exercising,
+- a sample odds ratio of 1.13 (90% CI: 0.989, 1.287) for Now exercising,
+- and probability for Now exercising that was 0.029 higher (-0.003, 0.060) than for those in the low SEDATION group.
+
+## A Larger (5x3) 2-Way Table: DIETQUAL and WTGOAL in Lighter Men
+
+Here, we'll look at Male participants who weighed less than 100 kg (approximately 220 pounds) and ask whether their DIETQUAL (diet quality: self-rated as Excellent to poor in 5 categories) response is associated with their response to WTGOAL (would you like to weigh more, about the same, or less than you do now: 3 categories.)
+
+The resulting two-way contingency table includes 5 rows and 3 columns. We are interested in evaluating the relationship between the rows and the columns. It's called a two-way table because there are two categorical variables (DIETQUAL and WTGOAL) under study.
+
+If the rows and columns were found to be *independent* of one another, this would mean that the probabilities of falling in each column do not change, regardless of what row of the table we look at.
+
+If the rows and columns are *associated*, then the probabilities of falling in each column do depend on which row we're looking at.
+
+```{r}
+dat3 <- nh432 |> 
+  select(SEQN, DIETQUAL, WTGOAL, WEIGHT, SEX) |>
+  filter(WEIGHT < 100 & SEX == "Male") |>
+  drop_na()
+
+dat3 |> 
+  tabyl(DIETQUAL, WTGOAL)
+```
+
+If we want a graphical representation of a two-way table, the most common choice is probably a **mosaic plot**.
+
+```{r}
+vcd::mosaic(~ DIETQUAL + WTGOAL, data = dat3,
+            highlighting = "WTGOAL")
+```
+
+Larger observed frequencies in the contingency table show up with larger tile areas in the in the mosaic plot. So, for instance, we see the larger proportion of "less" WTGOAL in the "Poor" DIETQUAL category, as compared to most of the other DIETQUAL categories.
+
+### What would independence look like?
+
+A mosaic plot displaying perfect independence (using simulated data) might look something like this:
+
+```{r}
+var1 <- c(rep("A", 48), rep("B", 54), rep("C", 60), rep("D", 24) )
+var2 <- c( rep(c("G1", "G1", "G2", "G2", "G2", "G3"), 31) )
+temp_tab <- tibble(var1, var2); rm(var1, var2)
+vcd::mosaic(~ var1 + var2, data = temp_tab, highlighting = "var1")
+```
+
+Here's the table for our simulated data, where independence holds perfectly.
+
+```{r}
+xtabs(~ var1 + var2, data = temp_tab)
+```
+
+Note that in these simulated data, we have the same fraction of people in each of the four var1 categories (A, B, C, and D) regardless of which of the three var2 categories (G1, G2 and G3) we are in, and vice versa. That's what it means for rows and columns to be independent.
+
+### Back to the DIETQUAL and WTGOAL table
+
+Now, returning to our problem, to obtain detailed results from the Pearson $\chi^2$ test, I use the `xtabs()` function and then the `chisq.test()` function, like this:
+
+```{r}
+chi3 <- chisq.test(xtabs(~ DIETQUAL + WTGOAL, data = dat3))
+
+chi3
+```
+
+The null hypothesis being tested here is that DIETQUAL and WTGOAL are independent of each other. A small *p* value like this is indicative of an association between the two variables.
+
+The `chi3` object we have created also contains:
+
+- the observed frequencies in each cell, as well as 
+- the expected frequencies under the hypothesis of independence of the rows and the columns^[The expected frequency for a call under independence is the total for the cell's row multiplied by the total for the cell's column, divided by the grand total for the whole table.], and
+- the Pearson residuals $(\mbox{observed - expected})/\sqrt{\mbox{expected}}$  for each cell, among other things.
+
+```{r}
+chi3$observed
+
+chi3$expected
+
+chi3$residuals # Pearson residuals
+```
+
+An **association plot** presents a graphical description of the Pearson residuals, with the area of each box shown proportional to the difference between the observed and expected frequencies.
+
+- If the observed frequency of a cell is greater than the expectation under the hypothesis of independence, then the box rises above the baseline. 
+    - An example here is the (DIETQUAL = Very Good, WTGOAL = Same) which had an observed frequency of 153 but an expected frequency of 124.4, yielding the largest positive Pearson residual at 2.56.
+- Boxes shown below the baseline indicate that the observed frequency was less than the expectation under the independence hypothesis.
+    - The largest negative Pearson residual is the (DIETQUAL = Poor, WTGOAL = Same) cell, where we observed 18 observations but the independence model would predict 30.8, yielding a Pearson residual of -2.31.
+
+```{r}
+vcd::assoc(~ DIETQUAL + WTGOAL, data = dat3)
+```
+
+Some people also like to calculate a correlation between categorical variables. If each of your categorical variables is ordinal (as in this case) then Kendall's tau (version b) is probably the best choice. As with a Pearson correlation for quantities, the value for this measure ranges from -1 to 1, with -1 indicating a strong negative correlation, and +1 a strong positive correlation, with 0 indicating no correlation.
+
+To use this approach, though, we first have to be willing to treat our multi-categorical variables as if they were numeric, which may or may not be reasonable.
+
+```{r}
+dat3 <- dat3 |>
+  mutate(DIETQUAL_num = as.numeric(DIETQUAL))
+
+dat3 |> tabyl(DIETQUAL_num, DIETQUAL)
+```
+
+```{r}
+dat3 <- dat3 |>
+  mutate(WTGOAL_num = as.numeric(WTGOAL))
+
+dat3 |> tabyl(WTGOAL_num, WTGOAL)
+```
+
+```{r}
+cor(dat3$DIETQUAL_num, dat3$WTGOAL_num, method = "kendall")
+```
+
+If you want to obtain a confidence interval for this correlation coefficient, then you would need to use the `KendallTauB()` function from the **DescTools** package.
+
+```{r}
+KendallTauB(dat3$DIETQUAL_num, dat3$WTGOAL_num, conf.level = 0.90)
+```
+
+Again, it's just a number, and not especially valuable.
+
+## PHQ9 Category and Race/Ethnicity 
+
+Let's look next at the association of race-ethnicity (RACEETH, which has 5 levels) and the depression category (minimal, mild, moderate, moderately severe, or severe) available in PHQ9_CAT, which we derived from the PHQ-9 depression screener score. We'll restrict this small analysis to NHANES participants who did not receive care from a mental health provider (so MENTALH is 0) in the last 12 months.
+
+```{r}
+temp <- nh432 |> 
+  select(SEQN, RACEETH, PHQ9_CAT, MENTALH) |>
+  filter(MENTALH == 0) |>
+  drop_na()
+```
+
+So here's our first attempt at a 5x5 table describing this association.
+
+```{r}
+temp |> 
+  tabyl(RACEETH, PHQ9_CAT)
+```
+
+We note some very small observed frequencies, especially in the bottom right of the table. Should we try to run a Pearson $\chi^2$ test on these results, we will generate a warning that the Chi-square approximation may be incorrect.
+
+```{r}
+xtabs( ~ RACEETH + PHQ9_CAT, data = temp ) |>
+  chisq.test()
+```
+
+### The Cochran conditions
+
+R sets off this warning when the "Cochran conditions" are not met. The Cochran conditions require that we have:
+
+- no cells with 0 counts
+- at least 80% of the cells in our table with counts of 5 or higher
+- expected counts in each cell of the table should be 5 or more
+
+In our table, we have four cells with observed counts below 5 (all have count 1) and two more with observed counts of exactly 5. If we look at the expected frequencies under the hypothesis of independence, what do we see?
+
+```{r}
+temp_chi <- xtabs( ~ RACEETH + PHQ9_CAT, data = temp ) |>
+  chisq.test()
+
+temp_chi$expected
+```
+
+Every cell in the "severe" category has an expected frequency below 5, and we also have some generally small counts, in the Non-Hispanic Asian and Other Race categories, as well as the "moderately severe" category. 
+
+### Collapsing Categories
+
+So what might we do about this?
+
+Let us consider two approaches that we'll use simultaneously:
+
+1. drop two of the RACEETH groups, and just use the top 3 (Non-H White, Non-H Black and Hispanic) using `filter()`
+2. collapse together the two right-most levels of PHQ9_CAT (moderately severe and severe) into a new level which I'll call "More Severe", using `fct_lump_n()`
+
+```{r}
+dat5 <- nh432 |> 
+  select(SEQN, RACEETH, PHQ9_CAT, MENTALH) |>
+  filter(MENTALH == 0) |>
+  filter(RACEETH %in% c("Non-H White", "Non-H Black", "Hispanic")) |>
+  drop_na() |>
+  mutate(RACEETH = fct_drop(RACEETH),
+         PHQ9_CAT = fct_lump_n(PHQ9_CAT, 3, 
+                               other_level = "More Severe"))
+
+dat5 |> 
+  tabyl(RACEETH, PHQ9_CAT)
+```
+
+Now, we have at least 14 participants in every cell of the table. 
+
+### Pearson $\chi^2$ Analysis
+
+Now, let's consider what the Pearson $\chi^2$ test suggests.
+
+```{r}
+tab5 <- xtabs(~ RACEETH + PHQ9_CAT, data = dat5)
+
+tab5
+
+chisq.test(tab5)
+```
+Now we have no warning, and notice also how large a change this has meant in terms of the p-value, as compared to our original $\chi^2$ result.
+
+### Mosaic Plot
+
+Here's a mosaic plot^[The **ggmosaic** package has a `geom_mosaic()` tool for building such plots but its maintenance has been spotty in recent weeks.] of the table.
+
+```{r}
+vcd::mosaic(tab5, highlighting = "PHQ9_CAT")
+```
+
+### Examining the Fit
+
+We'll finish up with a look at the expected frequencies, and a table and association plot of the Pearson residuals.
+
+```{r}
+chisq.test(tab5)$observed
+
+chisq.test(tab5)$expected
+
+chisq.test(tab5)$residuals
+
+assoc(tab5)
+```

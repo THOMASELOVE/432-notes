@@ -1,0 +1,27 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Data Science for Biological, Medical and Health Research"
+  subtitle: "Spring 2023 Notes for 432"  
+  author: "Thomas E. Love"
+  date: last-modified
+  date-format: iso
+  downloads: pdf
+  chapters:
+    - index.qmd
+    - setup.qmd
+    - 01-nhanes.qmd
+    - 02-nh432cb.qmd
+    - 03-431review1.qmd
+    - 04-431review2.qmd
+    - 05-431review3.qmd
+
+format:
+  html:
+    theme: cosmo
+    code-overflow: wrap
+  pdf:
+    documentclass: scrreprt
+

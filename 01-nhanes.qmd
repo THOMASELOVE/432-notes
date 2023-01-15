@@ -1,0 +1,1303 @@
+# Building the `nh432` example {#sec-nh432-build}
+
+In this Chapter, we will extract and tidy a data set using pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES). Then we'll save this data set (which I'll call **nh432** once it's built) so that we can use it again in subsequent work. Details on the data are available at [this link to NHANES at CDC](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?Cycle=2017-2020).
+
+## R Setup
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor) 
+library(gt)
+library(gtsummary)
+library(Hmisc)
+library(naniar)
+library(nhanesA)
+
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+## Selecting NHANES Variables
+
+We'll focus on NHANES data describing 
+
+- participating adults ages 30-59 years who 
+- completed both an NHANES interview and medical examination, and who 
+- also completed an oral health examination, and who
+- also reported their overall health as either Excellent, Very Good, Good, Fair, or Poor
+
+We will pull the following NHANES data elements using the `nhanesA` package:
+
+### Demographics and Sample Weights
+
+From the [Demographic Variables and Sample Weights](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Demographics&Cycle=2017-2020) database (P_DEMO), we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+RIDSTATR | Interview and MEC exam status | 1 = Interviewed only <br /> **2 = Interviewed & MEC examined**
+RIDAGEYR | Age at screening (years) <br /> **We will require ages 30-59.** | Top coded at 80^[Those over 80 years of age are coded 80.]
+RIDRETH3 | Race/Hispanic origin | 1 = Mexican American <br /> 2 = Other Hispanic <br /> 3 = Non-Hispanic White <br /> 4 = Non-Hispanic Black <br /> 6 = Non-Hispanic Asian <br /> 7 = Other Race, including Multi-Racial
+DMDEDUC2 | Education Level | 1 = Less than 9th grade <br /> 2 = 9-11th grade <br /> 3 = High school graduate <br /> 4 = Some college or AA <br /> 5 = College graduate or above <br /> 7 = Refused (*will treat as NA*) <br /> 9 = Don't Know (*will treat as NA*)
+RIAGENDR | Sex | 1 = Male, 2 = Female
+WTINTPRP | Full sample interview weight | Sampling weight
+WTMECPRP | Full sample MEC examination weight | Sampling weight
+
+**Note** As part of our inclusion criteria, we will require that all participants in our analytic data have RIDAGEYR values of 30-59 and thus drop the participants whose responses to that item are missing or outside that range.
+
+Here's my code to select these variables from the P_DEMO data.
+
+```{r}
+p_demo <- nhanes('P_DEMO') |>
+  select(SEQN, RIDSTATR, RIDAGEYR, RIDRETH3, DMDEDUC2, RIAGENDR,
+         WTINTPRP, WTMECPRP) 
+
+dim(p_demo) # gives number of rows (participants) and columns (variables)
+```
+
+Do we have any duplicate SEQN values?
+
+```{r}
+p_demo |> get_dupes(SEQN)
+```
+
+Good.
+
+### Oral Health
+
+From the [Oral Health - Recommendation of Care](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_OHXREF.htm) (P_OHXREF), we collect the following variables.
+
+Variable | Description | Values
+--------: | :------------------: | :----------------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+OHDEXSTS | Overall Oral Health Exam Status | **1 = Complete** <br /> 2 = Partial <br /> 3 = Not Done
+OHAREC | Overall Recommendation for Dental Care | 1 = See a dentist immediately <br /> 2 = See a dentist within the next 2 weeks <br /> 3 = See a dentist at your earliest convenience <br /> 4 = Continue your regular routine care
+
+**Note** In addition to requiring that all participants in our analytic data have OHDEXSTS = 1, we will (later) collapse values 1 and 2 in OHAREC because there are only a few participants with code 1 in OHAREC.
+
+Here's my code to select these variables from the P_OHXREF data.
+
+```{r}
+p_ohxref <- nhanes('P_OHXREF') |>
+  select(SEQN, OHDEXSTS, OHAREC)
+
+dim(p_ohxref)
+```
+
+### Hospital Utilization & Access to Care
+
+From the [Questionnaire on Hospital Utilization & Access to Care](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_HUQ.htm) (P_HUQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+HUQ010 | General health condition <br /> **we require a 1-5 response** | 1 = Excellent <br /> 2 = Very Good <br /> 3 = Good <br /> 4 = Fair <br /> 5 = Poor <br /> 7 = Refused (*to be dropped*) <br /> 9 = Don't Know (*to be dropped*)
+HUQ071 | Overnight hospital patient in past 12 months | 1 = Yes, 2 = No <br /> 7 = Refused (*will treat as NA*) <br /> 9 = Don't Know (*will treat as NA*)
+HUQ090 | Seen mental health professional in past 12 months | 1 = Yes, 2 = No <br /> 7 = Refused (*will treat as NA*) <br /> 9 = Don't Know (*will treat as NA*)
+
+**Note** As part of our inclusion criteria, we will require that all participants in our analytic data have HUQ010 values of 1-5 and drop participants whose responses are missing, Refused or Don't Know for that item.
+
+Here's my code to select these variables from the P_HUQ data.
+
+```{r}
+p_huq <- nhanes('P_HUQ') |>
+  select(SEQN, HUQ010, HUQ071, HUQ090)
+
+dim(p_huq)
+```
+
+### Body Measures
+
+From the [Body Measures](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_BMX.htm) database (P_BMX), we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+BMXWT | Body weight (kg) | Measured in examination
+BMXHT | Standing height (cm) | Measured in examination
+BMXWAIST | Waist Circumference (cm) | Measured in examination
+
+Here's my code to select these variables from the P_BMX data.
+
+```{r}
+p_bmx <- nhanes('P_BMX') |>
+  select(SEQN, BMXWT, BMXHT, BMXWAIST)
+
+dim(p_bmx)
+```
+
+### Blood Pressure
+
+From the [Blood Pressure - Oscillometric Measurement](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_BPXO.htm) (P_BPXO), we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+BPXOSY2 | Systolic BP <br /> (2nd reading, in mm Hg) | Measured in examination
+BPXODI2 | Diastolic BP <br /> (2nd reading, in mm Hg) | Measured in examination
+BPXOPLS1 | Pulse <br /> (1st reading, beats/minute) | Measured in examination
+BPXOPLS2 | Pulse <br /> (2nd reading, beats/minute) | Measured in examination
+
+- A "normal" blood pressure for most adults is < 120 systolic and < 80 diastolic.
+- A "normal" resting pulse rate for most adults is between 60 and 100 beats/minute.
+
+Here's my code to select these variables from the P_BPXO data.
+
+```{r}
+p_bpxo <- nhanes('P_BPXO') |>
+  select(SEQN, BPXOSY2, BPXODI2, BPXOPLS1, BPXOPLS2)
+
+dim(p_bpxo)
+```
+
+### Complete Blood Count
+
+From the [Complete Blood Count with 5-Part Differential in Whole Blood](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_CBC.htm) (P_CBC), we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+LBXWBCSI | White blood cell count <br /> in 1000 cells/uL | normal range: 4.5 - 11
+LBXPLTSI | Platelet count <br /> in 1000 cells/uL | normal range: 150-450
+
+Here's my code to select these variables from the P_CBC data.
+
+```{r}
+p_cbc <- nhanes('P_CBC') |>
+  select(SEQN, LBXWBCSI, LBXPLTSI)
+
+dim(p_cbc)
+```
+
+### C-Reactive Protein
+
+From the [High-Sensitivity C-Reactive Protein](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_HSCRP.htm) (P_HSCRP) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+LBXHSCRP | High-Sensitivity <br /> C-Reactive Protein (mg/L) | normal range: 1.0 - 3.0
+
+Here's my code to select these variables from the P_HSCRP data.
+
+```{r}
+p_hscrp <- nhanes('P_HSCRP') |>
+  select(SEQN, LBXHSCRP)
+
+dim(p_hscrp)
+```
+
+
+### Alcohol Use
+
+From the [Questionnaire on Alcohol Use](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_ALQ.htm) (P_ALQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+ALQ111 | Ever had a drink of alcohol? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+ALQ130 | Average drinks per day <br /> in past 12 months <br /> (Top coded at 15^[Those who responded with 15 drinks or more are coded 15.]) | count (**set to 0 if ALQ111 is No**) <br /> 777 = Refused (*treat as NA*) <br /> 999 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_ALQ data.
+
+```{r}
+p_alq <- nhanes('P_ALQ') |>
+  select(SEQN, ALQ111, ALQ130)
+
+dim(p_alq)
+```
+
+As noted above, we set the value of ALQ130 to be 0 if the response to ALQ111 is 2 (No).
+
+```{r}
+p_alq <- p_alq |>
+  mutate(ALQ130 = ifelse(ALQ111 == 2, 0, ALQ130))
+
+p_alq |> count(ALQ130, ALQ111)
+```
+
+### Dermatology
+
+From the [Questionnaire on Dermatology](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_DEQ.htm) (P_DEQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+DEQ034D | Use sunscreen if outside on very sunny day? | 1 = Always <br /> 2 = Most of the time <br /> 3 = Sometimes <br /> 4 = Rarely <br /> 5 = Never <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_DEQ data.
+
+```{r}
+p_deq <- nhanes('P_DEQ') |>
+  select(SEQN, DEQ034D)
+
+dim(p_deq)
+```
+
+### Depression Screener
+
+From the [Questionnaire on Mental Health - Depression Screener](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_DPQ.htm) (P_DPQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-------------------------------: | :----------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+DPQ010 | Have little interest in doing things | 0-3: codes below
+DPQ020 | Feeling down, depressed or hopeless | 0-3: codes below
+DPQ030 | Trouble sleeping or sleeping too much | 0-3: codes below
+DPQ040 | Feeling tired or having little energy | 0-3: codes below
+DPQ050 | Poor appetite or overeating | 0-3: codes below
+DPQ060 | Feeling bad about yourself | 0-3: codes below
+DPQ070 | Trouble concentrating on things | 0-3: codes below
+DPQ080 | Moving or speaking slowly or too fast | 0-3: codes below
+DPQ090 | Thoughts you would be better off dead | 0-3: codes below
+DPQ100 | Difficulty these problems have caused | 0-3: codes below
+
+- For DPQ010 - DPQ090, the codes are 0 = Not at all, 1 = Several days in the past two weeks, 2 = More than half the days in the past two weeks, 3 = Nearly every day in the past two weeks, with *7 = Refused and 9 = Don't Know which we will treat as NA*.
+- For DPQ100, the codes are 0 = Not at all difficult, 1 = Somewhat difficult, 2 = Very difficult, 3 = Extremely difficult, with *7 = Refused and 9 = Don't Know which we will treat as NA*. Also, **the DPQ100 score should be 0 if the scores on DPQ010 through DPQ090 are all zero**.
+
+[Later](#create-phq-9-scores), we will sum the scores in DPQ010 - DPQ090 to produce a PHQ-9 score for each participant.
+
+Here's my code to select these variables from the P_DPQ data.
+
+```{r}
+p_dpq <- nhanes('P_DPQ') # we're actually pulling all available variables
+
+dim(p_dpq)
+```
+
+### Diet Behavior
+
+From the [Questionnaire on Diet Behavior and Nutrition](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_DBQ.htm) (P_DBQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+DBQ700 | How healthy is your diet? | 1 = Excellent <br /> 2 = Very Good <br /> 3 = Good <br /> 4 = Fair <br /> 5 = Poor <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_DBQ data.
+
+```{r}
+p_dbq <- nhanes('P_DBQ') |>
+  select(SEQN, DBQ700)
+
+dim(p_dbq)
+```
+
+### Food Security
+
+From the [Questionnaire on Food Security](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_FSQ.htm) (P_FSQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+FSDAD | Adult food security category for last 12m | 1 = Full food security <br /> 2 = Marginal <br /> 3 = Low <br /> 4 = Very low
+
+Here's my code to select these variables from the P_FSQ data.
+
+```{r}
+p_fsq <- nhanes('P_FSQ') |>
+  select(SEQN, FSDAD)
+
+dim(p_fsq)
+```
+
+### Health Insurance
+
+From the [Questionnaire on Health Insurance](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_HIQ.htm) (P_HIQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+HIQ011 | Covered by health insurance now? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+HIQ210 | Time when no insurance in past year? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*) <br /> (**set to Yes if HIQ011 is No.**)
+
+Here's my code to select these variables from the P_HIQ data.
+
+```{r}
+p_hiq <- nhanes('P_HIQ') |>
+  select(SEQN, HIQ011, HIQ210)
+
+dim(p_hiq)
+```
+
+As noted above, we set the value of HIQ210 to be 1 (Yes) if HIQ011 is 2 (No).
+
+```{r}
+p_hiq <- p_hiq |>
+  mutate(HIQ210 = ifelse(HIQ011 == 2, 1, HIQ210))
+
+p_hiq |> count(HIQ210, HIQ011)
+```
+
+### Medical Conditions
+
+From the [Questionnaire on Medical Conditions](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_MCQ.htm) (P_MCQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+MCQ366A | Doctor told you to control/lose weight in the past 12 months? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+MCQ366B | Doctor told you to exercise <br /> in the past 12 months? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+MCQ371A | Are you now controlling or losing weight? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+MCQ371B | Are you now increasing exercise? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_MCQ data.
+
+```{r}
+p_mcq <- nhanes('P_MCQ') |>
+  select(SEQN, MCQ366A, MCQ366B, MCQ371A, MCQ371B)
+
+dim(p_mcq)
+```
+
+### Oral Health
+
+From the [Questionnaire on Oral Health](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_OHQ.htm) (P_OHQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+OHQ870 | Days using dental floss <br /> (in the last week) | count (0-7) <br /> 9 = Unknown (*treat as NA*) <br /> 99 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_OHQ data.
+
+```{r}
+p_ohq <- nhanes('P_OHQ') |>
+  select(SEQN, OHQ870)
+
+dim(p_ohq)
+```
+
+### Physical Activity
+
+From the [Questionnaire on Physical Activity](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_PAQ.htm) (P_PAQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+PAQ605 | Vigorous work activity for 10 min/week? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+PAQ610 | # of days of vigorous work activity <br /> in past week | count (1-7) <br /> 77 = Refused (*treat as NA*) <br /> 99 = Don't Know (*treat as NA*) <br /> (**set to 0 if PAQ605 is No.**)
+PAQ650 | Vigorous recreational activity for 10 min/week? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+PAQ655 | # of days of vigorous recreational <br /> activity in past week | count (1-7) <br /> 77 = Refused (*treat as NA*) <br /> 99 = Don't Know (*treat as NA*) <br /> (**set to 0 if PAQ650 is No.**)
+PAD680 | Minutes of sedentary activity (min/day) | excludes sleeping <br /> 7777 = Refused (*treat as NA*) <br /> 9999 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_PAQ data.
+
+```{r}
+p_paq <- nhanes('P_PAQ') |>
+  select(SEQN, PAQ605, PAQ610, PAQ650, PAQ655, PAD680)
+
+dim(p_paq)
+```
+
+Now, let's set the value of PAQ610 to be 0 if PAQ605 is 2 (No).
+
+```{r}
+p_paq <- p_paq |>
+  mutate(PAQ610 = ifelse(PAQ605 == 2, 0, PAQ610))
+```
+
+Finally, we set the value of PAQ655 to be 0 if PAQ650 is 2 (No).
+
+```{r}
+p_paq <- p_paq |>
+  mutate(PAQ655 = ifelse(PAQ650 == 2, 0, PAQ655))
+```
+
+### Reproductive Health
+
+From the [Questionnaire on Reproductive Health](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_RHQ.htm) (P_RHQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+RHQ131 | Ever been pregnant? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+RHQ160 | How many times have you been pregnant? | count (1-11) <br /> 77 = Refused (*treat as NA*) <br /> 99 = Don't Know (*treat as NA*) <br /> (**set to 0 if RHQ131 is No.**)
+
+Here's my code to select these variables from the P_RHQ data.
+
+```{r}
+p_rhq <- nhanes('P_RHQ') |>
+  select(SEQN, RHQ131, RHQ160)
+
+dim(p_rhq)
+```
+
+Now, let's set the value of RHQ160 to be 0 if RHQ131 is 2 (No).
+
+```{r}
+p_rhq <- p_rhq |>
+  mutate(RHQ160 = ifelse(RHQ131 == 2, 0, RHQ160))
+```
+
+### Sleep Disorders
+
+From the [Questionnaire on Sleep Disorders](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_SLQ.htm) (P_SLQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+SLD012 | Usual hours of sleep (weekdays) | hours *limited to 2-14*
+SLD013 | Usual hours of sleep (weekends) | hours *limited to 2-14*
+SLQ030 | How often do you snore in the past 12 months? | 0 = Never <br /> 1 = Rarely (1-2 nights/week) <br /> 2 = Occasionally (3-4 nights/week) <br /> 3 = Frequently (5+ nights/week) <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+SLQ050 | Have you ever told a doctor you had trouble sleeping? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_SLQ data.
+
+```{r}
+p_slq <- nhanes('P_SLQ') |>
+  select(SEQN, SLD012, SLD013, SLQ030, SLQ050)
+
+dim(p_slq)
+```
+
+### Smoking Cigarettes
+
+From the [Questionnaire on Smoking - Cigarette Use](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_SMQ.htm) (P_SMQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+SMQ020 | Smoked at least 100 cigarettes in your life? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+SMD641 | Days (in past 30) when you smoked a cigarette? | count (0-30) <br /> 77 = Refused (*treat as NA*) <br /> 99 = Don't Know (*treat as NA*) <br /> (**set to 0 if SMQ020 is No.**)
+
+Here's my code to select these variables from the P_SMQ data.
+
+```{r}
+p_smq <- nhanes('P_SMQ') |>
+  select(SEQN, SMQ020, SMD641)
+
+dim(p_smq)
+```
+
+Now, let's set the value of SMD641 to be 0 if SMQ020 is 2 (No).
+
+```{r}
+p_smq <- p_smq |>
+  mutate(SMD641 = ifelse(SMQ020 == 2, 0, SMD641))
+```
+
+### Secondhand Smoke
+
+From the [Questionnaire on Smoking - Secondhand Smoke Exposure](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_SMQSHS.htm) (P_SMQSHS) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+SMQ856 | Last 7 days worked at a job not at home? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+SMQ860 | Last 7 days spent time in a restaurant? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+SMQ866 | Last 7 days spent time in a bar? | 1 = Yes, 2 = No <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_SMQSHS data.
+
+```{r}
+p_smqshs <- nhanes('P_SMQSHS') |>
+  select(SEQN, SMQ856, SMQ860, SMQ866)
+
+dim(p_smqshs)
+```
+
+### Weight History
+
+From the [Questionnaire on Weight History](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_WHQ.htm) (P_WHQ) we collect the following variables.
+
+Variable | Description | Values
+--------: | :-----------------------: | :-----------------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+WHD010 | Current self-reported height (in inches) | 49 to 82 <br /> 7777 = Refused (*treat as NA*) <br /> 9999 = Don't Know (*treat as NA*)
+WHD020 | Current self-reported weight (in pounds) | 67 to 578 <br /> 7777 = Refused (*treat as NA*) <br /> 9999 = Don't Know (*treat as NA*)
+WHQ040 | Like to weigh more, less, or same | 1 = More <br /> 2 = Less <br /> 3 = Stay about the same <br /> 7 = Refused (*treat as NA*) <br /> 9 = Don't Know (*treat as NA*)
+
+Here's my code to select these variables from the P_WHQ data.
+
+```{r}
+p_whq <- nhanes('P_WHQ') |>
+  select(SEQN, WHD010, WHD020, WHQ040)
+
+dim(p_whq)
+```
+
+## Filtering for Inclusion
+
+First, I'll filter the demographic data (`p_demo`) to the participants with known ages (RIDAGEYR here) between 30 and 59 years (inclusive), and to those who were both interviewed and examined (so RIDSTATR is 2) to match our inclusion criteria.
+
+```{r}
+p_demo <- p_demo |>
+  filter(RIDAGEYR >= 30 & RIDAGEYR <= 59,
+         RIDSTATR == 2)
+
+dim(p_demo)
+```
+
+Second, I'll restrict the `p_ohxref` sample to the participants who had a complete oral health exam (so OHDEXSTS is 1) which is also part of our inclusion criteria.
+
+```{r}
+p_ohxref <- p_ohxref |>
+  filter(OHDEXSTS == 1)
+
+dim(p_ohxref)
+```
+
+Third, I'll restrict the `p_hug` sample to the participants who gave one of our five available responses (codes 1-5) to the general health condition question in HUQ010, which is the final element of our inclusion criteria.
+
+```{r}
+p_huq <- p_huq |>
+  filter(HUQ010 <= 5)
+
+dim(p_huq)
+```
+
+Subjects that meet all of these requirements will be included in our analytic data. To achieve that end, we'll begin merging the individual data bases.
+
+## Merging the Data
+
+### Merging Two Data Frames at a Time
+
+We have two ways to merge our data. We can merge data sets two at a time. In this case, we'll use `inner_join()` from the `dplyr` package to include only those participants with data in each of the two data frames we're merging. For example, we'll create `temp01` to include data from both `p_demo` and `p_ohxref` for all participants (identified by their SEQN) that appear in each of those two data frames. Then, we'll merge the resulting `temp01` with `p_huq` to create `temp02` in a similar way.
+
+```{r}
+temp01 <- inner_join(p_demo, p_ohxref, by = "SEQN")
+temp02 <- inner_join(temp01, p_huq, by = "SEQN")
+
+dim(temp02)
+```
+
+Note that we now have `r nrow(temp02)` participants in our data, and this should be the case after we merge in all of the other data sets, too. Rather than using `inner_join()` we will switch now to using `left_join()` many more times so that we always add new information only on those subjects who meet our inclusion criteria (as identified in `temp02`. For more on the various types of joins we can use from the `dplyr` package, visit <https://dplyr.tidyverse.org/reference/mutate-joins.html. The problem is that that approach would force us to create lots of new temporary files as we add in each new variable.
+
+### Merging Many Data Frames Together
+
+A better approach is to use the `reduce()` function in the `purrr` package^[For more on the `purrr` package, visit <https://purrr.tidyverse.org/>], which will let us join this `temp02` data frame with our remaining 17 data frames using `left_join()` in a much more streamlined way. We'll also ensure that the final result (which we'll call `nh_raw`) is a tibble, rather than just a data frame.
+
+```{r}
+df_list <- list(temp02, p_bmx, p_bpxo, p_cbc, p_hscrp, 
+                p_alq, p_deq, p_dpq, p_dbq, p_fsq, 
+                p_hiq, p_mcq, p_ohq, p_paq, p_rhq,
+                p_slq, p_smqshs, p_smq, p_whq)
+
+nh_raw <- df_list |> 
+  reduce(left_join, by = 'SEQN') |>
+  as_tibble()
+
+dim(nh_raw)
+```
+
+## The "Raw" Data
+
+What does the data in `nh_raw` look like? Normally, I wouldn't include this sort of intermediate description in a published bit of work, but it may be helpful to compare this description to the one we'll generate at the end of the cleaning process in this case.
+
+```{r}
+summary(nh_raw)
+```
+
+
+## Cleaning Tasks
+
+We now have a tibble called `nh_raw` containing `r nrow(nh_raw)` NHANES participants in the rows and `r ncol(nh_raw)` variables in the columns. What must we do to clean up the data?
+
+1. Check that every identifier (here, SEQN) is unique.
+2. Ensure that all coded values for "Refused", "Don't Know" or "Missing" are interpreted as missing values by R.
+3. Be sure all quantitative variables have plausible minimum and maximum values.
+4. Replace the RIAGENDR variable with a new factor variable called SEX with levels Male and Female.
+5. Convert all binary Yes/No variables to 1/0 numeric variables where 1 = Yes, 0 = No.
+6. Create the PHQ-9 score from the nine relevant items in the depression screener (P_DPQ).
+7. Use meaningful level names for all multi-categorical variables, and be sure R uses factors to represent them.
+8. Clean and adjust the names of the variables to something more useful, as desired. (Usually, I will do this first, but in this case, I've decided to do it last.)
+
+Once we've accomplished these cleaning tasks, we'll save the resulting tibble as an R data set we can use later, and we'll summarize our final analytic variables in a proper codebook.
+
+## Our identifying variable
+
+SEQN is meant to identify the rows (participants) in these data, with one row per SEQN. Is every SEQN unique?
+
+```{r}
+nrow(nh_raw)
+n_distinct(nh_raw$SEQN)
+```
+
+It looks like the number of rows in our tibble matches the number of unique (distinct) SEQN values, so we're OK. I prefer to specify that the SEQN be maintained by R as a character variable, which reduces the chance of my accidentally including it in a model as if it were something meaningful.
+
+```{r}
+nh_fixing <- nh_raw |> mutate(SEQN = as.character(SEQN))
+```
+
+
+## "Refused" & "Don't Know"
+
+Some of our variables have "hidden" missing values coded as "Refused" or "Don't Know". We must ensure that R sees these values as missing.
+
+- The following variables use code 7 for Refused and 9 for Don't Know:
+  - DMDEDUC2, HUQ071, HUQ090, ALQ111, DEQ034D, 
+  - DPQ010, DPQ020, DPQ030, DPQ040, DPQ050, 
+  - DPQ060, DPQ070, DPQ080, DPQ090, DPQ100, 
+  - DBQ700, HIQ011, HIQ210, MCQ366A, MCQ366B, 
+  - MCQ371A, MCQ371B, PAQ605, PAQ650, RHQ131, 
+  - SLQ030, SLQ050, SMQ020, SMQ856, SMQ860, 
+  - SMQ866, WHQ040
+- The following variables use code 9 for Unknown and 99 for Don't Know:
+  - OHQ870
+- The following variables use code 77 for Refused and 99 for Unknown:
+  - PAQ610, PAQ655, RHQ160, SMD641
+- The following variables use code 777 for Refused and 999 for Don't Know:
+  - ALQ130 
+- The following variables use code 7777 for Refused and 9999 for Don't Know:
+  - PAD680, WHD010, WHD020
+
+The `replace_with_na()` set of functions from the `naniar` package can be very helpful here^[For more on `replace_with_na()`, visit <https://naniar.njtierney.com/articles/replace-with-na.html>]. 
+
+```{r}
+nh_fixing <- nh_fixing %>%
+  replace_with_na_at(.vars = c("DMDEDUC2", "HUQ071", "HUQ090", "ALQ111", 
+                               "DEQ034D", "DPQ010", "DPQ020", "DPQ030",
+                               "DPQ040", "DPQ050", "DPQ060", "DPQ070",
+                               "DPQ080", "DPQ090", "DPQ100", "DBQ700",
+                               "HIQ011", "HIQ210", "MCQ366A", "MCQ366B",
+                               "MCQ371A", "MCQ371B", "PAQ605", "PAQ650", 
+                               "RHQ131", "SLQ030", "SLQ050", "SMQ020",
+                               "SMQ856", "SMQ860", "SMQ866", "WHQ040"),
+                     condition = ~.x %in% c(7, 9)) %>%
+  replace_with_na_at(.vars = c("OHQ870"),
+                     condition = ~.x %in% c(9, 99)) %>%
+  replace_with_na_at(.vars = c("PAQ610", "PAQ655", "RHQ160", "SMD641"),
+                     condition = ~.x %in% c(77, 99)) %>%
+  replace_with_na_at(.vars = c("ALQ130"),
+                     condition = ~.x %in% c(777, 999)) %>%
+  replace_with_na_at(.vars = c("PAD680", "WHD010", "WHD020"),
+                     condition = ~.x %in% c(7777, 9999))
+```
+
+## Variables without Variation
+
+Note first that we have two variables which now have the same value for all participants.
+
+Variable | Description | Codes
+-------: | :----------------------------------------: | :-----------
+RIDSTATR | Interview and examination status | 2 = Both
+OHDEXSTS | Complete oral health exam? | 1 = Yes
+
+```{r}
+nh_fixing |> count(RIDSTATR, OHDEXSTS)
+```
+
+We won't use these variables in our analyses, now that we've verified them.
+
+## Quantitative Variables
+
+Here are our quantitative variables, and some key information about the values we observe, along with their units of measurement. Our job here is to check the ranges of these variables, and be sure we have no unreasonable values. It's also helpful to keep an eye on how much missingness we might have to deal with. 
+
+We're also going to rename each of these variables, as indicated.
+
+New <br /> Name | NHANES <br /> Name | Description | Units | # NA | Range 
+:-------: |:-------: | :----------------: | :-------: | ----: | :---------:
+AGE | RIDAGEYR | Age at screening | years | `r n_miss(nh_fixing$RIDAGEYR)` | `r range(nh_fixing$RIDAGEYR, na.rm = TRUE)`
+WEIGHT | BMXWT | Body weight | kg | `r n_miss(nh_fixing$BMXWT)` | `r range(nh_fixing$BMXWT, na.rm = TRUE)`
+HEIGHT | BMXHT | Standing height | cm | `r n_miss(nh_fixing$BMXHT)` | `r range(nh_fixing$BMXHT, na.rm = TRUE)`
+WAIST | BMXWAIST | Waist Circumference | cm | `r n_miss(nh_fixing$BMXWAIST)` | `r range(nh_fixing$BMXWAIST, na.rm = TRUE)`
+SBP | BPXOSY2	| Systolic BP (2nd reading) | mm Hg | `r n_miss(nh_fixing$BPXOSY2)` | `r range(nh_fixing$BPXOSY2, na.rm = TRUE)`
+DBP | BPXODI2	| Diastolic BP (2nd reading) | mm Hg | `r n_miss(nh_fixing$BPXODI2)` | `r range(nh_fixing$BPXODI2, na.rm = TRUE)`
+PULSE1 | BPXOPLS1 | Pulse (1st reading) | $\frac{beats}{minute}$ | `r n_miss(nh_fixing$BPXOPLS1)` | `r range(nh_fixing$BPXOPLS1, na.rm = TRUE)`
+PULSE2 | BPXOPLS2 | Pulse (2nd reading) | $\frac{beats}{minute}$ | `r n_miss(nh_fixing$BPXOPLS2)` | `r range(nh_fixing$BPXOPLS2, na.rm = TRUE)`
+WBC | LBXWBCSI | White blood cell count | $\frac{\mbox{1000 cells}}{uL}$ | `r n_miss(nh_fixing$LBXWBCSI)` | `r range(nh_fixing$LBXWBCSI, na.rm = TRUE)`
+PLATELET | LBXPLTSI | Platelet count | $\frac{\mbox{1000 cells}}{uL}$ | `r n_miss(nh_fixing$LBXPLTSI)` | `r range(nh_fixing$LBXPLTSI, na.rm = TRUE)`
+HSCRP | LBXHSCRP | High-Sensitivity <br /> C-Reactive Protein | $mg/L$ | `r n_miss(nh_fixing$LBXHSCRP)` | `r range(nh_fixing$LBXHSCRP, na.rm = TRUE)`
+DRINKS | ALQ130 | Average daily <br /> Alcoholic drinks | drinks | `r n_miss(nh_fixing$ALQ130)` | `r range(nh_fixing$ALQ130, na.rm = TRUE)`
+FLOSS | OHQ870 | Days using dental floss <br /> in past week | days | `r n_miss(nh_fixing$OHQ870)` | `r range(nh_fixing$OHQ870, na.rm = TRUE)`
+VIGWK_D | PAQ610 | Average days per week <br /> with Vigorous work | days | `r n_miss(nh_fixing$PAQ610)` | `r range(nh_fixing$PAQ610, na.rm = TRUE)`
+VIGREC_D | PAQ655 | Average days per week <br /> with Vigorous recreation | days | `r n_miss(nh_fixing$PAQ655)` | `r range(nh_fixing$PAQ655, na.rm = TRUE)`
+SEDATE | PAD680 | Average daily <br /> Sedentary activity | minutes | `r n_miss(nh_fixing$PAD680)` | `r range(nh_fixing$PAD680, na.rm = TRUE)`
+PREGNANT | RHQ160 | Pregnancies | times | `r n_miss(nh_fixing$RHQ160)` | `r range(nh_fixing$RHQ160, na.rm = TRUE)`
+SLPWKDAY | SLD012 | Usual sleep (weekdays) | hours | `r n_miss(nh_fixing$SLD012)` | `r range(nh_fixing$SLD012, na.rm = TRUE)`
+SLPWKEND | SLD013 | Usual sleep (weekends) | hours | `r n_miss(nh_fixing$SLD013)` | `r range(nh_fixing$SLD013, na.rm = TRUE)`
+SMOKE30 | SMD641 | Days in past 30 when <br /> you smoked a cigarette | days | `r n_miss(nh_fixing$SMD641)` | `r range(nh_fixing$SMD641, na.rm = TRUE)`
+ESTHT | WHD010 | Self-reported height | inches | `r n_miss(nh_fixing$WHD010)` | `r range(nh_fixing$WHD010, na.rm = TRUE)`
+ESTWT | WHD020 | Self-reported weight | pounds | `r n_miss(nh_fixing$WHD020)` | `r range(nh_fixing$WHD020, na.rm = TRUE)`
+
+To insert the number of missing values and range (minimum, maximum among non-missing values) into the table, I used inline R code like this:
+
+```{r}
+n_miss(nh_fixing$BMXWT)
+range(nh_fixing$BMXWT, na.rm = TRUE)
+```
+
+### Renaming the Quantities
+
+Here's the renaming code:
+
+```{r}
+nh_fixing <- nh_fixing |>
+  rename(AGE = RIDAGEYR, WEIGHT = BMXWT, HEIGHT = BMXHT,
+         WAIST = BMXWAIST, SBP = BPXOSY2, DBP = BPXODI2,
+         PULSE1 = BPXOPLS1, PULSE2 = BPXOPLS2, WBC = LBXWBCSI,
+         PLATELET = LBXPLTSI, HSCRP = LBXHSCRP, DRINKS = ALQ130,
+         FLOSS = OHQ870, VIGWK_D = PAQ610, VIGREC_D = PAQ655,
+         SEDATE = PAD680, PREGS = RHQ160, SLPWKDAY = SLD012, 
+         SLPWKEND = SLD013, SMOKE30 = SMD641, 
+         ESTHT = WHD010, ESTWT = WHD020)
+```
+
+
+### Sampling Weights
+
+Here are the sampling weights, which I think of as unitless, typically, though they represent people.
+
+Variable | Description | # NA | Range 
+--------: | :------------------------: | ---: | :-------------------:
+WTINTPRP | Sampling Weight (interviews) | `r n_miss(nh_fixing$WTINTPRP)` | `r format(round_half_up(range(nh_fixing$WTINTPRP, na.rm = TRUE),1), scientific = FALSE)`
+WTMECPRP | Sampling Weight (examinations) | `r n_miss(nh_fixing$WTMECPRP)` | `r format(round_half_up(range(nh_fixing$WTMECPRP, na.rm = TRUE),1), scientific = FALSE)`
+
+Note that to obtain these ranges formatted like this, I had to use some additional code in the table:
+
+```{r}
+format(round_half_up(range(nh_fixing$WTINTPRP, na.rm = TRUE),1), scientific = FALSE)
+```
+
+## Binary Variables
+
+### Sex (RIAGENDR)
+
+To start, let's do something about the variable describing the participant's biological sex (so we'll rename it to a more useful name), and then we'll recode the values of the `SEX` variable to more useful choices.
+
+New Name | NHANES Name | Description | NHANES Codes 
+-------: | :-----------------------: | :-----------
+SEX | RIAGENDR | Sex | 1 = Male, 2 = Female 
+
+Note that we have more female than male subjects, and no missing values, as it turns out.
+
+```{r}
+nh_fixing |> count(RIAGENDR)
+```
+
+Now, let's convert the information in `RIAGENDR` to `SEX`.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  rename(SEX = RIAGENDR) |>
+  mutate(SEX = factor(ifelse(SEX == 1, "Male", "Female")))
+```
+
+And we'll run a little "sanity check" here to ensure that we've recoded this variable properly^[Sanity checks are a great idea while in the midst of coding, but can confuse the reader and thus should not be included in 432 submitted work.].
+
+```{r}
+nh_fixing |> count(SEX)
+```
+
+### Yes/No variables
+
+Now, let's tackle the variables with code 1 = Yes, and 2 = No, and (potentially) some missing values. I'll summarize each with the percentage of "Yes" responses (out of those with code 1 or 2) and the number of missing values.
+
+New NAME | NHANES NAME | Description | % Yes | # NA 
+-------: | -------: | :----------------------------------------: | ---: | ---: 
+HOSPITAL | HUQ071 | Overnight hospital patient in past 12m? | `r round_half_up(100*sum(nh_fixing$HUQ071 == "1", na.rm = TRUE) / sum(nh_fixing$HUQ071 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$HUQ071)` 
+MENTALH | HUQ090 | Seen mental health professional past 12m? | `r round_half_up(100*sum(nh_fixing$HUQ090 == "1", na.rm = TRUE) / sum(nh_fixing$HUQ090 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$HUQ090)` 
+EVERALC | ALQ111 | Ever had a drink of alcohol? | `r round_half_up(100*sum(nh_fixing$ALQ111 == "1", na.rm = TRUE) / sum(nh_fixing$ALQ111 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$ALQ111)`
+INSURNOW | HIQ011 | Covered by health insurance now? | `r round_half_up(100*sum(nh_fixing$HIQ011 == "1", na.rm = TRUE) / sum(nh_fixing$HIQ011 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$HIQ011)` 
+NOINSUR | HIQ210 | Time when no insurance in past year? | `r round_half_up(100*sum(nh_fixing$HIQ210 == "1", na.rm = TRUE) / sum(nh_fixing$HIQ210 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$HIQ210)` 
+DR_LOSE | MCQ366A | Doctor told you to control/lose weight <br /> in the past 12 months? | `r round_half_up(100*sum(nh_fixing$MCQ366A == "1", na.rm = TRUE) / sum(nh_fixing$MCQ366A %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$MCQ366A)` 
+DR_EXER | MCQ366B | Doctor told you to exercise <br /> in the past 12 months? | `r round_half_up(100*sum(nh_fixing$MCQ366B == "1", na.rm = TRUE) / sum(nh_fixing$MCQ366B %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$MCQ366B)` 
+NOW_LOSE | MCQ371A | Are you now controlling or losing weight? | `r round_half_up(100*sum(nh_fixing$MCQ371A == "1", na.rm = TRUE) / sum(nh_fixing$MCQ371A %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$MCQ371A)`
+NOW_EXER | MCQ371B | Are you now increasing exercise? | `r round_half_up(100*sum(nh_fixing$MCQ371B == "1", na.rm = TRUE) / sum(nh_fixing$MCQ371B %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$MCQ371B)`
+WORK_V | PAQ605 | Vigorous work activity for 10 min/week? | `r round_half_up(100*sum(nh_fixing$PAQ605 == "1", na.rm = TRUE) / sum(nh_fixing$PAQ605 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$PAQ605)`
+REC_V | PAQ650 | Vigorous recreational activity for 10 min/week? | `r round_half_up(100*sum(nh_fixing$PAQ650 == "1", na.rm = TRUE) / sum(nh_fixing$PAQ650 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$PAQ650)` 
+EVERPREG | RHQ131 | Ever been pregnant? | `r round_half_up(100*sum(nh_fixing$RHQ131 == "1", na.rm = TRUE) / sum(nh_fixing$RHQ131 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$RHQ131)` 
+SLPTROUB | SLQ050 | Ever told a doctor you had trouble sleeping? | `r round_half_up(100*sum(nh_fixing$SLQ050 == "1", na.rm = TRUE) / sum(nh_fixing$SLQ050 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$SLQ050)` 
+CIG100 | SMQ020 | Smoked at least 100 cigarettes in your life? | `r round_half_up(100*sum(nh_fixing$SMQ020 == "1", na.rm = TRUE) / sum(nh_fixing$SMQ020 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$SMQ020)` 
+AWAYWORK | SMQ856 | Last 7 days worked at a job not at home? | `r round_half_up(100*sum(nh_fixing$SMQ856 == "1", na.rm = TRUE) / sum(nh_fixing$SMQ856 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$SMQ856)` 
+AWAYREST | SMQ860 | Last 7 days spent time in a restaurant? | `r round_half_up(100*sum(nh_fixing$SMQ860 == "1", na.rm = TRUE) / sum(nh_fixing$SMQ860 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$SMQ860)`
+AWAYBAR | SMQ866 | Last 7 days spent time in a bar? | `r round_half_up(100*sum(nh_fixing$SMQ866 == "1", na.rm = TRUE) / sum(nh_fixing$SMQ866 %in% c("1","2"), na.rm = TRUE),1)` | `r n_miss(nh_fixing$SMQ866)` 
+
+The inline code I used in the tables was, for example:
+
+```{r}
+round_half_up(100 * sum(nh_fixing$HUQ090 == "1", na.rm = TRUE) / 
+                sum(nh_fixing$HUQ090 %in% c("1","2"), na.rm = TRUE), 1)
+n_miss(nh_fixing$HUQ090)
+```
+
+To clean these (1 = Yes, 2 = No) variables, I'll subtract the values from 2, to obtain variables where 1 = Yes and 0 = No. I'll use the `across()` function within my `mutate()` statement so as to avoid having to type out each change individually^[For more on the `across()` function and how it can be used, visit <https://dplyr.tidyverse.org/reference/across.html>.].
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(across(c(HUQ071, HUQ090, ALQ111, HIQ011, HIQ210,
+                  MCQ366A, MCQ366B, MCQ371A, MCQ371B, PAQ605,
+                  PAQ650, RHQ131, SLQ050, SMQ020, SMQ856,
+                  SMQ860, SMQ866), 
+                ~ 2 - .x))
+```
+
+Let's do just one of the relevant sanity checks here. In addition to verifying that our new variable has the values 0 and 1 (instead of 2 and 1), we want to be certain that we've maintained any missing values.
+
+```{r}
+nh_fixing |> count(SLQ050)
+```
+
+### Renaming Binary Variables
+
+Here's the renaming code.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  rename(HOSPITAL = HUQ071, MENTALH = HUQ090, EVERALC = ALQ111,
+         INSURNOW = HIQ011, NOINSUR = HIQ210, DR_LOSE = MCQ366A,
+         DR_EXER = MCQ366B, NOW_LOSE = MCQ371A, NOW_EXER = MCQ371B,
+         WORK_V = PAQ605, REC_V = PAQ650, EVERPREG = RHQ131, 
+         SLPTROUB = SLQ050, CIG100 =  SMQ020, AWAYWORK = SMQ856,
+         AWAYREST = SMQ860, AWAYBAR = SMQ866)
+```
+
+## Create PHQ-9 Scores
+
+The questions below are asked to assess depression severity, following the prompt "Over the last two weeks, how often have you been bothered by any of the following problems?"
+
+Variable | Description | Values
+--------: | :-------------------------------: | :----------------------
+SEQN | Respondent Sequence Number <br /> (participant ID) | link across databases
+DPQ010 | Have little interest in doing things | 0-3: see below
+DPQ020 | Feeling down, depressed or hopeless | 0-3: see below
+DPQ030 | Trouble sleeping or sleeping too much | 0-3: see below
+DPQ040 | Feeling tired or having little energy | 0-3: see below
+DPQ050 | Poor appetite or overeating | 0-3: see below
+DPQ060 | Feeling bad about yourself | 0-3: see below
+DPQ070 | Trouble concentrating on things | 0-3: see below
+DPQ080 | Moving or speaking slowly or too fast | 0-3: see below
+DPQ090 | Thoughts you would be better off dead | 0-3: see below
+
+- For DPQ010 - DPQ090, the codes are 0 = Not at all, 1 = Several days in the past two weeks, 2 = More than half the days in the past two weeks, 3 = Nearly every day in the past two weeks.
+
+### Forming the PHQ-9 Score
+
+One way to use this information is to sum the scores from items DPQ010 through DPQ090 to obtain a result on a scale from 0 - 27. Cutoffs of 5, 10, 15, and 20 then represent mild, moderate, moderately severe, and severe levels of depressive symptoms, respectively^[See [Kroenke et al. 2010](https://pubmed.ncbi.nlm.nih.gov/20633738/)]. If we had no missing values in our responses, then this would be relatively straightforward. 
+
+```{r}
+temp <- nh_fixing |>
+  mutate(PHQ9 = DPQ010 + DPQ020 + DPQ030 + DPQ040 + DPQ050 +
+           DPQ060 + DPQ070 + DPQ080 + DPQ090)
+
+temp |> count(PHQ9) |> tail()
+```
+
+It turns out that this formulation of PHQ9 regards as missing the result for any participant who failed to answer all 9 questions. A common approach to dealing with missing data in creating PHQ-9 scores^[Again, see Kroenke et al. (2010) at  <https://pubmed.ncbi.nlm.nih.gov/20633738/>.] is to score all questionnaires with up to two missing values, replacing any missing values with the average score of the completed items.
+
+So how many of our subjects are missing only one or two of the 9 items?
+
+```{r}
+temp2 <- temp |>
+  select(SEQN, DPQ010, DPQ020, DPQ030, DPQ040, DPQ050, DPQ060, 
+         DPQ070, DPQ080, DPQ090) 
+
+miss_case_table(temp2)
+```
+
+With a little googling I found [an R script online](https://scriptsandstatistics.wordpress.com/2018/06/29/scoring-the-phq-9-questionnaire-using-r) that will perform this task, and create three new variables:
+
+- `nvalid_phq9` = Number of Valid Responses (out of 9) to the PHQ-9 items
+- `PHQ9` = PHQ-9 score (0-27 scale, higher values indicate more depression)
+- `PHQ9_CAT` = factor describing PHQ-9 score 
+  - PHQ9 > 20 means `PHQ9_CAT` is"severe",
+  - 15-19 = "moderately severe", 
+  - 10-14 = "moderate"
+  - 5-9 = "mild"
+  - 0-4 = "minimal"
+
+```{r}
+scoring_phq9 <- function(data, items.phq9) {
+  data %>%
+    mutate(nvalid_phq9 = rowSums(!is.na(select(., items.phq9))),
+           nvalid_phq9 = as.integer(nvalid_phq9),
+           mean.temp = rowSums(select(., items.phq9), na.rm = TRUE)/nvalid_phq9,
+           phq.01.temp = as.integer(unlist(data[items.phq9[1]])),
+           phq.02.temp = as.integer(unlist(data[items.phq9[2]])),
+           phq.03.temp = as.integer(unlist(data[items.phq9[3]])),
+           phq.04.temp = as.integer(unlist(data[items.phq9[4]])),
+           phq.05.temp = as.integer(unlist(data[items.phq9[5]])),
+           phq.06.temp = as.integer(unlist(data[items.phq9[6]])),
+           phq.07.temp = as.integer(unlist(data[items.phq9[7]])),
+           phq.08.temp = as.integer(unlist(data[items.phq9[8]])),
+           phq.09.temp = as.integer(unlist(data[items.phq9[9]]))) %>%
+    mutate_at(vars(phq.01.temp:phq.09.temp),
+              funs(ifelse(is.na(.), round(mean.temp), .))) %>%
+    mutate(score.temp = rowSums(select(., phq.01.temp:phq.09.temp), na.rm = TRUE),
+           PHQ9 = ifelse(nvalid_phq9 >= 7, as.integer(round(score.temp)), NA),
+           PHQ9_CAT = case_when(
+             PHQ9 >= 20 ~ 'severe',
+             PHQ9 >= 15 ~ 'moderately severe',
+             PHQ9 >= 10 ~ 'moderate',
+             PHQ9 >= 5 ~ 'mild',
+             PHQ9 < 5 ~ 'minimal'),
+             PHQ9_CAT = factor(PHQ9_CAT, levels = c('minimal', 'mild',
+                                                          'moderate', 'moderately severe',
+                                                          'severe'))) %>%
+    select(-ends_with("temp"))
+ 
+}
+```
+
+Applying this script to our `nh_fixing` data, our result is:
+
+```{r}
+#| warning: false
+items.phq9 <- c("DPQ010", "DPQ020", "DPQ030", "DPQ040", "DPQ050",
+                "DPQ060", "DPQ070", "DPQ080", "DPQ090")
+nh_fixing <- nh_fixing %>% scoring_phq9(., all_of(items.phq9))
+
+nh_fixing |> count(nvalid_phq9, PHQ9, PHQ9_CAT)
+```
+
+### Distribution of PHQ-9 Score
+
+Here's a quick look at the distribution of PHQ-9 scores in our `nh_fixing` data.
+
+```{r}
+nh_fixing |> filter(complete.cases(PHQ9, PHQ9_CAT)) %>%
+  ggplot(., aes(x = PHQ9, fill = PHQ9_CAT)) +
+  geom_histogram(binwidth = 1) +
+  scale_fill_viridis_d() + 
+  labs(title = "PHQ-9 Scores for subjects in `nh_fixing`")
+```
+
+### Fixing the `DPQ100` variable
+
+The DPQ100 variable should be 0 (Not at all difficult) if the PHQ-9 score is zero. We need to fix this, because NHANES participants who answered 0 (Not at all) to each of the nine elements contained in the PHQ-9 were not asked the DPQ100 question. So, we set the value of DPQ100 to be 0 if PHQ9 is 0.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(DPQ100 = ifelse(PHQ9 == 0, 0, DPQ100))
+```
+
+This will eliminate the "automatic missing" values in `DPQ100`.
+
+```{r}
+nh_fixing |> tabyl(DPQ100)
+```
+
+
+## Multi-Categorical Variables
+
+Our remaining categorical variables with more than two levels are:
+
+Variable | Description | Codes | # NAs
+--------: | -------------------- | :-----------: | ----: 
+RIDRETH3 | Race/Hispanic origin | 1, 2, 3, 4, 6, 7 | `r n_miss(nh_fixing$RIDRETH3)`
+DMDEDUC2 | Education Level | 1, 2, 3, 4, 5 | `r n_miss(nh_fixing$DMDEDUC2)`
+OHAREC | Overall Recommendation for Care | 1, 2, 3, 4 | `r n_miss(nh_fixing$OHAREC)`
+HUQ010 | General health condition | 1, 2, 3, 4, 5 | `r n_miss(nh_fixing$HUQ010)`
+DEQ034D | Use sunscreen if outside on very sunny day? | 1, 2, 3, 4, 5 | `r n_miss(nh_fixing$DEQ034D)`
+DPQ100 | Difficulty depression problems have caused | 0, 1, 2, 3 | `r n_miss(nh_fixing$DPQ100)`
+DBQ700 | How healthy is your diet? | 1, 2, 3, 4, 5 | `r n_miss(nh_fixing$DBQ700)`
+FSDAD | Adult food security in last 12m | 1, 2, 3, 4 | `r n_miss(nh_fixing$FSDAD)`
+SLQ030 | How often do you snore? | 0, 1, 2, 3 | `r n_miss(nh_fixing$SLQ030)`
+WHQ040 | Like to weigh more, less, or same? | 1, 2, 3 | `r n_miss(nh_fixing$WHQ040)`
+
+### Creating RACEETH from RIDRETH3
+
+At the moment, our `RIDRETH3` data look like this:
+
+```{r}
+t_ridreth3 <- nh_fixing |> tabyl(RIDRETH3) |> adorn_pct_formatting() |>
+  mutate(Code = c("Mexican American", "Other Hispanic", "Non-Hispanic White", 
+                  "Non-Hispanic Black", "Non-Hispanic Asian", "Other Race"))
+
+gt(t_ridreth3)
+```
+
+Now, we'll turn this `RIDRETH3` variable into a new **factor** called `RACEETH` with meaningful levels, and then sort those levels by their frequency in the data. We'll also collapse together the Mexican American and Other Hispanic levels, not because the distinction is irrelevant, but more to demonstrate how this might be done.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(RACEETH = 
+           fct_recode(
+             factor(RIDRETH3), 
+             "Hispanic" = "1", 
+             "Hispanic" = "2", 
+             "Non-H White" = "3",
+             "Non-H Black" = "4",
+             "Non-H Asian" = "6",
+             "Other Race" = "7")) |>
+  mutate(RACEETH = fct_infreq(RACEETH))
+```
+
+I'm using `fct_infreq()` here to sort the (nominal) Race and Ethnicity data so that the most common column appears first, and will thus be treated as the "baseline" level in models. Here is the resulting order.
+
+```{r}
+nh_fixing |> count(RACEETH)
+```
+Now, let's check^[Again, I wouldn't usually include this sort of coding check in published work, like either of your 432 Projects.] to see if RACEETH and RIDRETH3 include the same information (after collapsing the Mexican American and Other Hispanic categories.) 
+
+```{r}
+nh_fixing |> count(RACEETH, RIDRETH3)
+```
+
+### Creating EDUC from DMDEDUC2
+
+At the moment, our `DMDEDUC2` data look like this:
+
+```{r}
+t_dmdeduc2 <- nh_fixing |> tabyl(DMDEDUC2) |> adorn_pct_formatting() |>
+  mutate(Code = c("Less than 9th grade", "9th-11th grade", "High School Grad", 
+                  "Some College / AA", "College Grad", "Missing"))
+
+gt(t_dmdeduc2)
+```
+
+Now, we'll turn this `DMDEDUC2` variable into a new **factor** called `EDUC` with meaningful levels.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(EDUC = 
+           fct_recode(
+             factor(DMDEDUC2), 
+             "Less than 9th Grade" = "1", 
+             "9th - 11th Grade" = "2", 
+             "High School Grad" = "3",
+             "Some College / AA" = "4",
+             "College Grad" = "5")) 
+```
+
+Once again, checking our work...
+
+```{r}
+nh_fixing |> tabyl(EDUC, DMDEDUC2) |> gt()
+```
+
+### Creating DENTAL from OHAREC
+
+```{r}
+t_oharec <- nh_fixing |> tabyl(OHAREC) |> adorn_pct_formatting() |>
+  mutate(Code = c("See a dentist immediately", "See a dentist within the next 2 weeks", "See a dentist at your earliest convenience", "Continue your regular routine care"))
+
+gt(t_oharec)
+```
+
+We'll collapse categories 1 and 2 together since they are quite small.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(DENTAL = 
+           fct_recode(
+             factor(OHAREC), 
+             "See dentist urgently" = "1", 
+             "See dentist urgently" = "2", 
+             "See dentist soon" = "3",
+             "Regular Routine" = "4")) 
+```
+
+Once again, checking our work...
+
+```{r}
+nh_fixing |> tabyl(DENTAL, OHAREC) |> gt()
+```
+
+### Creating SROH from HUQ010
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+HUQ010 | General health condition | 1 = Excellent <br /> 2 = Very Good <br /> 3 = Good <br /> 4 = Fair <br /> 5 = Poor | `r n_miss(nh_fixing$HUQ010)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(SROH = 
+           fct_recode(
+             factor(HUQ010), 
+             "Excellent" = "1", 
+             "Very Good" = "2", 
+             "Good" = "3",
+             "Fair" = "4",
+             "Poor" = "5"))
+```
+
+Checking our work...
+
+```{r}
+nh_fixing |> tabyl(SROH, HUQ010) |> gt()
+```
+
+
+### Creating SUNSCR from DEQ034D
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+DEQ034D | Use sunscreen if outside on very sunny day? | 1 = Always <br /> 2 = Most of the time <br /> 3 = Sometimes <br /> 4 = Rarely <br /> 5 = Never | `r n_miss(nh_fixing$DEQ034D)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(SUNSCR = 
+           fct_recode(
+             factor(DEQ034D), 
+             "Always" = "1", 
+             "Most of the time" = "2", 
+             "Sometimes" = "3",
+             "Rarely" = "4",
+             "Never" = "5")) 
+```
+
+```{r}
+nh_fixing |> tabyl(SUNSCR, DEQ034D) |> gt()
+```
+
+
+### Creating DEPRDIFF from DPQ100
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+DPQ100 | Difficulty depression problems have caused | 0 = Not at all difficult <br /> 1 = Somewhat difficult <br /> 2 = Very difficult <br /> 3 = Extremely difficult | `r n_miss(nh_fixing$DPQ100)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(DEPRDIFF = 
+           fct_recode(
+             factor(DPQ100), 
+             "Not at all" = "0", 
+             "Somewhat" = "1", 
+             "Very" = "2",
+             "Extremely" = "3")) 
+```
+
+```{r}
+nh_fixing |> tabyl(DEPRDIFF, DPQ100) |> gt()
+```
+
+### Creating DIETQUAL from DBQ700
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+DBQ700 | How healthy is your diet? | 1 = Excellent <br /> 2 = Very Good <br /> 3 = Good <br /> 4 = Fair <br /> 5 = Poor | `r n_miss(nh_fixing$DBQ700)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(DIETQUAL = 
+           fct_recode(
+             factor(DBQ700), 
+             "Excellent" = "1", 
+             "Very Good" = "2", 
+             "Good" = "3",
+             "Fair" = "4",
+             "Poor" = "5")) 
+```
+
+```{r}
+nh_fixing |> tabyl(DIETQUAL, DBQ700) |> gt()
+```
+
+### Creating FOODSEC from FSDAD
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+FSDAD | Adult food security category for last 12m | 1 = Full food security <br /> 2 = Marginal food security <br /> 3 = Low food security <br /> 4 = Very low food security | `r n_miss(nh_fixing$FSDAD)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(FOODSEC = 
+           fct_recode(
+             factor(FSDAD), 
+             "Full" = "1", 
+             "Marginal" = "2", 
+             "Low" = "3",
+             "Very Low" = "4")) 
+```
+
+```{r}
+nh_fixing |> tabyl(FOODSEC, FSDAD) |> gt()
+```
+
+### Creating SNORE from SLQ030
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+SLQ030 | How often do you snore? | 0 = Never <br /> 1 = Rarely (1-2 nights/week) <br /> 2 = Occasionally (3-4 nights/week) <br /> 3 = Frequently (5+ nights/week) | `r n_miss(nh_fixing$SLQ030)`
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(SNORE = 
+           fct_recode(
+             factor(SLQ030), 
+             "Never" = "0", 
+             "Rarely" = "1", 
+             "Occasionally" = "2",
+             "Frequently" = "3")) 
+```
+
+```{r}
+nh_fixing |> tabyl(SNORE, SLQ030) |> gt()
+```
+
+### Creating WTGOAL from WHQ040
+
+Variable | Description | Codes | # NAs
+--------: | ----------- | :-----------: | ----: 
+WHQ040 | Like to weigh more, less, or same? | 1 = More <br /> 2 = Less <br /> 3 = Stay about the same | `r n_miss(nh_fixing$WHQ040)`
+
+Since there's a natural ordering here (more then same then less) I'll adapt it using the `fct_relevel()` function from the **forcats** package^[https://forcats.tidyverse.org/ is the home of forcats, although the Factors chapter at <https://r4ds.hadley.nz/factors.html> in R for Data Science, 2nd edition is also helpful.] for this variable.
+
+```{r}
+nh_fixing <- nh_fixing |>
+  mutate(WTGOAL = 
+           fct_recode(
+             factor(WHQ040), 
+             "More" = "1", 
+             "Less" = "2", 
+             "Same" = "3")) |>
+  mutate(WTGOAL = fct_relevel(WTGOAL, "More", "Same", "Less"))
+```
+
+```{r}
+nh_fixing |> tabyl(WTGOAL, WHQ040) |> gt()
+```
+
+## Dropping Variables 
+
+We'll drop the following variables before saving an analytic tibble.
+
+- Our two variables with no variation
+  - RIDSTATR, OHDEXSTS
+- Elements of the PHQ-9 we no longer need
+  - nvalid_phq, DPQ010, DPQ020, DPQ030, DPQ040
+  - DPQ050, DPQ060, DPQ070, DPQ080, DPQ090
+- Multi-categorical variables that we renamed
+  - RIDRETH3, DMDEDUC2, OHAREC, HUQ010, DEQ034D
+  - DPQ100, DBQ700, FSDAD, SLQ030, WHQ040
+
+```{r}
+nh_fixing <- nh_fixing |>
+  select(-c(RIDSTATR, OHDEXSTS, nvalid_phq9, DPQ010, 
+            DPQ020, DPQ030, DPQ040, DPQ050, DPQ060, 
+            DPQ070, DPQ080, DPQ090, RIDRETH3, DMDEDUC2, 
+            OHAREC, HUQ010, DEQ034D, DPQ100, DBQ700, 
+            FSDAD, SLQ030, WHQ040))
+```
+
+## Resorting Variables
+
+I'd like to have the variables in the following order:
+
+```{r}
+nh432 <- nh_fixing |>
+  select(SEQN, AGE, RACEETH, EDUC, SEX, INSURNOW, 
+         NOINSUR, SROH, WEIGHT, HEIGHT, WAIST, 
+         SBP, DBP, PULSE1, PULSE2, WBC, PLATELET, HSCRP, 
+         DR_LOSE, DR_EXER, NOW_LOSE, NOW_EXER,
+         ESTHT, ESTWT, WTGOAL, DIETQUAL, FOODSEC, 
+         WORK_V, VIGWK_D, REC_V, VIGREC_D, SEDATE, 
+         PHQ9, PHQ9_CAT, DEPRDIFF, MENTALH, 
+         SLPWKDAY, SLPWKEND, SLPTROUB, SNORE,
+         HOSPITAL, EVERALC, DRINKS, CIG100, SMOKE30,
+         AWAYWORK, AWAYREST, AWAYBAR, DENTAL, FLOSS, 
+         EVERPREG, PREGS, SUNSCR, WTINTPRP, WTMECPRP)
+```
+
+
+## `nh432` analytic tibble
+
+```{r}
+nh432
+```
+
+### Saving the tibble as `nh432.Rds`
+
+```{r}
+write_rds(nh432, "data/nh432.Rds")
+```
+
+
