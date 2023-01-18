@@ -22,6 +22,8 @@ book:
     - 09-anovasmart.qmd
     - 10-anovaexamples.qmd
     - 11-nonlinearity.qmd
+    - 12-ancova_emphysema.qmd
+    - 13-ancova_smart.qmd
     - 90-incomplete.qmd
 
 format:

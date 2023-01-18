@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 12&nbsp; Analysis of Covariance</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./13-ancova_smart.html" rel="next">
+<link href="./11-nonlinearity.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-ancova_emphysema.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">12.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">12.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#an-emphysema-study" id="toc-an-emphysema-study" class="nav-link" data-scroll-target="#an-emphysema-study"><span class="toc-section-number">12.2</span>  An Emphysema Study</a>
+  <ul class="collapse">
+  <li><a href="#codebook" id="toc-codebook" class="nav-link" data-scroll-target="#codebook"><span class="toc-section-number">12.2.1</span>  Codebook</a></li>
+  </ul></li>
+  <li><a href="#does-sex-affect-the-mean-change-in-theophylline" id="toc-does-sex-affect-the-mean-change-in-theophylline" class="nav-link" data-scroll-target="#does-sex-affect-the-mean-change-in-theophylline"><span class="toc-section-number">12.3</span>  Does <code>sex</code> affect the mean change in theophylline?</a></li>
+  <li><a href="#is-there-an-association-between-age-and-sex-in-this-study" id="toc-is-there-an-association-between-age-and-sex-in-this-study" class="nav-link" data-scroll-target="#is-there-an-association-between-age-and-sex-in-this-study"><span class="toc-section-number">12.4</span>  Is there an association between <code>age</code> and <code>sex</code> in this study?</a></li>
+  <li><a href="#adding-a-quantitative-covariate-age-to-the-model" id="toc-adding-a-quantitative-covariate-age-to-the-model" class="nav-link" data-scroll-target="#adding-a-quantitative-covariate-age-to-the-model"><span class="toc-section-number">12.5</span>  Adding a quantitative covariate, <code>age</code>, to the model</a>
+  <ul class="collapse">
+  <li><a href="#the-ancova-model" id="toc-the-ancova-model" class="nav-link" data-scroll-target="#the-ancova-model"><span class="toc-section-number">12.5.1</span>  The ANCOVA model</a></li>
+  <li><a href="#the-ancova-table" id="toc-the-ancova-table" class="nav-link" data-scroll-target="#the-ancova-table"><span class="toc-section-number">12.5.2</span>  The ANCOVA Table</a></li>
+  </ul></li>
+  <li><a href="#rerunning-the-ancova-model-after-simple-imputation" id="toc-rerunning-the-ancova-model-after-simple-imputation" class="nav-link" data-scroll-target="#rerunning-the-ancova-model-after-simple-imputation"><span class="toc-section-number">12.6</span>  Rerunning the ANCOVA model after simple imputation</a></li>
+  <li><a href="#looking-at-a-factor-covariate-interaction" id="toc-looking-at-a-factor-covariate-interaction" class="nav-link" data-scroll-target="#looking-at-a-factor-covariate-interaction"><span class="toc-section-number">12.7</span>  Looking at a factor-covariate interaction</a></li>
+  <li><a href="#centering-the-covariate-to-facilitate-ancova-interpretation" id="toc-centering-the-covariate-to-facilitate-ancova-interpretation" class="nav-link" data-scroll-target="#centering-the-covariate-to-facilitate-ancova-interpretation"><span class="toc-section-number">12.8</span>  Centering the Covariate to Facilitate ANCOVA Interpretation</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">12.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">12.1.1</span> Data Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>emphysema <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/emphysema.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="an-emphysema-study" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="an-emphysema-study"><span class="header-section-number">12.2</span> An Emphysema Study</h2>
+<p>My source for this example is <span class="citation" data-cites="Riffenburgh2006">@Riffenburgh2006</span>, section 18.4. Serum theophylline levels (in mg/dl) were measured in 16 patients with emphysema at baseline, then 5 days later (at the end of a course of antibiotics) and then at 10 days after baseline. Clinicians anticipate that the antibiotic will increase the theophylline level. The data are stored in the <code>emphysema.csv</code> data file, and note that the age for patient 5 is not available.</p>
+<section id="codebook" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="codebook"><span class="header-section-number">12.2.1</span> Codebook</h3>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>patient</code></td>
+<td>ID code</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>age</code></td>
+<td>patient’s age in years</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>sex</code></td>
+<td>patient’s sex (F or M)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>st_base</code></td>
+<td>patient’s serum theophylline at baseline (mg/dl)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>st_day5</code></td>
+<td>patient’s serum theophylline at day 5 (mg/dl)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>st_day10</code></td>
+<td>patient’s serum theophylline at day 10 (mg/dl)</td>
+</tr>
+</tbody>
+</table>
+<p>We’re going to look at the change from baseline to day 5 as our outcome of interest, since the clinical expectation is that the antibiotic (azithromycin) will increase theophylline levels.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>emphysema <span class="ot">&lt;-</span> emphysema <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">st_delta =</span> st_day5 <span class="sc">-</span> st_base)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>emphysema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 7
+   patient   age sex   st_base st_day5 st_day10 st_delta
+     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+ 1       1    61 F        14.1     2.3     10.3  -11.8  
+ 2       2    70 F         7.2     5.4      7.3   -1.8  
+ 3       3    65 M        14.2    11.9     11.3   -2.3  
+ 4       4    65 M        10.3    10.7     13.8    0.400
+ 5       5    NA M         9.9    10.7     11.7    0.800
+ 6       6    76 M         5.2     6.8      4.2    1.6  
+ 7       7    72 M        10.4    14.6     14.1    4.2  
+ 8       8    69 F        10.5     7.2      5.4   -3.3  
+ 9       9    66 M         5       5        5.1    0    
+10      10    62 M         8.6     8.1      7.4   -0.5  
+11      11    65 F        16.6    14.9     13     -1.70 
+12      12    71 M        16.4    18.6     17.1    2.20 
+13      13    51 F        12.2    11       12.3   -1.2  
+14      14    71 M         6.6     3.7      4.5   -2.9  
+15      15    64 F        15.4    15.2     13.6   -0.200
+16      16    50 M        10.2    10.8     11.2    0.600</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="does-sex-affect-the-mean-change-in-theophylline" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="does-sex-affect-the-mean-change-in-theophylline"><span class="header-section-number">12.3</span> Does <code>sex</code> affect the mean change in theophylline?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> st_delta, <span class="at">data =</span> emphysema)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   min     Q1 median   Q3 max     mean       sd  n missing
+ -11.8 -1.925  -0.35 0.65 4.2 -0.99375 3.484149 16       0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(st_delta <span class="sc">~</span> sex, <span class="at">data =</span> emphysema)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sex   min     Q1 median     Q3  max      mean       sd  n missing
+1   F -11.8 -2.925  -1.75 -1.325 -0.2 -3.333333 4.267864  6       0
+2   M  -2.9 -0.375   0.50  1.400  4.2  0.410000 2.067446 10       0</code></pre>
+</div>
+</div>
+<p>Overall, the mean change in theophylline during the course of the antibiotic is -0.99, but this is -3.33 for female patients and 0.41 for male patients.</p>
+<p>A one-way ANOVA model looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex, <span class="at">data =</span> emphysema))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: st_delta
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+sex        1  52.547  52.547  5.6789 0.03189 *
+Residuals 14 129.542   9.253                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The ANOVA F test finds a fairly large difference between the mean <code>st_delta</code> among males and the mean <code>st_delta</code> among females. But is there more to the story?</p>
+</section>
+<section id="is-there-an-association-between-age-and-sex-in-this-study" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="is-there-an-association-between-age-and-sex-in-this-study"><span class="header-section-number">12.4</span> Is there an association between <code>age</code> and <code>sex</code> in this study?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(age <span class="sc">~</span> sex, <span class="at">data =</span> emphysema)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sex min    Q1 median Q3 max     mean       sd n missing
+1   F  51 61.75   64.5 68  70 63.33333 6.889606 6       0
+2   M  50 65.00   66.0 71  76 66.44444 7.568208 9       1</code></pre>
+</div>
+</div>
+<p>But we note that the male patients are also older than the female patients, on average (mean age for males is 66.4, for females 63.3)</p>
+<ul>
+<li>Does the fact that male patients are older affect change in theophylline level?</li>
+<li>And how should we deal with the one missing <code>age</code> value (in a male patient)?</li>
+</ul>
+</section>
+<section id="adding-a-quantitative-covariate-age-to-the-model" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="adding-a-quantitative-covariate-age-to-the-model"><span class="header-section-number">12.5</span> Adding a quantitative covariate, <code>age</code>, to the model</h2>
+<p>We could fit an ANOVA model to predict <code>st_delta</code> using <code>sex</code> and <code>age</code> directly, but only if we categorized <code>age</code> into two or more groups. Because <code>age</code> is not categorical, we cannot include it in an ANOVA. But if age is an influence, and we don’t adjust for it, it may well bias the outcome of our initial ANOVA. With a quantitative variable like <code>age</code>, we will need a method called ANCOVA, for <strong>analysis of covariance</strong>.</p>
+<section id="the-ancova-model" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="the-ancova-model"><span class="header-section-number">12.5.1</span> The ANCOVA model</h3>
+<p>ANCOVA in this case is just an ANOVA model with our outcome (<code>st_delta</code>) adjusted for a continuous covariate, called <code>age</code>. For the moment, we’ll ignore the one subject with missing <code>age</code> and simply fit the regression model with <code>sex</code> and <code>age</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">+</span> age, <span class="at">data =</span> emphysema))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = st_delta ~ sex + age, data = emphysema)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.3352 -0.4789  0.6948  1.5580  3.5202 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept) -6.90266    7.92948  -0.871   0.4011  
+sexM         3.52466    1.75815   2.005   0.0681 .
+age          0.05636    0.12343   0.457   0.6561  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.255 on 12 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.2882,    Adjusted R-squared:  0.1696 
+F-statistic:  2.43 on 2 and 12 DF,  p-value: 0.13</code></pre>
+</div>
+</div>
+<p>This model assumes that the slope of the regression line between <code>st_delta</code> and <code>age</code> is the same for both sexes.</p>
+<p>Note that the model yields <code>st_delta</code> = -6.9 + 3.52 (<code>sex</code> = male) + 0.056 <code>age</code>, or</p>
+<ul>
+<li><code>st_delta</code> = -6.9 + 0.056 <code>age</code> for female patients, and</li>
+<li><code>st_delta</code> = (-6.9 + 3.52) + 0.056 <code>age</code> = -3.38 + 0.056 <code>age</code> for male patients.</li>
+</ul>
+<p>Note that we can test this assumption of equal slopes by fitting an alternative model (with a product term between <code>sex</code> and <code>age</code>) that doesn’t require the assumption, and we’ll do that later.</p>
+</section>
+<section id="the-ancova-table" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="the-ancova-table"><span class="header-section-number">12.5.2</span> The ANCOVA Table</h3>
+<p>First, though, we’ll look at the ANCOVA table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">+</span> age, <span class="at">data =</span> emphysema))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: st_delta
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+sex        1  49.284  49.284  4.6507 0.05203 .
+age        1   2.209   2.209  0.2085 0.65612  
+Residuals 12 127.164  10.597                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>When we tested <code>sex</code> without accounting for <code>age</code>, we found a <em>p</em> value of 0.032, which is less than our usual cutpoint of 0.05. But when we adjusted for <code>age</code>, we find that <code>sex</code>’s <em>p</em> value rises, even though <code>age</code> doesn’t seem to have a particularly strong influence on <code>st_delta</code> by itself, according to the ANCOVA table.</p>
+</section>
+</section>
+<section id="rerunning-the-ancova-model-after-simple-imputation" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="rerunning-the-ancova-model-after-simple-imputation"><span class="header-section-number">12.6</span> Rerunning the ANCOVA model after simple imputation</h2>
+<p>We could have <em>imputed</em> the missing <code>age</code> value for patient 5, rather than just deleting that patient. Suppose we do the simplest potentially reasonable thing to do: insert the mean <code>age</code> in where the NA value currently exists.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>emph_imp <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(emphysema, <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">mean</span>(emphysema<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>emph_imp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 7
+   patient   age sex   st_base st_day5 st_day10 st_delta
+     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+ 1       1  61   F        14.1     2.3     10.3  -11.8  
+ 2       2  70   F         7.2     5.4      7.3   -1.8  
+ 3       3  65   M        14.2    11.9     11.3   -2.3  
+ 4       4  65   M        10.3    10.7     13.8    0.400
+ 5       5  65.2 M         9.9    10.7     11.7    0.800
+ 6       6  76   M         5.2     6.8      4.2    1.6  
+ 7       7  72   M        10.4    14.6     14.1    4.2  
+ 8       8  69   F        10.5     7.2      5.4   -3.3  
+ 9       9  66   M         5       5        5.1    0    
+10      10  62   M         8.6     8.1      7.4   -0.5  
+11      11  65   F        16.6    14.9     13     -1.70 
+12      12  71   M        16.4    18.6     17.1    2.20 
+13      13  51   F        12.2    11       12.3   -1.2  
+14      14  71   M         6.6     3.7      4.5   -2.9  
+15      15  64   F        15.4    15.2     13.6   -0.200
+16      16  50   M        10.2    10.8     11.2    0.600</code></pre>
+</div>
+</div>
+<p>More on simple imputation and missing data is coming soon.</p>
+<p>For now, we can rerun the ANCOVA model on this new data set, after imputation…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">+</span> age, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: st_delta
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+sex        1  52.547  52.547  5.3623 0.03755 *
+age        1   2.151   2.151  0.2195 0.64721  
+Residuals 13 127.392   9.799                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>When we do this, we see that now the <code>sex</code> variable returns to a <em>p</em> value below 0.05. Our complete case analysis (which omitted patient 5) gives us a different result than the ANCOVA based on the data after mean imputation.</p>
+</section>
+<section id="looking-at-a-factor-covariate-interaction" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="looking-at-a-factor-covariate-interaction"><span class="header-section-number">12.7</span> Looking at a factor-covariate interaction</h2>
+<p>Let’s run a model including the interaction (product) term between <code>age</code> and <code>sex</code>, which implies that the slope of <code>age</code> on our outcome (<code>st_delta</code>) depends on the patient’s sex. We’ll use the imputed data again. Here is the new ANCOVA table, which suggests that the interaction of <code>age</code> and <code>sex</code> is small (because it accounts for only a small amount of the total Sum of Squares) with a <em>p</em> value of 0.91.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">*</span> age, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: st_delta
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+sex        1  52.547  52.547  4.9549 0.04594 *
+age        1   2.151   2.151  0.2028 0.66051  
+sex:age    1   0.130   0.130  0.0123 0.91355  
+Residuals 12 127.261  10.605                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Since the interaction term isn’t accounting for much variation, we probably don’t need it here. But let’s look at its interpretation anyway, just to fix ideas. To do that, we’ll need the coefficients from the underlying regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">*</span> age, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term        estimate std.error statistic p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)  -5.65      13.5      -0.420   0.682
+2 sexM          1.72      16.8       0.102   0.920
+3 age           0.0365     0.211     0.173   0.866
+4 sexM:age      0.0289     0.260     0.111   0.914</code></pre>
+</div>
+</div>
+<p>Our ANCOVA model for <code>st_delta</code> incorporating the <code>age</code> x <code>sex</code> product term is -5.65 + 1.72 (sex = M) + 0.037 age + 0.029 (sex = M)(age). So that means:</p>
+<ul>
+<li>our model for females is <code>st_delta</code> = -5.65 + 0.037 <code>age</code></li>
+<li>our model for males is <code>st_delta</code> = (-5.65 + 1.72) + (0.037 + 0.029) <code>age</code>, or -3.93 + 0.066 <code>age</code></li>
+</ul>
+<p>but, again, our conclusion from the ANCOVA table is that this increase in complexity (letting both the slope and intercept vary by <code>sex</code>) doesn’t add much in the way of predictive value for our <code>st_delta</code> outcome.</p>
+</section>
+<section id="centering-the-covariate-to-facilitate-ancova-interpretation" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="centering-the-covariate-to-facilitate-ancova-interpretation"><span class="header-section-number">12.8</span> Centering the Covariate to Facilitate ANCOVA Interpretation</h2>
+<p>When developing an ANCOVA model, we will often <strong>center</strong> or even <strong>center and rescale</strong> the covariate to facilitate interpretation of the product term. In this case, let’s center <code>age</code> and rescale it by dividing by two standard deviations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> age, <span class="at">data =</span> emph_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> min   Q1 median    Q3 max mean       sd  n missing
+  50 63.5   65.1 70.25  76 65.2 6.978061 16       0</code></pre>
+</div>
+</div>
+<p>Note that in our imputed data, the mean <code>age</code> is 65.2 and the standard deviation of <code>age</code> is 7 years.</p>
+<p>So we build the rescaled <code>age</code> variable that I’ll call <code>age_z</code>, and then use it to refit our model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>emph_imp <span class="ot">&lt;-</span> emph_imp <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">age_z =</span> (age <span class="sc">-</span> <span class="fu">mean</span>(age))<span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> <span class="fu">sd</span>(age)))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">*</span> age_z, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: st_delta
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+sex        1  52.547  52.547  4.9549 0.04594 *
+age_z      1   2.151   2.151  0.2028 0.66051  
+sex:age_z  1   0.130   0.130  0.0123 0.91355  
+Residuals 12 127.261  10.605                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">*</span> age_z, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term        estimate std.error statistic p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)   -3.27       1.39    -2.35   0.0364
+2 sexM           3.60       1.74     2.08   0.0601
+3 age_z          0.510      2.95     0.173  0.866 
+4 sexM:age_z     0.403      3.63     0.111  0.914 </code></pre>
+</div>
+</div>
+<p>Comparing the two models, we have:</p>
+<ul>
+<li>(unscaled): <code>st_delta</code> = -5.65 + 1.72 (<code>sex</code> = M) + 0.037 <code>age</code> + 0.029 (<code>sex</code> = M) x (<code>age</code>)</li>
+<li>(rescaled): <code>st_delta</code> = -3.27 + 3.60 (<code>sex</code> = M) + 0.510 rescaled <code>age_z</code> + 0.402 (<code>sex</code> = M) x (rescaled <code>age_z</code>)</li>
+</ul>
+<p>In essence, the rescaled model on <code>age_z</code> is:</p>
+<ul>
+<li><code>st_delta</code> = -3.27 + 0.510 <code>age_z</code> for female subjects, and</li>
+<li><code>st_delta</code> = (-3.27 + 3.60) + (0.510 + 0.402) <code>age_z</code> = 0.33 + 0.912 <code>age_z</code> for male subjects</li>
+</ul>
+<p>Interpreting the centered, rescaled model, we have:</p>
+<ul>
+<li>no change in the ANOVA results or R-squared or residual standard deviation compared to the uncentered, unscaled model, but</li>
+<li>the intercept (-3.27) now represents the <code>st_delta</code> for a female of average age,</li>
+<li>the <code>sex</code> slope (3.60) represents the (male - female) difference in predicted <code>st_delta</code> for a person of average age,</li>
+<li>the <code>age_z</code> slope (0.510) represents the difference in predicted <code>st_delta</code> for a female one standard deviation older than the mean age as compared to a female one standard deviation younger than the mean age, and</li>
+<li>the product term’s slope (0.402) represents the male - female difference in the slope of <code>age_z</code>, so that if you add the <code>age_z</code> slope (0.510) and the interaction slope (0.402) you see the difference in predicted <code>st_delta</code> for a male one standard deviation older than the mean age as compared to a male one standard deviation younger than the mean age.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./11-nonlinearity.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./13-ancova_smart.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
