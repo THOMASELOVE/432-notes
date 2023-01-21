@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 12&nbsp; Analysis of Covariance</title>
+<title>Data Science for Biological, Medical and Health Research - 11&nbsp; Analysis of Covariance</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./13-ancova_smart.html" rel="next">
-<link href="./11-nonlinearity.html" rel="prev">
+<link href="./12-ancova_smart.html" rel="next">
+<link href="./10-anovaexamples.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -133,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -218,22 +218,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  <a href="./11-ancova_emphysema.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-ancova_emphysema.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./12-ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./13-ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./13-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./14-olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -245,24 +250,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">12.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">11.1</span>  R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">12.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">11.1.1</span>  Data Load</a></li>
   </ul></li>
-  <li><a href="#an-emphysema-study" id="toc-an-emphysema-study" class="nav-link" data-scroll-target="#an-emphysema-study"><span class="toc-section-number">12.2</span>  An Emphysema Study</a>
+  <li><a href="#an-emphysema-study" id="toc-an-emphysema-study" class="nav-link" data-scroll-target="#an-emphysema-study"><span class="toc-section-number">11.2</span>  An Emphysema Study</a>
   <ul class="collapse">
-  <li><a href="#codebook" id="toc-codebook" class="nav-link" data-scroll-target="#codebook"><span class="toc-section-number">12.2.1</span>  Codebook</a></li>
+  <li><a href="#codebook" id="toc-codebook" class="nav-link" data-scroll-target="#codebook"><span class="toc-section-number">11.2.1</span>  Codebook</a></li>
   </ul></li>
-  <li><a href="#does-sex-affect-the-mean-change-in-theophylline" id="toc-does-sex-affect-the-mean-change-in-theophylline" class="nav-link" data-scroll-target="#does-sex-affect-the-mean-change-in-theophylline"><span class="toc-section-number">12.3</span>  Does <code>sex</code> affect the mean change in theophylline?</a></li>
-  <li><a href="#is-there-an-association-between-age-and-sex-in-this-study" id="toc-is-there-an-association-between-age-and-sex-in-this-study" class="nav-link" data-scroll-target="#is-there-an-association-between-age-and-sex-in-this-study"><span class="toc-section-number">12.4</span>  Is there an association between <code>age</code> and <code>sex</code> in this study?</a></li>
-  <li><a href="#adding-a-quantitative-covariate-age-to-the-model" id="toc-adding-a-quantitative-covariate-age-to-the-model" class="nav-link" data-scroll-target="#adding-a-quantitative-covariate-age-to-the-model"><span class="toc-section-number">12.5</span>  Adding a quantitative covariate, <code>age</code>, to the model</a>
+  <li><a href="#does-sex-affect-the-mean-change-in-theophylline" id="toc-does-sex-affect-the-mean-change-in-theophylline" class="nav-link" data-scroll-target="#does-sex-affect-the-mean-change-in-theophylline"><span class="toc-section-number">11.3</span>  Does <code>sex</code> affect the mean change in theophylline?</a></li>
+  <li><a href="#is-there-an-association-between-age-and-sex-in-this-study" id="toc-is-there-an-association-between-age-and-sex-in-this-study" class="nav-link" data-scroll-target="#is-there-an-association-between-age-and-sex-in-this-study"><span class="toc-section-number">11.4</span>  Is there an association between <code>age</code> and <code>sex</code> in this study?</a></li>
+  <li><a href="#adding-a-quantitative-covariate-age-to-the-model" id="toc-adding-a-quantitative-covariate-age-to-the-model" class="nav-link" data-scroll-target="#adding-a-quantitative-covariate-age-to-the-model"><span class="toc-section-number">11.5</span>  Adding a quantitative covariate, <code>age</code>, to the model</a>
   <ul class="collapse">
-  <li><a href="#the-ancova-model" id="toc-the-ancova-model" class="nav-link" data-scroll-target="#the-ancova-model"><span class="toc-section-number">12.5.1</span>  The ANCOVA model</a></li>
-  <li><a href="#the-ancova-table" id="toc-the-ancova-table" class="nav-link" data-scroll-target="#the-ancova-table"><span class="toc-section-number">12.5.2</span>  The ANCOVA Table</a></li>
+  <li><a href="#the-ancova-model" id="toc-the-ancova-model" class="nav-link" data-scroll-target="#the-ancova-model"><span class="toc-section-number">11.5.1</span>  The ANCOVA model</a></li>
+  <li><a href="#the-ancova-table" id="toc-the-ancova-table" class="nav-link" data-scroll-target="#the-ancova-table"><span class="toc-section-number">11.5.2</span>  The ANCOVA Table</a></li>
   </ul></li>
-  <li><a href="#rerunning-the-ancova-model-after-simple-imputation" id="toc-rerunning-the-ancova-model-after-simple-imputation" class="nav-link" data-scroll-target="#rerunning-the-ancova-model-after-simple-imputation"><span class="toc-section-number">12.6</span>  Rerunning the ANCOVA model after simple imputation</a></li>
-  <li><a href="#looking-at-a-factor-covariate-interaction" id="toc-looking-at-a-factor-covariate-interaction" class="nav-link" data-scroll-target="#looking-at-a-factor-covariate-interaction"><span class="toc-section-number">12.7</span>  Looking at a factor-covariate interaction</a></li>
-  <li><a href="#centering-the-covariate-to-facilitate-ancova-interpretation" id="toc-centering-the-covariate-to-facilitate-ancova-interpretation" class="nav-link" data-scroll-target="#centering-the-covariate-to-facilitate-ancova-interpretation"><span class="toc-section-number">12.8</span>  Centering the Covariate to Facilitate ANCOVA Interpretation</a></li>
+  <li><a href="#rerunning-the-ancova-model-after-simple-imputation" id="toc-rerunning-the-ancova-model-after-simple-imputation" class="nav-link" data-scroll-target="#rerunning-the-ancova-model-after-simple-imputation"><span class="toc-section-number">11.6</span>  Rerunning the ANCOVA model after simple imputation</a></li>
+  <li><a href="#looking-at-a-factor-covariate-interaction" id="toc-looking-at-a-factor-covariate-interaction" class="nav-link" data-scroll-target="#looking-at-a-factor-covariate-interaction"><span class="toc-section-number">11.7</span>  Looking at a factor-covariate interaction</a></li>
+  <li><a href="#centering-the-covariate-to-facilitate-ancova-interpretation" id="toc-centering-the-covariate-to-facilitate-ancova-interpretation" class="nav-link" data-scroll-target="#centering-the-covariate-to-facilitate-ancova-interpretation"><span class="toc-section-number">11.8</span>  Centering the Covariate to Facilitate ANCOVA Interpretation</a></li>
   </ul>
 </nav>
     </div>
@@ -271,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></h1>
 </div>
 
 
@@ -286,8 +291,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="r-setup-used-here" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">12.1</span> R Setup Used Here</h2>
+<section id="r-setup-used-here" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">11.1</span> R Setup Used Here</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -298,18 +303,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="data-load" class="level3" data-number="12.1.1">
-<h3 data-number="12.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">12.1.1</span> Data Load</h3>
+<section id="data-load" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">11.1.1</span> Data Load</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>emphysema <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/emphysema.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="an-emphysema-study" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="an-emphysema-study"><span class="header-section-number">12.2</span> An Emphysema Study</h2>
+<section id="an-emphysema-study" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="an-emphysema-study"><span class="header-section-number">11.2</span> An Emphysema Study</h2>
 <p>My source for this example is <span class="citation" data-cites="Riffenburgh2006">@Riffenburgh2006</span>, section 18.4. Serum theophylline levels (in mg/dl) were measured in 16 patients with emphysema at baseline, then 5 days later (at the end of a course of antibiotics) and then at 10 days after baseline. Clinicians anticipate that the antibiotic will increase the theophylline level. The data are stored in the <code>emphysema.csv</code> data file, and note that the age for patient 5 is not available.</p>
-<section id="codebook" class="level3" data-number="12.2.1">
-<h3 data-number="12.2.1" class="anchored" data-anchor-id="codebook"><span class="header-section-number">12.2.1</span> Codebook</h3>
+<section id="codebook" class="level3" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="codebook"><span class="header-section-number">11.2.1</span> Codebook</h3>
 <table class="table">
 <thead>
 <tr class="header">
@@ -374,8 +379,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </section>
 </section>
-<section id="does-sex-affect-the-mean-change-in-theophylline" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="does-sex-affect-the-mean-change-in-theophylline"><span class="header-section-number">12.3</span> Does <code>sex</code> affect the mean change in theophylline?</h2>
+<section id="does-sex-affect-the-mean-change-in-theophylline" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="does-sex-affect-the-mean-change-in-theophylline"><span class="header-section-number">11.3</span> Does <code>sex</code> affect the mean change in theophylline?</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> st_delta, <span class="at">data =</span> emphysema)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -408,8 +413,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>The ANOVA F test finds a fairly large difference between the mean <code>st_delta</code> among males and the mean <code>st_delta</code> among females. But is there more to the story?</p>
 </section>
-<section id="is-there-an-association-between-age-and-sex-in-this-study" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="is-there-an-association-between-age-and-sex-in-this-study"><span class="header-section-number">12.4</span> Is there an association between <code>age</code> and <code>sex</code> in this study?</h2>
+<section id="is-there-an-association-between-age-and-sex-in-this-study" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="is-there-an-association-between-age-and-sex-in-this-study"><span class="header-section-number">11.4</span> Is there an association between <code>age</code> and <code>sex</code> in this study?</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(age <span class="sc">~</span> sex, <span class="at">data =</span> emphysema)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -424,11 +429,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>And how should we deal with the one missing <code>age</code> value (in a male patient)?</li>
 </ul>
 </section>
-<section id="adding-a-quantitative-covariate-age-to-the-model" class="level2" data-number="12.5">
-<h2 data-number="12.5" class="anchored" data-anchor-id="adding-a-quantitative-covariate-age-to-the-model"><span class="header-section-number">12.5</span> Adding a quantitative covariate, <code>age</code>, to the model</h2>
+<section id="adding-a-quantitative-covariate-age-to-the-model" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="adding-a-quantitative-covariate-age-to-the-model"><span class="header-section-number">11.5</span> Adding a quantitative covariate, <code>age</code>, to the model</h2>
 <p>We could fit an ANOVA model to predict <code>st_delta</code> using <code>sex</code> and <code>age</code> directly, but only if we categorized <code>age</code> into two or more groups. Because <code>age</code> is not categorical, we cannot include it in an ANOVA. But if age is an influence, and we don’t adjust for it, it may well bias the outcome of our initial ANOVA. With a quantitative variable like <code>age</code>, we will need a method called ANCOVA, for <strong>analysis of covariance</strong>.</p>
-<section id="the-ancova-model" class="level3" data-number="12.5.1">
-<h3 data-number="12.5.1" class="anchored" data-anchor-id="the-ancova-model"><span class="header-section-number">12.5.1</span> The ANCOVA model</h3>
+<section id="the-ancova-model" class="level3" data-number="11.5.1">
+<h3 data-number="11.5.1" class="anchored" data-anchor-id="the-ancova-model"><span class="header-section-number">11.5.1</span> The ANCOVA model</h3>
 <p>ANCOVA in this case is just an ANOVA model with our outcome (<code>st_delta</code>) adjusted for a continuous covariate, called <code>age</code>. For the moment, we’ll ignore the one subject with missing <code>age</code> and simply fit the regression model with <code>sex</code> and <code>age</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">+</span> age, <span class="at">data =</span> emphysema))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -463,8 +468,8 @@ F-statistic:  2.43 on 2 and 12 DF,  p-value: 0.13</code></pre>
 </ul>
 <p>Note that we can test this assumption of equal slopes by fitting an alternative model (with a product term between <code>sex</code> and <code>age</code>) that doesn’t require the assumption, and we’ll do that later.</p>
 </section>
-<section id="the-ancova-table" class="level3" data-number="12.5.2">
-<h3 data-number="12.5.2" class="anchored" data-anchor-id="the-ancova-table"><span class="header-section-number">12.5.2</span> The ANCOVA Table</h3>
+<section id="the-ancova-table" class="level3" data-number="11.5.2">
+<h3 data-number="11.5.2" class="anchored" data-anchor-id="the-ancova-table"><span class="header-section-number">11.5.2</span> The ANCOVA Table</h3>
 <p>First, though, we’ll look at the ANCOVA table.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">+</span> age, <span class="at">data =</span> emphysema))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -483,8 +488,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>When we tested <code>sex</code> without accounting for <code>age</code>, we found a <em>p</em> value of 0.032, which is less than our usual cutpoint of 0.05. But when we adjusted for <code>age</code>, we find that <code>sex</code>’s <em>p</em> value rises, even though <code>age</code> doesn’t seem to have a particularly strong influence on <code>st_delta</code> by itself, according to the ANCOVA table.</p>
 </section>
 </section>
-<section id="rerunning-the-ancova-model-after-simple-imputation" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="rerunning-the-ancova-model-after-simple-imputation"><span class="header-section-number">12.6</span> Rerunning the ANCOVA model after simple imputation</h2>
+<section id="rerunning-the-ancova-model-after-simple-imputation" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="rerunning-the-ancova-model-after-simple-imputation"><span class="header-section-number">11.6</span> Rerunning the ANCOVA model after simple imputation</h2>
 <p>We could have <em>imputed</em> the missing <code>age</code> value for patient 5, rather than just deleting that patient. Suppose we do the simplest potentially reasonable thing to do: insert the mean <code>age</code> in where the NA value currently exists.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>emph_imp <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(emphysema, <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">mean</span>(emphysema<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
@@ -530,8 +535,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>When we do this, we see that now the <code>sex</code> variable returns to a <em>p</em> value below 0.05. Our complete case analysis (which omitted patient 5) gives us a different result than the ANCOVA based on the data after mean imputation.</p>
 </section>
-<section id="looking-at-a-factor-covariate-interaction" class="level2" data-number="12.7">
-<h2 data-number="12.7" class="anchored" data-anchor-id="looking-at-a-factor-covariate-interaction"><span class="header-section-number">12.7</span> Looking at a factor-covariate interaction</h2>
+<section id="looking-at-a-factor-covariate-interaction" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="looking-at-a-factor-covariate-interaction"><span class="header-section-number">11.7</span> Looking at a factor-covariate interaction</h2>
 <p>Let’s run a model including the interaction (product) term between <code>age</code> and <code>sex</code>, which implies that the slope of <code>age</code> on our outcome (<code>st_delta</code>) depends on the patient’s sex. We’ll use the imputed data again. Here is the new ANCOVA table, which suggests that the interaction of <code>age</code> and <code>sex</code> is small (because it accounts for only a small amount of the total Sum of Squares) with a <em>p</em> value of 0.91.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(st_delta <span class="sc">~</span> sex <span class="sc">*</span> age, <span class="at">data =</span> emph_imp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -568,8 +573,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </ul>
 <p>but, again, our conclusion from the ANCOVA table is that this increase in complexity (letting both the slope and intercept vary by <code>sex</code>) doesn’t add much in the way of predictive value for our <code>st_delta</code> outcome.</p>
 </section>
-<section id="centering-the-covariate-to-facilitate-ancova-interpretation" class="level2" data-number="12.8">
-<h2 data-number="12.8" class="anchored" data-anchor-id="centering-the-covariate-to-facilitate-ancova-interpretation"><span class="header-section-number">12.8</span> Centering the Covariate to Facilitate ANCOVA Interpretation</h2>
+<section id="centering-the-covariate-to-facilitate-ancova-interpretation" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="centering-the-covariate-to-facilitate-ancova-interpretation"><span class="header-section-number">11.8</span> Centering the Covariate to Facilitate ANCOVA Interpretation</h2>
 <p>When developing an ANCOVA model, we will often <strong>center</strong> or even <strong>center and rescale</strong> the covariate to facilitate interpretation of the product term. In this case, let’s center <code>age</code> and rescale it by dividing by two standard deviations.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> age, <span class="at">data =</span> emph_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -766,13 +771,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./11-nonlinearity.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></span>
+      <a href="./10-anovaexamples.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./13-ancova_smart.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./12-ancova_smart.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

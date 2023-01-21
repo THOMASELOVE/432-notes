@@ -1,4 +1,4 @@
-# Adding Non-linear Terms to a Linear Regression Model
+# Adding Non-linear Terms to a Linear Regression {#sec-non-lin}
 
 ## R Setup Used Here
 
@@ -510,4 +510,4 @@ We can certainly assess this big, complex model using `lm` in comparison to othe
 - we can assess its assumptions with residual plots, and 
 - we can also compare out-of-sample predictive quality through cross-validation,
 
-But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we'll probably want to fit the model using an alternative method for fitting linear models, called `ols`, from the `rms` package developed by Frank Harrell and colleagues. That's where we're heading.
+But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we'll probably want to fit the model using an alternative method for fitting linear models, called `ols`, from the `rms` package developed by Frank Harrell and colleagues. That's where we're heading, in @sec-ols.

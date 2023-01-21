@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 13&nbsp; Analysis of Covariance with the SMART data</title>
+<title>Data Science for Biological, Medical and Health Research - 12&nbsp; Analysis of Covariance with the SMART data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./90-incomplete.html" rel="next">
-<link href="./12-ancova_emphysema.html" rel="prev">
+<link href="./13-nonlinearity.html" rel="next">
+<link href="./11-ancova_emphysema.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -134,7 +134,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -219,22 +219,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  <a href="./11-ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./12-ancova_smart.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./13-ancova_smart.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./13-nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./14-olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -246,39 +251,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">13.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">12.1</span>  R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">13.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">12.1.1</span>  Data Load</a></li>
   </ul></li>
-  <li><a href="#a-new-small-study-predicting-bmi" id="toc-a-new-small-study-predicting-bmi" class="nav-link" data-scroll-target="#a-new-small-study-predicting-bmi"><span class="toc-section-number">13.2</span>  A New Small Study: Predicting BMI</a>
+  <li><a href="#a-new-small-study-predicting-bmi" id="toc-a-new-small-study-predicting-bmi" class="nav-link" data-scroll-target="#a-new-small-study-predicting-bmi"><span class="toc-section-number">12.2</span>  A New Small Study: Predicting BMI</a>
   <ul class="collapse">
-  <li><a href="#does-smoke100-predict-bmi-well" id="toc-does-smoke100-predict-bmi-well" class="nav-link" data-scroll-target="#does-smoke100-predict-bmi-well"><span class="toc-section-number">13.2.1</span>  Does <code>smoke100</code> predict <code>bmi</code> well?</a></li>
+  <li><a href="#does-smoke100-predict-bmi-well" id="toc-does-smoke100-predict-bmi-well" class="nav-link" data-scroll-target="#does-smoke100-predict-bmi-well"><span class="toc-section-number">12.2.1</span>  Does <code>smoke100</code> predict <code>bmi</code> well?</a></li>
   </ul></li>
-  <li><a href="#mod1-a-simple-t-test-model" id="toc-mod1-a-simple-t-test-model" class="nav-link" data-scroll-target="#mod1-a-simple-t-test-model"><span class="toc-section-number">13.3</span>  <code>mod1</code>: A simple t-test model</a></li>
-  <li><a href="#mod2-adding-another-predictor-two-way-anova-without-interaction" id="toc-mod2-adding-another-predictor-two-way-anova-without-interaction" class="nav-link" data-scroll-target="#mod2-adding-another-predictor-two-way-anova-without-interaction"><span class="toc-section-number">13.4</span>  <code>mod2</code>: Adding another predictor (two-way ANOVA without interaction)</a></li>
-  <li><a href="#mod3-adding-the-interaction-term-two-way-anova-with-interaction" id="toc-mod3-adding-the-interaction-term-two-way-anova-with-interaction" class="nav-link" data-scroll-target="#mod3-adding-the-interaction-term-two-way-anova-with-interaction"><span class="toc-section-number">13.5</span>  <code>mod3</code>: Adding the interaction term (Two-way ANOVA with interaction)</a></li>
-  <li><a href="#mod4-using-female-and-physhealth-in-a-model-for-bmi" id="toc-mod4-using-female-and-physhealth-in-a-model-for-bmi" class="nav-link" data-scroll-target="#mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="toc-section-number">13.6</span>  <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></a></li>
-  <li><a href="#making-predictions-with-a-linear-regression-model" id="toc-making-predictions-with-a-linear-regression-model" class="nav-link" data-scroll-target="#making-predictions-with-a-linear-regression-model"><span class="toc-section-number">13.7</span>  Making Predictions with a Linear Regression Model</a>
+  <li><a href="#mod1-a-simple-t-test-model" id="toc-mod1-a-simple-t-test-model" class="nav-link" data-scroll-target="#mod1-a-simple-t-test-model"><span class="toc-section-number">12.3</span>  <code>mod1</code>: A simple t-test model</a></li>
+  <li><a href="#mod2-adding-another-predictor-two-way-anova-without-interaction" id="toc-mod2-adding-another-predictor-two-way-anova-without-interaction" class="nav-link" data-scroll-target="#mod2-adding-another-predictor-two-way-anova-without-interaction"><span class="toc-section-number">12.4</span>  <code>mod2</code>: Adding another predictor (two-way ANOVA without interaction)</a></li>
+  <li><a href="#mod3-adding-the-interaction-term-two-way-anova-with-interaction" id="toc-mod3-adding-the-interaction-term-two-way-anova-with-interaction" class="nav-link" data-scroll-target="#mod3-adding-the-interaction-term-two-way-anova-with-interaction"><span class="toc-section-number">12.5</span>  <code>mod3</code>: Adding the interaction term (Two-way ANOVA with interaction)</a></li>
+  <li><a href="#mod4-using-female-and-physhealth-in-a-model-for-bmi" id="toc-mod4-using-female-and-physhealth-in-a-model-for-bmi" class="nav-link" data-scroll-target="#mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="toc-section-number">12.6</span>  <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></a></li>
+  <li><a href="#making-predictions-with-a-linear-regression-model" id="toc-making-predictions-with-a-linear-regression-model" class="nav-link" data-scroll-target="#making-predictions-with-a-linear-regression-model"><span class="toc-section-number">12.7</span>  Making Predictions with a Linear Regression Model</a>
   <ul class="collapse">
-  <li><a href="#fitting-an-individual-prediction-and-95-prediction-interval" id="toc-fitting-an-individual-prediction-and-95-prediction-interval" class="nav-link" data-scroll-target="#fitting-an-individual-prediction-and-95-prediction-interval"><span class="toc-section-number">13.7.1</span>  Fitting an Individual Prediction and 95% Prediction Interval</a></li>
-  <li><a href="#confidence-interval-for-an-average-prediction" id="toc-confidence-interval-for-an-average-prediction" class="nav-link" data-scroll-target="#confidence-interval-for-an-average-prediction"><span class="toc-section-number">13.7.2</span>  Confidence Interval for an Average Prediction</a></li>
-  <li><a href="#fitting-multiple-individual-predictions-to-new-data" id="toc-fitting-multiple-individual-predictions-to-new-data" class="nav-link" data-scroll-target="#fitting-multiple-individual-predictions-to-new-data"><span class="toc-section-number">13.7.3</span>  Fitting Multiple Individual Predictions to New Data</a></li>
+  <li><a href="#fitting-an-individual-prediction-and-95-prediction-interval" id="toc-fitting-an-individual-prediction-and-95-prediction-interval" class="nav-link" data-scroll-target="#fitting-an-individual-prediction-and-95-prediction-interval"><span class="toc-section-number">12.7.1</span>  Fitting an Individual Prediction and 95% Prediction Interval</a></li>
+  <li><a href="#confidence-interval-for-an-average-prediction" id="toc-confidence-interval-for-an-average-prediction" class="nav-link" data-scroll-target="#confidence-interval-for-an-average-prediction"><span class="toc-section-number">12.7.2</span>  Confidence Interval for an Average Prediction</a></li>
+  <li><a href="#fitting-multiple-individual-predictions-to-new-data" id="toc-fitting-multiple-individual-predictions-to-new-data" class="nav-link" data-scroll-target="#fitting-multiple-individual-predictions-to-new-data"><span class="toc-section-number">12.7.3</span>  Fitting Multiple Individual Predictions to New Data</a></li>
   </ul></li>
-  <li><a href="#centering-the-model" id="toc-centering-the-model" class="nav-link" data-scroll-target="#centering-the-model"><span class="toc-section-number">13.8</span>  Centering the model</a>
+  <li><a href="#centering-the-model" id="toc-centering-the-model" class="nav-link" data-scroll-target="#centering-the-model"><span class="toc-section-number">12.8</span>  Centering the model</a>
   <ul class="collapse">
-  <li><a href="#plot-of-model-4-on-centered-physhealth-mod4_c" id="toc-plot-of-model-4-on-centered-physhealth-mod4_c" class="nav-link" data-scroll-target="#plot-of-model-4-on-centered-physhealth-mod4_c"><span class="toc-section-number">13.8.1</span>  Plot of Model 4 on Centered <code>physhealth</code>: <code>mod4_c</code></a></li>
+  <li><a href="#plot-of-model-4-on-centered-physhealth-mod4_c" id="toc-plot-of-model-4-on-centered-physhealth-mod4_c" class="nav-link" data-scroll-target="#plot-of-model-4-on-centered-physhealth-mod4_c"><span class="toc-section-number">12.8.1</span>  Plot of Model 4 on Centered <code>physhealth</code>: <code>mod4_c</code></a></li>
   </ul></li>
-  <li><a href="#rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" id="toc-rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" class="nav-link" data-scroll-target="#rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations"><span class="toc-section-number">13.9</span>  Rescaling an input by subtracting the mean and dividing by 2 standard deviations</a>
+  <li><a href="#rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" id="toc-rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" class="nav-link" data-scroll-target="#rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations"><span class="toc-section-number">12.9</span>  Rescaling an input by subtracting the mean and dividing by 2 standard deviations</a>
   <ul class="collapse">
-  <li><a href="#refitting-model-mod4-to-the-rescaled-data" id="toc-refitting-model-mod4-to-the-rescaled-data" class="nav-link" data-scroll-target="#refitting-model-mod4-to-the-rescaled-data"><span class="toc-section-number">13.9.1</span>  Refitting model <code>mod4</code> to the rescaled data</a></li>
-  <li><a href="#interpreting-the-model-on-rescaled-data" id="toc-interpreting-the-model-on-rescaled-data" class="nav-link" data-scroll-target="#interpreting-the-model-on-rescaled-data"><span class="toc-section-number">13.9.2</span>  Interpreting the model on rescaled data</a></li>
-  <li><a href="#plot-of-model-on-rescaled-data" id="toc-plot-of-model-on-rescaled-data" class="nav-link" data-scroll-target="#plot-of-model-on-rescaled-data"><span class="toc-section-number">13.9.3</span>  Plot of model on rescaled data</a></li>
+  <li><a href="#refitting-model-mod4-to-the-rescaled-data" id="toc-refitting-model-mod4-to-the-rescaled-data" class="nav-link" data-scroll-target="#refitting-model-mod4-to-the-rescaled-data"><span class="toc-section-number">12.9.1</span>  Refitting model <code>mod4</code> to the rescaled data</a></li>
+  <li><a href="#interpreting-the-model-on-rescaled-data" id="toc-interpreting-the-model-on-rescaled-data" class="nav-link" data-scroll-target="#interpreting-the-model-on-rescaled-data"><span class="toc-section-number">12.9.2</span>  Interpreting the model on rescaled data</a></li>
+  <li><a href="#plot-of-model-on-rescaled-data" id="toc-plot-of-model-on-rescaled-data" class="nav-link" data-scroll-target="#plot-of-model-on-rescaled-data"><span class="toc-section-number">12.9.3</span>  Plot of model on rescaled data</a></li>
   </ul></li>
-  <li><a href="#mod5-what-if-we-add-more-variables" id="toc-mod5-what-if-we-add-more-variables" class="nav-link" data-scroll-target="#mod5-what-if-we-add-more-variables"><span class="toc-section-number">13.10</span>  <code>mod5</code>: What if we add more variables?</a></li>
-  <li><a href="#mod6-would-adding-self-reported-health-help" id="toc-mod6-would-adding-self-reported-health-help" class="nav-link" data-scroll-target="#mod6-would-adding-self-reported-health-help"><span class="toc-section-number">13.11</span>  <code>mod6</code>: Would adding self-reported health help?</a></li>
-  <li><a href="#key-regression-assumptions-for-building-effective-prediction-models" id="toc-key-regression-assumptions-for-building-effective-prediction-models" class="nav-link" data-scroll-target="#key-regression-assumptions-for-building-effective-prediction-models"><span class="toc-section-number">13.12</span>  Key Regression Assumptions for Building Effective Prediction Models</a>
+  <li><a href="#mod5-what-if-we-add-more-variables" id="toc-mod5-what-if-we-add-more-variables" class="nav-link" data-scroll-target="#mod5-what-if-we-add-more-variables"><span class="toc-section-number">12.10</span>  <code>mod5</code>: What if we add more variables?</a></li>
+  <li><a href="#mod6-would-adding-self-reported-health-help" id="toc-mod6-would-adding-self-reported-health-help" class="nav-link" data-scroll-target="#mod6-would-adding-self-reported-health-help"><span class="toc-section-number">12.11</span>  <code>mod6</code>: Would adding self-reported health help?</a></li>
+  <li><a href="#key-regression-assumptions-for-building-effective-prediction-models" id="toc-key-regression-assumptions-for-building-effective-prediction-models" class="nav-link" data-scroll-target="#key-regression-assumptions-for-building-effective-prediction-models"><span class="toc-section-number">12.12</span>  Key Regression Assumptions for Building Effective Prediction Models</a>
   <ul class="collapse">
-  <li><a href="#checking-assumptions-in-model-mod6" id="toc-checking-assumptions-in-model-mod6" class="nav-link" data-scroll-target="#checking-assumptions-in-model-mod6"><span class="toc-section-number">13.12.1</span>  Checking Assumptions in model <code>mod6</code></a></li>
+  <li><a href="#checking-assumptions-in-model-mod6" id="toc-checking-assumptions-in-model-mod6" class="nav-link" data-scroll-target="#checking-assumptions-in-model-mod6"><span class="toc-section-number">12.12.1</span>  Checking Assumptions in model <code>mod6</code></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -288,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></h1>
 </div>
 
 
@@ -304,8 +309,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this chapter, we’ll work with the <code>smart_cle1_sh</code> data file that we developed in <a href="07-singleimputation.html"><span>Chapter&nbsp;7</span></a>.</p>
-<section id="r-setup-used-here" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">13.1</span> R Setup Used Here</h2>
+<section id="r-setup-used-here" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">12.1</span> R Setup Used Here</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -316,15 +321,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="data-load" class="level3" data-number="13.1.1">
-<h3 data-number="13.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">13.1.1</span> Data Load</h3>
+<section id="data-load" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">12.1.1</span> Data Load</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/smart_cle1_sh.Rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="a-new-small-study-predicting-bmi" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="a-new-small-study-predicting-bmi"><span class="header-section-number">13.2</span> A New Small Study: Predicting BMI</h2>
+<section id="a-new-small-study-predicting-bmi" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="a-new-small-study-predicting-bmi"><span class="header-section-number">12.2</span> A New Small Study: Predicting BMI</h2>
 <p>We’ll begin by investigating the problem of predicting <code>bmi</code>, at first with just three regression inputs: <code>smoke100</code>, <code>female</code> and <code>physhealth</code>, in our <code>smart_cle1_sh</code> data set.</p>
 <ul>
 <li>The outcome of interest is <code>bmi</code>.</li>
@@ -335,15 +340,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>physhealth</code> = number of poor physical health days in past 30 (treated as quantitative)</li>
 </ul></li>
 </ul>
-<section id="does-smoke100-predict-bmi-well" class="level3" data-number="13.2.1">
-<h3 data-number="13.2.1" class="anchored" data-anchor-id="does-smoke100-predict-bmi-well"><span class="header-section-number">13.2.1</span> Does <code>smoke100</code> predict <code>bmi</code> well?</h3>
-<section id="graphical-assessment" class="level4" data-number="13.2.1.1">
-<h4 data-number="13.2.1.1" class="anchored" data-anchor-id="graphical-assessment"><span class="header-section-number">13.2.1.1</span> Graphical Assessment</h4>
+<section id="does-smoke100-predict-bmi-well" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="does-smoke100-predict-bmi-well"><span class="header-section-number">12.2.1</span> Does <code>smoke100</code> predict <code>bmi</code> well?</h3>
+<section id="graphical-assessment" class="level4" data-number="12.2.1.1">
+<h4 data-number="12.2.1.1" class="anchored" data-anchor-id="graphical-assessment"><span class="header-section-number">12.2.1.1</span> Graphical Assessment</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> smoke100, <span class="at">y =</span> bmi)) <span class="sc">+</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Not so helpful. We should probably specify that <code>smoke100</code> is a factor, and try another plotting approach.</p>
@@ -351,15 +356,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(smoke100), <span class="at">y =</span> bmi)) <span class="sc">+</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The median BMI looks a little higher for those who have smoked 100 cigarettes. Let’s see if a model reflects that.</p>
 </section>
 </section>
 </section>
-<section id="mod1-a-simple-t-test-model" class="level2" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="mod1-a-simple-t-test-model"><span class="header-section-number">13.3</span> <code>mod1</code>: A simple t-test model</h2>
+<section id="mod1-a-simple-t-test-model" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="mod1-a-simple-t-test-model"><span class="header-section-number">12.3</span> <code>mod1</code>: A simple t-test model</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100, <span class="at">data =</span> smart_cle1_sh)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mod1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -444,15 +449,15 @@ mean in group 0 mean in group 1
 </div>
 </div>
 </section>
-<section id="mod2-adding-another-predictor-two-way-anova-without-interaction" class="level2" data-number="13.4">
-<h2 data-number="13.4" class="anchored" data-anchor-id="mod2-adding-another-predictor-two-way-anova-without-interaction"><span class="header-section-number">13.4</span> <code>mod2</code>: Adding another predictor (two-way ANOVA without interaction)</h2>
+<section id="mod2-adding-another-predictor-two-way-anova-without-interaction" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="mod2-adding-another-predictor-two-way-anova-without-interaction"><span class="header-section-number">12.4</span> <code>mod2</code>: Adding another predictor (two-way ANOVA without interaction)</h2>
 <p>When we add in the information about <code>female</code> (sex) to our original model, we might first picture the data. We could look at separate histograms,</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> bmi)) <span class="sc">+</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>) <span class="sc">+</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(female <span class="sc">~</span> smoke100, <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>or maybe boxplots?</p>
@@ -461,7 +466,7 @@ mean in group 0 mean in group 1
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> smoke100, <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
@@ -470,7 +475,7 @@ mean in group 0 mean in group 1
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> smoke100, <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>OK. Let’s try fitting a model.</p>
@@ -552,8 +557,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="mod3-adding-the-interaction-term-two-way-anova-with-interaction" class="level2" data-number="13.5">
-<h2 data-number="13.5" class="anchored" data-anchor-id="mod3-adding-the-interaction-term-two-way-anova-with-interaction"><span class="header-section-number">13.5</span> <code>mod3</code>: Adding the interaction term (Two-way ANOVA with interaction)</h2>
+<section id="mod3-adding-the-interaction-term-two-way-anova-with-interaction" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="mod3-adding-the-interaction-term-two-way-anova-with-interaction"><span class="header-section-number">12.5</span> <code>mod3</code>: Adding the interaction term (Two-way ANOVA with interaction)</h2>
 <p>Suppose we want to let the effect of <code>female</code> vary depending on the <code>smoke100</code> status. Then we need to incorporate an interaction term in our model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">*</span> smoke100, <span class="at">data =</span> smart_cle1_sh)</span>
@@ -637,8 +642,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>The interaction term doesn’t change very much here. Its uncertainty interval includes zero, and the overall model still accounts for less than 1% of the variation in <code>bmi</code>.</p>
 </section>
-<section id="mod4-using-female-and-physhealth-in-a-model-for-bmi" class="level2" data-number="13.6">
-<h2 data-number="13.6" class="anchored" data-anchor-id="mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="header-section-number">13.6</span> <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></h2>
+<section id="mod4-using-female-and-physhealth-in-a-model-for-bmi" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="header-section-number">12.6</span> <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> physhealth, <span class="at">y =</span> bmi, <span class="at">color =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
@@ -649,7 +654,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Does the difference in slopes of <code>bmi</code> and <code>physhealth</code> for males and females appear to be substantial and important?</p>
@@ -728,8 +733,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>The addition of the <code>physhealth</code> term appears to be a statistically detectable improvement, not that that means very much.</p>
 </section>
-<section id="making-predictions-with-a-linear-regression-model" class="level2" data-number="13.7">
-<h2 data-number="13.7" class="anchored" data-anchor-id="making-predictions-with-a-linear-regression-model"><span class="header-section-number">13.7</span> Making Predictions with a Linear Regression Model</h2>
+<section id="making-predictions-with-a-linear-regression-model" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="making-predictions-with-a-linear-regression-model"><span class="header-section-number">12.7</span> Making Predictions with a Linear Regression Model</h2>
 <p>Recall model 4, which yields predictions for body mass index on the basis of the main effects of sex (<code>female</code>) and days of poor physical health (<code>physhealth</code>) and their interaction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mod4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -743,8 +748,8 @@ Coefficients:
          27.92386           -0.30335            0.13700           -0.01203  </code></pre>
 </div>
 </div>
-<section id="fitting-an-individual-prediction-and-95-prediction-interval" class="level3" data-number="13.7.1">
-<h3 data-number="13.7.1" class="anchored" data-anchor-id="fitting-an-individual-prediction-and-95-prediction-interval"><span class="header-section-number">13.7.1</span> Fitting an Individual Prediction and 95% Prediction Interval</h3>
+<section id="fitting-an-individual-prediction-and-95-prediction-interval" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="fitting-an-individual-prediction-and-95-prediction-interval"><span class="header-section-number">12.7.1</span> Fitting an Individual Prediction and 95% Prediction Interval</h3>
 <p>What do we predict for the <code>bmi</code> of a subject who is <code>female</code> and had 8 poor physical health days in the past 30?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>new1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">female =</span> <span class="dv">1</span>, <span class="at">physhealth =</span> <span class="dv">8</span>)</span>
@@ -756,8 +761,8 @@ Coefficients:
 </div>
 <p>The predicted <code>bmi</code> for this new subject is shown above. The prediction interval shows the bounds of a 95% uncertainty interval for a predicted <code>bmi</code> for an individual female subject who has 8 days of poor physical health out of the past 30. From the <code>predict</code> function applied to a linear model, we can get the prediction intervals for any new data points in this manner.</p>
 </section>
-<section id="confidence-interval-for-an-average-prediction" class="level3" data-number="13.7.2">
-<h3 data-number="13.7.2" class="anchored" data-anchor-id="confidence-interval-for-an-average-prediction"><span class="header-section-number">13.7.2</span> Confidence Interval for an Average Prediction</h3>
+<section id="confidence-interval-for-an-average-prediction" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="confidence-interval-for-an-average-prediction"><span class="header-section-number">12.7.2</span> Confidence Interval for an Average Prediction</h3>
 <ul>
 <li>What do we predict for the <strong>average body mass index of a population of subjects</strong> who are female and have <code>physhealth = 8</code>?</li>
 </ul>
@@ -772,8 +777,8 @@ Coefficients:
 <li>How does this result compare to the prediction interval?</li>
 </ul>
 </section>
-<section id="fitting-multiple-individual-predictions-to-new-data" class="level3" data-number="13.7.3">
-<h3 data-number="13.7.3" class="anchored" data-anchor-id="fitting-multiple-individual-predictions-to-new-data"><span class="header-section-number">13.7.3</span> Fitting Multiple Individual Predictions to New Data</h3>
+<section id="fitting-multiple-individual-predictions-to-new-data" class="level3" data-number="12.7.3">
+<h3 data-number="12.7.3" class="anchored" data-anchor-id="fitting-multiple-individual-predictions-to-new-data"><span class="header-section-number">12.7.3</span> Fitting Multiple Individual Predictions to New Data</h3>
 <ul>
 <li>How does our prediction change for a respondent if they instead have 7, or 9 poor physical health days? What if they are male, instead of female?</li>
 </ul>
@@ -801,8 +806,8 @@ Coefficients:
 </ul>
 </section>
 </section>
-<section id="centering-the-model" class="level2" data-number="13.8">
-<h2 data-number="13.8" class="anchored" data-anchor-id="centering-the-model"><span class="header-section-number">13.8</span> Centering the model</h2>
+<section id="centering-the-model" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="centering-the-model"><span class="header-section-number">12.8</span> Centering the model</h2>
 <p>Our model <code>mod4</code> has four predictors (the constant, <code>physhealth</code>, <code>female</code> and their interaction) but just two inputs (<code>female</code> and <code>physhealth</code>.) If we <strong>center</strong> the quantitative input <code>physhealth</code> before building the model, we get a more interpretable interaction term.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh_c <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span></span>
@@ -851,8 +856,8 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <li>the product term corresponds to the change in the slope of centered <code>physhealth_c</code> on <code>bmi</code> for a female rather than a male subject, while</li>
 <li>the residual standard deviation and the R-squared values remain unchanged from the model before centering.</li>
 </ul>
-<section id="plot-of-model-4-on-centered-physhealth-mod4_c" class="level3" data-number="13.8.1">
-<h3 data-number="13.8.1" class="anchored" data-anchor-id="plot-of-model-4-on-centered-physhealth-mod4_c"><span class="header-section-number">13.8.1</span> Plot of Model 4 on Centered <code>physhealth</code>: <code>mod4_c</code></h3>
+<section id="plot-of-model-4-on-centered-physhealth-mod4_c" class="level3" data-number="12.8.1">
+<h3 data-number="12.8.1" class="anchored" data-anchor-id="plot-of-model-4-on-centered-physhealth-mod4_c"><span class="header-section-number">12.8.1</span> Plot of Model 4 on Centered <code>physhealth</code>: <code>mod4_c</code></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_c, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_c, <span class="at">y =</span> bmi, <span class="at">group =</span> female, <span class="at">col =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
@@ -865,13 +870,13 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 </section>
-<section id="rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" class="level2" data-number="13.9">
-<h2 data-number="13.9" class="anchored" data-anchor-id="rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations"><span class="header-section-number">13.9</span> Rescaling an input by subtracting the mean and dividing by 2 standard deviations</h2>
+<section id="rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations" class="level2" data-number="12.9">
+<h2 data-number="12.9" class="anchored" data-anchor-id="rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations"><span class="header-section-number">12.9</span> Rescaling an input by subtracting the mean and dividing by 2 standard deviations</h2>
 <p>Centering helped us interpret the main effects in the regression, but it still leaves a scaling problem.</p>
 <ul>
 <li>The <code>female</code> coefficient estimate is much larger than that of <code>physhealth</code>, but this is misleading, considering that we are comparing the complete change in one variable (sex = female or not) to a 1-day change in <code>physhealth</code>.</li>
@@ -885,8 +890,8 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh_rescale <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">physhealth_z =</span> (physhealth <span class="sc">-</span> <span class="fu">mean</span>(physhealth))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sd</span>(physhealth)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="refitting-model-mod4-to-the-rescaled-data" class="level3" data-number="13.9.1">
-<h3 data-number="13.9.1" class="anchored" data-anchor-id="refitting-model-mod4-to-the-rescaled-data"><span class="header-section-number">13.9.1</span> Refitting model <code>mod4</code> to the rescaled data</h3>
+<section id="refitting-model-mod4-to-the-rescaled-data" class="level3" data-number="12.9.1">
+<h3 data-number="12.9.1" class="anchored" data-anchor-id="refitting-model-mod4-to-the-rescaled-data"><span class="header-section-number">12.9.1</span> Refitting model <code>mod4</code> to the rescaled data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>mod4_z <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">*</span> physhealth_z, <span class="at">data =</span> smart_cle1_sh_rescale)</span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -915,8 +920,8 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 </div>
 </div>
 </section>
-<section id="interpreting-the-model-on-rescaled-data" class="level3" data-number="13.9.2">
-<h3 data-number="13.9.2" class="anchored" data-anchor-id="interpreting-the-model-on-rescaled-data"><span class="header-section-number">13.9.2</span> Interpreting the model on rescaled data</h3>
+<section id="interpreting-the-model-on-rescaled-data" class="level3" data-number="12.9.2">
+<h3 data-number="12.9.2" class="anchored" data-anchor-id="interpreting-the-model-on-rescaled-data"><span class="header-section-number">12.9.2</span> Interpreting the model on rescaled data</h3>
 <p>What has changed as compared to the original <code>mod4</code>?</p>
 <ul>
 <li>Our original model was <code>bmi</code> = 27.92 - 0.30 <code>female</code> + 0.14 <code>physhealth</code> - 0.01 <code>female</code> x <code>physhealth</code></li>
@@ -952,8 +957,8 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <li>the coefficient of the product term (-0.22) corresponds to the change in the coefficient of <code>physhealth_z</code> for females as compared to males.</li>
 </ul>
 </section>
-<section id="plot-of-model-on-rescaled-data" class="level3" data-number="13.9.3">
-<h3 data-number="13.9.3" class="anchored" data-anchor-id="plot-of-model-on-rescaled-data"><span class="header-section-number">13.9.3</span> Plot of model on rescaled data</h3>
+<section id="plot-of-model-on-rescaled-data" class="level3" data-number="12.9.3">
+<h3 data-number="12.9.3" class="anchored" data-anchor-id="plot-of-model-on-rescaled-data"><span class="header-section-number">12.9.3</span> Plot of model on rescaled data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_rescale, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_z, <span class="at">y =</span> bmi, </span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">group =</span> female, <span class="at">col =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
@@ -970,14 +975,14 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>There’s very little difference here.</p>
 </section>
 </section>
-<section id="mod5-what-if-we-add-more-variables" class="level2" data-number="13.10">
-<h2 data-number="13.10" class="anchored" data-anchor-id="mod5-what-if-we-add-more-variables"><span class="header-section-number">13.10</span> <code>mod5</code>: What if we add more variables?</h2>
+<section id="mod5-what-if-we-add-more-variables" class="level2" data-number="12.10">
+<h2 data-number="12.10" class="anchored" data-anchor-id="mod5-what-if-we-add-more-variables"><span class="header-section-number">12.10</span> <code>mod5</code>: What if we add more variables?</h2>
 <p>We can boost our <span class="math inline">\(R^2\)</span> a bit, to nearly 5%, by adding in two new variables, related to whether or not the subject (in the past 30 days) used the internet, and the average number of alcoholic drinks per week consumed by ths subject.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>mod5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">+</span> smoke100 <span class="sc">+</span> physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk,</span>
@@ -1074,8 +1079,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>What does it mean for the models to be “nested”?</li>
 </ol>
 </section>
-<section id="mod6-would-adding-self-reported-health-help" class="level2" data-number="13.11">
-<h2 data-number="13.11" class="anchored" data-anchor-id="mod6-would-adding-self-reported-health-help"><span class="header-section-number">13.11</span> <code>mod6</code>: Would adding self-reported health help?</h2>
+<section id="mod6-would-adding-self-reported-health-help" class="level2" data-number="12.11">
+<h2 data-number="12.11" class="anchored" data-anchor-id="mod6-would-adding-self-reported-health-help"><span class="header-section-number">12.11</span> <code>mod6</code>: Would adding self-reported health help?</h2>
 <p>And we can do even a bit better than that by adding in a multi-categorical measure: self-reported general health.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mod6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">+</span> smoke100 <span class="sc">+</span> physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> genhealth,</span>
@@ -1118,12 +1123,12 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="key-regression-assumptions-for-building-effective-prediction-models" class="level2" data-number="13.12">
-<h2 data-number="13.12" class="anchored" data-anchor-id="key-regression-assumptions-for-building-effective-prediction-models"><span class="header-section-number">13.12</span> Key Regression Assumptions for Building Effective Prediction Models</h2>
+<section id="key-regression-assumptions-for-building-effective-prediction-models" class="level2" data-number="12.12">
+<h2 data-number="12.12" class="anchored" data-anchor-id="key-regression-assumptions-for-building-effective-prediction-models"><span class="header-section-number">12.12</span> Key Regression Assumptions for Building Effective Prediction Models</h2>
 <ol type="1">
 <li>Validity - the data you are analyzing should map to the research question you are trying to answer.
 <ul>
@@ -1137,15 +1142,15 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Equal variance of errors - if this is violated, we can more efficiently estimate parameters using <em>weighted least squares</em> approaches, where each point is weighted inversely proportional to its variance, but this doesn’t affect the coefficients much, if at all.</li>
 <li>Normality of errors - not generally important for estimating the regression line</li>
 </ol>
-<section id="checking-assumptions-in-model-mod6" class="level3" data-number="13.12.1">
-<h3 data-number="13.12.1" class="anchored" data-anchor-id="checking-assumptions-in-model-mod6"><span class="header-section-number">13.12.1</span> Checking Assumptions in model <code>mod6</code></h3>
+<section id="checking-assumptions-in-model-mod6" class="level3" data-number="12.12.1">
+<h3 data-number="12.12.1" class="anchored" data-anchor-id="checking-assumptions-in-model-mod6"><span class="header-section-number">12.12.1</span> Checking Assumptions in model <code>mod6</code></h3>
 <ol type="1">
 <li>How does the assumption of linearity behind this model look?</li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We see no strong signs of serious non-linearity here. There’s no obvious curve in the plot, for example. We may have a problem with increasing variance as we move to the right.</p>
@@ -1155,7 +1160,7 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This plot can help us identify points with large standardized residuals, large leverage values, and large influence on the model (as indicated by large values of Cook’s distance.) In this case, I see no signs of any points used in the model with especially large influence, although there are some poorly fitted points (with especially large standardized residuals.)</p>
@@ -1176,21 +1181,21 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This plot is simply a Normal Q-Q plot of the standardized residuals from our model. We’re looking here for serious problems with the assumption of Normality.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This is a scale-location plot, designed to help us see non-constant variance in the residuals as we move across the fitted values as a linear trend, rather than as a fan shape, by plotting the square root of the residuals on the vertical axis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="13-ancova_smart_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
+<p><img src="12-ancova_smart_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Finally, this is an index plot of the Cook’s distance values, allowing us to identify points that are particularly large. Remember that a value of 0.5 (or perhaps even 1.0) is a reasonable boundary for a substantially influential point.</p>
@@ -1335,13 +1340,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./12-ancova_emphysema.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span>
+      <a href="./11-ancova_emphysema.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./90-incomplete.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./13-nonlinearity.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 11&nbsp; Adding Non-linear Terms to a Linear Regression Model</title>
+<title>Data Science for Biological, Medical and Health Research - 13&nbsp; Adding Non-linear Terms to a Linear Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./12-ancova_emphysema.html" rel="next">
-<link href="./10-anovaexamples.html" rel="prev">
+<link href="./14-olsfitting.html" rel="next">
+<link href="./12-ancova_smart.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -134,7 +134,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -219,22 +219,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./11-nonlinearity.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></a>
+  <a href="./11-ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./12-ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./13-ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./13-nonlinearity.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./14-olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -246,31 +251,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">11.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">13.1</span>  R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">11.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">13.1.1</span>  Data Load</a></li>
   </ul></li>
-  <li><a href="#the-pollution-data" id="toc-the-pollution-data" class="nav-link" data-scroll-target="#the-pollution-data"><span class="toc-section-number">11.2</span>  The <code>pollution</code> data</a></li>
-  <li><a href="#fitting-a-straight-line-model-to-predict-y-from-x2" id="toc-fitting-a-straight-line-model-to-predict-y-from-x2" class="nav-link" data-scroll-target="#fitting-a-straight-line-model-to-predict-y-from-x2"><span class="toc-section-number">11.3</span>  Fitting a straight line model to predict <code>y</code> from <code>x2</code></a></li>
-  <li><a href="#quadratic-polynomial-model-to-predict-y-using-x2" id="toc-quadratic-polynomial-model-to-predict-y-using-x2" class="nav-link" data-scroll-target="#quadratic-polynomial-model-to-predict-y-using-x2"><span class="toc-section-number">11.4</span>  Quadratic polynomial model to predict <code>y</code> using <code>x2</code></a>
+  <li><a href="#the-pollution-data" id="toc-the-pollution-data" class="nav-link" data-scroll-target="#the-pollution-data"><span class="toc-section-number">13.2</span>  The <code>pollution</code> data</a></li>
+  <li><a href="#fitting-a-straight-line-model-to-predict-y-from-x2" id="toc-fitting-a-straight-line-model-to-predict-y-from-x2" class="nav-link" data-scroll-target="#fitting-a-straight-line-model-to-predict-y-from-x2"><span class="toc-section-number">13.3</span>  Fitting a straight line model to predict <code>y</code> from <code>x2</code></a></li>
+  <li><a href="#quadratic-polynomial-model-to-predict-y-using-x2" id="toc-quadratic-polynomial-model-to-predict-y-using-x2" class="nav-link" data-scroll-target="#quadratic-polynomial-model-to-predict-y-using-x2"><span class="toc-section-number">13.4</span>  Quadratic polynomial model to predict <code>y</code> using <code>x2</code></a>
   <ul class="collapse">
-  <li><a href="#the-raw-quadratic-model" id="toc-the-raw-quadratic-model" class="nav-link" data-scroll-target="#the-raw-quadratic-model"><span class="toc-section-number">11.4.1</span>  The raw quadratic model</a></li>
-  <li><a href="#raw-quadratic-fit-after-centering-x2" id="toc-raw-quadratic-fit-after-centering-x2" class="nav-link" data-scroll-target="#raw-quadratic-fit-after-centering-x2"><span class="toc-section-number">11.4.2</span>  Raw quadratic fit after centering <code>x2</code></a></li>
+  <li><a href="#the-raw-quadratic-model" id="toc-the-raw-quadratic-model" class="nav-link" data-scroll-target="#the-raw-quadratic-model"><span class="toc-section-number">13.4.1</span>  The raw quadratic model</a></li>
+  <li><a href="#raw-quadratic-fit-after-centering-x2" id="toc-raw-quadratic-fit-after-centering-x2" class="nav-link" data-scroll-target="#raw-quadratic-fit-after-centering-x2"><span class="toc-section-number">13.4.2</span>  Raw quadratic fit after centering <code>x2</code></a></li>
   </ul></li>
-  <li><a href="#orthogonal-polynomials" id="toc-orthogonal-polynomials" class="nav-link" data-scroll-target="#orthogonal-polynomials"><span class="toc-section-number">11.5</span>  Orthogonal Polynomials</a></li>
-  <li><a href="#fit-a-cubic-polynomial-to-predict-y-from-x3" id="toc-fit-a-cubic-polynomial-to-predict-y-from-x3" class="nav-link" data-scroll-target="#fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="toc-section-number">11.6</span>  Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></a></li>
-  <li><a href="#fitting-a-restricted-cubic-spline-in-a-linear-regression" id="toc-fitting-a-restricted-cubic-spline-in-a-linear-regression" class="nav-link" data-scroll-target="#fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="toc-section-number">11.7</span>  Fitting a restricted cubic spline in a linear regression</a></li>
-  <li><a href="#spending-degrees-of-freedom" id="toc-spending-degrees-of-freedom" class="nav-link" data-scroll-target="#spending-degrees-of-freedom"><span class="toc-section-number">11.8</span>  “Spending” Degrees of Freedom</a>
+  <li><a href="#orthogonal-polynomials" id="toc-orthogonal-polynomials" class="nav-link" data-scroll-target="#orthogonal-polynomials"><span class="toc-section-number">13.5</span>  Orthogonal Polynomials</a></li>
+  <li><a href="#fit-a-cubic-polynomial-to-predict-y-from-x3" id="toc-fit-a-cubic-polynomial-to-predict-y-from-x3" class="nav-link" data-scroll-target="#fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="toc-section-number">13.6</span>  Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></a></li>
+  <li><a href="#fitting-a-restricted-cubic-spline-in-a-linear-regression" id="toc-fitting-a-restricted-cubic-spline-in-a-linear-regression" class="nav-link" data-scroll-target="#fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="toc-section-number">13.7</span>  Fitting a restricted cubic spline in a linear regression</a></li>
+  <li><a href="#spending-degrees-of-freedom" id="toc-spending-degrees-of-freedom" class="nav-link" data-scroll-target="#spending-degrees-of-freedom"><span class="toc-section-number">13.8</span>  “Spending” Degrees of Freedom</a>
   <ul class="collapse">
-  <li><a href="#overfitting-and-limits-on-the-of-predictors" id="toc-overfitting-and-limits-on-the-of-predictors" class="nav-link" data-scroll-target="#overfitting-and-limits-on-the-of-predictors"><span class="toc-section-number">11.8.1</span>  Overfitting and Limits on the # of Predictors</a></li>
-  <li><a href="#the-importance-of-collinearity" id="toc-the-importance-of-collinearity" class="nav-link" data-scroll-target="#the-importance-of-collinearity"><span class="toc-section-number">11.8.2</span>  The Importance of Collinearity</a></li>
-  <li><a href="#collinearity-in-an-explanatory-model" id="toc-collinearity-in-an-explanatory-model" class="nav-link" data-scroll-target="#collinearity-in-an-explanatory-model"><span class="toc-section-number">11.8.3</span>  Collinearity in an Explanatory Model</a></li>
-  <li><a href="#collinearity-in-a-prediction-model" id="toc-collinearity-in-a-prediction-model" class="nav-link" data-scroll-target="#collinearity-in-a-prediction-model"><span class="toc-section-number">11.8.4</span>  Collinearity in a Prediction Model</a></li>
+  <li><a href="#overfitting-and-limits-on-the-of-predictors" id="toc-overfitting-and-limits-on-the-of-predictors" class="nav-link" data-scroll-target="#overfitting-and-limits-on-the-of-predictors"><span class="toc-section-number">13.8.1</span>  Overfitting and Limits on the # of Predictors</a></li>
+  <li><a href="#the-importance-of-collinearity" id="toc-the-importance-of-collinearity" class="nav-link" data-scroll-target="#the-importance-of-collinearity"><span class="toc-section-number">13.8.2</span>  The Importance of Collinearity</a></li>
+  <li><a href="#collinearity-in-an-explanatory-model" id="toc-collinearity-in-an-explanatory-model" class="nav-link" data-scroll-target="#collinearity-in-an-explanatory-model"><span class="toc-section-number">13.8.3</span>  Collinearity in an Explanatory Model</a></li>
+  <li><a href="#collinearity-in-a-prediction-model" id="toc-collinearity-in-a-prediction-model" class="nav-link" data-scroll-target="#collinearity-in-a-prediction-model"><span class="toc-section-number">13.8.4</span>  Collinearity in a Prediction Model</a></li>
   </ul></li>
-  <li><a href="#spending-df-on-non-linearity-the-spearman-plot" id="toc-spending-df-on-non-linearity-the-spearman-plot" class="nav-link" data-scroll-target="#spending-df-on-non-linearity-the-spearman-plot"><span class="toc-section-number">11.9</span>  Spending DF on Non-Linearity: The Spearman Plot</a>
+  <li><a href="#spending-df-on-non-linearity-the-spearman-plot" id="toc-spending-df-on-non-linearity-the-spearman-plot" class="nav-link" data-scroll-target="#spending-df-on-non-linearity-the-spearman-plot"><span class="toc-section-number">13.9</span>  Spending DF on Non-Linearity: The Spearman Plot</a>
   <ul class="collapse">
-  <li><a href="#fitting-a-big-model-to-the-pollution-data" id="toc-fitting-a-big-model-to-the-pollution-data" class="nav-link" data-scroll-target="#fitting-a-big-model-to-the-pollution-data"><span class="toc-section-number">11.9.1</span>  Fitting a Big Model to the <code>pollution</code> data</a></li>
-  <li><a href="#limitations-of-lm-for-fitting-complex-linear-regression-models" id="toc-limitations-of-lm-for-fitting-complex-linear-regression-models" class="nav-link" data-scroll-target="#limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="toc-section-number">11.9.2</span>  Limitations of <code>lm</code> for fitting complex linear regression models</a></li>
+  <li><a href="#fitting-a-big-model-to-the-pollution-data" id="toc-fitting-a-big-model-to-the-pollution-data" class="nav-link" data-scroll-target="#fitting-a-big-model-to-the-pollution-data"><span class="toc-section-number">13.9.1</span>  Fitting a Big Model to the <code>pollution</code> data</a></li>
+  <li><a href="#limitations-of-lm-for-fitting-complex-linear-regression-models" id="toc-limitations-of-lm-for-fitting-complex-linear-regression-models" class="nav-link" data-scroll-target="#limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="toc-section-number">13.9.2</span>  Limitations of <code>lm</code> for fitting complex linear regression models</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -280,7 +285,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression Model</span></h1>
+<h1 class="title"><span id="sec-non-lin" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></h1>
 </div>
 
 
@@ -295,8 +300,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="r-setup-used-here" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">11.1</span> R Setup Used Here</h2>
+<section id="r-setup-used-here" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">13.1</span> R Setup Used Here</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -311,15 +316,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="data-load" class="level3" data-number="11.1.1">
-<h3 data-number="11.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">11.1.1</span> Data Load</h3>
+<section id="data-load" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">13.1.1</span> Data Load</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/pollution.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="the-pollution-data" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="the-pollution-data"><span class="header-section-number">11.2</span> The <code>pollution</code> data</h2>
+<section id="the-pollution-data" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="the-pollution-data"><span class="header-section-number">13.2</span> The <code>pollution</code> data</h2>
 <p>Consider the <code>pollution</code> data set, which contain 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961. The data come from <span class="citation" data-cites="McDonald1973">@McDonald1973</span>, and are available at http://www4.stat.ncsu.edu/~boos/var.select/pollution.html and our web site.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pollution</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -420,8 +425,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 </section>
-<section id="fitting-a-straight-line-model-to-predict-y-from-x2" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="fitting-a-straight-line-model-to-predict-y-from-x2"><span class="header-section-number">11.3</span> Fitting a straight line model to predict <code>y</code> from <code>x2</code></h2>
+<section id="fitting-a-straight-line-model-to-predict-y-from-x2" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="fitting-a-straight-line-model-to-predict-y-from-x2"><span class="header-section-number">13.3</span> Fitting a straight line model to predict <code>y</code> from <code>x2</code></h2>
 <p>Consider the relationship between <code>y</code>, the age-adjusted mortality rate, and <code>x2</code>, the mean January temperature, across these 60 areas. I’ll include both a linear model (in blue) and a loess smooth (in red.) Does the relationship appear to be linear?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> y)) <span class="sc">+</span></span>
@@ -433,19 +438,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 `geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Suppose we plot the residuals that emerge from the linear model shown in blue, above. Do we see a curve in a plot of residuals against fitted values?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2, <span class="at">data =</span> pollution), <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="quadratic-polynomial-model-to-predict-y-using-x2" class="level2" data-number="11.4">
-<h2 data-number="11.4" class="anchored" data-anchor-id="quadratic-polynomial-model-to-predict-y-using-x2"><span class="header-section-number">11.4</span> Quadratic polynomial model to predict <code>y</code> using <code>x2</code></h2>
+<section id="quadratic-polynomial-model-to-predict-y-using-x2" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="quadratic-polynomial-model-to-predict-y-using-x2"><span class="header-section-number">13.4</span> Quadratic polynomial model to predict <code>y</code> using <code>x2</code></h2>
 <p>A polynomial in the variable <code>x</code> of degree D is a linear combination of the powers of <code>x</code> up to D.</p>
 <p>For example:</p>
 <ul>
@@ -456,8 +461,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Quintic: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4 + \beta_5 x^5\)</span></li>
 </ul>
 <p>Fitting such a model creates a <strong>polynomial regression</strong>.</p>
-<section id="the-raw-quadratic-model" class="level3" data-number="11.4.1">
-<h3 data-number="11.4.1" class="anchored" data-anchor-id="the-raw-quadratic-model"><span class="header-section-number">11.4.1</span> The raw quadratic model</h3>
+<section id="the-raw-quadratic-model" class="level3" data-number="13.4.1">
+<h3 data-number="13.4.1" class="anchored" data-anchor-id="the-raw-quadratic-model"><span class="header-section-number">13.4.1</span> The raw quadratic model</h3>
 <p>Let’s look at a <strong>quadratic model</strong> which predicts <code>y</code> using <code>x2</code> and the square of <code>x2</code>, so that our model is of the form:</p>
 <p><span class="math display">\[
 y = \beta_0 + \beta_1 x_2 + \beta_2 x_2^2 + error
@@ -510,7 +515,7 @@ F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2a: Quadratic fit using x2 and x2^2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
@@ -530,12 +535,12 @@ F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="raw-quadratic-fit-after-centering-x2" class="level3" data-number="11.4.2">
-<h3 data-number="11.4.2" class="anchored" data-anchor-id="raw-quadratic-fit-after-centering-x2"><span class="header-section-number">11.4.2</span> Raw quadratic fit after centering <code>x2</code></h3>
+<section id="raw-quadratic-fit-after-centering-x2" class="level3" data-number="13.4.2">
+<h3 data-number="13.4.2" class="anchored" data-anchor-id="raw-quadratic-fit-after-centering-x2"><span class="header-section-number">13.4.2</span> Raw quadratic fit after centering <code>x2</code></h3>
 <p>Sometimes, we’ll center (and perhaps rescale, too) the x2 variable before including it in a quadratic fit like this.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span></span>
@@ -575,7 +580,7 @@ F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x2, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2d: Quadratic fit using centered x2 and x2^2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Or, if you don’t believe me yet, look at the four sets of fitted values another way.</p>
@@ -603,8 +608,8 @@ F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
 </div>
 </section>
 </section>
-<section id="orthogonal-polynomials" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="orthogonal-polynomials"><span class="header-section-number">11.5</span> Orthogonal Polynomials</h2>
+<section id="orthogonal-polynomials" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="orthogonal-polynomials"><span class="header-section-number">13.5</span> Orthogonal Polynomials</h2>
 <p>Now, let’s fit an orthogonal polynomial of degree 2 to predict <code>y</code> using <code>x2</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>mod2_orth <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x2, <span class="dv">2</span>), <span class="at">data =</span> pollution)</span>
@@ -644,7 +649,7 @@ F-statistic: 2.352 on 2 and 57 DF,  p-value: 0.1044</code></pre>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2 with Orthogonal Polynomial, degree 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Yes, it is again the same model in terms of the predictions it makes for <code>y</code>.</p>
@@ -688,12 +693,12 @@ F-statistic: 1.568 on 3 and 56 DF,  p-value: 0.2073</code></pre>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Quadratic (red) vs. Cubic (blue) Polynomial Fits"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="fit-a-cubic-polynomial-to-predict-y-from-x3" class="level2" data-number="11.6">
-<h2 data-number="11.6" class="anchored" data-anchor-id="fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="header-section-number">11.6</span> Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></h2>
+<section id="fit-a-cubic-polynomial-to-predict-y-from-x3" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="fit-a-cubic-polynomial-to-predict-y-from-x3"><span class="header-section-number">13.6</span> Fit a cubic polynomial to predict <code>y</code> from <code>x3</code></h2>
 <p>What if we consider another predictor instead? Let’s look at <code>x3</code>, the Mean July temperature in degrees Fahrenheit. Here is the <code>loess</code> smooth.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> y)) <span class="sc">+</span></span>
@@ -703,7 +708,7 @@ F-statistic: 1.568 on 3 and 56 DF,  p-value: 0.2073</code></pre>
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>That looks pretty curvy - perhaps we need a more complex polynomial. We’ll consider a linear model (<code>mod4_L</code>), a quadratic fit (<code>mod4_Q</code>) and a polynomial of degree 3: a <strong>cubic</strong> fit (<code>mod_4C</code>)</p>
@@ -804,12 +809,12 @@ F-statistic: 6.742 on 3 and 56 DF,  p-value: 0.0005799</code></pre>
 ℹ Please use `linewidth` instead.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="fitting-a-restricted-cubic-spline-in-a-linear-regression" class="level2" data-number="11.7">
-<h2 data-number="11.7" class="anchored" data-anchor-id="fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="header-section-number">11.7</span> Fitting a restricted cubic spline in a linear regression</h2>
+<section id="fitting-a-restricted-cubic-spline-in-a-linear-regression" class="level2" data-number="13.7">
+<h2 data-number="13.7" class="anchored" data-anchor-id="fitting-a-restricted-cubic-spline-in-a-linear-regression"><span class="header-section-number">13.7</span> Fitting a restricted cubic spline in a linear regression</h2>
 <ul>
 <li>A <strong>linear spline</strong> is a continuous function formed by connecting points (called <strong>knots</strong> of the spline) by line segments.</li>
 <li>A <strong>restricted cubic spline</strong> is a way to build highly complicated curves into a regression equation in a fairly easily structured way.</li>
@@ -903,7 +908,7 @@ F-statistic: 5.571 on 4 and 55 DF,  p-value: 0.0007734</code></pre>
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Does it seem like the fit improves markedly (perhaps approaching the loess smooth result) as we increase the number of knots?</p>
@@ -1048,8 +1053,8 @@ $colnames
 </ol>
 <p>What this means is essentially linked to making decisions about predictor complexity, both in terms of how many predictors will be included in the regression model, and about how we’ll include those predictors.</p>
 </section>
-<section id="spending-degrees-of-freedom" class="level2" data-number="11.8">
-<h2 data-number="11.8" class="anchored" data-anchor-id="spending-degrees-of-freedom"><span class="header-section-number">11.8</span> “Spending” Degrees of Freedom</h2>
+<section id="spending-degrees-of-freedom" class="level2" data-number="13.8">
+<h2 data-number="13.8" class="anchored" data-anchor-id="spending-degrees-of-freedom"><span class="header-section-number">13.8</span> “Spending” Degrees of Freedom</h2>
 <ul>
 <li>“Spending” df includes
 <ul>
@@ -1059,8 +1064,8 @@ $colnames
 </ul>
 <p>If you use a scatterplot of Y vs.&nbsp;X or the residuals of the Y-X regression model vs.&nbsp;X to decide whether a linear model is appropriate, then how many degrees of freedom have you actually spent?</p>
 <p>Grambsch and O’Brien conclude that if you wish to preserve the key statistical properties of the various estimation and fitting procedures used in building a model, you can’t retrieve these degrees of freedom once they have been spent.</p>
-<section id="overfitting-and-limits-on-the-of-predictors" class="level3" data-number="11.8.1">
-<h3 data-number="11.8.1" class="anchored" data-anchor-id="overfitting-and-limits-on-the-of-predictors"><span class="header-section-number">11.8.1</span> Overfitting and Limits on the # of Predictors</h3>
+<section id="overfitting-and-limits-on-the-of-predictors" class="level3" data-number="13.8.1">
+<h3 data-number="13.8.1" class="anchored" data-anchor-id="overfitting-and-limits-on-the-of-predictors"><span class="header-section-number">13.8.1</span> Overfitting and Limits on the # of Predictors</h3>
 <p>Suppose you have a total sample size of <span class="math inline">\(n\)</span> observations, then you really shouldn’t be thinking about estimating more than <span class="math inline">\(n / 15\)</span> regression coefficients, at the most.</p>
 <ul>
 <li>If <span class="math inline">\(k\)</span> is the number of parameters in a full model containing all candidate predictors for a stepwise analysis, then <span class="math inline">\(k\)</span> should be no greater than <span class="math inline">\(n / 15\)</span>.</li>
@@ -1070,8 +1075,8 @@ $colnames
 <p>So if you have 97 observations in your data, then you can probably just barely justify the use of a stepwise analysis using the main effects alone of 5 candidate variables (with one additional DF for the intercept term) using the <span class="math inline">\(n/15\)</span> limit.</p>
 <p><span class="citation" data-cites="Harrell2001">@Harrell2001</span> also mentions that if you have a <strong>narrowly distributed</strong> predictor, without a lot of variation to work with, then an even larger sample size <span class="math inline">\(n\)</span> should be required. See <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, Section 10.3 for more details.</p>
 </section>
-<section id="the-importance-of-collinearity" class="level3" data-number="11.8.2">
-<h3 data-number="11.8.2" class="anchored" data-anchor-id="the-importance-of-collinearity"><span class="header-section-number">11.8.2</span> The Importance of Collinearity</h3>
+<section id="the-importance-of-collinearity" class="level3" data-number="13.8.2">
+<h3 data-number="13.8.2" class="anchored" data-anchor-id="the-importance-of-collinearity"><span class="header-section-number">13.8.2</span> The Importance of Collinearity</h3>
 <blockquote class="blockquote">
 <p>Collinearity denotes correlation between predictors high enough to degrade the precision of the regression coefficient estimates substantially for some or all of the correlated predictors</p>
 </blockquote>
@@ -1102,8 +1107,8 @@ $colnames
 <li>tolerance = 1 / VIF</li>
 </ul>
 </section>
-<section id="collinearity-in-an-explanatory-model" class="level3" data-number="11.8.3">
-<h3 data-number="11.8.3" class="anchored" data-anchor-id="collinearity-in-an-explanatory-model"><span class="header-section-number">11.8.3</span> Collinearity in an Explanatory Model</h3>
+<section id="collinearity-in-an-explanatory-model" class="level3" data-number="13.8.3">
+<h3 data-number="13.8.3" class="anchored" data-anchor-id="collinearity-in-an-explanatory-model"><span class="header-section-number">13.8.3</span> Collinearity in an Explanatory Model</h3>
 <ul>
 <li>When we are attempting to <strong>identify multiple independent predictors</strong> (the explanatory model approach), then we will need to choose between collinear variables
 <ul>
@@ -1114,8 +1119,8 @@ $colnames
 <li>Larger effects, especially if they are associated with predictors that have minimal correlation with the other predictors under study, cause less trouble in terms of potential violation of the <span class="math inline">\(n/15\)</span> rule for what constitutes a reasonable number of predictors.</li>
 </ul>
 </section>
-<section id="collinearity-in-a-prediction-model" class="level3" data-number="11.8.4">
-<h3 data-number="11.8.4" class="anchored" data-anchor-id="collinearity-in-a-prediction-model"><span class="header-section-number">11.8.4</span> Collinearity in a Prediction Model</h3>
+<section id="collinearity-in-a-prediction-model" class="level3" data-number="13.8.4">
+<h3 data-number="13.8.4" class="anchored" data-anchor-id="collinearity-in-a-prediction-model"><span class="header-section-number">13.8.4</span> Collinearity in a Prediction Model</h3>
 <ul>
 <li>If we are primarily building a <strong>prediction model</strong> for which inference on the individual predictors is not of interest, then it is totally reasonable to use both predictors in the model, if doing so reduces prediction error.
 <ul>
@@ -1131,8 +1136,8 @@ $colnames
 </ul>
 </section>
 </section>
-<section id="spending-df-on-non-linearity-the-spearman-plot" class="level2" data-number="11.9">
-<h2 data-number="11.9" class="anchored" data-anchor-id="spending-df-on-non-linearity-the-spearman-plot"><span class="header-section-number">11.9</span> Spending DF on Non-Linearity: The Spearman Plot</h2>
+<section id="spending-df-on-non-linearity-the-spearman-plot" class="level2" data-number="13.9">
+<h2 data-number="13.9" class="anchored" data-anchor-id="spending-df-on-non-linearity-the-spearman-plot"><span class="header-section-number">13.9</span> Spending DF on Non-Linearity: The Spearman Plot</h2>
 <p>We need a flexible approach to assessing non-linearity and fitting models with non-linear predictors. This will lead us to a measure of what <span class="citation" data-cites="Harrell2001">@Harrell2001</span> calls <strong>potential predictive punch</strong> which hides the true form of the regression from the analyst so as to preserve statistical properties, but that lets us make sensible decisions about whether a predictor should be included in a model, and the number of parameters (degrees of freedom, essentially) we are willing to devote to it.</p>
 <p>What if we want to consider where best to spend our degrees of freedom on non-linear predictor terms, like interactions, polynomial functions or curved splines to represent our input data? The approach we’ll find useful in the largest variety of settings is a combination of</p>
 <ol type="1">
@@ -1147,12 +1152,12 @@ $colnames
 <span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sp2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="11-nonlinearity_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<p><img src="13-nonlinearity_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The variable with the largest adjusted squared Spearman <span class="math inline">\(\rho\)</span> statistic in this setting is <code>x9</code>, followed by <code>x6</code> and <code>x14</code>. With only 60 observations, we might well want to restrict ourselves to a very small model. What the Spearman plot suggests is that we focus any non-linear terms on <code>x9</code> first, and then perhaps <code>x6</code> and <code>x14</code> as they have some potential predictive power. It may or may not work out that the non-linear terms are productive.</p>
-<section id="fitting-a-big-model-to-the-pollution-data" class="level3" data-number="11.9.1">
-<h3 data-number="11.9.1" class="anchored" data-anchor-id="fitting-a-big-model-to-the-pollution-data"><span class="header-section-number">11.9.1</span> Fitting a Big Model to the <code>pollution</code> data</h3>
+<section id="fitting-a-big-model-to-the-pollution-data" class="level3" data-number="13.9.1">
+<h3 data-number="13.9.1" class="anchored" data-anchor-id="fitting-a-big-model-to-the-pollution-data"><span class="header-section-number">13.9.1</span> Fitting a Big Model to the <code>pollution</code> data</h3>
 <p>So, one possible model built in reaction this plot might be to fit:</p>
 <ul>
 <li>a restricted cubic spline with 5 knots on <code>x9</code>,</li>
@@ -1183,15 +1188,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>This <code>anova</code> suggests that we have at least some predictive value in each spline (<code>x9</code> and <code>x6</code>) and some additional value in <code>x14</code>, although it’s not as clear that the linear terms (<code>x1</code> and <code>x13</code>) did much good.</p>
 </section>
-<section id="limitations-of-lm-for-fitting-complex-linear-regression-models" class="level3" data-number="11.9.2">
-<h3 data-number="11.9.2" class="anchored" data-anchor-id="limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="header-section-number">11.9.2</span> Limitations of <code>lm</code> for fitting complex linear regression models</h3>
+<section id="limitations-of-lm-for-fitting-complex-linear-regression-models" class="level3" data-number="13.9.2">
+<h3 data-number="13.9.2" class="anchored" data-anchor-id="limitations-of-lm-for-fitting-complex-linear-regression-models"><span class="header-section-number">13.9.2</span> Limitations of <code>lm</code> for fitting complex linear regression models</h3>
 <p>We can certainly assess this big, complex model using <code>lm</code> in comparison to other models:</p>
 <ul>
 <li>with in-sample summary statistics like adjusted <span class="math inline">\(R^2\)</span>, AIC and BIC,</li>
 <li>we can assess its assumptions with residual plots, and</li>
 <li>we can also compare out-of-sample predictive quality through cross-validation,</li>
 </ul>
-<p>But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we’ll probably want to fit the model using an alternative method for fitting linear models, called <code>ols</code>, from the <code>rms</code> package developed by Frank Harrell and colleagues. That’s where we’re heading.</p>
+<p>But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we’ll probably want to fit the model using an alternative method for fitting linear models, called <code>ols</code>, from the <code>rms</code> package developed by Frank Harrell and colleagues. That’s where we’re heading, in <a href="14-olsfitting.html"><span>Chapter&nbsp;14</span></a>.</p>
 
 
 </section>
@@ -1333,13 +1338,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./10-anovaexamples.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span>
+      <a href="./12-ancova_smart.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./12-ancova_emphysema.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./14-olsfitting.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,6 +1,6 @@
-# Using `ols` from the `rms` package to fit linear models
+# Using `ols` to fit linear models {#sec-ols}
 
-At the end of the previous chapter, we had fit a model to the `pollution` data that predicted our outcome `y` = Age-Adjusted Mortality Rate, using:
+Back at the end of @sec-non-lin, we fit a model to the `pollution` data that predicted our outcome `y` = Age-Adjusted Mortality Rate, using:
 
 - a restricted cubic spline with 5 knots on `x9`
 - a restricted cubic spline with 3 knots on `x6`
@@ -9,13 +9,33 @@ At the end of the previous chapter, we had fit a model to the `pollution` data t
 
 but this model was hard to evaluate in some ways. Now, instead of using `lm` to fit this model, we'll use a new function called `ols` from the `rms` package developed by Frank Harrell and colleagues, in part to support ideas developed in @Harrell2001 for clinical prediction models.
 
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(Hmisc)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+pollution <- read_csv("data/pollution.csv", show_col_types = FALSE) 
+```
+
 ## Fitting a model with `ols`
 
 We will use the `datadist` approach when fitting a linear model with `ols` from the `rms` package, so as to store additional important elements of the model fit.
 
 ```{r}
-library(rms)
-
 d <- datadist(pollution)
 options(datadist = "d")
 ```
@@ -37,7 +57,7 @@ Most of this output should be familiar, but a few pieces are different.
 
 The **Model Likelihood Ratio Test** compares `newmod` to the null model with only an intercept term. It is a goodness-of-fit test that we'll use in several types of model settings this semester.
 
-- In many settings, the logarithm of the likelihood ratio, multiplied by -2, yields a value which can be compared to a $\chi^2$ distribution. So here, the value 72.02 is -2(log likelihood), and is compared to a $\chi^2$ distribution with 10 degrees of freedom. We reject the null hypothesis that `newmod` is no better than the null model, and conclude instead that at least one of these predictors adds statistically significant value.
+- In many settings, the logarithm of the likelihood ratio, multiplied by -2, yields a value which can be compared to a $\chi^2$ distribution. So here, the value 72.02 is -2(log likelihood), and is compared to a $\chi^2$ distribution with 10 degrees of freedom. We reject the null hypothesis that `newmod` is no better than the null model, and conclude instead that at least one of these predictors adds some value.
     + For `ols`, interpret the model likelihood ratio test like the global (ANOVA) F test in `lm`.
     + The likelihood function is the probability of observing our data under the specified model.
     + We can compare two nested models by evaluating the difference in their likelihood ratios and degrees of freedom, then comparing the result to a $\chi^2$ distribution.
@@ -46,7 +66,7 @@ The **Model Likelihood Ratio Test** compares `newmod` to the null model with onl
 
 The **g statistic** is new and is referred to as the g-index. it's based on Gini's mean difference and is purported to be a robust and highly efficient measure of variation. 
 
-- Here, g = 58.9, which implies that if you randomly select two of the 60 areas included in the model, the average difference in predicted `y` (Age-Adjusted Mortality Rate) using this model will be 58.9.
+- Here, g = 58.961, which implies that if you randomly select two of the 60 areas included in the model, the average difference in predicted `y` (Age-Adjusted Mortality Rate) using this model will be 58.961.
     + Technically, g is Gini's mean difference of the predicted values.
 
 ## ANOVA for an `ols` model
@@ -59,7 +79,7 @@ anova(newmod)
 
 Unlike the `anova` approach in `lm`, in `ols` ANOVA, *partial* F tests are presented - each predictor is assessed as "last predictor in" much like the usual *t* tests in `lm`. In essence, the partial sums of squares and F tests here describe the marginal impact of removing each covariate from `newmod`.
 
-We conclude that the non-linear parts of `x9` and `x6` and `x14` combined don't seem to add much value, but that overall, `x9`, `x6` and `x14` seem to be valuable. So it must be the linear parts of those variables within our model that are doing the lion's share of the work.
+We conclude that the non-linear parts of `x9` and `x6` and `x14` combined don't seem to add much value, but that overall, `x9`, `x6` and `x14` seem to be valuable. So it must be the linear parts of those variables within our model that are doing most of the predictive work.
 
 ## Effect Estimates
 
@@ -94,14 +114,16 @@ These confidence intervals make no effort to deal with the multiple comparisons 
 summary(newmod, conf.type=c('simultaneous'))
 ```
 
-Remember that if you're looking for the usual `lm` summary for an `ols` object, use `summary.lm`, and that the `display` function from `arm` does not recognize `ols` objects.
+Remember that if you're looking for the usual `lm` summary for an `ols` object, use `summary.lm`.
 
 ## The `Predict` function for an `ols` model
 
 The `Predict` function is very flexible, and can be used to produce individual or simultaneous confidence limits.
 
 ```{r}
-Predict(newmod, x9 = 12, x6 = 12, x14 = 40, x1 = 40, x13 = 20) # individual limits
+Predict(newmod, x9 = 12, x6 = 12, x14 = 40, x1 = 40, x13 = 20) 
+# individual limits
+
 Predict(newmod, x9 = 5:15) # individual limits
 Predict(newmod, x9 = 5:15, conf.type = 'simult')
 ```
@@ -128,7 +150,7 @@ observation deleted.
 which.influence(newmod)
 ```
 
-The implication here, for instance, is that if we drop row 3 from our data frame, and refit the model, this will have a meaningful impact on the estimate of `x9` but not on the other coefficients. But if we drop, say, row 37, we will affect the estimates of the intercept, `x6`, `x14`, `x1`, and `x13`.
+The implication here, for instance, is that if we drop row 15 from our data frame, and refit the model, this will have a meaningful impact on the estimate of `x9` but not on the other coefficients. But if we drop, say, row 60, we will affect the estimates of the intercept, `x6`, `x14`, `x1`, and `x13`.
 
 ### Using the `residuals` command for `dfbetas`
 
@@ -147,14 +169,14 @@ temp <- data.frame(area = 1:60)
 temp$residual <- residuals(newmod, type = "ordinary")
 temp$leverage <- residuals(newmod, type = "hat")
 temp$dffits <- residuals(newmod, type = "dffits")
-tbl_df(temp)
+temp <- as_tibble(temp)
 
 ggplot(temp, aes(x = area, y = dffits)) +
     geom_point() +
     geom_line()
 ```
 
-It appears that point 37 has the largest (positive) `dffits` value. Recall that point 37 seemed influential on several predictors and the intercept term. Point 32 has the smallest (or largest negative) `dffits`, and also appears to have been influential on several predictors and the intercept.
+It appears that point 60 has the largest (positive) `dffits` value. Recall that point 60 seemed influential on several predictors and the intercept term. Point 7 has the smallest (or largest negative) `dffits`, and also appears to have been influential on several predictors and the intercept.
 
 ```{r}
 which.max(temp$dffits)
@@ -175,9 +197,9 @@ The `validate` function allows us to perform cross-validation of our models for 
 - Estimates of the *optimism* in measures of predictive accuracy
 - Estimates of the intercept and slope of a calibration model
 
-\begin{center}
-(observed y) = Intercept + Slope (predicted y)
-\end{center}
+$$
+(\mbox{observed y}) = Intercept + Slope (\mbox{predicted y})
+$$
 
 with the following code... 
 
@@ -187,9 +209,9 @@ set.seed(432002); validate(newmod, method = "boot", B = 40)
 
 So, for `R-square` we see that our original estimate was 0.6989
 
-- Our estimated `R-square` across `n` = 40 training samples was 0.7426, but in the resulting tests, the average `R-square` was only 0.5749
-- This suggests an optimism of 0.7426 - 0.5749 = 0.1676 (after rounding).
-- We then apply that optimism to obtain a new estimate of $R^2$ corrected for overfitting, at 0.5312, which is probably a better estimate of what our results might look like in new data that were similar to (but not the same as) the data we used in building `newmod` than our initial estimate of 0.6989
+- Our estimated `R-square` across `n` = 40 training samples was 0.7589, but in the resulting tests, the average `R-square` was only 0.6176
+- This suggests an optimism of 0.7589 - 0.6176 = 0.1413.
+- We then apply that optimism to obtain a new estimate of $R^2$ corrected for overfitting, at 0.5576, which is probably a better estimate of what our results might look like in new data that were similar to (but not the same as) the data we used in building `newmod` than our initial estimate of 0.6989
 
 We also obtain optimism-corrected estimates of the mean squared error (square of the residual standard deviation), the g index, and the intercept and slope of the calibration model. The "corrected" slope is a shrinkage factor that takes overfitting into account.
 
