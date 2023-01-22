@@ -109,7 +109,7 @@ These data appear to come from a distribution that is essentially symmetric, but
 Note that I use 90% as my confidence level here, mostly to make sure that we don't always simply default to 95% without engaging our brains.
 
 ```{r}
-tt1 <- t.test(dat1$PULSEDIFF)
+tt1 <- t.test(dat1$PULSEDIFF, conf.level = 0.90)
 
 tt1
 
@@ -229,7 +229,7 @@ As we saw with the differences in pulse rate, the differences in weight for this
 ### `t.test` 90% CI for the mean weight difference
 
 ```{r}
-tt2 <- t.test(dat2$WTDIFF)
+tt2 <- t.test(dat2$WTDIFF, conf.level = 0.90)
 
 tidy(tt2, conf.int = TRUE, conf = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
@@ -315,7 +315,7 @@ ggplot(dat3, aes(x = factor(HOSPITAL), y = WBC)) +
   guides(fill = "none", col = "none") +
   scale_fill_viridis_d(option = "cividis", alpha = 0.3) +
   coord_flip() +
-  labs(x = "Hospitalized in Past Year? (0 - No, 1 = Yes)",
+  labs(x = "Hospitalized in Past Year? (0 = No, 1 = Yes)",
        y = "White blood cell count (1000 cells / uL)",
        title = "White Blood Cell Count by Hospitalization Status",
        subtitle = glue(nrow(dat3), " NHANES participants in nh432"))
@@ -381,7 +381,7 @@ tidy(lm3, conf.int = TRUE, conf.level = 0.90) |>
 Note that this approach estimates the difference with Not Hospitalized - Hospitalized, as opposed to the approach used in the linear model. Be careful to check the sample estimates provided in your output against the original summary of the sample data to avoid making a mistake.
 
 ```{r}
-tt3p <- t.test(WBC ~ HOSPITAL, data = dat3, var.equal = TRUE)
+tt3p <- t.test(WBC ~ HOSPITAL, data = dat3, var.equal = TRUE, conf.level = 0.90)
 
 tt3p
 
@@ -402,7 +402,7 @@ Again, note that the `t.test()` approach estimates Non-Hospitalized - Hospitaliz
 The Welch t test (which is actually the default `t.test` in R) assumes that the two groups each follow a Normal distribution, but does not require that those distributions have the same population variance.
 
 ```{r}
-tt3w <- t.test(WBC ~ HOSPITAL, data = dat3)
+tt3w <- t.test(WBC ~ HOSPITAL, data = dat3, conf.level = 0.90)
 
 tt3w
 
@@ -498,7 +498,7 @@ favstats(log(WBC) ~ HOSPITAL, data = dat3) |>
 We see that there's essentially no difference at all in the means of the log(WBC) values across the two levels of hospitalization status.
 
 ```{r}
-tt3log <- t.test(log(WBC) ~ HOSPITAL, data = dat3, var.equal = TRUE)
+tt3log <- t.test(log(WBC) ~ HOSPITAL, data = dat3, var.equal = TRUE, conf.level = 0.90)
 
 tidy(tt3log, conf.int = TRUE, conf.level = 0.90) |>
   select(estimate1, estimate2, estimate, conf.low, conf.high, p.value)
@@ -526,7 +526,7 @@ ggplot(dat4, aes(x = factor(SLPTROUB), y = WAIST)) +
                shape = 23, size = 3) +
   guides(fill = "none", col = "none") +
   scale_fill_brewer(palette = "Accent") +
-  labs(x = "Reported Sleep Trouble to a Doctor? (0 - No, 1 = Yes)",
+  labs(x = "Reported Sleep Trouble to a Doctor? (0 = No, 1 = Yes)",
        y = "Waist circumference (cm)",
        title = "Waist Circumference by Sleep Trouble",
        subtitle = glue(nrow(dat4), " NHANES participants in Fair health in nh432"))
@@ -578,7 +578,7 @@ tidy(lm4, conf.int = TRUE, conf.level = 0.90) |>
 ### Pooled t test (assumes equal variances) via `t.test`
 
 ```{r}
-tt4p <- t.test(WAIST ~ SLPTROUB, data = dat4, var.equal = TRUE)
+tt4p <- t.test(WAIST ~ SLPTROUB, data = dat4, var.equal = TRUE, conf.level = 0.90)
 
 tt4p
 
@@ -595,7 +595,7 @@ tidy(tt4p, conf.int = TRUE, conf.level = 0.90) |>
 ### Welch t test (doesn't assume equal variance) via `t.test`
 
 ```{r}
-tt4w <- t.test(WAIST ~ SLPTROUB, data = dat4)
+tt4w <- t.test(WAIST ~ SLPTROUB, data = dat4, conf.level = 0.90)
 
 tt4w
 
@@ -783,8 +783,7 @@ The main problems here are that:
 Another approach to developing pairwise inferences would be to use either Bonferroni or (my preference) Holm-adjusted p values for the relevant t tests. First, we'll run the appropriate Holm comparison of means assuming equal population variances of SBP across all three WTGOAL groups.
 
 ```{r}
-ht5 <- pairwise.t.test(dat5$SBP, dat5$WTGOAL, pool.sd = TRUE, 
-                       p.adjust.method = "holm")
+ht5 <- pairwise.t.test(dat5$SBP, dat5$WTGOAL, pool.sd = TRUE, p.adjust.method = "holm")
 tidy(ht5) |>
   gt()
 ```
