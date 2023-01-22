@@ -11,21 +11,21 @@ book:
   chapters:
     - index.qmd
     - setup.qmd
-    - 01-nhanes.qmd
-    - 02-nh432cb.qmd
-    - 03-431review1.qmd
-    - 04-431review2.qmd
-    - 05-431review3.qmd
-    - 06-smart.qmd
-    - 07-singleimputation.qmd
-    - 08-datasummaries.qmd
-    - 09-anovasmart.qmd
-    - 10-anovaexamples.qmd
-    - 11-ancova_emphysema.qmd
-    - 12-ancova_smart.qmd
-    - 13-nonlinearity.qmd
-    - 14-olsfitting.qmd
-    - 90-incomplete.qmd
+    - nhanes.qmd
+    - nh432cb.qmd
+    - 431review1.qmd
+    - 431review2.qmd
+    - 431review3.qmd
+    - smart.qmd
+    - singleimputation.qmd
+    - datasummaries.qmd
+    - anovasmart.qmd
+    - anovaexamples.qmd
+    - ancova_emphysema.qmd
+    - ancova_smart.qmd
+    - nonlinearity.qmd
+    - olsfitting.qmd
+    - incomplete.qmd
 
 format:
   html:
