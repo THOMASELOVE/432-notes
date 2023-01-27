@@ -262,7 +262,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#mod1-a-simple-t-test-model" id="toc-mod1-a-simple-t-test-model" class="nav-link" data-scroll-target="#mod1-a-simple-t-test-model"><span class="toc-section-number">12.3</span>  <code>mod1</code>: A simple t-test model</a></li>
   <li><a href="#mod2-adding-another-predictor-two-way-anova-without-interaction" id="toc-mod2-adding-another-predictor-two-way-anova-without-interaction" class="nav-link" data-scroll-target="#mod2-adding-another-predictor-two-way-anova-without-interaction"><span class="toc-section-number">12.4</span>  <code>mod2</code>: Adding another predictor (two-way ANOVA without interaction)</a></li>
   <li><a href="#mod3-adding-the-interaction-term-two-way-anova-with-interaction" id="toc-mod3-adding-the-interaction-term-two-way-anova-with-interaction" class="nav-link" data-scroll-target="#mod3-adding-the-interaction-term-two-way-anova-with-interaction"><span class="toc-section-number">12.5</span>  <code>mod3</code>: Adding the interaction term (Two-way ANOVA with interaction)</a></li>
-  <li><a href="#mod4-using-female-and-physhealth-in-a-model-for-bmi" id="toc-mod4-using-female-and-physhealth-in-a-model-for-bmi" class="nav-link" data-scroll-target="#mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="toc-section-number">12.6</span>  <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></a></li>
+  <li><a href="#mod4-using-smoke100-and-physhealth-in-a-model-for-bmi" id="toc-mod4-using-smoke100-and-physhealth-in-a-model-for-bmi" class="nav-link" data-scroll-target="#mod4-using-smoke100-and-physhealth-in-a-model-for-bmi"><span class="toc-section-number">12.6</span>  <code>mod4</code>: Using <code>smoke100</code> and <code>physhealth</code> in a model for <code>bmi</code></a></li>
   <li><a href="#making-predictions-with-a-linear-regression-model" id="toc-making-predictions-with-a-linear-regression-model" class="nav-link" data-scroll-target="#making-predictions-with-a-linear-regression-model"><span class="toc-section-number">12.7</span>  Making Predictions with a Linear Regression Model</a>
   <ul class="collapse">
   <li><a href="#fitting-an-individual-prediction-and-95-prediction-interval" id="toc-fitting-an-individual-prediction-and-95-prediction-interval" class="nav-link" data-scroll-target="#fitting-an-individual-prediction-and-95-prediction-interval"><span class="toc-section-number">12.7.1</span>  Fitting an Individual Prediction and 95% Prediction Interval</a></li>
@@ -642,14 +642,14 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>The interaction term doesn’t change very much here. Its uncertainty interval includes zero, and the overall model still accounts for less than 1% of the variation in <code>bmi</code>.</p>
 </section>
-<section id="mod4-using-female-and-physhealth-in-a-model-for-bmi" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="mod4-using-female-and-physhealth-in-a-model-for-bmi"><span class="header-section-number">12.6</span> <code>mod4</code>: Using <code>female</code> and <code>physhealth</code> in a model for <code>bmi</code></h2>
+<section id="mod4-using-smoke100-and-physhealth-in-a-model-for-bmi" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="mod4-using-smoke100-and-physhealth-in-a-model-for-bmi"><span class="header-section-number">12.6</span> <code>mod4</code>: Using <code>smoke100</code> and <code>physhealth</code> in a model for <code>bmi</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> physhealth, <span class="at">y =</span> bmi, <span class="at">color =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> physhealth, <span class="at">y =</span> bmi, <span class="at">color =</span> <span class="fu">factor</span>(smoke100))) <span class="sc">+</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">col =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> female, <span class="at">labeller =</span> label_both) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> smoke100, <span class="at">labeller =</span> label_both) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -657,35 +657,35 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Does the difference in slopes of <code>bmi</code> and <code>physhealth</code> for males and females appear to be substantial and important?</p>
+<p>Does the difference in slopes of <code>bmi</code> and <code>physhealth</code> for those who have and haven’t smoked at least 100 cigarettes appear to be substantial and important?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">*</span> physhealth, <span class="at">data =</span> smart_cle1_sh)</span>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">*</span> physhealth, <span class="at">data =</span> smart_cle1_sh)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = bmi ~ female * physhealth, data = smart_cle1_sh)
+lm(formula = bmi ~ smoke100 * physhealth, data = smart_cle1_sh)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--18.069  -3.825  -0.624   2.516  38.526 
+-19.011  -3.811  -0.559   2.609  38.249 
 
 Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)       27.92386    0.32196  86.731  &lt; 2e-16 ***
-female            -0.30335    0.42346  -0.716    0.474    
-physhealth         0.13700    0.03277   4.180 3.14e-05 ***
-female:physhealth -0.01203    0.04191  -0.287    0.774    
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         27.49077    0.28369  96.904  &lt; 2e-16 ***
+smoke100             0.57017    0.41911   1.360 0.173965    
+physhealth           0.10840    0.02995   3.619 0.000308 ***
+smoke100:physhealth  0.03326    0.04093   0.813 0.416561    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.262 on 1129 degrees of freedom
-Multiple R-squared:  0.03486,   Adjusted R-squared:  0.03229 
-F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
+Residual standard error: 6.252 on 1129 degrees of freedom
+Multiple R-squared:  0.03782,   Adjusted R-squared:  0.03526 
+F-statistic: 14.79 on 3 and 1129 DF,  p-value: 1.886e-09</code></pre>
 </div>
 </div>
-<p>Does it seem as though the addition of <code>physhealth</code> has improved our model substantially over a model with <code>female</code> alone (which, you recall, was <code>mod1</code>)?</p>
+<p>Does it seem as though the addition of <code>physhealth</code> has improved our model substantially over a model with <code>smoke100</code> alone (which, you recall, was <code>mod1</code>)?</p>
 <p>Since the <code>mod4</code> model contains the <code>mod1</code> model’s predictors as a subset and the outcome is the same for each model, we consider the models <em>nested</em> and have some extra tools available to compare them.</p>
 <ul>
 <li>I might start by looking at the basic summaries for each model.</li>
@@ -696,7 +696,7 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <pre><code># A tibble: 1 × 12
   r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
-1  0.0349  0.0323  6.26    13.6 1.03e-8     3 -3684. 7378. 7403.  44265.    1129
+1  0.0378  0.0353  6.25    14.8 1.89e-9     3 -3682. 7375. 7400.  44129.    1129
 # … with 1 more variable: nobs &lt;int&gt;, and abbreviated variable names
 #   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
 </div>
@@ -722,55 +722,57 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
-Model 1: bmi ~ female * physhealth
+Model 1: bmi ~ smoke100 * physhealth
 Model 2: bmi ~ smoke100
-  Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
-1   1129 44265                                  
-2   1131 45649 -2     -1384 17.649 2.834e-08 ***
+  Res.Df   RSS Df Sum of Sq     F    Pr(&gt;F)    
+1   1129 44129                                 
+2   1131 45649 -2   -1519.7 19.44 5.005e-09 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<p>The addition of the <code>physhealth</code> term appears to be a statistically detectable improvement, not that that means very much.</p>
+<p>The addition of the <code>physhealth</code> term appears to be an improvement, not that that means very much.</p>
 </section>
 <section id="making-predictions-with-a-linear-regression-model" class="level2" data-number="12.7">
 <h2 data-number="12.7" class="anchored" data-anchor-id="making-predictions-with-a-linear-regression-model"><span class="header-section-number">12.7</span> Making Predictions with a Linear Regression Model</h2>
-<p>Recall model 4, which yields predictions for body mass index on the basis of the main effects of sex (<code>female</code>) and days of poor physical health (<code>physhealth</code>) and their interaction.</p>
+<p>Recall model 4, which yields predictions for body mass index on the basis of the main effects of having smoked (<code>smoke100</code>) and days of poor physical health (<code>physhealth</code>) and their interaction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mod4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = bmi ~ female * physhealth, data = smart_cle1_sh)
+lm(formula = bmi ~ smoke100 * physhealth, data = smart_cle1_sh)
 
 Coefficients:
-      (Intercept)             female         physhealth  female:physhealth  
-         27.92386           -0.30335            0.13700           -0.01203  </code></pre>
+        (Intercept)             smoke100           physhealth  
+           27.49077              0.57017              0.10840  
+smoke100:physhealth  
+            0.03326  </code></pre>
 </div>
 </div>
 <section id="fitting-an-individual-prediction-and-95-prediction-interval" class="level3" data-number="12.7.1">
 <h3 data-number="12.7.1" class="anchored" data-anchor-id="fitting-an-individual-prediction-and-95-prediction-interval"><span class="header-section-number">12.7.1</span> Fitting an Individual Prediction and 95% Prediction Interval</h3>
-<p>What do we predict for the <code>bmi</code> of a subject who is <code>female</code> and had 8 poor physical health days in the past 30?</p>
+<p>What do we predict for the <code>bmi</code> of a subject who has smoked at least 100 cigarettes in their life and had 8 poor physical health days in the past 30?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>new1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">female =</span> <span class="dv">1</span>, <span class="at">physhealth =</span> <span class="dv">8</span>)</span>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>new1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">smoke100 =</span> <span class="dv">1</span>, <span class="at">physhealth =</span> <span class="dv">8</span>)</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod4, <span class="at">newdata =</span> new1, <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       fit      lwr     upr
-1 28.62022 16.32454 40.9159</code></pre>
+<pre><code>       fit      lwr      upr
+1 29.19423 16.91508 41.47338</code></pre>
 </div>
 </div>
-<p>The predicted <code>bmi</code> for this new subject is shown above. The prediction interval shows the bounds of a 95% uncertainty interval for a predicted <code>bmi</code> for an individual female subject who has 8 days of poor physical health out of the past 30. From the <code>predict</code> function applied to a linear model, we can get the prediction intervals for any new data points in this manner.</p>
+<p>The predicted <code>bmi</code> for this new subject is shown above. The prediction interval shows the bounds of a 95% uncertainty interval for a predicted <code>bmi</code> for an individual smoker<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> who has 8 days of poor physical health out of the past 30. From the <code>predict</code> function applied to a linear model, we can get the prediction intervals for any new data points in this manner.</p>
 </section>
 <section id="confidence-interval-for-an-average-prediction" class="level3" data-number="12.7.2">
 <h3 data-number="12.7.2" class="anchored" data-anchor-id="confidence-interval-for-an-average-prediction"><span class="header-section-number">12.7.2</span> Confidence Interval for an Average Prediction</h3>
 <ul>
-<li>What do we predict for the <strong>average body mass index of a population of subjects</strong> who are female and have <code>physhealth = 8</code>?</li>
+<li>What do we predict for the <strong>average body mass index of a population of subjects</strong> who are smokers and have <code>physhealth = 8</code>?</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod4, <span class="at">newdata =</span> new1, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 28.62022 28.12256 29.11788</code></pre>
+1 29.19423 28.64267 29.74579</code></pre>
 </div>
 </div>
 <ul>
@@ -780,95 +782,92 @@ Coefficients:
 <section id="fitting-multiple-individual-predictions-to-new-data" class="level3" data-number="12.7.3">
 <h3 data-number="12.7.3" class="anchored" data-anchor-id="fitting-multiple-individual-predictions-to-new-data"><span class="header-section-number">12.7.3</span> Fitting Multiple Individual Predictions to New Data</h3>
 <ul>
-<li>How does our prediction change for a respondent if they instead have 7, or 9 poor physical health days? What if they are male, instead of female?</li>
+<li>How does our prediction change for a respondent if they instead have 7, or 9 poor physical health days? What if they have or don’t have a history of smoking?</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>c8_new2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">subjectid =</span> <span class="dv">1001</span><span class="sc">:</span><span class="dv">1006</span>, <span class="at">female =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">physhealth =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>))</span>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>c8_new2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">subjectid =</span> <span class="dv">1001</span><span class="sc">:</span><span class="dv">1006</span>, <span class="at">smoke100 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">physhealth =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>))</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pred2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod4, <span class="at">newdata =</span> c8_new2, <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(c8_new2, pred2)</span>
 <span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>result2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
-  subjectid female physhealth   fit   lwr   upr
-      &lt;int&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1      1001      1          7  28.5  16.2  40.8
-2      1002      1          8  28.6  16.3  40.9
-3      1003      1          9  28.7  16.4  41.0
-4      1004      0          7  28.9  16.6  41.2
-5      1005      0          8  29.0  16.7  41.3
-6      1006      0          9  29.2  16.9  41.5</code></pre>
+  subjectid smoke100 physhealth   fit   lwr   upr
+      &lt;int&gt;    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1      1001        1          7  29.1  16.8  41.3
+2      1002        1          8  29.2  16.9  41.5
+3      1003        1          9  29.3  17.1  41.6
+4      1004        0          7  28.2  16.0  40.5
+5      1005        0          8  28.4  16.1  40.6
+6      1006        0          9  28.5  16.2  40.7</code></pre>
 </div>
 </div>
 <p>The <code>result2</code> tibble contains predictions for each scenario.</p>
 <ul>
-<li>Which has a bigger impact on these predictions and prediction intervals? A one category change in <code>female</code> or a one hour change in <code>physhealth</code>?</li>
+<li>Which has a bigger impact on these predictions and prediction intervals? A one category change in <code>smoke100</code> or a one hour change in <code>physhealth</code>?</li>
 </ul>
 </section>
 </section>
 <section id="centering-the-model" class="level2" data-number="12.8">
 <h2 data-number="12.8" class="anchored" data-anchor-id="centering-the-model"><span class="header-section-number">12.8</span> Centering the model</h2>
-<p>Our model <code>mod4</code> has four predictors (the constant, <code>physhealth</code>, <code>female</code> and their interaction) but just two inputs (<code>female</code> and <code>physhealth</code>.) If we <strong>center</strong> the quantitative input <code>physhealth</code> before building the model, we get a more interpretable interaction term.</p>
+<p>Our model <code>mod4</code> has four predictors (the constant, <code>physhealth</code>, <code>smoke100</code> and their interaction) but just two inputs (<code>smoke100</code> and <code>physhealth</code>.) If we <strong>center</strong> the quantitative input <code>physhealth</code> before building the model, we get a more interpretable interaction term.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh_c <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">physhealth_c =</span> physhealth <span class="sc">-</span> <span class="fu">mean</span>(physhealth))</span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>mod4_c <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">*</span> physhealth_c, <span class="at">data =</span> smart_cle1_sh_c)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>mod4_c <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">*</span> physhealth_c, <span class="at">data =</span> smart_cle1_sh_c)</span>
 <span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = bmi ~ female * physhealth_c, data = smart_cle1_sh_c)
+lm(formula = bmi ~ smoke100 * physhealth_c, data = smart_cle1_sh_c)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--18.069  -3.825  -0.624   2.516  38.526 
+-19.011  -3.811  -0.559   2.609  38.249 
 
 Coefficients:
-                    Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)         28.56520    0.29213  97.784  &lt; 2e-16 ***
-female              -0.35969    0.37917  -0.949    0.343    
-physhealth_c         0.13700    0.03277   4.180 3.14e-05 ***
-female:physhealth_c -0.01203    0.04191  -0.287    0.774    
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)           27.99821    0.25576 109.471  &lt; 2e-16 ***
+smoke100               0.72589    0.37288   1.947 0.051818 .  
+physhealth_c           0.10840    0.02995   3.619 0.000308 ***
+smoke100:physhealth_c  0.03326    0.04093   0.813 0.416561    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.262 on 1129 degrees of freedom
-Multiple R-squared:  0.03486,   Adjusted R-squared:  0.03229 
-F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
+Residual standard error: 6.252 on 1129 degrees of freedom
+Multiple R-squared:  0.03782,   Adjusted R-squared:  0.03526 
+F-statistic: 14.79 on 3 and 1129 DF,  p-value: 1.886e-09</code></pre>
 </div>
 </div>
 <p>What has changed as compared to the original <code>mod4</code>?</p>
 <ul>
-<li>Our original model was <code>bmi</code> = 27.92 - 0.30 <code>female</code> + 0.14 <code>physhealth</code> - 0.01 <code>female</code> x <code>physhealth</code></li>
-<li>Our new model is <code>bmi</code> = 28.57 - 0.36 <code>female</code> + 0.14 centered <code>physhealth</code> - 0.01 <code>female</code> x centered <code>physhealth</code>.</li>
+<li>Our original model was <code>bmi</code> = 27.5 + 0.57 <code>smoke100</code> + 0.11 <code>physhealth</code> - 0.03 <code>smoke100</code> x <code>physhealth</code></li>
+<li>Our new model is <code>bmi</code> = 28.0 + 0.73 <code>smoke100</code> + 0.11 centered <code>physhealth</code> + 0.03 <code>smoke100</code> x centered <code>physhealth</code>.</li>
 </ul>
 <p>So our new model on centered data is:</p>
 <ul>
-<li>28.57 + 0.14 centered <code>physhealth_c</code> for male subjects, and</li>
-<li>(28.57 - 0.30) + (0.14 - 0.01) centered <code>physhealth_c</code>, or 28.27 - 0.13 centered <code>physhealth_c</code> for female subjects.</li>
+<li>28.0 + 0.11 centered <code>physhealth_c</code> for non-smokers, and</li>
+<li>(28.0 + 0.73) + (0.11 - 0.03) centered <code>physhealth_c</code>, or 28.73 + 0.08 centered <code>physhealth_c</code> for smokers.</li>
 </ul>
 <p>In our new (centered <code>physhealth_c</code>) model,</p>
 <ul>
-<li>the main effect of <code>female</code> now corresponds to a predictive difference (female - male) in <code>bmi</code> with <code>physhealth</code> at its mean value, 4.68 days,</li>
-<li>the intercept term is now the predicted <code>bmi</code> for a male respondent with an average <code>physhealth</code>, and</li>
-<li>the product term corresponds to the change in the slope of centered <code>physhealth_c</code> on <code>bmi</code> for a female rather than a male subject, while</li>
+<li>the main effect of <code>smoke100</code> now corresponds to a predictive difference (smoker - non-smoker) in <code>bmi</code> with <code>physhealth</code> at its mean value, 4.68 days,</li>
+<li>the intercept term is now the predicted <code>bmi</code> for a non-smoker with an average <code>physhealth</code>, and</li>
+<li>the product term corresponds to the change in the slope of centered <code>physhealth_c</code> on <code>bmi</code> for a smoker rather than a non-smoker, while</li>
 <li>the residual standard deviation and the R-squared values remain unchanged from the model before centering.</li>
 </ul>
 <section id="plot-of-model-4-on-centered-physhealth-mod4_c" class="level3" data-number="12.8.1">
 <h3 data-number="12.8.1" class="anchored" data-anchor-id="plot-of-model-4-on-centered-physhealth-mod4_c"><span class="header-section-number">12.8.1</span> Plot of Model 4 on Centered <code>physhealth</code>: <code>mod4_c</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_c, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_c, <span class="at">y =</span> bmi, <span class="at">group =</span> female, <span class="at">col =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_c, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_c, <span class="at">y =</span> bmi, <span class="at">group =</span> smoke100, <span class="at">col =</span> <span class="fu">factor</span>(smoke100))) <span class="sc">+</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x) <span class="sc">+</span></span>
 <span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
 <span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Poor Physical Health Days, centered"</span>, <span class="at">y =</span> <span class="st">"Body Mass Index"</span>,</span>
 <span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Model `mod4` on centered data"</span>) <span class="sc">+</span></span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> female, <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> smoke100, <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -879,7 +878,7 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <h2 data-number="12.9" class="anchored" data-anchor-id="rescaling-an-input-by-subtracting-the-mean-and-dividing-by-2-standard-deviations"><span class="header-section-number">12.9</span> Rescaling an input by subtracting the mean and dividing by 2 standard deviations</h2>
 <p>Centering helped us interpret the main effects in the regression, but it still leaves a scaling problem.</p>
 <ul>
-<li>The <code>female</code> coefficient estimate is much larger than that of <code>physhealth</code>, but this is misleading, considering that we are comparing the complete change in one variable (sex = female or not) to a 1-day change in <code>physhealth</code>.</li>
+<li>The <code>smoke100</code> coefficient estimate is much larger than that of <code>physhealth</code>, but this is misleading, considering that we are comparing the complete change in one variable (smoking or not) to a 1-day change in <code>physhealth</code>.</li>
 <li><span class="citation" data-cites="GelmanHill2007">@GelmanHill2007</span> recommend all continuous predictors be scaled by dividing by 2 standard deviations, so that:
 <ul>
 <li>a 1-unit change in the rescaled predictor corresponds to a change from 1 standard deviation below the mean, to 1 standard deviation above.</li>
@@ -887,36 +886,36 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh_rescale <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">physhealth_z =</span> (physhealth <span class="sc">-</span> <span class="fu">mean</span>(physhealth))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sd</span>(physhealth)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh_rescale <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">physhealth_z =</span> (physhealth <span class="sc">-</span> <span class="fu">mean</span>(physhealth))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sd</span>(physhealth)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="refitting-model-mod4-to-the-rescaled-data" class="level3" data-number="12.9.1">
 <h3 data-number="12.9.1" class="anchored" data-anchor-id="refitting-model-mod4-to-the-rescaled-data"><span class="header-section-number">12.9.1</span> Refitting model <code>mod4</code> to the rescaled data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>mod4_z <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">*</span> physhealth_z, <span class="at">data =</span> smart_cle1_sh_rescale)</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>mod4_z <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">*</span> physhealth_z, <span class="at">data =</span> smart_cle1_sh_rescale)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4_z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = bmi ~ female * physhealth_z, data = smart_cle1_sh_rescale)
+lm(formula = bmi ~ smoke100 * physhealth_z, data = smart_cle1_sh_rescale)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--18.069  -3.825  -0.624   2.516  38.526 
+-19.011  -3.811  -0.559   2.609  38.249 
 
 Coefficients:
-                    Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          28.5652     0.2921  97.784  &lt; 2e-16 ***
-female               -0.3597     0.3792  -0.949    0.343    
-physhealth_z          2.4991     0.5978   4.180 3.14e-05 ***
-female:physhealth_z  -0.2195     0.7645  -0.287    0.774    
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            27.9982     0.2558 109.471  &lt; 2e-16 ***
+smoke100                0.7259     0.3729   1.947 0.051818 .  
+physhealth_z            1.9774     0.5463   3.619 0.000308 ***
+smoke100:physhealth_z   0.6068     0.7467   0.813 0.416561    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.262 on 1129 degrees of freedom
-Multiple R-squared:  0.03486,   Adjusted R-squared:  0.03229 
-F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
+Residual standard error: 6.252 on 1129 degrees of freedom
+Multiple R-squared:  0.03782,   Adjusted R-squared:  0.03526 
+F-statistic: 14.79 on 3 and 1129 DF,  p-value: 1.886e-09</code></pre>
 </div>
 </div>
 </section>
@@ -924,19 +923,19 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <h3 data-number="12.9.2" class="anchored" data-anchor-id="interpreting-the-model-on-rescaled-data"><span class="header-section-number">12.9.2</span> Interpreting the model on rescaled data</h3>
 <p>What has changed as compared to the original <code>mod4</code>?</p>
 <ul>
-<li>Our original model was <code>bmi</code> = 27.92 - 0.30 <code>female</code> + 0.14 <code>physhealth</code> - 0.01 <code>female</code> x <code>physhealth</code></li>
-<li>Our model on centered <code>physhealth</code> was <code>bmi</code> = 28.57 - 0.36 <code>female</code> + 0.14 centered <code>physhealth</code> - 0.01 <code>female</code> x centered <code>physhealth</code>.</li>
-<li>Our new model on rescaled <code>physhealth</code> is <code>bmi</code> = 28.58 - 0.37 <code>female</code> + 2.50 rescaled <code>physhealth_z</code> - 0.22 <code>female</code> x rescaled <code>physhealth_z</code>.</li>
+<li>Our original model was <code>bmi</code> = 27.5 + 0.57 <code>smoke100</code> + 0.11 <code>physhealth</code> + 0.03 <code>smoke100</code> x <code>physhealth</code></li>
+<li>Our model on centered <code>physhealth</code> was <code>bmi</code> = 28.0 + 0.73 <code>smoke100</code> + 0.11 centered <code>physhealth</code> + 0.03 <code>smoke100</code> x centered <code>physhealth</code>.</li>
+<li>Our new model on rescaled <code>physhealth</code> is <code>bmi</code> = 28.0 + 0.73 <code>smoke100</code> + 1.98 rescaled <code>physhealth</code> + 0.61 <code>smoke100</code> x rescaled <code>physhealth</code></li>
 </ul>
 <p>So our rescaled model is:</p>
 <ul>
-<li>28.58 + 2.50 rescaled <code>physhealth_z</code> for male subjects, and</li>
-<li>(28.58 - 0.37) + (2.50 - 0.22) rescaled <code>physhealth_z</code>, or 28.21 + 2.28 rescaled <code>physhealth_z</code> for female subjects.</li>
+<li>28.0 + 1.98 rescaled <code>physhealth_z</code> for non-smokers, and</li>
+<li>(28.0 + 0.73) + (1.98 + 0.61) rescaled <code>physhealth_z</code>, or 28.73 + 2.59 rescaled <code>physhealth_z</code> for smokers.</li>
 </ul>
 <p>In this new rescaled (<code>physhealth_z</code>) model, then,</p>
 <ul>
-<li>the main effect of <code>female</code>, -0.37, still corresponds to a predictive difference (female - male) in <code>bmi</code> with <code>physhealth</code> at its mean value, 4.68 days,</li>
-<li>the intercept term is still the predicted <code>bmi</code> for a male respondent with an average <code>physhealth</code> count, and</li>
+<li>the main effect of <code>smoke100</code>, 0.73, still corresponds to a predictive difference (smoker - non-smoker) in <code>bmi</code> with <code>physhealth</code> at its mean value, 4.68 days,</li>
+<li>the intercept term is still the predicted <code>bmi</code> for a non-smoker with an average <code>physhealth</code> count, and</li>
 <li>the residual standard deviation and the R-squared values remain unchanged,</li>
 </ul>
 <p>as before, but now we also have that:</p>
@@ -947,26 +946,26 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> physhealth, <span class="at">data =</span> smart_cle1_sh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> physhealth, <span class="at">data =</span> smart_cle1_sh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> min Q1 median Q3 max     mean       sd    n missing
    0  0      0  4  30 4.681377 9.120899 1133       0</code></pre>
 </div>
 </div>
 <ul>
-<li>the coefficient of the product term (-0.22) corresponds to the change in the coefficient of <code>physhealth_z</code> for females as compared to males.</li>
+<li>the coefficient of the product term (0.61) corresponds to the change in the coefficient of <code>physhealth_z</code> for smokers as compared to non-smokers.</li>
 </ul>
 </section>
 <section id="plot-of-model-on-rescaled-data" class="level3" data-number="12.9.3">
 <h3 data-number="12.9.3" class="anchored" data-anchor-id="plot-of-model-on-rescaled-data"><span class="header-section-number">12.9.3</span> Plot of model on rescaled data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_rescale, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_z, <span class="at">y =</span> bmi, </span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">group =</span> female, <span class="at">col =</span> <span class="fu">factor</span>(female))) <span class="sc">+</span></span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Is subject female?"</span>) <span class="sc">+</span></span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Poor Physical Health Days, standardized (2 sd)"</span>, <span class="at">y =</span> <span class="st">"Body Mass Index"</span>,</span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Model `mod4_z` on rescaled data"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh_rescale, <span class="fu">aes</span>(<span class="at">x =</span> physhealth_z, <span class="at">y =</span> bmi, </span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">group =</span> smoke100, <span class="at">col =</span> <span class="fu">factor</span>(smoke100))) <span class="sc">+</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Is subject a smoker?"</span>) <span class="sc">+</span></span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Poor Physical Health Days, standardized (2 sd)"</span>, <span class="at">y =</span> <span class="st">"Body Mass Index"</span>,</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Model `mod4_z` on rescaled data"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
 ℹ Please use `linewidth` instead.</code></pre>
@@ -985,13 +984,13 @@ F-statistic: 13.59 on 3 and 1129 DF,  p-value: 1.027e-08</code></pre>
 <h2 data-number="12.10" class="anchored" data-anchor-id="mod5-what-if-we-add-more-variables"><span class="header-section-number">12.10</span> <code>mod5</code>: What if we add more variables?</h2>
 <p>We can boost our <span class="math inline">\(R^2\)</span> a bit, to nearly 5%, by adding in two new variables, related to whether or not the subject (in the past 30 days) used the internet, and the average number of alcoholic drinks per week consumed by ths subject.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>mod5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">+</span> smoke100 <span class="sc">+</span> physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk,</span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh)</span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>mod5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> female <span class="sc">+</span>physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk,</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = bmi ~ female + smoke100 + physhealth + internet30 + 
+lm(formula = bmi ~ smoke100 + female + physhealth + internet30 + 
     drinks_wk, data = smart_cle1_sh)
 
 Residuals:
@@ -1001,8 +1000,8 @@ Residuals:
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept) 27.52400    0.56076  49.083  &lt; 2e-16 ***
-female      -0.43272    0.38510  -1.124  0.26140    
 smoke100     0.82654    0.37739   2.190  0.02872 *  
+female      -0.43272    0.38510  -1.124  0.26140    
 physhealth   0.12469    0.02074   6.012 2.47e-09 ***
 internet30   0.44287    0.48830   0.907  0.36462    
 drinks_wk   -0.10193    0.03352  -3.041  0.00241 ** 
@@ -1018,14 +1017,14 @@ F-statistic: 10.82 on 5 and 1127 DF,  p-value: 3.48e-10</code></pre>
 <li>Here’s the ANOVA for this model. What can we study with this?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: bmi
              Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-female        1     16   16.30  0.4198  0.517171    
-smoke100      1    203  203.30  5.2354  0.022316 *  
+smoke100      1    215  214.75  5.5304  0.018861 *  
+female        1      5    4.85  0.1249  0.723878    
 physhealth    1   1508 1508.08 38.8372 6.497e-10 ***
 internet30    1     15   14.69  0.3783  0.538650    
 drinks_wk     1    359  359.05  9.2466  0.002414 ** 
@@ -1038,8 +1037,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>Consider the revised output below. Now what can we study?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> female <span class="sc">+</span> physhealth,</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> female <span class="sc">+</span> physhealth,</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -1059,10 +1058,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>What does the output below let us conclude?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> female <span class="sc">+</span> physhealth, </span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh),</span>
-<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> female <span class="sc">+</span> drinks_wk, </span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> female <span class="sc">+</span> physhealth, </span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh),</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(bmi <span class="sc">~</span> smoke100 <span class="sc">+</span> female <span class="sc">+</span> drinks_wk, </span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -1083,9 +1082,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2 data-number="12.11" class="anchored" data-anchor-id="mod6-would-adding-self-reported-health-help"><span class="header-section-number">12.11</span> <code>mod6</code>: Would adding self-reported health help?</h2>
 <p>And we can do even a bit better than that by adding in a multi-categorical measure: self-reported general health.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mod6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">+</span> smoke100 <span class="sc">+</span> physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> genhealth,</span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh)</span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>mod6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bmi <span class="sc">~</span> female <span class="sc">+</span> smoke100 <span class="sc">+</span> physhealth <span class="sc">+</span> internet30 <span class="sc">+</span> drinks_wk <span class="sc">+</span> genhealth,</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smart_cle1_sh)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1121,7 +1120,7 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><p>What does this normal probability plot of the residuals suggest?</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1148,7 +1147,7 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>How does the assumption of linearity behind this model look?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1158,7 +1157,7 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>What can we conclude from the plot below?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1166,7 +1165,7 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>This plot can help us identify points with large standardized residuals, large leverage values, and large influence on the model (as indicated by large values of Cook’s distance.) In this case, I see no signs of any points used in the model with especially large influence, although there are some poorly fitted points (with especially large standardized residuals.)</p>
 <p>We might want to identify the point listed here as 961, which appears to have an enormous standardized residual. To do so, we can use the <code>slice</code> function from <code>dplyr</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">961</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(SEQNO)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">961</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(SEQNO)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 1
        SEQNO
@@ -1179,21 +1178,21 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>What other residual plots are available with <code>plot</code> and how do we interpret them?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This plot is simply a Normal Q-Q plot of the standardized residuals from our model. We’re looking here for serious problems with the assumption of Normality.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This is a scale-location plot, designed to help us see non-constant variance in the residuals as we move across the fitted values as a linear trend, rather than as a fan shape, by plotting the square root of the residuals on the vertical axis.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod6, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="ancova_smart_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1202,6 +1201,12 @@ F-statistic: 12.65 on 9 and 1123 DF,  p-value: &lt; 2.2e-16</code></pre>
 
 
 </section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>I’ll now refer to those who have smoked at least 100 cigarettes in their life as smokers, and those who have not as non-smokers to save some space.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->
