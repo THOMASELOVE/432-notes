@@ -1,10 +1,31 @@
-# A Study of Prostate Cancer
+# A Model for Prostate Cancer
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+prost <- read_csv("data/prost.csv", show_col_types = FALSE) 
+```
 
 ## Data Load and Background
 
 The data in `prost.csv` is derived from @Stamey1989 who examined the relationship between the level of prostate-specific antigen and a number of clinical measures in 97 men who were about to receive a radical prostatectomy. The `prost` data, as I'll name it in R, contains 97 rows and 11 columns.
 
-```{r prost_tibble}
+```{r}
 prost
 ```
 
@@ -45,8 +66,8 @@ The code below adds to the `prost` tibble:
 - a centered version of `lcavol` called `lcavol_c`,
 - exponentiated `cavol` and `psa` results derived from the natural logarithms `lcavol` and `lpsa`.
 
-```{r c11_prost_mutations}
-prost <- prost %>%
+```{r}
+prost <- prost |>
     mutate(svi_f = fct_recode(factor(svi), "No" = "0", "Yes" = "1"),
            gleason_f = fct_relevel(gleason, c("> 7", "7", "6")),
            bph_f = fct_relevel(bph, c("Low", "Medium", "High")),
@@ -59,13 +80,13 @@ glimpse(prost)
 
 ## Fitting and Evaluating a Two-Predictor Model
 
-To begin, let's use two predictors (`lcavol` and `svi`) and their interaction in a linear regression model that predicts `lpsa`. I'll call this model `c11_prost_A`
+To begin, let's use two predictors (`lcavol` and `svi`) and their interaction in a linear regression model that predicts `lpsa`. I'll call this model `prost_A`
 
 Earlier, we centered the `lcavol` values to facilitate interpretation of the terms. I'll use that centered version (called `lcavol_c`) of the quantitative predictor, and the 1/0 version of the `svi` variable[^We could certainly use the factor version of `svi` here, but it won't change the model in any meaningful way. There's no distinction in model *fitting* via `lm` between a 0/1 numeric variable and a No/Yes factor variable. The factor version of this information will be useful elsewhere, for instance in plotting the model.].
 
-```{r c11_prost_model_2predictors}
-c11_prost_A <- lm(lpsa ~ lcavol_c * svi, data = prost)
-summary(c11_prost_A)
+```{r}
+prost_A <- lm(lpsa ~ lcavol_c * svi, data = prost)
+summary(prost_A)
 ```
 
 ### Using `tidy` 
@@ -73,7 +94,7 @@ summary(c11_prost_A)
 It can be very useful to build a data frame of the model's results. We can use the `tidy` function in the `broom` package to do so.
 
 ```{r}
-tidy(c11_prost_A)
+tidy(prost_A)
 ```
 
 This makes it much easier to pull out individual elements of the model fit.
@@ -81,25 +102,25 @@ This makes it much easier to pull out individual elements of the model fit.
 For example, to specify the coefficient for **svi**, rounded to three decimal places, I could use
 
 ```
-tidy(c11_prost_A) %>% filter(term == "svi") %>% select(estimate) %>% round(., 3)
+tidy(prost_A) |> filter(term == "svi") |> select(estimate) |> round(3)
 ```
 
-- The result is `r tidy(c11_prost_A) %>% filter(term == "svi") %>% select(estimate) %>% round(., 3)`.
+- The result is `r tidy(prost_A) |> filter(term == "svi") |> select(estimate) |> round(3)`.
 - If you look at the Markdown file, you'll see that the number shown in the bullet point above this one was generated using inline R code, and the function specified above.
 
 ### Interpretation
 
-1. The intercept, `r tidy(c11_prost_A) %>% filter(term == "(Intercept)") %>% select(estimate) %>% round(., 2)`, for the model is the predicted value of `lpsa` when `lcavol` is at its average and there is no seminal vesicle invasion (e.g. `svi` = 0).
-2. The coefficient for `lcavol_c`, `r tidy(c11_prost_A) %>% filter(term == "lcavol_c") %>% select(estimate) %>% round(., 2)`, is the predicted change in `lpsa` associated with a one unit increase in `lcavol` (or `lcavol_c`) when there is no seminal vesicle invasion.
-3. The coefficient for `svi`, `r tidy(c11_prost_A) %>% filter(term == "svi") %>% select(estimate) %>% round(., 2)`, is the predicted change in `lpsa` associated with having no `svi` to having an `svi` while the `lcavol` remains at its average.
-4. The coefficient for `lcavol_c:svi`, the product term, which is `r tidy(c11_prost_A) %>% filter(term == "lcavol_c:svi") %>% select(estimate) %>% round(., 2)`, is the difference in the slope of `lcavol_c` for a subject with `svi` as compared to one with no `svi`. 
+1. The intercept, `r tidy(prost_A) |> filter(term == "(Intercept)") |> select(estimate) |> round(2)`, for the model is the predicted value of `lpsa` when `lcavol` is at its average and there is no seminal vesicle invasion (e.g. `svi` = 0).
+2. The coefficient for `lcavol_c`, `r tidy(prost_A) |> filter(term == "lcavol_c") |> select(estimate) |> round(2)`, is the predicted change in `lpsa` associated with a one unit increase in `lcavol` (or `lcavol_c`) when there is no seminal vesicle invasion.
+3. The coefficient for `svi`, `r tidy(prost_A) |> filter(term == "svi") |> select(estimate) |> round(2)`, is the predicted change in `lpsa` associated with having no `svi` to having an `svi` while the `lcavol` remains at its average.
+4. The coefficient for `lcavol_c:svi`, the product term, which is `r tidy(prost_A) |> filter(term == "lcavol_c:svi") |> select(estimate) |> round(2)`, is the difference in the slope of `lcavol_c` for a subject with `svi` as compared to one with no `svi`. 
 
-## Exploring Model `c11_prost_A`
+## Exploring Model `prost_A`
 
 The `glance` function from the `broom` package builds a nice one-row summary for the model.
 
 ```{r}
-glance(c11_prost_A)
+glance(prost_A)
 ```
 
 This summary includes, in order,
@@ -110,12 +131,12 @@ This summary includes, in order,
 - the model's AIC (Akaike Information Criterion) and BIC (Bayesian Information Criterion)
 - the model's deviance statistic and residual degrees of freedom
 
-### `summary` for Model `c11_prost_A`
+### `summary` for Model `prost_A`
 
-If necessary, we can also run `summary` on this `c11_prost_A` object to pick up some additional summaries. Since the `svi` variable is binary, the interaction term is, too, so the *t* test here and the *F* test in the ANOVA yield the same result.
+If necessary, we can also run `summary` on this `prost_A` object to pick up some additional summaries. Since the `svi` variable is binary, the interaction term is, too, so the *t* test here and the *F* test in the ANOVA yield the same result.
 
-```{r summary_c11_prost_A}
-summary(c11_prost_A)
+```{r summary_prost_A}
+summary(prost_A)
 ```
 
 If you've forgotten the details of the pieces of this summary, review the Part C Notes from 431.
@@ -137,17 +158,17 @@ $R^2$ is greedy.
 Here are the 90% confidence intervals for the coefficients in Model A. Adjust the `level` to get different intervals.
 
 ```{r}
-confint(c11_prost_A, level = 0.90)
+confint(prost_A, level = 0.90)
 ```
 
 What can we conclude from this about the utility of the interaction term?
 
-### ANOVA for Model `c11_prost_A`
+### ANOVA for Model `prost_A`
 
 The interaction term appears unnecessary. We might wind up fitting the model without it. A complete ANOVA test is available, including a *p* value, if you want it.
 
 ```{r}
-anova(c11_prost_A)
+anova(prost_A)
 ```
 
 Note that the `anova` approach for a `lm` object is sequential. The first row shows the impact of `lcavol_c` as compared to a model with no predictors (just an intercept). The second row shows the impact of adding `svi` to a model that already contains `lcavol_c`. The third row shows the impact of adding the interaction (product) term to the model with the two main effects. So the order in which the variables are added to the regression model matters for this ANOVA. The F tests here describe the incremental impact of each covariate in turn. 
@@ -157,8 +178,8 @@ Note that the `anova` approach for a `lm` object is sequential. The first row sh
 The `augment` function in the `broom` package builds a data frame including the data used in the model, along with predictions (fitted values), residuals and other useful information.
 
 ```{r}
-c11_prost_A_frame <- augment(c11_prost_A) %>% tbl_df
-summary(c11_prost_A_frame)
+prost_A_aug <- augment(prost_A)
+summary(prost_A_aug)
 ```
 
 Elements shown here include:
@@ -173,23 +194,23 @@ Elements shown here include:
 
 See `?augment.lm` in R for more details.
 
-### Making Predictions with `c11_prost_A`
+### Making Predictions with `prost_A`
 
 Suppose we want to predict the `lpsa` for a patient with cancer volume equal to this group's mean, for both a patient with and without seminal vesicle invasion, and in each case, we want to use a 90\% prediction interval?
 
 ```{r}
 newdata <- data.frame(lcavol_c = c(0,0), svi = c(0,1))
-predict(c11_prost_A, newdata, interval = "prediction", level = 0.90)
+predict(prost_A, newdata, interval = "prediction", level = 0.90)
 ```
 
 Since the predicted value in `fit` refers to the natural logarithm of PSA, to make the predictions in terms of PSA, we would need to exponentiate. The code below will accomplish that task.
 
 ```{r}
-pred <- predict(c11_prost_A, newdata, interval = "prediction", level = 0.90)
+pred <- predict(prost_A, newdata, interval = "prediction", level = 0.90)
 exp(pred)
 ```
 
-## Plotting Model `c11_prost_A`
+## Plotting Model `prost_A`
 
 #### Plot logs conventionally
 
@@ -198,12 +219,12 @@ Here, we'll use `ggplot2` to plot the logarithms of the variables as they came t
 ```{r}
 ggplot(prost, aes(x = lcavol, y = lpsa, group = svi_f, color = svi_f)) +
     geom_point() +
-    geom_smooth(method = "lm", se = FALSE) + 
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE) + 
     scale_color_discrete(name = "Seminal Vesicle Invasion?") +
     theme_bw() +
     labs(x = "Log (cancer volume, cc)", 
          y = "Log (Prostate Specific Antigen, ng/ml)", 
-         title = "Two Predictor Model c11_prost_A, including Interaction")
+         title = "Two Predictor Model prost_A, including Interaction")
 ```
 
 #### Plot on log-log scale
@@ -213,7 +234,7 @@ Another approach (which might be easier in some settings) would be to plot the r
 ```{r}
 ggplot(prost, aes(x = cavol, y = psa, group = svi_f, color = svi_f)) +
     geom_point() +
-    geom_smooth(method = "lm", se = FALSE) + 
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE) + 
     scale_color_discrete(name = "Seminal Vesicle Invasion?") +
     scale_x_continuous(trans = "log", 
                        breaks = c(0.5, 1, 2, 5, 10, 25, 50)) +
@@ -222,194 +243,19 @@ ggplot(prost, aes(x = cavol, y = psa, group = svi_f, color = svi_f)) +
     theme_bw() +
     labs(x = "Cancer volume, in cubic centimeters", 
          y = "Prostate Specific Antigen, in ng/ml", 
-         title = "Two Predictor Model c11_prost_A, including Interaction")
+         title = "Two Predictor Model prost_A, including Interaction")
 ```
 
 I've used the break point of 4 on the Y axis because of the old rule suggesting further testing for asymptomatic men with PSA of 4 or higher, but the other break points are arbitrary - they seemed to work for me, and used round numbers.
 
-### Residual Plots of `c11_prost_A`
+### Residual Plots of `prost_A`
 
 ```{r}
-plot(c11_prost_A, which = 1)
+plot(prost_A, which = 1)
 ```
 
 ```{r}
-plot(c11_prost_A, which = 5)
+plot(prost_A, which = 5)
 ```
 
-## Cross-Validation of Model `c11_prost_A`
-
-Suppose we want to evaluate whether our model `c11_prost_A` predicts effectively in new data. 
-
-### A Validation Split Approach
-
-We'll first demonstrate a validation split approach (used, for instance, in 431) which splits our sample into a separate training (perhaps 70% of the data) and test (perhaps 30% of the data) samples, and then:
-
-- fit the model in the training sample,
-- use the resulting model to make predictions for `lpsa` in the test sample, and
-- evaluate the quality of those predictions, perhaps by comparing the results to what we'd get using a different model.
-
-Our goal will be to cross-validate model `c11_prost_A`, which, you'll recall, uses `lcavol_c`, `svi` and their interaction, to predict `lpsa` in the `prost` data.
-
-We'll start by identifying a random sample of 70% of our `prost` data in a training sample (which we'll call `prost_train`, and leave the rest as our test sample, called `prost_test`. To do this, we'll use the `createDataPartition` function from the `caret` package. We need only specify the data set and outcome variable, like so.
-
-```{r}
-set.seed(4322020)
-split_samples <- prost$lpsa %>%
-    createDataPartition(p = 0.7, list = FALSE)
-
-prost_train <- prost[split_samples,]
-prost_test <- prost[-split_samples,]
-```
-
-- Note the need for a comma after `split_samples` in the isolation of the training and test samples.
-- Don't forget to pre-specify the random seed, for replicability, as I've done here.
-
-Let's verify that we now have the samples we expect...
-
-```{r}
-dim(prost_train)
-dim(prost_test)
-```
-
-OK. Next, we'll run the `c11_prost_A` model in the training sample.
-
-```{r}
-c11_prost_A_train <- prost_train %$%
-    lm(lpsa ~ lcavol_c * svi)
-
-c11_prost_A_train
-```
-
-Then we'll use the coefficients from this model to obtain predicted `lpsa` values in the test sample.
-
-```{r}
-c11_prost_A_preds <- 
-    c11_prost_A_train %>% predict(prost_test)
-
-c11_prost_A_preds[1:3]
-```
-
-Now, we can use the `postResample` function from the `caret` package to obtain several key summaries of fit quality for our model. Here, we specify the estimates (or predictions), and then the observed values to the `postResample` function.
-
-```{r}
-postResample(c11_prost_A_preds, prost_test$lpsa)
-```
-
-These summary statistics are:
-
-- the RMSE or root mean squared error, which measures the average difference (i.e. prediction error) between the observed known outcome values and the values predicted by the model by first squaring all of the errors, averaging them, and then taking the square root of the result. The lower the RMSE, the better the model.
-- the Rsquared or $R^2$, which is just the square of the Pearson correlation coefficient relating the predicted and observed values, so we'd like this to be as large as possible, and
-- the MAE or mean absolute error, which is a bit less sensitive to outliers than the RMSE, because it measures the average prediction error by taking the absolute value of each error, and then grabbing the average of those values. The lower the MAE, the better the model.
-
-These statistics are more helpful, generally, for comparing multiple models to each other, than for making final decisions on their own. The `caret` package also provides individual functions to gather the elements of `postResample` as follows.
-
-```{r}
-prost_A_summaries <- tibble(
-    RMSE = RMSE(c11_prost_A_preds, prost_test$lpsa),
-    R2 = R2(c11_prost_A_preds, prost_test$lpsa),
-    MAE = MAE(c11_prost_A_preds, prost_test$lpsa)
-)
-
-prost_A_summaries
-```
-
-### K-Fold Cross-Validation
-
-One problem with the validation split approach is that with a small data set like `prost`, we may be reluctant to cut our sample size for the training or the testing down because we're afraid that our model building and testing will be hampered by a small sample size. A potential solution is the idea of **K-fold cross-validation**, which involves partitioning our data into a series of K training-test subsets, and then combining the results. Specifically, we'll try a *5-fold cross validation* here. (K is usually taken to be either 5 or 10.)
-
-The approach includes the following steps.
-
-1. Randomly split the `prost` data into 5 subsets (for 5-fold validation).
-2. Reserve one subset and train the model on all other subsets.
-3. Test the model on the reserved subset and record the prediction error.
-4. Repeat this process until each of the k subsets has served as the test set.
-5. Compute the average of the k recorded errors. This is called the cross-validation error and serves as the primary  performance metric for the model.
-
-Again using tools from the `caret` packages, we'll first define our `trainControl` approach.
-
-```{r}
-set.seed(43220201)
-train.control <- trainControl(method = "cv", number = 5)
-```
-
-Then we train the model, and obtain the usual summaries of model fit quality.
-
-```{r}
-c11_modelA_cv <- train(lpsa ~ lcavol_c * svi, 
-                   data = prost, method = "lm",
-                   trControl = train.control)
-
-c11_modelA_cv
-```
-
-We can then look at the model fit by this cross-validation approach.
-
-```{r}
-summary(c11_modelA_cv)
-```
-
-or, if you prefer,
-
-```{r}
-tidy(summary(c11_modelA_cv), conf.int = TRUE) %>%
-    kable(digits = 3)
-```
-
-and
-
-```{r}
-glance(summary(c11_modelA_cv)) %>% 
-    kable(digits = c(3,3,3,2,3,0))
-```
-
-### Comparing Models with 5-fold Cross-Validation
-
-To make this a bit more realistic, let's compare two models:
-
-- our existing linear model lpsa ~ lcavol_c * svi, and
-- a *robust* linear model fit with the `rlm` function in R, to predict `lpsa` using `lcavol_c` and `svi` but not the interaction between them.
-
-The main purpose of *robust* linear models is to reduce the influence of specifically outlier or high leverage data points.
-
-Here's that robust fit in the original `prost_train` data set. Note that fitting a robust linear model requires the choice of a `psi` ($\psi$) function, for which R provides three approaches, called the Huber, Hampel and Tukey bisquare approaches. In this fit, I'll just let R pick its default choice.
-
-```{r}
-modelR <- prost_train %$% rlm(lpsa ~ lcavol_c + svi)
-
-summary(modelR)
-```
-
-Compare this with the standard ordinary least squares fit to the same data (again without the interaction term), and you'll see that in this case, the main differences are in the estimated standard errors, but the slope coefficients are also a bit smaller in the robust model.
-
-```{r}
-modelO <- prost_train %$% lm(lpsa ~ lcavol_c + svi)
-
-summary(modelO)
-```
-
-So, how can we do 5-fold cross-validation on our model R, and also let the computer pick which of the three types of initial weights (Huber, Hampel or Tukey Bisquare) might be most appropriate? As follows...
-
-```{r}
-c11_modelR_cv <- train(lpsa ~ lcavol_c + svi, 
-                   data = prost, method = "rlm",
-                   trControl = train.control)
-
-c11_modelR_cv
-```
-
-Compare these RMSE, Rsquared and MAE values to those we observed in the interaction model with `lm` earlier...
-
-```{r}
-c11_modelA_cv
-```
-
-The robust model showes a larger R-Squared, smaller RMSE and smaller MAE than the interaction model. Perhaps we'll focus further on model R going forward...
-
-```{r}
-summary(c11_modelR_cv)
-```
-
-
-Let's stop there for now. Next, we'll consider the problem of considering adding more predictors to a linear model, and then making sensible selections as to which predictors actually should be incorporated.
-
+In our next Chapter, we'll see how well this model can be validated.

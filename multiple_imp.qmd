@@ -1,22 +1,45 @@
 # Multiple Imputation and Linear Regression
 
-## Developing a `smart_16` data set
-
-In this chapter, we'll return to the `smart_ohio` file based on data from BRFSS 2017 that we built and cleaned back at the start of these Notes.
+## R Setup Used Here
 
 ```{r}
-smart_ohio <- readRDS(here("data", "smart_ohio.Rds"))
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(broom)
+library(car)
+library(knitr)
+library(mosaic)
+library(mice)
+library(rms)
+library(naniar)
+library(tidyverse) 
+
+theme_set(theme_bw())
 ```
+
+## Data Load
+
+In this chapter, we'll return to the `smart_ohio` file based on data from BRFSS 2017 that we built and cleaned back in @sec-smart.
+
+```{r}
+smart_ohio <- readRDS("data/smart_ohio.Rds")
+```
+
+## Developing a `smart_16` data set
 
 We're going to look at a selection of variables from this tibble, among subjects who have been told they have diabetes, and who also provided a response to our `physhealth` (Number of Days Physical Health Not Good) variable, which asks "Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?" We'll build two models. In this chapter, we'll look at a linear model for `physhealth` and in the next chapter, we'll look at a logistic regression describing whether or not the subject's `physhealth` response was at least 1.
 
 ```{r}
-smart_16 <- smart_ohio %>%
-    filter(dm_status == "Diabetes") %>%
-    filter(complete.cases(physhealth)) %>%
+smart_16 <- smart_ohio |>
+    filter(dm_status == "Diabetes") |>
+    filter(complete.cases(physhealth)) |>
     mutate(bad_phys = ifelse(physhealth > 0, 1, 0),
            comor = hx_mi + hx_chd + hx_stroke + hx_asthma +
-               hx_skinc + hx_otherc + hx_copd + hx_arthr) %>%
+               hx_skinc + hx_otherc + hx_copd + hx_arthr) |>
     select(SEQNO, mmsa, physhealth, bad_phys, age_imp, smoke100,
            comor, hx_depress, bmi, activity)
 ```
@@ -48,7 +71,7 @@ The `comor` variable is the sum of the following 8 variables, each of which is m
 - `hx_arthr`: some form of arthritis, rheumatoid arthritis, gout, lupus, or fibromyalgia? 
 
 ```{r}
-smart_16 %>% tabyl(comor)
+smart_16 |> tabyl(comor)
 ```
 
 ### Any missing values?
@@ -80,7 +103,7 @@ set.seed(432)
 # create small data set including only variables to
 # be used in building the imputation model
 
-sm16 <- smart_16 %>% 
+sm16 <- smart_16 |> 
     select(physhealth, activity, age_imp, bmi, comor, 
            hx_depress, smoke100)
 
@@ -100,26 +123,28 @@ A plausible strategy here would be to try to identify an outcome transformation 
 Recall that our outcome here, `physhealth` can take the value 0, and is thus not strictly positive.
 
 ```{r}
-mosaic::favstats(~ physhealth, data = smart_16_imp1)
+favstats(~ physhealth, data = smart_16_imp1)
 ```
 
 So, if we want to investigate a potential transformation with a Box-Cox plot, we'll have to add a small value to each `physhealth` value. We'll add 1, so that the range of potential values is now from 1-31.
 
 ```{r}
-# requires library(car)
+smart_16_imp1 <- smart_16_imp1 |>
+  mutate(phplus1 = physhealth + 1)
 
-smart_16_imp1 %$% 
-    boxCox((physhealth + 1) ~ age_imp + comor + smoke100 + 
-               hx_depress + bmi + activity)
+test_model <- lm(phplus1 ~ age_imp + comor + smoke100 + 
+                   hx_depress + bmi + activity, data = smart_16_imp1)
+
+boxCox(test_model)
 ```
 
 It looks like the logarithm is a reasonable transformation in this setting. So we'll create a new outcome, that is the natural logarithm of (`physhealth` + 1), which we'll call `phys_tr` to remind us that a transformation is involved that we'll eventually need to back out of to make predictions. We'll build this new variable in both our original `smart_16` data set and in the simply imputed data set we're using for just these early stages.
 
 ```{r}
-smart_16_imp1 <- smart_16_imp1 %>%
+smart_16_imp1 <- smart_16_imp1 |>
     mutate(phys_tr = log(physhealth + 1))
 
-smart_16 <- smart_16 %>%
+smart_16 <- smart_16 |>
     mutate(phys_tr = log(physhealth + 1))
 ```
 
@@ -134,12 +159,8 @@ We can also specify our back-transformation to the original `physhealth` values 
 Consider the following Spearman $\rho^2$ plot.
 
 ```{r}
-# requires rms package 
-# (technically Hmisc, which is loaded by rms)
-
-smart_16_imp1 %$% 
-    plot(spearman2(phys_tr ~ age_imp + comor + smoke100 + 
-           hx_depress + bmi + activity))
+plot(spearman2(phys_tr ~ age_imp + comor + smoke100 + 
+           hx_depress + bmi + activity, data = smart_16_imp1))
 ```
 
 After our single imputation, we have the same `N` value in all rows of this plot, which is what we want to see. It appears that in considering potential non-linear terms, `comor` and `hx_depress` and perhaps `activity` are worthy of increased attention. I'll make a couple of arbitrary choices, to add a raw cubic polynomial to represent the `comor` information, and we'll add an interaction term between `hx_depress` and `activity`.
@@ -149,9 +170,9 @@ After our single imputation, we have the same `N` value in all rows of this plot
 Recall that we have `r n_case_complete(smart_16)` complete cases in our `smart_16` data, out of a total of `r nrow(smart_16)` observations in total. A model using only the complete cases should thus drop the remaining `r n_case_miss(smart_16)` subjects. Let's see if a main effects only model for our newly transformed `phys_tr` outcome does in fact do this.
 
 ```{r}
-m_1cc <- smart_16 %$% 
+m_1cc <- 
     lm(phys_tr ~ age_imp + comor + smoke100 + 
-           hx_depress + bmi + activity)
+           hx_depress + bmi + activity, data = smart_16)
 
 summary(m_1cc)
 ```
@@ -161,54 +182,54 @@ Note that the appropriate number of observations are listed as "deleted due to m
 ### Quality of Fit Statistics
 
 ```{r}
-glance(m_1cc) %>%
-    select(r.squared, adj.r.squared, sigma, AIC, BIC) %>%
+glance(m_1cc) |>
+    select(r.squared, adj.r.squared, sigma, AIC, BIC) |>
     kable(digits = c(3, 3, 2, 1, 1))
 ```
 
 ### Interpreting Effect Sizes
 
 ```{r}
-tidy(m_1cc, conf.int = TRUE) %>%
-    select(term, estimate, std.error, conf.low, conf.high) %>%
+tidy(m_1cc, conf.int = TRUE) |>
+    select(term, estimate, std.error, conf.low, conf.high) |>
     kable(digits = 3)
 ```
 
 We'll interpret three of the predictors here to demonstrate ideas: `comor`, `hx_depress` and `activity`.
 
 ```{r, echo = FALSE}
-a <- tidy(m_1cc, conf.int = TRUE) %>%
+a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "comor")
 ```
 
 - If we have two subjects with the same values of `age_imp`, `smoke100`, `hx_depress`, `bmi`, and `activity`, but Harry has a `comor` score that is one point higher than Sally's, then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
 
 ```{r, echo = FALSE}
-a <- tidy(m_1cc, conf.int = TRUE) %>%
+a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "hx_depress")
 ```
 
 - If we have two subjects with the same values of `age_imp`, `comor`, `smoke100`, `bmi`, and `activity`, but Harry has a history of depression (`hx_depress` = 1) while Sally does not have such a history (so Sally's `hx_depress` = 0), then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
 
 ```{r, echo = FALSE}
-a <- tidy(m_1cc, conf.int = TRUE) %>%
+a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "hx_depress")
 ```
 
 - The `activity` variable has four categories as indicated in the table below. The model uses the "Highly_Active" category as the reference group.
 
 ```{r}
-smart_16_imp1 %>% tabyl(activity)
+smart_16_imp1 |> tabyl(activity)
 ```
 
 ```{r, echo = FALSE}
-a <- tidy(m_1cc, conf.int = TRUE) %>%
+a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "activityActive")
 
-a2 <- tidy(m_1cc, conf.int = TRUE) %>%
+a2 <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "activityInsufficiently_Active")
 
-a3 <- tidy(m_1cc, conf.int = TRUE) %>%
+a3 <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "activityInactive")
 ```
 
@@ -246,16 +267,16 @@ preds_m_1cc
 The model makes predictions for our transformed outcome, `phys_tr`. Now, we need to back-transform the predictions and the confidence intervals to build predictions for `physhealth`.
 
 ```{r}
-preds_m_1cc <- preds_m_1cc %>%
-    tbl_df() %>%
+preds_m_1cc <- preds_m_1cc |>
+    tbl_df() |>
     mutate(names = c("Sheena", "Jacob"),
            pred_physhealth = exp(fit) - 1,
            conf_low = exp(lwr) - 1,
-           conf_high = exp(upr) - 1) %>%
+           conf_high = exp(upr) - 1) |>
     select(names, pred_physhealth, conf_low, conf_high, 
            everything())
 
-preds_m_1cc %>% kable(digits = 3)
+preds_m_1cc |> kable(digits = 3)
 ```
 
 ## "Augmented" Linear Regression with `lm` on the Complete Cases
@@ -263,11 +284,9 @@ preds_m_1cc %>% kable(digits = 3)
 Now, we'll add the non-linear terms we discussed earlier. We'll add a (raw) cubic polynomial to represent the `comor` information, and we'll add an interaction term between `hx_depress` and `activity`.
 
 ```{r}
-# requires rms package (and co-loading Hmisc)
-
-m_2cc <- smart_16 %$% 
+m_2cc <- 
     lm(phys_tr ~ age_imp + pol(comor, 3) + smoke100 + 
-           bmi + hx_depress*activity)
+           bmi + hx_depress*activity, data = smart_16)
 
 summary(m_2cc)
 ```
@@ -277,8 +296,8 @@ Note again that the appropriate number of observations are listed as "deleted du
 ### Quality of Fit Statistics
 
 ```{r}
-glance(m_2cc) %>%
-    select(r.squared, adj.r.squared, sigma, AIC, BIC) %>%
+glance(m_2cc) |>
+    select(r.squared, adj.r.squared, sigma, AIC, BIC) |>
     kable(digits = c(3, 3, 2, 1, 1))
 ```
 
@@ -293,8 +312,8 @@ The difference between the models doesn't meet the standard for statistical dete
 ### Interpreting Effect Sizes
 
 ```{r}
-tidy(m_2cc, conf.int = TRUE) %>%
-    select(term, estimate, std.error, conf.low, conf.high) %>%
+tidy(m_2cc, conf.int = TRUE) |>
+    select(term, estimate, std.error, conf.low, conf.high) |>
     kable(digits = 3)
 ```
 
@@ -316,11 +335,11 @@ So the model, essentially can be used to compare each of the first seven people 
 For instance, as compared to Harry, Arnold is expected to have a transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) that is:
 
 ```{r, echo = FALSE}
-a <- tidy(m_2cc, conf.int = TRUE) %>%
+a <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "hx_depress")
-a2 <- tidy(m_2cc, conf.int = TRUE) %>%
+a2 <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "activityInactive")
-a3 <- tidy(m_2cc, conf.int = TRUE) %>%
+a3 <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "hx_depress:activityInactive")
 ```
 
@@ -335,11 +354,11 @@ If we want to compare Arnold to, for instance, Betty, we first calculate Betty's
 As compared to Harry, Betty is expected to have a transformed outcome (specifically the natural logarithm of (her `physhealth` days + 1)) that is:
 
 ```{r, echo = FALSE}
-b <- tidy(m_2cc, conf.int = TRUE) %>%
+b <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "hx_depress")
-b2 <- tidy(m_2cc, conf.int = TRUE) %>%
+b2 <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "activityInsufficiently_Active")
-b3 <- tidy(m_2cc, conf.int = TRUE) %>%
+b3 <- tidy(m_2cc, conf.int = TRUE) |>
     filter(term == "hx_depress:activityInsufficiently_Active")
 ```
 
@@ -425,16 +444,16 @@ preds_m_2cc
 Now, we need to back-transform the predictions and the confidence intervals that describe `phys_tr` to build predictions for `physhealth`.
 
 ```{r}
-preds_m_2cc <- preds_m_2cc %>%
-    tbl_df() %>%
+preds_m_2cc <- preds_m_2cc |>
+    tbl_df() |>
     mutate(names = c("Sheena", "Jacob"),
            pred_physhealth = exp(fit) - 1,
            conf_low = exp(lwr) - 1,
-           conf_high = exp(upr) - 1) %>%
+           conf_high = exp(upr) - 1) |>
     select(names, pred_physhealth, conf_low, conf_high, 
            everything())
 
-preds_m_2cc %>% kable(digits = 3)
+preds_m_2cc |> kable(digits = 3)
 ```
 
 
@@ -450,7 +469,7 @@ set.seed(432)
 # create small data set including only variables to
 # be used in building the imputation model
 
-sm16 <- smart_16 %>% 
+sm16 <- smart_16 |> 
     select(physhealth, phys_tr, activity, age_imp, bmi, comor, 
            hx_depress, smoke100)
 
@@ -476,16 +495,16 @@ Then, we'll pool results across the 10 imputations
 
 ```{r}
 m10_pool <- pool(m10_mods)
-summary(m10_pool, conf.int = TRUE) %>%
-    select(-statistic, -df) %>%
+summary(m10_pool, conf.int = TRUE) |>
+    select(-statistic, -df) |>
     kable(digits = 3)
 ```
 
 And we can compare these results to the complete case analysis we completed earlier.
 
 ```{r}
-tidy(m_1cc, conf.int = TRUE) %>%
-    select(term, estimate, std.error, p.value, conf.low, conf.high) %>%
+tidy(m_1cc, conf.int = TRUE) |>
+    select(term, estimate, std.error, p.value, conf.low, conf.high) |>
     kable(digits = 3)
 ```
 
@@ -592,13 +611,13 @@ preds_m_16imp
 ```
 
 ```{r}
-preds_m_16imp <- preds_m_16imp %>%
-    tbl_df() %>%
+preds_m_16imp <- preds_m_16imp |>
+    tbl_df() |>
     mutate(names = c("Sheena", "Jacob"),
-           pred_physhealth = exp(value) - 1) %>%
+           pred_physhealth = exp(value) - 1) |>
     select(names, pred_physhealth)
 
-preds_m_16imp %>% kable(digits = 3)
+preds_m_16imp |> kable(digits = 3)
 ```
 
 ### Nomogram

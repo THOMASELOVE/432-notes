@@ -1,4 +1,4 @@
-# BRFSS SMART Data
+# BRFSS SMART Data {#sec-smart}
 
 The Centers for Disease Control analyzes Behavioral Risk Factor Surveillance System (BRFSS) survey data for specific metropolitan and micropolitan statistical areas (MMSAs) in a program called the Selected Metropolitan/Micropolitan Area Risk Trends of BRFSS (SMART BRFSS.)
 

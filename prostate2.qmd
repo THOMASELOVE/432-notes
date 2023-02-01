@@ -1,0 +1,164 @@
+# Validating our Prostate Cancer Model
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(rsample)
+library(yardstick)
+library(caret)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+prost <- read_csv("data/prost.csv", show_col_types = FALSE) 
+```
+
+We'll repeat the data cleaning and model-fitting from our previous chapter.
+
+## Data Cleaning
+
+```{r}
+prost <- prost |>
+    mutate(svi_f = fct_recode(factor(svi), "No" = "0", "Yes" = "1"),
+           gleason_f = fct_relevel(gleason, c("> 7", "7", "6")),
+           bph_f = fct_relevel(bph, c("Low", "Medium", "High")),
+           lcavol_c = lcavol - mean(lcavol),
+           cavol = exp(lcavol),
+           psa = exp(lpsa))
+```
+
+## Fitting the `prostA` model
+
+```{r}
+prost_A <- lm(lpsa ~ lcavol_c * svi, data = prost)
+```
+
+## Split Validation of Model `prost_A`
+
+Suppose we want to evaluate whether our model `prost_A` predicts effectively in new data. 
+
+We'll first demonstrate a validation split approach (used, for instance, in 431) which splits our sample into a separate training (perhaps 70% of the data) and test (perhaps 30% of the data) samples, and then:
+
+- fit the model in the training sample,
+- use the resulting model to make predictions for `lpsa` in the test sample, and
+- evaluate the quality of those predictions, perhaps by comparing the results to what we'd get using a different model.
+
+Our goal will be to cross-validate model `prost_A`, which, you'll recall, uses `lcavol_c`, `svi` and their interaction, to predict `lpsa` in the `prost` data.
+
+We'll start by identifying a random sample of 70% of our `prost` data in a training sample (which we'll call `prost_train`, and leave the rest as our test sample, called `prost_test`. To do this, we'll use functions from the **rsample** package.
+
+```{r}
+set.seed(432432)
+
+prost_split <- initial_split(prost, prop = 0.7)
+
+prost_train <- training(prost_split)
+prost_test <- testing(prost_split)
+```
+
+- Don't forget to pre-specify the random seed, for replicability, as I've done here.
+
+Let's verify that we now have the samples we expect...
+
+```{r}
+dim(prost_train)
+dim(prost_test)
+```
+
+OK. Next, we'll run the `prost_A` model in the training sample.
+
+```{r}
+prost_A_train <- lm(lpsa ~ lcavol_c * svi, data = prost_train)
+
+prost_A_train
+```
+
+Then we'll use the coefficients from this model to obtain predicted `lpsa` values in the test sample.
+
+```{r}
+prost_A_test_aug <- augment(prost_A, newdata = prost_test)
+```
+
+Now, we can use the functions from the `yardstick` package to obtain several key summaries of fit quality for our model. These summary statistics are:
+
+- the RMSE or root mean squared error, which measures the average difference (i.e. prediction error) between the observed known outcome values and the values predicted by the model by first squaring all of the errors, averaging them, and then taking the square root of the result. The lower the RMSE, the better the model.
+- the Rsquared or $R^2$, which is just the square of the Pearson correlation coefficient relating the predicted and observed values, so we'd like this to be as large as possible, and
+- the MAE or mean absolute error, which is a bit less sensitive to outliers than the RMSE, because it measures the average prediction error by taking the absolute value of each error, and then grabbing the average of those values. The lower the MAE, the better the model.
+
+These statistics are more helpful, generally, for comparing multiple models to each other, than for making final decisions on their own. The **yardstick** package provides individual functions to summarize performance, as follows.
+
+```{r}
+rmse(data = prost_A_test_aug, truth = lpsa, estimate = .fitted)
+
+rsq(data = prost_A_test_aug, truth = lpsa, estimate = .fitted)
+
+mae(data = prost_A_test_aug, truth = lpsa, estimate = .fitted)
+```
+
+## V-fold Cross-Validation Approach for model `prostA`
+
+> V-fold cross-validation (also known as k-fold cross-validation) randomly splits the data into V groups of roughly equal size (called "folds"). A resample of the analysis data consists of V-1 of the folds while the assessment set contains the final fold. In basic V-fold cross-validation (i.e. no repeats), the number of resamples is equal to V.
+
+- <https://rsample.tidymodels.org/reference/vfold_cv.html>
+
+The idea of, for instance, 5-fold cross-validation in this case is to create five different subgroups (or folds) of the data, and then select 4 of the folds to be used as a model training sample, leaving the remaining fold as the model testing sample. We then repeat this over each of the five possible selections of testing sample, and summarize the results. This is very straightforward using the **caret** package, so we'll demonstrate that approach here.
+
+First, we use the `trainControl()` function from **caret** to set up five-fold cross-validation.
+
+```{r}
+set.seed(432432)
+ctrl <- trainControl(method = "cv", number = 5)
+```
+
+Next, we train our model on these five folds:
+
+```{r}
+pros_model <- train(lpsa ~ lcavol_c * svi, data = prost, 
+               method = "lm", trControl = ctrl)
+```
+
+Now, we can view a summary of the k-fold cross-validation
+
+```{r}
+pros_model
+```
+
+- No pre-processing means we didn't scale the data before fitting models.
+- We used 5-fold cross-validation
+- The sample size for these training sets was between 77 and 79 for each pass.
+- The validated root mean squared error (averaged across the five resamplings) was 0.7778
+- The cross-validated R-squared is 0.595
+- The cross-validated mean absolute error is 0.641
+
+To examine the final fitted model, we have:
+
+```{r}
+pros_model$finalModel
+```
+
+This model can be presented using all of our usual tools from the **broom** package.
+
+```{r}
+tidy(pros_model$finalModel)
+```
+
+```{r}
+glance(pros_model$finalModel)
+```
+
+We can also review the model predictions made within each fold:
+
+```{r}
+pros_model$resample
+```
+

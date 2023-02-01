@@ -25,9 +25,15 @@ book:
     - ancova_smart.qmd
     - nonlinearity.qmd
     - olsfitting.qmd
+    - prostate1.qmd
+    - prostate2.qmd
+    - multiple_imp.qmd
+    - tableone.qmd
     - logistic1.qmd
     - logistic2.qmd
     - logistic3.qmd
+    - effectsize.qmd
+    - binaryregression.qmd
     - incomplete.qmd
 
 format:

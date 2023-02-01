@@ -58,8 +58,6 @@ Dr. Love is in the process of moving all of the data loads below to their indivi
 #| message: false
 #| warning: false
 
-prost <- read_csv("data/prost.csv", show_col_types = FALSE) 
-
 colscr <- read_csv("data/screening.csv", show_col_types = FALSE) 
 colscr2 <- read_csv("data/screening2.csv", show_col_types = FALSE) 
 authorship <- read_csv("data/authorship.csv", show_col_types = FALSE) 

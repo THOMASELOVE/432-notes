@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 17&nbsp; Logistic Regression with lrm</title>
+<title>Data Science for Biological, Medical and Health Research - 21&nbsp; Logistic Regression with lrm</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,7 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./incomplete.html" rel="next">
+<link href="./effectsize.html" rel="next">
 <link href="./logistic2.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -130,11 +130,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <body class="nav-sidebar floating">
 
+
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -239,22 +240,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -266,46 +297,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">17.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">21.1</span>  R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">17.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">21.1.1</span>  Data Load</a></li>
   </ul></li>
-  <li><a href="#logistic-regression-using-lrm" id="toc-logistic-regression-using-lrm" class="nav-link" data-scroll-target="#logistic-regression-using-lrm"><span class="toc-section-number">17.2</span>  Logistic Regression using <code>lrm</code></a>
+  <li><a href="#logistic-regression-using-lrm" id="toc-logistic-regression-using-lrm" class="nav-link" data-scroll-target="#logistic-regression-using-lrm"><span class="toc-section-number">21.2</span>  Logistic Regression using <code>lrm</code></a>
   <ul class="collapse">
-  <li><a href="#interpreting-nagelkerke-r2" id="toc-interpreting-nagelkerke-r2" class="nav-link" data-scroll-target="#interpreting-nagelkerke-r2"><span class="toc-section-number">17.2.1</span>  Interpreting Nagelkerke <span class="math inline">\(R^2\)</span></a></li>
-  <li><a href="#interpreting-the-c-statistic-and-plotting-the-roc-curve" id="toc-interpreting-the-c-statistic-and-plotting-the-roc-curve" class="nav-link" data-scroll-target="#interpreting-the-c-statistic-and-plotting-the-roc-curve"><span class="toc-section-number">17.2.2</span>  Interpreting the C statistic and Plotting the ROC Curve</a></li>
-  <li><a href="#the-c-statistic-and-somers-d" id="toc-the-c-statistic-and-somers-d" class="nav-link" data-scroll-target="#the-c-statistic-and-somers-d"><span class="toc-section-number">17.2.3</span>  The C statistic and Somers’ D</a></li>
-  <li><a href="#validating-the-logistic-regression-model-summary-statistics" id="toc-validating-the-logistic-regression-model-summary-statistics" class="nav-link" data-scroll-target="#validating-the-logistic-regression-model-summary-statistics"><span class="toc-section-number">17.2.4</span>  Validating the Logistic Regression Model Summary Statistics</a></li>
-  <li><a href="#plotting-the-summary-of-the-lrm-approach" id="toc-plotting-the-summary-of-the-lrm-approach" class="nav-link" data-scroll-target="#plotting-the-summary-of-the-lrm-approach"><span class="toc-section-number">17.2.5</span>  Plotting the Summary of the <code>lrm</code> approach</a></li>
-  <li><a href="#plot-in-sample-predictions-for-model-c" id="toc-plot-in-sample-predictions-for-model-c" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-c"><span class="toc-section-number">17.2.6</span>  Plot In-Sample Predictions for Model C</a></li>
-  <li><a href="#anova-from-the-lrm-approach" id="toc-anova-from-the-lrm-approach" class="nav-link" data-scroll-target="#anova-from-the-lrm-approach"><span class="toc-section-number">17.2.7</span>  ANOVA from the <code>lrm</code> approach</a></li>
-  <li><a href="#are-any-points-particularly-influential" id="toc-are-any-points-particularly-influential" class="nav-link" data-scroll-target="#are-any-points-particularly-influential"><span class="toc-section-number">17.2.8</span>  Are any points particularly influential?</a></li>
-  <li><a href="#a-nomogram-for-model-c" id="toc-a-nomogram-for-model-c" class="nav-link" data-scroll-target="#a-nomogram-for-model-c"><span class="toc-section-number">17.2.9</span>  A Nomogram for Model C</a></li>
+  <li><a href="#interpreting-nagelkerke-r2" id="toc-interpreting-nagelkerke-r2" class="nav-link" data-scroll-target="#interpreting-nagelkerke-r2"><span class="toc-section-number">21.2.1</span>  Interpreting Nagelkerke <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#interpreting-the-c-statistic-and-plotting-the-roc-curve" id="toc-interpreting-the-c-statistic-and-plotting-the-roc-curve" class="nav-link" data-scroll-target="#interpreting-the-c-statistic-and-plotting-the-roc-curve"><span class="toc-section-number">21.2.2</span>  Interpreting the C statistic and Plotting the ROC Curve</a></li>
+  <li><a href="#the-c-statistic-and-somers-d" id="toc-the-c-statistic-and-somers-d" class="nav-link" data-scroll-target="#the-c-statistic-and-somers-d"><span class="toc-section-number">21.2.3</span>  The C statistic and Somers’ D</a></li>
+  <li><a href="#validating-the-logistic-regression-model-summary-statistics" id="toc-validating-the-logistic-regression-model-summary-statistics" class="nav-link" data-scroll-target="#validating-the-logistic-regression-model-summary-statistics"><span class="toc-section-number">21.2.4</span>  Validating the Logistic Regression Model Summary Statistics</a></li>
+  <li><a href="#plotting-the-summary-of-the-lrm-approach" id="toc-plotting-the-summary-of-the-lrm-approach" class="nav-link" data-scroll-target="#plotting-the-summary-of-the-lrm-approach"><span class="toc-section-number">21.2.5</span>  Plotting the Summary of the <code>lrm</code> approach</a></li>
+  <li><a href="#plot-in-sample-predictions-for-model-c" id="toc-plot-in-sample-predictions-for-model-c" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-c"><span class="toc-section-number">21.2.6</span>  Plot In-Sample Predictions for Model C</a></li>
+  <li><a href="#anova-from-the-lrm-approach" id="toc-anova-from-the-lrm-approach" class="nav-link" data-scroll-target="#anova-from-the-lrm-approach"><span class="toc-section-number">21.2.7</span>  ANOVA from the <code>lrm</code> approach</a></li>
+  <li><a href="#are-any-points-particularly-influential" id="toc-are-any-points-particularly-influential" class="nav-link" data-scroll-target="#are-any-points-particularly-influential"><span class="toc-section-number">21.2.8</span>  Are any points particularly influential?</a></li>
+  <li><a href="#a-nomogram-for-model-c" id="toc-a-nomogram-for-model-c" class="nav-link" data-scroll-target="#a-nomogram-for-model-c"><span class="toc-section-number">21.2.9</span>  A Nomogram for Model C</a></li>
   </ul></li>
-  <li><a href="#model-d-an-augmented-kitchen-sink-model" id="toc-model-d-an-augmented-kitchen-sink-model" class="nav-link" data-scroll-target="#model-d-an-augmented-kitchen-sink-model"><span class="toc-section-number">17.3</span>  Model D: An Augmented Kitchen Sink Model</a>
+  <li><a href="#model-d-an-augmented-kitchen-sink-model" id="toc-model-d-an-augmented-kitchen-sink-model" class="nav-link" data-scroll-target="#model-d-an-augmented-kitchen-sink-model"><span class="toc-section-number">21.3</span>  Model D: An Augmented Kitchen Sink Model</a>
   <ul class="collapse">
-  <li><a href="#spearman-rho2-plot" id="toc-spearman-rho2-plot" class="nav-link" data-scroll-target="#spearman-rho2-plot"><span class="toc-section-number">17.3.1</span>  Spearman <span class="math inline">\(\rho^2\)</span> Plot</a></li>
-  <li><a href="#fitting-model-d-using-lrm" id="toc-fitting-model-d-using-lrm" class="nav-link" data-scroll-target="#fitting-model-d-using-lrm"><span class="toc-section-number">17.3.2</span>  Fitting Model D using <code>lrm</code></a></li>
-  <li><a href="#assessing-model-d-using-lrms-tools" id="toc-assessing-model-d-using-lrms-tools" class="nav-link" data-scroll-target="#assessing-model-d-using-lrms-tools"><span class="toc-section-number">17.3.3</span>  Assessing Model D using <code>lrm</code>’s tools</a></li>
-  <li><a href="#anova-and-wald-tests-for-model-d" id="toc-anova-and-wald-tests-for-model-d" class="nav-link" data-scroll-target="#anova-and-wald-tests-for-model-d"><span class="toc-section-number">17.3.4</span>  ANOVA and Wald Tests for Model D</a></li>
-  <li><a href="#effect-sizes-in-model-d" id="toc-effect-sizes-in-model-d" class="nav-link" data-scroll-target="#effect-sizes-in-model-d"><span class="toc-section-number">17.3.5</span>  Effect Sizes in Model D</a></li>
-  <li><a href="#plot-in-sample-predictions-for-model-d" id="toc-plot-in-sample-predictions-for-model-d" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-d"><span class="toc-section-number">17.3.6</span>  Plot In-Sample Predictions for Model D</a></li>
-  <li><a href="#plotting-the-roc-curve-for-model-d" id="toc-plotting-the-roc-curve-for-model-d" class="nav-link" data-scroll-target="#plotting-the-roc-curve-for-model-d"><span class="toc-section-number">17.3.7</span>  Plotting the ROC curve for Model D</a></li>
-  <li><a href="#validation-of-model-d-summaries" id="toc-validation-of-model-d-summaries" class="nav-link" data-scroll-target="#validation-of-model-d-summaries"><span class="toc-section-number">17.3.8</span>  Validation of Model D summaries</a></li>
+  <li><a href="#spearman-rho2-plot" id="toc-spearman-rho2-plot" class="nav-link" data-scroll-target="#spearman-rho2-plot"><span class="toc-section-number">21.3.1</span>  Spearman <span class="math inline">\(\rho^2\)</span> Plot</a></li>
+  <li><a href="#fitting-model-d-using-lrm" id="toc-fitting-model-d-using-lrm" class="nav-link" data-scroll-target="#fitting-model-d-using-lrm"><span class="toc-section-number">21.3.2</span>  Fitting Model D using <code>lrm</code></a></li>
+  <li><a href="#assessing-model-d-using-lrms-tools" id="toc-assessing-model-d-using-lrms-tools" class="nav-link" data-scroll-target="#assessing-model-d-using-lrms-tools"><span class="toc-section-number">21.3.3</span>  Assessing Model D using <code>lrm</code>’s tools</a></li>
+  <li><a href="#anova-and-wald-tests-for-model-d" id="toc-anova-and-wald-tests-for-model-d" class="nav-link" data-scroll-target="#anova-and-wald-tests-for-model-d"><span class="toc-section-number">21.3.4</span>  ANOVA and Wald Tests for Model D</a></li>
+  <li><a href="#effect-sizes-in-model-d" id="toc-effect-sizes-in-model-d" class="nav-link" data-scroll-target="#effect-sizes-in-model-d"><span class="toc-section-number">21.3.5</span>  Effect Sizes in Model D</a></li>
+  <li><a href="#plot-in-sample-predictions-for-model-d" id="toc-plot-in-sample-predictions-for-model-d" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-d"><span class="toc-section-number">21.3.6</span>  Plot In-Sample Predictions for Model D</a></li>
+  <li><a href="#plotting-the-roc-curve-for-model-d" id="toc-plotting-the-roc-curve-for-model-d" class="nav-link" data-scroll-target="#plotting-the-roc-curve-for-model-d"><span class="toc-section-number">21.3.7</span>  Plotting the ROC curve for Model D</a></li>
+  <li><a href="#validation-of-model-d-summaries" id="toc-validation-of-model-d-summaries" class="nav-link" data-scroll-target="#validation-of-model-d-summaries"><span class="toc-section-number">21.3.8</span>  Validation of Model D summaries</a></li>
   </ul></li>
-  <li><a href="#model-e-fitting-a-reduced-model-in-light-of-model-d" id="toc-model-e-fitting-a-reduced-model-in-light-of-model-d" class="nav-link" data-scroll-target="#model-e-fitting-a-reduced-model-in-light-of-model-d"><span class="toc-section-number">17.4</span>  Model E: Fitting a Reduced Model in light of Model D</a>
+  <li><a href="#model-e-fitting-a-reduced-model-in-light-of-model-d" id="toc-model-e-fitting-a-reduced-model-in-light-of-model-d" class="nav-link" data-scroll-target="#model-e-fitting-a-reduced-model-in-light-of-model-d"><span class="toc-section-number">21.4</span>  Model E: Fitting a Reduced Model in light of Model D</a>
   <ul class="collapse">
-  <li><a href="#a-plot-comparing-the-two-intubation-groups" id="toc-a-plot-comparing-the-two-intubation-groups" class="nav-link" data-scroll-target="#a-plot-comparing-the-two-intubation-groups"><span class="toc-section-number">17.4.1</span>  A Plot comparing the two intubation groups</a></li>
-  <li><a href="#nomogram-for-model-e" id="toc-nomogram-for-model-e" class="nav-link" data-scroll-target="#nomogram-for-model-e"><span class="toc-section-number">17.4.2</span>  Nomogram for Model E</a></li>
-  <li><a href="#effect-sizes-from-model-e" id="toc-effect-sizes-from-model-e" class="nav-link" data-scroll-target="#effect-sizes-from-model-e"><span class="toc-section-number">17.4.3</span>  Effect Sizes from Model E</a></li>
-  <li><a href="#plot-in-sample-predictions-for-model-e" id="toc-plot-in-sample-predictions-for-model-e" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-e"><span class="toc-section-number">17.4.4</span>  Plot In-Sample Predictions for Model E</a></li>
-  <li><a href="#anova-for-model-e" id="toc-anova-for-model-e" class="nav-link" data-scroll-target="#anova-for-model-e"><span class="toc-section-number">17.4.5</span>  ANOVA for Model E</a></li>
-  <li><a href="#validation-of-model-e" id="toc-validation-of-model-e" class="nav-link" data-scroll-target="#validation-of-model-e"><span class="toc-section-number">17.4.6</span>  Validation of Model E</a></li>
-  <li><a href="#do-any-points-seem-particularly-influential" id="toc-do-any-points-seem-particularly-influential" class="nav-link" data-scroll-target="#do-any-points-seem-particularly-influential"><span class="toc-section-number">17.4.7</span>  Do any points seem particularly influential?</a></li>
-  <li><a href="#fitting-model-e-using-glm-to-get-plots-about-influence" id="toc-fitting-model-e-using-glm-to-get-plots-about-influence" class="nav-link" data-scroll-target="#fitting-model-e-using-glm-to-get-plots-about-influence"><span class="toc-section-number">17.4.8</span>  Fitting Model E using <code>glm</code> to get plots about influence</a></li>
+  <li><a href="#a-plot-comparing-the-two-intubation-groups" id="toc-a-plot-comparing-the-two-intubation-groups" class="nav-link" data-scroll-target="#a-plot-comparing-the-two-intubation-groups"><span class="toc-section-number">21.4.1</span>  A Plot comparing the two intubation groups</a></li>
+  <li><a href="#nomogram-for-model-e" id="toc-nomogram-for-model-e" class="nav-link" data-scroll-target="#nomogram-for-model-e"><span class="toc-section-number">21.4.2</span>  Nomogram for Model E</a></li>
+  <li><a href="#effect-sizes-from-model-e" id="toc-effect-sizes-from-model-e" class="nav-link" data-scroll-target="#effect-sizes-from-model-e"><span class="toc-section-number">21.4.3</span>  Effect Sizes from Model E</a></li>
+  <li><a href="#plot-in-sample-predictions-for-model-e" id="toc-plot-in-sample-predictions-for-model-e" class="nav-link" data-scroll-target="#plot-in-sample-predictions-for-model-e"><span class="toc-section-number">21.4.4</span>  Plot In-Sample Predictions for Model E</a></li>
+  <li><a href="#anova-for-model-e" id="toc-anova-for-model-e" class="nav-link" data-scroll-target="#anova-for-model-e"><span class="toc-section-number">21.4.5</span>  ANOVA for Model E</a></li>
+  <li><a href="#validation-of-model-e" id="toc-validation-of-model-e" class="nav-link" data-scroll-target="#validation-of-model-e"><span class="toc-section-number">21.4.6</span>  Validation of Model E</a></li>
+  <li><a href="#do-any-points-seem-particularly-influential" id="toc-do-any-points-seem-particularly-influential" class="nav-link" data-scroll-target="#do-any-points-seem-particularly-influential"><span class="toc-section-number">21.4.7</span>  Do any points seem particularly influential?</a></li>
+  <li><a href="#fitting-model-e-using-glm-to-get-plots-about-influence" id="toc-fitting-model-e-using-glm-to-get-plots-about-influence" class="nav-link" data-scroll-target="#fitting-model-e-using-glm-to-get-plots-about-influence"><span class="toc-section-number">21.4.8</span>  Fitting Model E using <code>glm</code> to get plots about influence</a></li>
   </ul></li>
-  <li><a href="#concordance-comparing-model-c-d-and-es-predictions" id="toc-concordance-comparing-model-c-d-and-es-predictions" class="nav-link" data-scroll-target="#concordance-comparing-model-c-d-and-es-predictions"><span class="toc-section-number">17.5</span>  Concordance: Comparing Model C, D and E’s predictions</a></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="toc-section-number">17.6</span>  Conclusions</a></li>
+  <li><a href="#concordance-comparing-model-c-d-and-es-predictions" id="toc-concordance-comparing-model-c-d-and-es-predictions" class="nav-link" data-scroll-target="#concordance-comparing-model-c-d-and-es-predictions"><span class="toc-section-number">21.5</span>  Concordance: Comparing Model C, D and E’s predictions</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="toc-section-number">21.6</span>  Conclusions</a></li>
   </ul>
 </nav>
     </div>
@@ -314,7 +345,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></h1>
 </div>
 
 
@@ -329,8 +360,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="r-setup-used-here" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">17.1</span> R Setup Used Here</h2>
+<section id="r-setup-used-here" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">21.1</span> R Setup Used Here</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -342,15 +373,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="data-load" class="level3" data-number="17.1.1">
-<h3 data-number="17.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">17.1.1</span> Data Load</h3>
+<section id="data-load" class="level3" data-number="21.1.1">
+<h3 data-number="21.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">21.1.1</span> Data Load</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resect <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/resect.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="logistic-regression-using-lrm" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="logistic-regression-using-lrm"><span class="header-section-number">17.2</span> Logistic Regression using <code>lrm</code></h2>
+<section id="logistic-regression-using-lrm" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="logistic-regression-using-lrm"><span class="header-section-number">21.2</span> Logistic Regression using <code>lrm</code></h2>
 <p>To obtain the Nagelkerke <span class="math inline">\(R^2\)</span> and the C statistic, as well as some other summaries, I’ll now demonstrate the use of <code>lrm</code> from the <code>rms</code> package to fit a logistic regression model.</p>
 <p>We’ll return to the original model, predicting death using resection size alone.</p>
 <div class="cell">
@@ -386,8 +417,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>A table of coefficients, standard errors, Wald Z statistics and <em>p</em> values based on those Wald statistics.</li>
 </ul>
 <p>The C statistic is estimated to be 0.771, with an associated (Nagelkerke) <span class="math inline">\(R^2\)</span> = 0.167, both indicating at best mediocre performance for this model, as it turns out.</p>
-<section id="interpreting-nagelkerke-r2" class="level3" data-number="17.2.1">
-<h3 data-number="17.2.1" class="anchored" data-anchor-id="interpreting-nagelkerke-r2"><span class="header-section-number">17.2.1</span> Interpreting Nagelkerke <span class="math inline">\(R^2\)</span></h3>
+<section id="interpreting-nagelkerke-r2" class="level3" data-number="21.2.1">
+<h3 data-number="21.2.1" class="anchored" data-anchor-id="interpreting-nagelkerke-r2"><span class="header-section-number">21.2.1</span> Interpreting Nagelkerke <span class="math inline">\(R^2\)</span></h3>
 <p>There are many ways to calculate <span class="math inline">\(R^2\)</span> for logistic regression.</p>
 <ul>
 <li>At the <a href="https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faq-what-are-pseudo-r-squareds/">URL linked here</a> there is a nice summary of the key issue, which is that there are at least three different ways to think about <span class="math inline">\(R^2\)</span> in linear regression that are equivalent in that context, but when you move to a categorical outcome, which interpretation you use leads you down a different path for extension to the new type of outcome. In linear regression…
@@ -402,8 +433,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The Nagelkerke approach that is presented as <code>R2</code> in the <code>lrm</code> output is as good as most of the available approaches, and has the positive feature that it does reach 1 if the fitted model shows as much improvement as possible over the null model (which predicts the mean response for all subjects, and has <span class="math inline">\(R^2\)</span> = 0). The greater the improvement, the higher the Nagelkerke <span class="math inline">\(R^2\)</span>.</p>
 <p>For model A, our Nagelkerke <span class="math inline">\(R^2\)</span> = 0.167, which is pretty poor. It doesn’t technically mean that 16.7% of any sort of variation has been explained, though.</p>
 </section>
-<section id="interpreting-the-c-statistic-and-plotting-the-roc-curve" class="level3" data-number="17.2.2">
-<h3 data-number="17.2.2" class="anchored" data-anchor-id="interpreting-the-c-statistic-and-plotting-the-roc-curve"><span class="header-section-number">17.2.2</span> Interpreting the C statistic and Plotting the ROC Curve</h3>
+<section id="interpreting-the-c-statistic-and-plotting-the-roc-curve" class="level3" data-number="21.2.2">
+<h3 data-number="21.2.2" class="anchored" data-anchor-id="interpreting-the-c-statistic-and-plotting-the-roc-curve"><span class="header-section-number">21.2.2</span> Interpreting the C statistic and Plotting the ROC Curve</h3>
 <p>The C statistic is a measure of the area under the receiver operating characteristic curve. <a href="http://blog.yhat.com/posts/roc-curves.html">This link</a> has some nice material that provides some insight into the C statistic and ROC curve.</p>
 <ul>
 <li>Recall that C ranges from 0 to 1. 0 = BAD, 1 = GOOD.
@@ -444,8 +475,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="the-c-statistic-and-somers-d" class="level3" data-number="17.2.3">
-<h3 data-number="17.2.3" class="anchored" data-anchor-id="the-c-statistic-and-somers-d"><span class="header-section-number">17.2.3</span> The C statistic and Somers’ D</h3>
+<section id="the-c-statistic-and-somers-d" class="level3" data-number="21.2.3">
+<h3 data-number="21.2.3" class="anchored" data-anchor-id="the-c-statistic-and-somers-d"><span class="header-section-number">21.2.3</span> The C statistic and Somers’ D</h3>
 <ul>
 <li>The C statistic is directly related to <strong>Somers’ D statistic</strong>, abbreviated <span class="math inline">\(D_{xy}\)</span>, by the equation C = 0.5 + (D/2).
 <ul>
@@ -457,8 +488,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>In our case, Somers D (Dxy) = .541, so the C statistic is 0.771.</p>
 </section>
-<section id="validating-the-logistic-regression-model-summary-statistics" class="level3" data-number="17.2.4">
-<h3 data-number="17.2.4" class="anchored" data-anchor-id="validating-the-logistic-regression-model-summary-statistics"><span class="header-section-number">17.2.4</span> Validating the Logistic Regression Model Summary Statistics</h3>
+<section id="validating-the-logistic-regression-model-summary-statistics" class="level3" data-number="21.2.4">
+<h3 data-number="21.2.4" class="anchored" data-anchor-id="validating-the-logistic-regression-model-summary-statistics"><span class="header-section-number">21.2.4</span> Validating the Logistic Regression Model Summary Statistics</h3>
 <p>Like other regression-fitting tools in <code>rms</code>, the <code>lrm</code> function has a special <code>validate</code> tool to help perform resampling validation of a model, with or without backwards step-wise variable selection. Here, we’ll validate our model’s summary statistics using 100 bootstrap replications.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432001</span>) </span>
@@ -480,8 +511,8 @@ gp            0.1101   0.1080 0.1101  -0.0021          0.1122 100</code></pre>
 </div>
 <p>Recall that our area under the curve (C statistic) = <code>0.5 + (Dxy/2)</code>, so that we can also use the first row of statistics to validate the C statistic. Accounting for optimism in this manner, our validation-corrected estimates are Dxy = 0.5408, so C = 0.7704, and, from the second row of statistics, we can read off the validated Nagelkerke <span class="math inline">\(R^2\)</span>, which is 0.1583.</p>
 </section>
-<section id="plotting-the-summary-of-the-lrm-approach" class="level3" data-number="17.2.5">
-<h3 data-number="17.2.5" class="anchored" data-anchor-id="plotting-the-summary-of-the-lrm-approach"><span class="header-section-number">17.2.5</span> Plotting the Summary of the <code>lrm</code> approach</h3>
+<section id="plotting-the-summary-of-the-lrm-approach" class="level3" data-number="21.2.5">
+<h3 data-number="21.2.5" class="anchored" data-anchor-id="plotting-the-summary-of-the-lrm-approach"><span class="header-section-number">21.2.5</span> Plotting the Summary of the <code>lrm</code> approach</h3>
 <p>The <code>summary</code> function applied to an <code>lrm</code> fit shows the effect size comparing the 25th percentile to the 75th percentile of resection.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(res_modC))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -499,8 +530,8 @@ gp            0.1101   0.1080 0.1101  -0.0021          0.1122 100</code></pre>
 </div>
 <p>So, a move from a resection of 2 cm to a resection of 4 cm is associated with an estimated effect on the log odds of death of 1.48 (with standard error 0.45), or with an estimated effect on the odds ratio for death of 4.41, with 95% CI (1.84, 10.56).</p>
 </section>
-<section id="plot-in-sample-predictions-for-model-c" class="level3" data-number="17.2.6">
-<h3 data-number="17.2.6" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-c"><span class="header-section-number">17.2.6</span> Plot In-Sample Predictions for Model C</h3>
+<section id="plot-in-sample-predictions-for-model-c" class="level3" data-number="21.2.6">
+<h3 data-number="21.2.6" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-c"><span class="header-section-number">21.2.6</span> Plot In-Sample Predictions for Model C</h3>
 <p>Here we plot the effect of <code>resection</code> (and 95% confidence intervals) across the range of observed values of <code>resection</code> on the log odds of death. Note the linear effect of <code>resection</code> size on the log odds scale.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(res_modC))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -535,8 +566,8 @@ Limits are 0.95 confidence limits</code></pre>
 </div>
 </div>
 </section>
-<section id="anova-from-the-lrm-approach" class="level3" data-number="17.2.7">
-<h3 data-number="17.2.7" class="anchored" data-anchor-id="anova-from-the-lrm-approach"><span class="header-section-number">17.2.7</span> ANOVA from the <code>lrm</code> approach</h3>
+<section id="anova-from-the-lrm-approach" class="level3" data-number="21.2.7">
+<h3 data-number="21.2.7" class="anchored" data-anchor-id="anova-from-the-lrm-approach"><span class="header-section-number">21.2.7</span> ANOVA from the <code>lrm</code> approach</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(res_modC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -549,8 +580,8 @@ Limits are 0.95 confidence limits</code></pre>
 </div>
 <p>The ANOVA approach applied to a <code>lrm</code> fit provides a Wald test for the model as a whole. Here, the use of <code>resection</code> is a significant improvement over a null (intercept-only) model. The <em>p</em> value is 9 x 10<sup>-4</sup>.</p>
 </section>
-<section id="are-any-points-particularly-influential" class="level3" data-number="17.2.8">
-<h3 data-number="17.2.8" class="anchored" data-anchor-id="are-any-points-particularly-influential"><span class="header-section-number">17.2.8</span> Are any points particularly influential?</h3>
+<section id="are-any-points-particularly-influential" class="level3" data-number="21.2.8">
+<h3 data-number="21.2.8" class="anchored" data-anchor-id="are-any-points-particularly-influential"><span class="header-section-number">21.2.8</span> Are any points particularly influential?</h3>
 <p>I’ll use a cutoff for <code>dfbeta</code> here of 0.3, instead of the default 0.2, because I want to focus on truly influential points. Note that we have to use the data frame version of <code>resect</code> as <code>show.influence</code> isn’t tibble-friendly.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>inf.C <span class="ot">&lt;-</span> <span class="fu">which.influence</span>(res_modC, <span class="at">cutoff=</span><span class="fl">0.3</span>)</span>
@@ -571,8 +602,8 @@ $resection
 </div>
 <p>It appears that observation 84 may have a meaningful effect on both the intercept and the coefficient for <code>resection</code>.</p>
 </section>
-<section id="a-nomogram-for-model-c" class="level3" data-number="17.2.9">
-<h3 data-number="17.2.9" class="anchored" data-anchor-id="a-nomogram-for-model-c"><span class="header-section-number">17.2.9</span> A Nomogram for Model C</h3>
+<section id="a-nomogram-for-model-c" class="level3" data-number="21.2.9">
+<h3 data-number="21.2.9" class="anchored" data-anchor-id="a-nomogram-for-model-c"><span class="header-section-number">21.2.9</span> A Nomogram for Model C</h3>
 <p>We use the <code>plogis</code> function within a nomogram call to get R to produce fitted probabilities (of our outcome, <code>died</code>) in this case.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(res_modC, <span class="at">fun=</span>plogis, </span>
@@ -585,11 +616,11 @@ $resection
 <p>Since there’s no non-linearity in the right hand side of our simple logistic regression model, the nomogram is straightforward. We calculate the points based on the resection by traveling up, and then travel down in a straight vertical line from total points through the linear (log odds) predictor straight to a fitted probability. Note that fitted probabilities above 0.5 are not possible within the range of observed <code>resection</code> values in this case.</p>
 </section>
 </section>
-<section id="model-d-an-augmented-kitchen-sink-model" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="model-d-an-augmented-kitchen-sink-model"><span class="header-section-number">17.3</span> Model D: An Augmented Kitchen Sink Model</h2>
+<section id="model-d-an-augmented-kitchen-sink-model" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="model-d-an-augmented-kitchen-sink-model"><span class="header-section-number">21.3</span> Model D: An Augmented Kitchen Sink Model</h2>
 <p>Can we predict survival from the patient’s age, whether the patient had prior tracheal surgery or not, the extent of the resection, and whether intubation was required at the end of surgery?</p>
-<section id="spearman-rho2-plot" class="level3" data-number="17.3.1">
-<h3 data-number="17.3.1" class="anchored" data-anchor-id="spearman-rho2-plot"><span class="header-section-number">17.3.1</span> Spearman <span class="math inline">\(\rho^2\)</span> Plot</h3>
+<section id="spearman-rho2-plot" class="level3" data-number="21.3.1">
+<h3 data-number="21.3.1" class="anchored" data-anchor-id="spearman-rho2-plot"><span class="header-section-number">21.3.1</span> Spearman <span class="math inline">\(\rho^2\)</span> Plot</h3>
 <p>Let’s start by considering the limited use of non-linear terms for predictors that look important in a Spearman <span class="math inline">\(\rho^2\)</span> plot.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">spearman2</span>(died <span class="sc">~</span> age <span class="sc">+</span> prior <span class="sc">+</span> resection <span class="sc">+</span> intubated, <span class="at">data=</span>resect))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -599,8 +630,8 @@ $resection
 </div>
 <p>The most important variable appears to be whether intubation was required, so I’ll include <code>intubated</code>’s interaction with the linear effect of the next most (apparently) important variable, <code>resection</code>, and also a cubic spline for <code>resection</code>, with three knots. Since <code>prior</code> and <code>age</code> look less important, I’ll simply add them as linear terms.</p>
 </section>
-<section id="fitting-model-d-using-lrm" class="level3" data-number="17.3.2">
-<h3 data-number="17.3.2" class="anchored" data-anchor-id="fitting-model-d-using-lrm"><span class="header-section-number">17.3.2</span> Fitting Model D using <code>lrm</code></h3>
+<section id="fitting-model-d-using-lrm" class="level3" data-number="21.3.2">
+<h3 data-number="21.3.2" class="anchored" data-anchor-id="fitting-model-d-using-lrm"><span class="header-section-number">21.3.2</span> Fitting Model D using <code>lrm</code></h3>
 <p>Note the use of <code>%ia%</code> here. This insures that only the linear part of the <code>resection</code> term will be used in the interaction with <code>intubated</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">datadist</span>(resect)</span>
@@ -611,8 +642,8 @@ $resection
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">data=</span>resect, <span class="at">x=</span><span class="cn">TRUE</span>, <span class="at">y=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="assessing-model-d-using-lrms-tools" class="level3" data-number="17.3.3">
-<h3 data-number="17.3.3" class="anchored" data-anchor-id="assessing-model-d-using-lrms-tools"><span class="header-section-number">17.3.3</span> Assessing Model D using <code>lrm</code>’s tools</h3>
+<section id="assessing-model-d-using-lrms-tools" class="level3" data-number="21.3.3">
+<h3 data-number="21.3.3" class="anchored" data-anchor-id="assessing-model-d-using-lrms-tools"><span class="header-section-number">21.3.3</span> Assessing Model D using <code>lrm</code>’s tools</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>res_modD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -645,8 +676,8 @@ $resection
 <li>The Wald Z tests see some potential need to prune the model, as none of the elements reaches statistical significance without the others. The product term between <code>intubated</code> and <code>resection</code>, in particular, doesn’t appear to have helped much, once we already had the main effects.</li>
 </ul>
 </section>
-<section id="anova-and-wald-tests-for-model-d" class="level3" data-number="17.3.4">
-<h3 data-number="17.3.4" class="anchored" data-anchor-id="anova-and-wald-tests-for-model-d"><span class="header-section-number">17.3.4</span> ANOVA and Wald Tests for Model D</h3>
+<section id="anova-and-wald-tests-for-model-d" class="level3" data-number="21.3.4">
+<h3 data-number="21.3.4" class="anchored" data-anchor-id="anova-and-wald-tests-for-model-d"><span class="header-section-number">21.3.4</span> ANOVA and Wald Tests for Model D</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(res_modD)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -667,8 +698,8 @@ $resection
 </div>
 <p>Neither the interaction term nor the non-linearity from the cubic spline appears to be statistically significant, based on the Wald tests via ANOVA. However it is clear that <code>intubated</code> has a significant impact as a main effect.</p>
 </section>
-<section id="effect-sizes-in-model-d" class="level3" data-number="17.3.5">
-<h3 data-number="17.3.5" class="anchored" data-anchor-id="effect-sizes-in-model-d"><span class="header-section-number">17.3.5</span> Effect Sizes in Model D</h3>
+<section id="effect-sizes-in-model-d" class="level3" data-number="21.3.5">
+<h3 data-number="21.3.5" class="anchored" data-anchor-id="effect-sizes-in-model-d"><span class="header-section-number">21.3.5</span> Effect Sizes in Model D</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(res_modD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -693,8 +724,8 @@ Adjusted to: resection=2.5 intubated=0  </code></pre>
 </div>
 <p>The effect sizes are perhaps best described in terms of odds ratios. The odds ratio for death isn’t significantly different from 1 for any variable, but the impact of <code>resection</code> and <code>intubated</code>, though not strong enough to be significant, look more substantial (if poorly estimated) than the effects of <code>age</code> and <code>prior</code>.</p>
 </section>
-<section id="plot-in-sample-predictions-for-model-d" class="level3" data-number="17.3.6">
-<h3 data-number="17.3.6" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-d"><span class="header-section-number">17.3.6</span> Plot In-Sample Predictions for Model D</h3>
+<section id="plot-in-sample-predictions-for-model-d" class="level3" data-number="21.3.6">
+<h3 data-number="21.3.6" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-d"><span class="header-section-number">21.3.6</span> Plot In-Sample Predictions for Model D</h3>
 <p>Here are plots of the effects across the range of each predictor (holding the others constant) on the log odds scale. Note the non-linear effect of resection implied by the use of a spline there.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(res_modD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -710,8 +741,8 @@ Adjusted to: resection=2.5 intubated=0  </code></pre>
 </div>
 </div>
 </section>
-<section id="plotting-the-roc-curve-for-model-d" class="level3" data-number="17.3.7">
-<h3 data-number="17.3.7" class="anchored" data-anchor-id="plotting-the-roc-curve-for-model-d"><span class="header-section-number">17.3.7</span> Plotting the ROC curve for Model D</h3>
+<section id="plotting-the-roc-curve-for-model-d" class="level3" data-number="21.3.7">
+<h3 data-number="21.3.7" class="anchored" data-anchor-id="plotting-the-roc-curve-for-model-d"><span class="header-section-number">21.3.7</span> Plotting the ROC curve for Model D</h3>
 <p>Again, remember to use <code>type = "fitted"</code> with a <code>lrm</code> fit.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="do">## requires ROCR package</span></span>
@@ -763,8 +794,8 @@ Area under the curve: 0.8826
 </div>
 </div>
 </section>
-<section id="validation-of-model-d-summaries" class="level3" data-number="17.3.8">
-<h3 data-number="17.3.8" class="anchored" data-anchor-id="validation-of-model-d-summaries"><span class="header-section-number">17.3.8</span> Validation of Model D summaries</h3>
+<section id="validation-of-model-d-summaries" class="level3" data-number="21.3.8">
+<h3 data-number="21.3.8" class="anchored" data-anchor-id="validation-of-model-d-summaries"><span class="header-section-number">21.3.8</span> Validation of Model D summaries</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432002</span>)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">validate</span>(res_modD, <span class="at">B =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -790,8 +821,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 <p>The C statistic indicates fairly strong discrimination, at C = 0.88, although after validation, this looks much weaker (based on Dxy = 0.6925, we would have C = 0.5 + 0.6925/2 = 0.85) and the Nagelkerke <span class="math inline">\(R^2\)</span> is also reasonably good, at 0.46, although this, too, is overly optimistic, and we bias-correct through our validation study to 0.34.</p>
 </section>
 </section>
-<section id="model-e-fitting-a-reduced-model-in-light-of-model-d" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="model-e-fitting-a-reduced-model-in-light-of-model-d"><span class="header-section-number">17.4</span> Model E: Fitting a Reduced Model in light of Model D</h2>
+<section id="model-e-fitting-a-reduced-model-in-light-of-model-d" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="model-e-fitting-a-reduced-model-in-light-of-model-d"><span class="header-section-number">21.4</span> Model E: Fitting a Reduced Model in light of Model D</h2>
 <p>Can you suggest a reduced model (using a subset of the independent variables in model D) that adequately predicts survival?</p>
 <p>Based on the anova for model D and the Spearman rho-squared plot, it appears that a two-predictor model using intubation and resection may be sufficient. Neither of the other potential predictors shows a statistically detectable effect in its Wald test.</p>
 <div class="cell">
@@ -825,8 +856,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 <li>for non-intubated patients, the equation is -4.637 + 0.548 <code>resection</code>.</li>
 </ul>
 <p>We can use the <code>ilogit</code> function within the <code>faraway</code> package to help plot this.</p>
-<section id="a-plot-comparing-the-two-intubation-groups" class="level3" data-number="17.4.1">
-<h3 data-number="17.4.1" class="anchored" data-anchor-id="a-plot-comparing-the-two-intubation-groups"><span class="header-section-number">17.4.1</span> A Plot comparing the two intubation groups</h3>
+<section id="a-plot-comparing-the-two-intubation-groups" class="level3" data-number="21.4.1">
+<h3 data-number="21.4.1" class="anchored" data-anchor-id="a-plot-comparing-the-two-intubation-groups"><span class="header-section-number">21.4.1</span> A Plot comparing the two intubation groups</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(resect, <span class="fu">aes</span>(<span class="at">x =</span> resection, <span class="at">y =</span> died, </span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">col =</span> <span class="fu">factor</span>(intubated))) <span class="sc">+</span> </span>
@@ -851,8 +882,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 </div>
 <p>The effect of <code>intubation</code> appears to be very large, compared to the resection size effect.</p>
 </section>
-<section id="nomogram-for-model-e" class="level3" data-number="17.4.2">
-<h3 data-number="17.4.2" class="anchored" data-anchor-id="nomogram-for-model-e"><span class="header-section-number">17.4.2</span> Nomogram for Model E</h3>
+<section id="nomogram-for-model-e" class="level3" data-number="21.4.2">
+<h3 data-number="21.4.2" class="anchored" data-anchor-id="nomogram-for-model-e"><span class="header-section-number">21.4.2</span> Nomogram for Model E</h3>
 <p>A nomogram of the model would help, too.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(res_modE, <span class="at">fun=</span>plogis, </span>
@@ -864,8 +895,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 </div>
 <p>Again, we see that the effect of intubation is enormous, compared to the effect of resection. Another way to see this is to plot the effect sizes directly.</p>
 </section>
-<section id="effect-sizes-from-model-e" class="level3" data-number="17.4.3">
-<h3 data-number="17.4.3" class="anchored" data-anchor-id="effect-sizes-from-model-e"><span class="header-section-number">17.4.3</span> Effect Sizes from Model E</h3>
+<section id="effect-sizes-from-model-e" class="level3" data-number="21.4.3">
+<h3 data-number="21.4.3" class="anchored" data-anchor-id="effect-sizes-from-model-e"><span class="header-section-number">21.4.3</span> Effect Sizes from Model E</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(res_modE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -883,8 +914,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 </div>
 </div>
 </section>
-<section id="plot-in-sample-predictions-for-model-e" class="level3" data-number="17.4.4">
-<h3 data-number="17.4.4" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-e"><span class="header-section-number">17.4.4</span> Plot In-Sample Predictions for Model E</h3>
+<section id="plot-in-sample-predictions-for-model-e" class="level3" data-number="21.4.4">
+<h3 data-number="21.4.4" class="anchored" data-anchor-id="plot-in-sample-predictions-for-model-e"><span class="header-section-number">21.4.4</span> Plot In-Sample Predictions for Model E</h3>
 <p>Here are plots of the effects across the range of each predictor (holding the other constant) on the log odds scale.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(res_modE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -900,8 +931,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 </div>
 </div>
 </section>
-<section id="anova-for-model-e" class="level3" data-number="17.4.5">
-<h3 data-number="17.4.5" class="anchored" data-anchor-id="anova-for-model-e"><span class="header-section-number">17.4.5</span> ANOVA for Model E</h3>
+<section id="anova-for-model-e" class="level3" data-number="21.4.5">
+<h3 data-number="21.4.5" class="anchored" data-anchor-id="anova-for-model-e"><span class="header-section-number">21.4.5</span> ANOVA for Model E</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(res_modE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -914,8 +945,8 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 </div>
 </div>
 </section>
-<section id="validation-of-model-e" class="level3" data-number="17.4.6">
-<h3 data-number="17.4.6" class="anchored" data-anchor-id="validation-of-model-e"><span class="header-section-number">17.4.6</span> Validation of Model E</h3>
+<section id="validation-of-model-e" class="level3" data-number="21.4.6">
+<h3 data-number="21.4.6" class="anchored" data-anchor-id="validation-of-model-e"><span class="header-section-number">21.4.6</span> Validation of Model E</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">validate</span>(res_modE, <span class="at">method=</span><span class="st">"boot"</span>, <span class="at">B=</span><span class="dv">40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -935,8 +966,8 @@ gp            0.1597   0.1446  0.1563  -0.0117          0.1714 40</code></pre>
 </div>
 <p>Our bootstrap validated assessments of discrimination and goodness of fit look somewhat more reasonable now.</p>
 </section>
-<section id="do-any-points-seem-particularly-influential" class="level3" data-number="17.4.7">
-<h3 data-number="17.4.7" class="anchored" data-anchor-id="do-any-points-seem-particularly-influential"><span class="header-section-number">17.4.7</span> Do any points seem particularly influential?</h3>
+<section id="do-any-points-seem-particularly-influential" class="level3" data-number="21.4.7">
+<h3 data-number="21.4.7" class="anchored" data-anchor-id="do-any-points-seem-particularly-influential"><span class="header-section-number">21.4.7</span> Do any points seem particularly influential?</h3>
 <p>As a last step, I’ll look at influence, and residuals, associated with model E.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>inf.E <span class="ot">&lt;-</span> <span class="fu">which.influence</span>(res_modE, <span class="at">cutoff=</span><span class="fl">0.3</span>)</span>
@@ -957,8 +988,8 @@ $resection
 </div>
 </div>
 </section>
-<section id="fitting-model-e-using-glm-to-get-plots-about-influence" class="level3" data-number="17.4.8">
-<h3 data-number="17.4.8" class="anchored" data-anchor-id="fitting-model-e-using-glm-to-get-plots-about-influence"><span class="header-section-number">17.4.8</span> Fitting Model E using <code>glm</code> to get plots about influence</h3>
+<section id="fitting-model-e-using-glm-to-get-plots-about-influence" class="level3" data-number="21.4.8">
+<h3 data-number="21.4.8" class="anchored" data-anchor-id="fitting-model-e-using-glm-to-get-plots-about-influence"><span class="header-section-number">21.4.8</span> Fitting Model E using <code>glm</code> to get plots about influence</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>res_modEglm <span class="ot">&lt;-</span> <span class="fu">glm</span>(died <span class="sc">~</span> intubated <span class="sc">+</span> resection, </span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data=</span>resect, <span class="at">family=</span><span class="st">"binomial"</span>)</span>
@@ -971,8 +1002,8 @@ $resection
 <p>Using this <code>glm</code> residuals approach, we again see that points 84 and 94 have the largest influence on our model E.</p>
 </section>
 </section>
-<section id="concordance-comparing-model-c-d-and-es-predictions" class="level2" data-number="17.5">
-<h2 data-number="17.5" class="anchored" data-anchor-id="concordance-comparing-model-c-d-and-es-predictions"><span class="header-section-number">17.5</span> Concordance: Comparing Model C, D and E’s predictions</h2>
+<section id="concordance-comparing-model-c-d-and-es-predictions" class="level2" data-number="21.5">
+<h2 data-number="21.5" class="anchored" data-anchor-id="concordance-comparing-model-c-d-and-es-predictions"><span class="header-section-number">21.5</span> Concordance: Comparing Model C, D and E’s predictions</h2>
 <p>To start, we’ll gather the predictions fomade by each model (C, D and E) on the probability scale, in one place. Sadly, <code>augment</code> from <code>broom</code> doesn’t work well with <code>lrm</code> fits, so we have to do this on our own.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>resect_preds <span class="ot">&lt;-</span> resect <span class="sc">|&gt;</span></span>
@@ -1068,8 +1099,8 @@ E Predict Alive  93.44  6.56
 </ul>
 <p>Note that the approaches discussed here would be useful if we had a new sample to predict on, as well. We could then compare the errors for that new data made by this sort of classification scheme either graphically or in a table.</p>
 </section>
-<section id="conclusions" class="level2" data-number="17.6">
-<h2 data-number="17.6" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">17.6</span> Conclusions</h2>
+<section id="conclusions" class="level2" data-number="21.6">
+<h2 data-number="21.6" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">21.6</span> Conclusions</h2>
 <p>It appears that <code>intubated</code> status and, to a lesser degree, the extent of the <code>resection</code> both play a meaningful role in predicting death associated with tracheal carina resection surgery. Patients who are intubated are associated with worse outcomes (greater risk of death) and more extensive resections are also associated with worse outcomes.</p>
 
 
@@ -1218,12 +1249,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./logistic2.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./incomplete.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./effectsize.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

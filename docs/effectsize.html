@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 22&nbsp; Estimating and Interpreting Effect Sizes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./binaryregression.html" rel="next">
+<link href="./logistic3.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">22.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">22.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#available-variables" id="toc-available-variables" class="nav-link" data-scroll-target="#available-variables"><span class="toc-section-number">22.2</span>  Available Variables</a></li>
+  <li><a href="#effect-interpretation-in-a-linear-regression-model" id="toc-effect-interpretation-in-a-linear-regression-model" class="nav-link" data-scroll-target="#effect-interpretation-in-a-linear-regression-model"><span class="toc-section-number">22.3</span>  Effect Interpretation in A Linear Regression Model</a></li>
+  <li><a href="#making-a-prediction-and-building-a-prediction-interval-with-an-lm-fit" id="toc-making-a-prediction-and-building-a-prediction-interval-with-an-lm-fit" class="nav-link" data-scroll-target="#making-a-prediction-and-building-a-prediction-interval-with-an-lm-fit"><span class="toc-section-number">22.4</span>  Making a prediction and building a prediction interval with an <code>lm</code> fit</a></li>
+  <li><a href="#what-if-we-include-a-spline-or-an-interaction" id="toc-what-if-we-include-a-spline-or-an-interaction" class="nav-link" data-scroll-target="#what-if-we-include-a-spline-or-an-interaction"><span class="toc-section-number">22.5</span>  What if we include a Spline or an Interaction?</a></li>
+  <li><a href="#making-a-prediction-and-building-a-prediction-interval-with-an-ols-fit" id="toc-making-a-prediction-and-building-a-prediction-interval-with-an-ols-fit" class="nav-link" data-scroll-target="#making-a-prediction-and-building-a-prediction-interval-with-an-ols-fit"><span class="toc-section-number">22.6</span>  Making a prediction and building a prediction interval with an <code>ols</code> fit</a></li>
+  <li><a href="#effect-estimates-in-a-logistic-regression-fit-with-glm" id="toc-effect-estimates-in-a-logistic-regression-fit-with-glm" class="nav-link" data-scroll-target="#effect-estimates-in-a-logistic-regression-fit-with-glm"><span class="toc-section-number">22.7</span>  Effect Estimates in A Logistic Regression fit with <code>glm</code></a></li>
+  <li><a href="#estimates-in-the-same-logistic-regression-fit-with-lrm" id="toc-estimates-in-the-same-logistic-regression-fit-with-lrm" class="nav-link" data-scroll-target="#estimates-in-the-same-logistic-regression-fit-with-lrm"><span class="toc-section-number">22.8</span>  Estimates in The Same Logistic Regression fit with <code>lrm</code></a></li>
+  <li><a href="#estimates-in-a-new-logistic-regression-fit-with-lrm" id="toc-estimates-in-a-new-logistic-regression-fit-with-lrm" class="nav-link" data-scroll-target="#estimates-in-a-new-logistic-regression-fit-with-lrm"><span class="toc-section-number">22.9</span>  Estimates in A New Logistic Regression fit with <code>lrm</code></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">22.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="22.1.1">
+<h3 data-number="22.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">22.1.1</span> Data Load</h3>
+<p>Consider the <code>smalldat.csv</code> data available on our site, which is modeled on the public Framingham data set available <a href="https://biolincc.nhlbi.nih.gov/teaching/">from BIOLINCC</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. From the BIOLINCC documentation:</p>
+<blockquote class="blockquote">
+<p>The Framingham Heart Study is a long term prospective study of the etiology of cardiovascular disease among a population of free living subjects in the community of Framingham, Massachusetts. The Framingham Heart Study was a landmark study in epidemiology in that it was the first prospective study of cardiovascular disease and identified the concept of risk factors and their joint effects.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smalldat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/smalldat.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="available-variables" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="available-variables"><span class="header-section-number">22.2</span> Available Variables</h2>
+<p>The <code>smalldat</code> data contains 150 observations on the following variables<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>subject</em></td>
+<td>Subject identification code</td>
+</tr>
+<tr class="even">
+<td><em>smoker</em></td>
+<td>1 = current smoker, 0 = not current smoker</td>
+</tr>
+<tr class="odd">
+<td><em>totchol</em></td>
+<td>total cholesterol, in mg/dl</td>
+</tr>
+<tr class="even">
+<td><em>age</em></td>
+<td>age in years</td>
+</tr>
+<tr class="odd">
+<td><em>sex</em></td>
+<td>subject’s sex (M or F)</td>
+</tr>
+<tr class="even">
+<td><em>educ</em></td>
+<td>subject’s educational attainment (4 levels)</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smalldat, <span class="fu">aes</span>(<span class="at">x =</span> totchol)) <span class="sc">+</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"dodgerblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="effect-interpretation-in-a-linear-regression-model" class="level2" data-number="22.3">
+<h2 data-number="22.3" class="anchored" data-anchor-id="effect-interpretation-in-a-linear-regression-model"><span class="header-section-number">22.3</span> Effect Interpretation in A Linear Regression Model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(totchol <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">factor</span>(educ),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smalldat)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">171.197</td>
+<td style="text-align: right;">20.201</td>
+<td style="text-align: right;">8.475</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">131.268</td>
+<td style="text-align: right;">211.126</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1.202</td>
+<td style="text-align: right;">0.367</td>
+<td style="text-align: right;">3.270</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.475</td>
+<td style="text-align: right;">1.928</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sexM</td>
+<td style="text-align: right;">3.612</td>
+<td style="text-align: right;">6.441</td>
+<td style="text-align: right;">0.561</td>
+<td style="text-align: right;">0.576</td>
+<td style="text-align: right;">-9.119</td>
+<td style="text-align: right;">16.343</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)2_Middle</td>
+<td style="text-align: right;">11.044</td>
+<td style="text-align: right;">7.702</td>
+<td style="text-align: right;">1.434</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">-4.180</td>
+<td style="text-align: right;">26.268</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)3_High</td>
+<td style="text-align: right;">-2.459</td>
+<td style="text-align: right;">9.390</td>
+<td style="text-align: right;">-0.262</td>
+<td style="text-align: right;">0.794</td>
+<td style="text-align: right;">-21.019</td>
+<td style="text-align: right;">16.101</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)4_VHigh</td>
+<td style="text-align: right;">10.927</td>
+<td style="text-align: right;">9.780</td>
+<td style="text-align: right;">1.117</td>
+<td style="text-align: right;">0.266</td>
+<td style="text-align: right;">-8.405</td>
+<td style="text-align: right;">30.258</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ol type="1">
+<li>What is the effect of <em>age</em> on <em>totchol</em> in Model <code>m1</code>?</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>temp.a <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"age"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp.a, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1.202</td>
+<td style="text-align: right;">0.367</td>
+<td style="text-align: right;">3.27</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.475</td>
+<td style="text-align: right;">1.928</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The coefficient of the <em>age</em> effect on <em>totchol</em> is 1.202. Suppose we have two subjects, Doris and Emily, who are the same sex and have the same level of education, but Doris is one year older than Emily. Our model predicts that Doris’ total cholesterol will be 1.202 mg/dl higher than Emily’s.</p>
+<p>The 95% confidence interval for this estimated <em>age</em> coefficient is (0.475, 1.928), so holding everything else constant, it seems that older <em>age</em> is associated with higher <em>totchol</em> in this model.</p>
+<ol start="2" type="1">
+<li>What is the effect of <em>sex</em> on <code>totchol</code> in Model <code>m1</code>?</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>temp.s <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"sexM"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp.s, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sexM</td>
+<td style="text-align: right;">3.612</td>
+<td style="text-align: right;">6.441</td>
+<td style="text-align: right;">0.561</td>
+<td style="text-align: right;">0.576</td>
+<td style="text-align: right;">-9.119</td>
+<td style="text-align: right;">16.343</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The model is parametrized to incorporate the <em>sex</em> information with an indicator (and factor) variable called <em>sexM</em> which is interpreted as taking the value 1 when <em>sex</em> = M, and 0 otherwise. The coefficient of the <em>sexM</em> effect on <em>totchol</em> is 3.612. Suppose we have two subjects, David and Emily, who are the same age, have the same level of education, but David is male and Emily is female. Our model predicts that David’s total cholesterol will be 3.612 mg/dl higher than Emily’s.</p>
+<p>The 95% confidence interval for this estimated <em>sexM</em> coefficient is (-9.119, 16.343), which suggests that the effect of <em>sex</em> on <em>totchol</em> could be quite small, and that the data are consistent with a wide range of estimates for the <em>sexM</em> effect, some of which are negative.</p>
+<ol start="3" type="1">
+<li>What is the effect of <em>educ</em> on <em>totchol</em> in Model <code>m1</code>?</li>
+</ol>
+<p>The <em>educ</em> variable splits the subjects into four categories. In this model the “1_Low” category is used as the baseline, and we have estimates for “2_Middle” (as compared to “1_Low”), for “3_High” (as compared to “1_Low”) and for “4_VHigh” (as compared to “1_Low”.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>temp.ed <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">filter</span>(term <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"factor(educ)2_Middle"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"factor(educ)3_High"</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"factor(educ)4_VHigh"</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp.ed, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)2_Middle</td>
+<td style="text-align: right;">11.044</td>
+<td style="text-align: right;">7.702</td>
+<td style="text-align: right;">1.434</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">-4.180</td>
+<td style="text-align: right;">26.268</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)3_High</td>
+<td style="text-align: right;">-2.459</td>
+<td style="text-align: right;">9.390</td>
+<td style="text-align: right;">-0.262</td>
+<td style="text-align: right;">0.794</td>
+<td style="text-align: right;">-21.019</td>
+<td style="text-align: right;">16.101</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)4_VHigh</td>
+<td style="text-align: right;">10.927</td>
+<td style="text-align: right;">9.780</td>
+<td style="text-align: right;">1.117</td>
+<td style="text-align: right;">0.266</td>
+<td style="text-align: right;">-8.405</td>
+<td style="text-align: right;">30.258</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The coefficient of the <em>educ</em> effect comparing the “2_Middle” group to the baseline “1_Low” group on <em>totchol</em> is 11.044.</p>
+<p>Note that none of the <em>educ</em> levels show especially large differences from the baseline group, and each of their 95% confidence intervals contains zero.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Mina, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Mina is in the “2_Middle” education group.</li>
+<li>Our model predicts that Mina’s total cholesterol will be 11.044 mg/dl higher than Lola’s.</li>
+</ul>
+<p>The coefficient of the <em>educ</em> effect comparing the “3_High” group to the baseline “1_Low” group on <em>totchol</em> is -2.459.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Heidi, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Heidi is in the “3_High” education group.</li>
+<li>Our model predicts that Heidi’s total cholesterol will be 2.459 mg/dl <strong>lower</strong> than Lola’s.</li>
+</ul>
+<p>Finally, the coefficient of the <em>educ</em> effect comparing the “4_VHigh” group to the baseline “1_Low” group on <em>totchol</em> is 10.927.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Vera, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Vera is in the “4_VHigh” education group.</li>
+<li>Our model predicts that Vera’s total cholesterol will be 10.927 mg/dl higher than Lola’s.</li>
+</ul>
+</section>
+<section id="making-a-prediction-and-building-a-prediction-interval-with-an-lm-fit" class="level2" data-number="22.4">
+<h2 data-number="22.4" class="anchored" data-anchor-id="making-a-prediction-and-building-a-prediction-interval-with-an-lm-fit"><span class="header-section-number">22.4</span> Making a prediction and building a prediction interval with an <code>lm</code> fit</h2>
+<p>Suppose we want to use <code>m1</code> to make a prediction for Lola and Vera, who we’ll now assume are each Female and 30 years of age, and we want to accompany this with a 90% prediction interval for each subject. Here’s one way to do that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>new1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Lola"</span>, <span class="st">"Vera"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">30</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">educ =</span> <span class="fu">c</span>(<span class="st">"1_Low"</span>, <span class="st">"4_VHigh"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>new1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  name    age sex   educ   
+  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  
+1 Lola     30 F     1_Low  
+2 Vera     30 F     4_VHigh</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m1, <span class="at">newdata =</span> new1, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">level =</span> <span class="fl">0.9</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>res1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit     lwr      upr
+1 207.2456 142.322 272.1691
+2 218.1725 152.387 283.9580</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>new1_aug <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(new1, <span class="at">fit =</span> res1[,<span class="st">"fit"</span>],</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pi90.lo =</span> res1[,<span class="st">"lwr"</span>],</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pi90.hi =</span> res1[,<span class="st">"upr"</span>])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>new1_aug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 7
+  name    age sex   educ      fit pi90.lo pi90.hi
+  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 Lola     30 F     1_Low    207.    142.    272.
+2 Vera     30 F     4_VHigh  218.    152.    284.</code></pre>
+</div>
+</div>
+</section>
+<section id="what-if-we-include-a-spline-or-an-interaction" class="level2" data-number="22.5">
+<h2 data-number="22.5" class="anchored" data-anchor-id="what-if-we-include-a-spline-or-an-interaction"><span class="header-section-number">22.5</span> What if we include a Spline or an Interaction?</h2>
+<p>Suppose we fit a new model to predict <em>totchol</em> using a five-knot spline in <em>age</em> and the interaction of sex and educational attainment. How does that change our interpretation of the effect sizes?</p>
+<p>None of these coefficients show particularly large effects, and zero is contained in each of the 95% confidence intervals provided in the table summarizing model m2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(smalldat); <span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">ols</span>(totchol <span class="sc">~</span> <span class="fu">rcs</span>(age, <span class="dv">5</span>) <span class="sc">+</span> sex<span class="sc">*</span><span class="fu">catg</span>(educ),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smalldat, <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">summary</span>(m2), <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Low</th>
+<th style="text-align: right;">High</th>
+<th style="text-align: right;">Diff.</th>
+<th style="text-align: right;">Effect</th>
+<th style="text-align: right;">S.E.</th>
+<th style="text-align: right;">Lower 0.95</th>
+<th style="text-align: right;">Upper 0.95</th>
+<th style="text-align: right;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">9.99</td>
+<td style="text-align: right;">9.40</td>
+<td style="text-align: right;">-8.59</td>
+<td style="text-align: right;">28.57</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sex - M:F</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9.11</td>
+<td style="text-align: right;">9.87</td>
+<td style="text-align: right;">-10.41</td>
+<td style="text-align: right;">28.64</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 2_Middle:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11.36</td>
+<td style="text-align: right;">9.81</td>
+<td style="text-align: right;">-8.04</td>
+<td style="text-align: right;">30.76</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">educ - 3_High:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">7.80</td>
+<td style="text-align: right;">12.41</td>
+<td style="text-align: right;">-16.73</td>
+<td style="text-align: right;">32.34</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 4_VHigh:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">16.17</td>
+<td style="text-align: right;">14.63</td>
+<td style="text-align: right;">-12.75</td>
+<td style="text-align: right;">45.10</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The <code>kable</code> approach I used in these notes hides the adjusted values specified at the bottom of the <code>summary</code> table for this <code>ols</code> model, but they are <code>Adjusted to: sex=F educ=1_Low</code>.</p>
+<p>Now, how do we interpret these model <code>m2</code> results?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li>The <strong>age</strong> interpretation is that if we have two subjects, Al and Bob, who are the same sex and have the same education level, but Al is age 42 and Bob is age 57, then model <code>m2</code> projects that Bob’s <em>totchol</em> will be 9.993 mg/dl higher than will Al’s.</li>
+<li>Because of the interaction between <em>sex</em> and <em>educ</em> in our model <code>m2</code>, we must select an <em>educ</em> level in order to cleanly interpret the effect of <em>sex</em> on <em>totchol</em>. The <strong>sex - M:F</strong> interpretation compares M(ale) to F(emale) <em>sex</em> while requiring<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that <em>educ</em> = <code>1_Low</code>. The result is that if we have two subjects, Carl and Diane, who are the same age and <em>each is in the low education group</em>, but Carl is Male and Diane is Female, then model <code>m2</code> predicts that Carl’s <em>totchol</em> will be 9.115 mg/dl higher than will Diane’s.</li>
+<li>Because of the interaction between <em>sex</em> and <em>educ</em> in our model <code>m2</code>, we must select a <em>sex</em> in order to cleanly interpret the effect of <em>educ</em> on <em>totchol</em>. The <strong>educ - 2_Middle:1_Low</strong> term, for instance, compares “2_Middle” education to “1_Low” education while requiring that <em>sex</em> is Female<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. The result is that if we have two subjects, Lola and Mina, who are the same age and <em>each is Female</em>, but Lola is in the “1_Low” education group and Mina is in the “2_Middle” education group, then model <code>m2</code> predicts that Mina’s <em>totchol</em> will be 11.363 mg/dl higher than will Lola’s.</li>
+</ul>
+<p>Here is a nomogram of model <code>m2</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(m2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="making-a-prediction-and-building-a-prediction-interval-with-an-ols-fit" class="level2" data-number="22.6">
+<h2 data-number="22.6" class="anchored" data-anchor-id="making-a-prediction-and-building-a-prediction-interval-with-an-ols-fit"><span class="header-section-number">22.6</span> Making a prediction and building a prediction interval with an <code>ols</code> fit</h2>
+<p>Suppose we want to use <code>m2</code> to make a prediction for Lola and Vera, who we’ll again assume are each Female and 30 years of age, and we want to accompany this with a 90% prediction interval for each subject. Here’s one way to do that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>res2_lola <span class="ot">&lt;-</span> <span class="fu">Predict</span>(m2, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">age =</span> <span class="dv">30</span>, <span class="at">sex =</span> <span class="st">"F"</span>, <span class="at">educ =</span> <span class="st">"1_Low"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf.int =</span> <span class="fl">0.90</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf.type =</span> <span class="st">"individual"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>res2_lola</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  age sex  educ     yhat    lower    upper
+1  30   F 1_Low 176.7746 96.77241 256.7768
+
+Response variable (y): totchol 
+
+Limits are 0.9 confidence limits</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>res2_vera <span class="ot">&lt;-</span> <span class="fu">Predict</span>(m2, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">age =</span> <span class="dv">30</span>, <span class="at">sex =</span> <span class="st">"F"</span>, <span class="at">educ =</span> <span class="st">"4_VHigh"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf.int =</span> <span class="fl">0.90</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf.type =</span> <span class="st">"individual"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>res2_vera</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  age sex    educ     yhat    lower    upper
+1  30   F 4_VHigh 192.9483 112.3727 273.5238
+
+Response variable (y): totchol 
+
+Limits are 0.9 confidence limits</code></pre>
+</div>
+</div>
+</section>
+<section id="effect-estimates-in-a-logistic-regression-fit-with-glm" class="level2" data-number="22.7">
+<h2 data-number="22.7" class="anchored" data-anchor-id="effect-estimates-in-a-logistic-regression-fit-with-glm"><span class="header-section-number">22.7</span> Effect Estimates in A Logistic Regression fit with <code>glm</code></h2>
+<p>In a binary <strong>logistic</strong> model, where we predict the log odds of smoking (<em>smoker</em> = 1), we will exponentiate so as to interpret the odds ratio estimates associated with each coefficient.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(smoker <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">factor</span>(educ), </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smalldat, <span class="at">family =</span> binomial)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">tidy</span>(m3, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">19.054</td>
+<td style="text-align: right;">1.152</td>
+<td style="text-align: right;">2.557</td>
+<td style="text-align: right;">0.011</td>
+<td style="text-align: right;">2.082</td>
+<td style="text-align: right;">195.209</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.943</td>
+<td style="text-align: right;">0.021</td>
+<td style="text-align: right;">-2.782</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.903</td>
+<td style="text-align: right;">0.982</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sexM</td>
+<td style="text-align: right;">1.795</td>
+<td style="text-align: right;">0.356</td>
+<td style="text-align: right;">1.643</td>
+<td style="text-align: right;">0.100</td>
+<td style="text-align: right;">0.897</td>
+<td style="text-align: right;">3.637</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)2_Middle</td>
+<td style="text-align: right;">0.690</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">-0.866</td>
+<td style="text-align: right;">0.386</td>
+<td style="text-align: right;">0.295</td>
+<td style="text-align: right;">1.589</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)3_High</td>
+<td style="text-align: right;">0.725</td>
+<td style="text-align: right;">0.519</td>
+<td style="text-align: right;">-0.619</td>
+<td style="text-align: right;">0.536</td>
+<td style="text-align: right;">0.258</td>
+<td style="text-align: right;">2.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)4_VHigh</td>
+<td style="text-align: right;">0.339</td>
+<td style="text-align: right;">0.571</td>
+<td style="text-align: right;">-1.895</td>
+<td style="text-align: right;">0.058</td>
+<td style="text-align: right;">0.105</td>
+<td style="text-align: right;">1.008</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ol type="1">
+<li>What is the effect of <em>age</em> on the odds of being a <em>smoker</em> in Model <code>m3</code>?</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>temp<span class="fl">.3</span>a <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m3, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"age"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp<span class="fl">.3</span>a, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.943</td>
+<td style="text-align: right;">0.021</td>
+<td style="text-align: right;">-2.782</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.903</td>
+<td style="text-align: right;">0.982</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The estimated odds ratio for the <em>age</em> effect on <em>smoker</em> is 0.943. Suppose we have two subjects, Doris and Emily, who are the same sex and have the same level of education, but Doris is one year older than Emily. Our model predicts that Doris’ odds of smoking will be 0.943 times as high as Emily’s. Another way to write this would be that Doris’ odds of smoking are estimated to be 94.3% of Emily’s. Yet another way would be to state that Doris’ odds of smoking are estimated to be 5.7% smaller than Emily’s odds.</p>
+<p>The 95% confidence interval for this estimated odds ratio for the <em>age</em> effect on being a <em>smoker</em> is (0.903, 0.982). This confidence interval for the odds ratio does not include one, and again we see that holding everything else constant, older <em>age</em> is associated with detectably lower odds of being a <em>smoker</em> in this model.</p>
+<ol start="2" type="1">
+<li>What is the effect of <em>sex</em> on the odds of being a <em>smoker</em> in Model <code>m3</code>?</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>temp<span class="fl">.3</span>s <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m3, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"sexM"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp<span class="fl">.3</span>s, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sexM</td>
+<td style="text-align: right;">1.795</td>
+<td style="text-align: right;">0.356</td>
+<td style="text-align: right;">1.643</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.897</td>
+<td style="text-align: right;">3.637</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The model incorporates the <em>sex</em> information with an indicator (and factor) variable called <em>sexM</em> which is interpreted as taking the value 1 when <em>sex</em> = M, and 0 otherwise. The estimated odds ratio describing the <em>sexM</em> effect on being a <em>smoker</em> is 1.795. Suppose we have two subjects, David and Emily, who are the same age, have the same level of education, but David is male and Emily is female. Our model predicts that David’s odds of being a <em>smoker</em> are 1.795 times the odds that Emily is a <em>smoker</em>, or equivalently, that David’s odds are 179.5% of Emily’s odds. Another equivalent statement would be that David’s odds are 79.5% larger than Emily’s odds.</p>
+<p>The 95% confidence interval for the odds ratio estimate of the effect of <em>sexM</em> on being a <em>smoker</em> is (0.897, 3.637). The effect of <em>sex</em> on the odds of being a <em>smoker</em> appears modest, and 1 is included in the confidence interval.</p>
+<ol start="3" type="1">
+<li>What is the effect of <em>educ</em> on the odds of being a <em>smoker</em> in Model <code>m3</code>?</li>
+</ol>
+<p>Again, the <em>educ</em> variable splits the subjects into four categories. In this model the “1_Low” category is used as the baseline, and we have estimates for “2_Middle” (as compared to “1_Low”), for “3_High” (as compared to “1_Low”) and for “4_VHigh” (as compared to “1_Low”.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>temp<span class="fl">.3</span>ed <span class="ot">&lt;-</span> <span class="fu">tidy</span>(m3, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">filter</span>(term <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"factor(educ)2_Middle"</span>, </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"factor(educ)3_High"</span>, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"factor(educ)4_VHigh"</span>))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(temp<span class="fl">.3</span>ed, </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)2_Middle</td>
+<td style="text-align: right;">0.690</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">-0.866</td>
+<td style="text-align: right;">0.386</td>
+<td style="text-align: right;">0.295</td>
+<td style="text-align: right;">1.589</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor(educ)3_High</td>
+<td style="text-align: right;">0.725</td>
+<td style="text-align: right;">0.519</td>
+<td style="text-align: right;">-0.619</td>
+<td style="text-align: right;">0.536</td>
+<td style="text-align: right;">0.258</td>
+<td style="text-align: right;">2.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">factor(educ)4_VHigh</td>
+<td style="text-align: right;">0.339</td>
+<td style="text-align: right;">0.571</td>
+<td style="text-align: right;">-1.895</td>
+<td style="text-align: right;">0.058</td>
+<td style="text-align: right;">0.105</td>
+<td style="text-align: right;">1.008</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The estimated odds ratio describing the effect of <em>educ</em> being “2_Middle” instead of the baseline “1_Low” on the odds of being a <em>smoker</em> is 0.69, for people of the same age and sex.</p>
+<p>No <em>educ</em> levels show meaningful differences from the baseline group, and their 95% confidence intervals all include 1, although the comparison of 4_VHigh to 1_Low only barely includes 1.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Mina, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Mina is in the “2_Middle” education group.</li>
+<li>Our model predicts that Mina’s odds of being a smoker will be 0.69 times the odds of Lola being a smoker.</li>
+</ul>
+<p>The estimated odds ratio comparing the <em>educ</em> = “3_High” group to the baseline <em>educ</em> = “1_Low” group on <em>smoker</em> is 0.725.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Heidi, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Heidi is in the “3_High” education group.</li>
+<li>Our model predicts that Heidi’s odds of being a <em>smoker</em> will be 0.725 times the odds of Lola being a smoker.</li>
+</ul>
+<p>Finally, The estimated odds ratio comparing the <em>educ</em> = “4_VHigh” group to the baseline <em>educ</em> = “1_Low” group on <em>smoker</em> is 0.339.</p>
+<ul>
+<li>Suppose we have two subjects, Lola and Vera, who are the same age, and the same sex, but Lola is in the “1_Low” education group and Vera is in the “4_VHigh” education group.</li>
+<li>Our model predicts that Vera’s odds of being a <em>smoker</em> will be 0.339 times the odds of Lola being a smoker.</li>
+</ul>
+</section>
+<section id="estimates-in-the-same-logistic-regression-fit-with-lrm" class="level2" data-number="22.8">
+<h2 data-number="22.8" class="anchored" data-anchor-id="estimates-in-the-same-logistic-regression-fit-with-lrm"><span class="header-section-number">22.8</span> Estimates in The Same Logistic Regression fit with <code>lrm</code></h2>
+<p>When we fit the same model as <code>m3</code> using <code>lrm</code>, we get identical results as we get from the <code>glm</code> fit for the categorical predictors, but there’s a change in how the odds ratio for the quantitative predictor (<em>age</em>) is presented.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(smalldat); <span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>m3.lrm <span class="ot">&lt;-</span> <span class="fu">lrm</span>(smoker <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> educ, </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smalldat, <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">summary</span>(m3.lrm), <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Low</th>
+<th style="text-align: right;">High</th>
+<th style="text-align: right;">Diff.</th>
+<th style="text-align: right;">Effect</th>
+<th style="text-align: right;">S.E.</th>
+<th style="text-align: right;">Lower 0.95</th>
+<th style="text-align: right;">Upper 0.95</th>
+<th style="text-align: right;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">-0.885</td>
+<td style="text-align: right;">0.318</td>
+<td style="text-align: right;">-1.508</td>
+<td style="text-align: right;">-0.261</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.413</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.221</td>
+<td style="text-align: right;">0.770</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sex - M:F</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.585</td>
+<td style="text-align: right;">0.356</td>
+<td style="text-align: right;">-0.113</td>
+<td style="text-align: right;">1.283</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.795</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.893</td>
+<td style="text-align: right;">3.607</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 2_Middle:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">-0.370</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">-1.209</td>
+<td style="text-align: right;">0.468</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.690</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.299</td>
+<td style="text-align: right;">1.596</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 3_High:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">-0.321</td>
+<td style="text-align: right;">0.519</td>
+<td style="text-align: right;">-1.338</td>
+<td style="text-align: right;">0.696</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.725</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.262</td>
+<td style="text-align: right;">2.005</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 4_VHigh:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">-1.082</td>
+<td style="text-align: right;">0.571</td>
+<td style="text-align: right;">-2.201</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.339</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.111</td>
+<td style="text-align: right;">1.038</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Note that the odds ratio effect sizes and confidence intervals are identical to what we saw in the <code>glm</code> fit for the <em>sex</em> and <em>educ</em> variables here, but the <em>age</em> result is presented differently.</p>
+<ul>
+<li>The <strong>age</strong> interpretation is that if we have two subjects, Al and Bob, who are the same sex and have the same education level, but Al is age 42 and Bob is age 57, then model <code>m3</code> projects that Bob’s odds of being a <em>smoker</em> will be 0.413 times Al’s odds of being a smoker. Bob’s odds are 41.3% as large as Al’s, equivalently.</li>
+<li>After adjustment for <em>sex</em> and <em>educ</em>, increasing age appears to be associated with decreasing odds of smoking. Note, too, that the effect of <em>age</em> on the odds of being a <em>smoker</em> has a confidence interval for the odds ratio entirely below 1.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m3.lrm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="estimates-in-a-new-logistic-regression-fit-with-lrm" class="level2" data-number="22.9">
+<h2 data-number="22.9" class="anchored" data-anchor-id="estimates-in-a-new-logistic-regression-fit-with-lrm"><span class="header-section-number">22.9</span> Estimates in A New Logistic Regression fit with <code>lrm</code></h2>
+<p>Now, suppose we fit a new model to predict the log odds of being a <em>smoker</em> using a five-knot spline in <em>age</em> and the interaction of sex and educational attainment. How does that change our interpretation of the effect sizes?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(smalldat); <span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lrm</span>(smoker <span class="sc">~</span> <span class="fu">rcs</span>(age,<span class="dv">5</span>) <span class="sc">+</span> sex <span class="sc">*</span> <span class="fu">catg</span>(educ), </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> smalldat, <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">summary</span>(m4), <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Low</th>
+<th style="text-align: right;">High</th>
+<th style="text-align: right;">Diff.</th>
+<th style="text-align: right;">Effect</th>
+<th style="text-align: right;">S.E.</th>
+<th style="text-align: right;">Lower 0.95</th>
+<th style="text-align: right;">Upper 0.95</th>
+<th style="text-align: right;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">-0.817</td>
+<td style="text-align: right;">0.538</td>
+<td style="text-align: right;">-1.872</td>
+<td style="text-align: right;">0.237</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.442</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">1.268</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sex - M:F</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.487</td>
+<td style="text-align: right;">0.583</td>
+<td style="text-align: right;">0.345</td>
+<td style="text-align: right;">2.629</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">4.422</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.412</td>
+<td style="text-align: right;">13.853</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 2_Middle:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.668</td>
+<td style="text-align: right;">0.546</td>
+<td style="text-align: right;">-0.402</td>
+<td style="text-align: right;">1.739</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.951</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.669</td>
+<td style="text-align: right;">5.690</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 3_High:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.019</td>
+<td style="text-align: right;">0.699</td>
+<td style="text-align: right;">-1.351</td>
+<td style="text-align: right;">1.389</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.019</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.259</td>
+<td style="text-align: right;">4.011</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">educ - 4_VHigh:1_Low</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">-1.541</td>
+<td style="text-align: right;">1.159</td>
+<td style="text-align: right;">-3.813</td>
+<td style="text-align: right;">0.731</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds Ratio</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.214</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.022</td>
+<td style="text-align: right;">2.078</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Again, the <code>kable</code> approach I used in these notes hides the adjusted values specified at the bottom of the <code>summary</code> table for this <code>lrm</code> model (model <code>m4</code>), but they are <code>Adjusted to: sex=F educ=1_Low</code>.</p>
+<p>Now, how do we interpret these model <code>m4</code> results?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m4))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li>The <strong>age</strong> interpretation is that if we have two subjects, Al and Bob, who are the same sex and have the same education level, but Al is age 42 and Bob is age 57, then model <code>m4</code> projects that Bob’s odds of being a smoker will be 0.442 times Al’s odds of being a smoker. Equivalently, Bob’s odds are 44.2% as large as Al’s.</li>
+<li>Because of the interaction between <em>sex</em> and <em>educ</em> in our model <code>m4</code>, we must select an <em>educ</em> level in order to cleanly interpret the effect of <em>sex</em> on <em>smoker</em>. The <strong>sex - M:F</strong> interpretation compares M(ale) to F(emale) <em>sex</em> while requiring<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> that <em>educ</em> = <code>1_Low</code>. The result is that if we have two subjects, Carl and Diane, who are the same age and <em>each is in the low education group</em>, but Carl is Male and Diane is Female, then model <code>m4</code> predicts that Carl’s odds of being a <em>smoker</em> will be 4.422 times the odds for Diane.</li>
+<li>Because of the interaction between <em>sex</em> and <em>educ</em> in our model <code>m4</code>, we must select a <em>sex</em> in order to cleanly interpret the effect of <em>educ</em> on <em>totchol</em>. The <strong>educ - 2_Middle:1_Low</strong> term, for instance, compares “2_Middle” education to “1_Low” education while requiring that <em>sex</em> is Female<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. The result is that if we have two subjects, Lola and Mina, who are the same age and <em>each is Female</em>, but Lola is in the “1_Low” education group and Mina is in the “2_Middle” education group, then model <code>m4</code> predicts that Mina’s odds of being a <em>smoker</em> will be 1.951 times Lola’s odds, or, equivalently, that Mina will have 95.1% higher odds than Lola.</li>
+</ul>
+<p>It should be easy to see that one is contained in each of the 95% confidence intervals summarizing model m4 except for the one for the main effect of sex, but we might also consider the impact of the interaction term, as described by the <code>anova</code> result for model <code>m4</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Wald Statistics          Response: smoker 
+
+ Factor                                    Chi-Square d.f. P     
+ age                                        8.34       4   0.0799
+  Nonlinear                                 1.78       3   0.6196
+ sex  (Factor+Higher Order Factors)        12.64       4   0.0132
+  All Interactions                         10.48       3   0.0149
+ educ  (Factor+Higher Order Factors)       12.43       6   0.0531
+  All Interactions                         10.48       3   0.0149
+ sex * educ  (Factor+Higher Order Factors) 10.48       3   0.0149
+ TOTAL NONLINEAR + INTERACTION             12.60       6   0.0498
+ TOTAL                                     21.69      11   0.0269</code></pre>
+</div>
+</div>
+<p>Finally, here is a nomogram of model <code>m4</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(m4, <span class="at">fun =</span> plogis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="effectsize_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The Framingham data from this source are not appropriate for publication or project use because they have been anonymized by permuting the results of individual subjects.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The <em>educ</em> levels are: 1_Low, 2_Middle, 3_High and 4_VHigh, which stands for Very High<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>We know this because of the <code>Adjusted to: sex = F, educ=1_Low</code> note at the bottom of the <code>summary</code> output for the <code>ols</code> model.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Again, we know this because of the <code>Adjusted to: sex = F, educ=1_Low</code> note.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>We know this because of the <code>Adjusted to: sex = F, educ=1_Low</code> note at the bottom of the <code>summary</code> output.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><code>Adjusted to: sex = F, educ=1_Low</code> tells us this.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./logistic3.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./binaryregression.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

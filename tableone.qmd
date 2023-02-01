@@ -1,14 +1,27 @@
 # Building Table 1
 
-Many scientific articles involve direct comparison of results from various exposures, perhaps treatments. In 431, we studied numerous methods, including various sorts of hypothesis tests, confidence intervals, and descriptive summaries, which can help us to understand and compare outcomes in such a setting. One common approach is to present what's often called Table 1. Table 1 provides a summary of the characteristics of a sample, or of groups of samples, which is most commonly used to help understand the nature of the data being compared.
-
-## Data load
-
-Let's load two data sets for this Chapter. All data sets used in these notes are available on our [Data and Code website](https://github.com/THOMASELOVE/432-data).
+## R Setup Used Here
 
 ```{r}
-fakestroke <- read_csv("data/fakestroke.csv")
-bloodbrain <- read_csv("data/bloodbrain.csv")
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(tableone)
+library(knitr)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+Many scientific articles involve direct comparison of results from various exposures, perhaps treatments. In 431, we studied numerous methods, including various sorts of hypothesis tests, confidence intervals, and descriptive summaries, which can help us to understand and compare outcomes in such a setting. One common approach is to present what's often called Table 1. Table 1 provides a summary of the characteristics of a sample, or of groups of samples, which is most commonly used to help understand the nature of the data being compared.
+
+## Data Load
+
+```{r}
+fakestroke <- read_csv("data/fakestroke.csv", show_col_types = FALSE)
+bloodbrain <- read_csv("data/bloodbrain.csv", show_col_types = FALSE)
 ```
 
 ## Two examples from the *New England Journal of Medicine*
@@ -18,7 +31,7 @@ bloodbrain <- read_csv("data/bloodbrain.csv")
 Table 1 is especially common in the context of clinical research. Consider the excerpt below, from a January 2015 article in the *New England Journal of Medicine* [@Tolaney2015].
 
 ```{r Tolaney_table1_NEJM_fig, echo=FALSE, out.width='50%'}
-knitr::include_graphics("images/Tolaney-snip1.png")
+include_graphics("images/Tolaney-snip1.png")
 ```
 
 This (partial) table reports baseline characteristics on age group, sex and race, describing 406 patients with HER2-positive^[HER2 = human epidermal growth factor receptor type 2. Over-expression of this occurs in 15-20%  of invasive breast cancers, and has been associated with poor outcomes.] invasive breast cancer that began the protocol therapy. Age, sex and race (along with severity of illness) are the most commonly identified characteristics in a Table 1.
@@ -30,7 +43,7 @@ In addition to the measures shown in this excerpt, the full Table also includes 
 A more typical Table 1 involves a group comparison, for example in this excerpt from @Roy2008. This Table 1 describes a multi-center randomized clinical trial comparing two different approaches to caring for patients with heart failure and atrial fibrillation^[The complete Table 1 appears on pages 2668-2669 of @Roy2008, but I have only reproduced the first page and the footnote in this excerpt.].
 
 ```{r Roy_table1_NEJM_fig, echo=FALSE, out.width='90%'}
-knitr::include_graphics("images/Roy-snip1.png")
+include_graphics("images/Roy-snip1.png")
 ```
 
 The article provides percentages, means and standard deviations across groups, but note that it does not provide p values for the comparison of baseline characteristics. This is a common feature of NEJM reports on randomized clinical trials, where we anticipate that the two groups will be well matched at baseline. Note that the patients in this study were *randomly* assigned to either the rhythm-control group or to the rate-control group, using blocked randomization stratified by study center.
@@ -42,13 +55,13 @@ The article provides percentages, means and standard deviations across groups, b
 Here's the Table 1 from @Berkhemer2015.
 
 ```{r Berkhemer_table1_NEJM_fig, echo=FALSE, out.width='90%'}
-knitr::include_graphics("images/Berkhemer-snip4complete.png")
+include_graphics("images/Berkhemer-snip4complete.png")
 ```
 
 The Table was accompanied by the following notes.
 
 ```{r Berkhemer_table1_NEJM_notes_fig, echo=FALSE, out.width='90%'}
-knitr::include_graphics("images/Berkhemer-snip4notes.png")
+include_graphics("images/Berkhemer-snip4notes.png")
 ```
 
 
@@ -206,7 +219,7 @@ write.csv(fs.table1save, file = "data/fs-table1.csv")
 When I then open the `fs-table1.csv` file in Excel, it looks like this:
 
 ```{r fs_table1_csv_fig, echo=FALSE, out.width='90%'}
-knitr::include_graphics("images/fs-table1inExcel.png")
+include_graphics("images/fs-table1inExcel.png")
 ```
 
 And from here, I can either drop it directly into Word, or present it as is, or start tweaking it to meet formatting needs.
@@ -315,7 +328,7 @@ write.csv(bb.t1, file = "data/bb-table1.csv")
 which, when dropped into Excel, will look like this:
 
 ```{r bb_table1_csv_fig, echo=FALSE, out.width='90%'}
-knitr::include_graphics("images/bb-table1inExcel.png")
+include_graphics("images/bb-table1inExcel.png")
 ```
 
 One thing I would definitely clean up here, in practice, is to change the presentation of the *p* value for `sex` from 1 to > 0.99, or just omit it altogether. I'd also drop the `computer-ese` where possible, add units for the measures, round **a lot**, identify the outcomes carefully, and use notes to indicate deviations from the main approach. 
@@ -323,6 +336,6 @@ One thing I would definitely clean up here, in practice, is to change the presen
 ### A More Finished Version (after Cleanup in Word)
 
 ```{r bb_table1_word_fig, echo=FALSE, out.width='95%'}
-knitr::include_graphics("images/bb-table1inWord.png")
+include_graphics("images/bb-table1inWord.png")
 ```
 

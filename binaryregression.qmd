@@ -6,6 +6,28 @@ In this Chapter, we discuss two issues not yet raised regarding regression on a 
 
 2. What is probit regression, and how can we use it as an alternative to logistic regression on a binary outcome?
 
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(broom)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+## Data Load
+
+```{r}
+colscr <- read_csv("data/screening.csv", show_col_types = FALSE) 
+colscr2 <- read_csv("data/screening2.csv", show_col_types = FALSE) 
+```
 
 ## Logistic Regression for Aggregated Data
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 15&nbsp; Logistic Regression: The Foundations</title>
+<title>Data Science for Biological, Medical and Health Research - 19&nbsp; Logistic Regression: The Foundations</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,7 +94,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./logistic2.html" rel="next">
-<link href="./olsfitting.html" rel="prev">
+<link href="./tableone.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -130,11 +130,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <body class="nav-sidebar floating">
 
+
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -239,22 +240,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
   </div>
 </li>
     </ul>
@@ -266,16 +297,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">15.1</span>  R Setup Used Here</a></li>
-  <li><a href="#a-first-attempt-a-linear-probability-model" id="toc-a-first-attempt-a-linear-probability-model" class="nav-link" data-scroll-target="#a-first-attempt-a-linear-probability-model"><span class="toc-section-number">15.2</span>  A First Attempt: A Linear Probability Model</a></li>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="toc-section-number">15.3</span>  Logistic Regression</a></li>
-  <li><a href="#the-logistic-regression-model" id="toc-the-logistic-regression-model" class="nav-link" data-scroll-target="#the-logistic-regression-model"><span class="toc-section-number">15.4</span>  The Logistic Regression Model</a></li>
-  <li><a href="#the-link-function" id="toc-the-link-function" class="nav-link" data-scroll-target="#the-link-function"><span class="toc-section-number">15.5</span>  The Link Function</a></li>
-  <li><a href="#the-logit-or-log-odds" id="toc-the-logit-or-log-odds" class="nav-link" data-scroll-target="#the-logit-or-log-odds"><span class="toc-section-number">15.6</span>  The logit or log odds</a></li>
-  <li><a href="#interpreting-the-coefficients-of-a-logistic-regression-model" id="toc-interpreting-the-coefficients-of-a-logistic-regression-model" class="nav-link" data-scroll-target="#interpreting-the-coefficients-of-a-logistic-regression-model"><span class="toc-section-number">15.7</span>  Interpreting the Coefficients of a Logistic Regression Model</a></li>
-  <li><a href="#the-logistic-regression-has-non-constant-variance" id="toc-the-logistic-regression-has-non-constant-variance" class="nav-link" data-scroll-target="#the-logistic-regression-has-non-constant-variance"><span class="toc-section-number">15.8</span>  The Logistic Regression has non-constant variance</a></li>
-  <li><a href="#fitting-a-logistic-regression-model-to-our-simulated-data" id="toc-fitting-a-logistic-regression-model-to-our-simulated-data" class="nav-link" data-scroll-target="#fitting-a-logistic-regression-model-to-our-simulated-data"><span class="toc-section-number">15.9</span>  Fitting a Logistic Regression Model to our Simulated Data</a></li>
-  <li><a href="#plotting-the-logistic-regression-model" id="toc-plotting-the-logistic-regression-model" class="nav-link" data-scroll-target="#plotting-the-logistic-regression-model"><span class="toc-section-number">15.10</span>  Plotting the Logistic Regression Model</a></li>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">19.1</span>  R Setup Used Here</a></li>
+  <li><a href="#a-first-attempt-a-linear-probability-model" id="toc-a-first-attempt-a-linear-probability-model" class="nav-link" data-scroll-target="#a-first-attempt-a-linear-probability-model"><span class="toc-section-number">19.2</span>  A First Attempt: A Linear Probability Model</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="toc-section-number">19.3</span>  Logistic Regression</a></li>
+  <li><a href="#the-logistic-regression-model" id="toc-the-logistic-regression-model" class="nav-link" data-scroll-target="#the-logistic-regression-model"><span class="toc-section-number">19.4</span>  The Logistic Regression Model</a></li>
+  <li><a href="#the-link-function" id="toc-the-link-function" class="nav-link" data-scroll-target="#the-link-function"><span class="toc-section-number">19.5</span>  The Link Function</a></li>
+  <li><a href="#the-logit-or-log-odds" id="toc-the-logit-or-log-odds" class="nav-link" data-scroll-target="#the-logit-or-log-odds"><span class="toc-section-number">19.6</span>  The logit or log odds</a></li>
+  <li><a href="#interpreting-the-coefficients-of-a-logistic-regression-model" id="toc-interpreting-the-coefficients-of-a-logistic-regression-model" class="nav-link" data-scroll-target="#interpreting-the-coefficients-of-a-logistic-regression-model"><span class="toc-section-number">19.7</span>  Interpreting the Coefficients of a Logistic Regression Model</a></li>
+  <li><a href="#the-logistic-regression-has-non-constant-variance" id="toc-the-logistic-regression-has-non-constant-variance" class="nav-link" data-scroll-target="#the-logistic-regression-has-non-constant-variance"><span class="toc-section-number">19.8</span>  The Logistic Regression has non-constant variance</a></li>
+  <li><a href="#fitting-a-logistic-regression-model-to-our-simulated-data" id="toc-fitting-a-logistic-regression-model-to-our-simulated-data" class="nav-link" data-scroll-target="#fitting-a-logistic-regression-model-to-our-simulated-data"><span class="toc-section-number">19.9</span>  Fitting a Logistic Regression Model to our Simulated Data</a></li>
+  <li><a href="#plotting-the-logistic-regression-model" id="toc-plotting-the-logistic-regression-model" class="nav-link" data-scroll-target="#plotting-the-logistic-regression-model"><span class="toc-section-number">19.10</span>  Plotting the Logistic Regression Model</a></li>
   </ul>
 </nav>
     </div>
@@ -284,7 +315,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
 </div>
 
 
@@ -300,8 +331,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>Sources for this material include <span class="citation" data-cites="Harrell2001">@Harrell2001</span>, <span class="citation" data-cites="HarrellRMSnotes">@HarrellRMSnotes</span>, <span class="citation" data-cites="RamseySchafer2002">@RamseySchafer2002</span> (chapters 20-21), <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span> (chapter 5) and <span class="citation" data-cites="Faraway2006">@Faraway2006</span> (chapter 2).</p>
-<section id="r-setup-used-here" class="level2" data-number="15.1">
-<h2 data-number="15.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">15.1</span> R Setup Used Here</h2>
+<section id="r-setup-used-here" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">19.1</span> R Setup Used Here</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -311,8 +342,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="a-first-attempt-a-linear-probability-model" class="level2" data-number="15.2">
-<h2 data-number="15.2" class="anchored" data-anchor-id="a-first-attempt-a-linear-probability-model"><span class="header-section-number">15.2</span> A First Attempt: A Linear Probability Model</h2>
+<section id="a-first-attempt-a-linear-probability-model" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="a-first-attempt-a-linear-probability-model"><span class="header-section-number">19.2</span> A First Attempt: A Linear Probability Model</h2>
 <p>Suppose we want to predict a binary outcome which takes on the value 1 or 0, based on a single quantitative predictor. Let y be a 1/0 outcome, and x be a quantitative predictor in the following simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432</span>)</span>
@@ -366,14 +397,14 @@ F-statistic: 107.1 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>If y can only take the values 0 and 1 (or, more precisely, if we’re trying to predict the value <span class="math inline">\(\pi\)</span> = Pr(y = 1)) then what do we do with the predictions that are outside the range of (0, 1)?</p>
 </section>
-<section id="logistic-regression" class="level2" data-number="15.3">
-<h2 data-number="15.3" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">15.3</span> Logistic Regression</h2>
+<section id="logistic-regression" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">19.3</span> Logistic Regression</h2>
 <p>Logistic regression is the most common model used when the outcome is binary. Our response variable is assumed to take on two values, zero or one, and we then describe the probability of a “one” response, given a linear function of explanatory predictors. We use logistic regression rather than linear regression for predicting binary outcomes. Linear regression approaches to the problem of predicting probabilities are problematic for several reasons - not least of which being that they predict probabilities greater than one and less than zero. There are several available alternatives, including probit regression and binomial regression, for the problem of predicting a binary outcome.</p>
 <p>Logistic regression is part of a class called <strong>generalized linear models</strong> which extend the linear regression model in a variety of ways. There are also several extensions to the logistic regression model, including multinomial logistic regression (which is used for nominal categorical outcomes with more than two levels) and ordered logistic regression (used for ordered multi-categorical outcomes.) The methods involved in binary logistic regression may also be extended to the case where the outcomes are proportions based on counts, often through grouped binary responses (the proportion of cells with chromosomal aberrations, or the proportion of subjects who develop a particular condition.)</p>
 <p>Although the models are different in some crucial ways, the practical use of logistic regression tracks well with much of what we’ve learned about linear regression.</p>
 </section>
-<section id="the-logistic-regression-model" class="level2" data-number="15.4">
-<h2 data-number="15.4" class="anchored" data-anchor-id="the-logistic-regression-model"><span class="header-section-number">15.4</span> The Logistic Regression Model</h2>
+<section id="the-logistic-regression-model" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="the-logistic-regression-model"><span class="header-section-number">19.4</span> The Logistic Regression Model</h2>
 <p>A generalized linear model (or GLM) is a probability model in which the mean of an outcome is related to predictors through a regression equation. A link function <em>g</em> is used to relate the mean, <span class="math inline">\(\mu\)</span>, to a linear regression of the predictors <span class="math inline">\(X_1, X_2, ..., X_k\)</span>.</p>
 <p><span class="math display">\[
 g(\mu) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k
@@ -384,8 +415,8 @@ g(\mu) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k
 <li>the linking function we use in logistic regression makes use of the logit function, which is built on the natural logarithm.</li>
 </ul>
 </section>
-<section id="the-link-function" class="level2" data-number="15.5">
-<h2 data-number="15.5" class="anchored" data-anchor-id="the-link-function"><span class="header-section-number">15.5</span> The Link Function</h2>
+<section id="the-link-function" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="the-link-function"><span class="header-section-number">19.5</span> The Link Function</h2>
 <p>Logistic regression is a non-linear regression approach, since the equation for the mean of the 0/1 Y values conditioned on the values of our predictors <span class="math inline">\(X_1, X_2, ..., X_k\)</span> turns out to be non-linear in the <span class="math inline">\(\beta\)</span> coefficients. Its nonlinearity, however, is solely found in its link function, hence the term <em>generalized</em> linear model.</p>
 <p>The particular link function we use in logistic regression is called the <strong>logit link</strong>.</p>
 <p><span class="math display">\[
@@ -407,8 +438,8 @@ logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \be
 </div>
 <p>As you can see in the figure above, the logistic function <span class="math inline">\(\frac{e^x}{1 + e^x}\)</span> takes any value <span class="math inline">\(x\)</span> in the real numbers and returns a value between 0 and 1.</p>
 </section>
-<section id="the-logit-or-log-odds" class="level2" data-number="15.6">
-<h2 data-number="15.6" class="anchored" data-anchor-id="the-logit-or-log-odds"><span class="header-section-number">15.6</span> The logit or log odds</h2>
+<section id="the-logit-or-log-odds" class="level2" data-number="19.6">
+<h2 data-number="19.6" class="anchored" data-anchor-id="the-logit-or-log-odds"><span class="header-section-number">19.6</span> The logit or log odds</h2>
 <p>We usually focus on the <strong>logit</strong> in statistical work, which is the inverse of the logistic function.</p>
 <ul>
 <li>If we have a probability <span class="math inline">\(\pi &lt; 0.5\)</span>, then <span class="math inline">\(logit(\pi) &lt; 0\)</span>.</li>
@@ -416,8 +447,8 @@ logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \be
 <li>Finally, if <span class="math inline">\(\pi = 0.5\)</span>, then <span class="math inline">\(logit(\pi) = 0\)</span>.</li>
 </ul>
 </section>
-<section id="interpreting-the-coefficients-of-a-logistic-regression-model" class="level2" data-number="15.7">
-<h2 data-number="15.7" class="anchored" data-anchor-id="interpreting-the-coefficients-of-a-logistic-regression-model"><span class="header-section-number">15.7</span> Interpreting the Coefficients of a Logistic Regression Model</h2>
+<section id="interpreting-the-coefficients-of-a-logistic-regression-model" class="level2" data-number="19.7">
+<h2 data-number="19.7" class="anchored" data-anchor-id="interpreting-the-coefficients-of-a-logistic-regression-model"><span class="header-section-number">19.7</span> Interpreting the Coefficients of a Logistic Regression Model</h2>
 <p>The critical thing to remember in interpreting a logistic regression model is that the logit is the log odds function. Exponentiating the logit yields the odds.</p>
 <p>So, suppose we have a yes/no outcome variable, where yes = 1, and no = 0, and <span class="math inline">\(\pi\)</span> = Pr(y = 1). Our model holds that:</p>
 <p><span class="math display">\[
@@ -432,8 +463,8 @@ Odds(Y = 1) = exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)
 \pi = Pr(Y = 1) = \frac{Odds(Y = 1)}{1 + Odds(Y = 1)} = \frac{exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)}{1 + exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)}
 \]</span></p>
 </section>
-<section id="the-logistic-regression-has-non-constant-variance" class="level2" data-number="15.8">
-<h2 data-number="15.8" class="anchored" data-anchor-id="the-logistic-regression-has-non-constant-variance"><span class="header-section-number">15.8</span> The Logistic Regression has non-constant variance</h2>
+<section id="the-logistic-regression-has-non-constant-variance" class="level2" data-number="19.8">
+<h2 data-number="19.8" class="anchored" data-anchor-id="the-logistic-regression-has-non-constant-variance"><span class="header-section-number">19.8</span> The Logistic Regression has non-constant variance</h2>
 <p>In ordinary least squares regression, the variance <span class="math inline">\(Var(Y | X_1, X_2, ..., X_k) = \sigma^2\)</span> is a constant that does not depend on the predictor values. This is not the case in logistic regression. The mean and variance specifications of the logistic regression model are quite different.</p>
 <p><span class="math display">\[
 logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k \\
@@ -442,8 +473,8 @@ Var[Y | X_1, ..., X_k] = \pi(1 - \pi)
 \]</span></p>
 <p>The variance is now a function of the mean, and contains no additional parameter for us to estimate.</p>
 </section>
-<section id="fitting-a-logistic-regression-model-to-our-simulated-data" class="level2" data-number="15.9">
-<h2 data-number="15.9" class="anchored" data-anchor-id="fitting-a-logistic-regression-model-to-our-simulated-data"><span class="header-section-number">15.9</span> Fitting a Logistic Regression Model to our Simulated Data</h2>
+<section id="fitting-a-logistic-regression-model-to-our-simulated-data" class="level2" data-number="19.9">
+<h2 data-number="19.9" class="anchored" data-anchor-id="fitting-a-logistic-regression-model-to-our-simulated-data"><span class="header-section-number">19.9</span> Fitting a Logistic Regression Model to our Simulated Data</h2>
 <p>Recall the <code>sim12</code> data we built earlier.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim12, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -517,8 +548,8 @@ Odds(Y = 1 | X = 12) = exp(-9.20 + 0.96 * 12) = exp(2.2837) = 9.812921
 </div>
 </div>
 </section>
-<section id="plotting-the-logistic-regression-model" class="level2" data-number="15.10">
-<h2 data-number="15.10" class="anchored" data-anchor-id="plotting-the-logistic-regression-model"><span class="header-section-number">15.10</span> Plotting the Logistic Regression Model</h2>
+<section id="plotting-the-logistic-regression-model" class="level2" data-number="19.10">
+<h2 data-number="19.10" class="anchored" data-anchor-id="plotting-the-logistic-regression-model"><span class="header-section-number">19.10</span> Plotting the Logistic Regression Model</h2>
 <p>We can use the <code>augment</code> function from the <code>broom</code> package to get our fitted probabilities included in the data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m12b_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(model12b, sim12, <span class="at">type.predict =</span> <span class="st">"response"</span>)</span>
@@ -682,15 +713,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./olsfitting.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span>
+      <a href="./tableone.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./logistic2.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
