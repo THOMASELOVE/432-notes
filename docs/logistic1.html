@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 15&nbsp; Logistic Regression: The Foundations</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./logistic2.html" rel="next">
+<link href="./olsfitting.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">15.1</span>  R Setup Used Here</a></li>
+  <li><a href="#a-first-attempt-a-linear-probability-model" id="toc-a-first-attempt-a-linear-probability-model" class="nav-link" data-scroll-target="#a-first-attempt-a-linear-probability-model"><span class="toc-section-number">15.2</span>  A First Attempt: A Linear Probability Model</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="toc-section-number">15.3</span>  Logistic Regression</a></li>
+  <li><a href="#the-logistic-regression-model" id="toc-the-logistic-regression-model" class="nav-link" data-scroll-target="#the-logistic-regression-model"><span class="toc-section-number">15.4</span>  The Logistic Regression Model</a></li>
+  <li><a href="#the-link-function" id="toc-the-link-function" class="nav-link" data-scroll-target="#the-link-function"><span class="toc-section-number">15.5</span>  The Link Function</a></li>
+  <li><a href="#the-logit-or-log-odds" id="toc-the-logit-or-log-odds" class="nav-link" data-scroll-target="#the-logit-or-log-odds"><span class="toc-section-number">15.6</span>  The logit or log odds</a></li>
+  <li><a href="#interpreting-the-coefficients-of-a-logistic-regression-model" id="toc-interpreting-the-coefficients-of-a-logistic-regression-model" class="nav-link" data-scroll-target="#interpreting-the-coefficients-of-a-logistic-regression-model"><span class="toc-section-number">15.7</span>  Interpreting the Coefficients of a Logistic Regression Model</a></li>
+  <li><a href="#the-logistic-regression-has-non-constant-variance" id="toc-the-logistic-regression-has-non-constant-variance" class="nav-link" data-scroll-target="#the-logistic-regression-has-non-constant-variance"><span class="toc-section-number">15.8</span>  The Logistic Regression has non-constant variance</a></li>
+  <li><a href="#fitting-a-logistic-regression-model-to-our-simulated-data" id="toc-fitting-a-logistic-regression-model-to-our-simulated-data" class="nav-link" data-scroll-target="#fitting-a-logistic-regression-model-to-our-simulated-data"><span class="toc-section-number">15.9</span>  Fitting a Logistic Regression Model to our Simulated Data</a></li>
+  <li><a href="#plotting-the-logistic-regression-model" id="toc-plotting-the-logistic-regression-model" class="nav-link" data-scroll-target="#plotting-the-logistic-regression-model"><span class="toc-section-number">15.10</span>  Plotting the Logistic Regression Model</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Sources for this material include <span class="citation" data-cites="Harrell2001">@Harrell2001</span>, <span class="citation" data-cites="HarrellRMSnotes">@HarrellRMSnotes</span>, <span class="citation" data-cites="RamseySchafer2002">@RamseySchafer2002</span> (chapters 20-21), <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span> (chapter 5) and <span class="citation" data-cites="Faraway2006">@Faraway2006</span> (chapter 2).</p>
+<section id="r-setup-used-here" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">15.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="a-first-attempt-a-linear-probability-model" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="a-first-attempt-a-linear-probability-model"><span class="header-section-number">15.2</span> A First Attempt: A Linear Probability Model</h2>
+<p>Suppose we want to predict a binary outcome which takes on the value 1 or 0, based on a single quantitative predictor. Let y be a 1/0 outcome, and x be a quantitative predictor in the following simulation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sim12 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">10</span>, <span class="dv">3</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">err =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="fu">ifelse</span>(x <span class="sc">+</span> err <span class="sc">&gt;</span> <span class="dv">10</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sim12 <span class="ot">&lt;-</span> <span class="fu">select</span>(sim12, x, y)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim12, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now, we want to use our variable x here to predict our variable y (which takes on the values 0 and 1).</p>
+<p>One approach to doing this would be a linear probability model, as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mod12a <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> sim12) </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod12a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = sim12)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.74104 -0.23411 -0.02894  0.23117  0.83153 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.72761    0.12272  -5.929 4.57e-08 ***
+x            0.12620    0.01219  10.349  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.3491 on 98 degrees of freedom
+Multiple R-squared:  0.5222,    Adjusted R-squared:  0.5173 
+F-statistic: 107.1 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Here’s a picture of this model. What’s wrong here?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim12, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear Probability Model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>If y can only take the values 0 and 1 (or, more precisely, if we’re trying to predict the value <span class="math inline">\(\pi\)</span> = Pr(y = 1)) then what do we do with the predictions that are outside the range of (0, 1)?</p>
+</section>
+<section id="logistic-regression" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">15.3</span> Logistic Regression</h2>
+<p>Logistic regression is the most common model used when the outcome is binary. Our response variable is assumed to take on two values, zero or one, and we then describe the probability of a “one” response, given a linear function of explanatory predictors. We use logistic regression rather than linear regression for predicting binary outcomes. Linear regression approaches to the problem of predicting probabilities are problematic for several reasons - not least of which being that they predict probabilities greater than one and less than zero. There are several available alternatives, including probit regression and binomial regression, for the problem of predicting a binary outcome.</p>
+<p>Logistic regression is part of a class called <strong>generalized linear models</strong> which extend the linear regression model in a variety of ways. There are also several extensions to the logistic regression model, including multinomial logistic regression (which is used for nominal categorical outcomes with more than two levels) and ordered logistic regression (used for ordered multi-categorical outcomes.) The methods involved in binary logistic regression may also be extended to the case where the outcomes are proportions based on counts, often through grouped binary responses (the proportion of cells with chromosomal aberrations, or the proportion of subjects who develop a particular condition.)</p>
+<p>Although the models are different in some crucial ways, the practical use of logistic regression tracks well with much of what we’ve learned about linear regression.</p>
+</section>
+<section id="the-logistic-regression-model" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="the-logistic-regression-model"><span class="header-section-number">15.4</span> The Logistic Regression Model</h2>
+<p>A generalized linear model (or GLM) is a probability model in which the mean of an outcome is related to predictors through a regression equation. A link function <em>g</em> is used to relate the mean, <span class="math inline">\(\mu\)</span>, to a linear regression of the predictors <span class="math inline">\(X_1, X_2, ..., X_k\)</span>.</p>
+<p><span class="math display">\[
+g(\mu) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k
+\]</span></p>
+<p>In the case of a logistic regression model,</p>
+<ul>
+<li>the mean <span class="math inline">\(\mu\)</span> of our 0/1 outcome is represented by <span class="math inline">\(\pi\)</span> which describes the probability of a “1” outcome.</li>
+<li>the linking function we use in logistic regression makes use of the logit function, which is built on the natural logarithm.</li>
+</ul>
+</section>
+<section id="the-link-function" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="the-link-function"><span class="header-section-number">15.5</span> The Link Function</h2>
+<p>Logistic regression is a non-linear regression approach, since the equation for the mean of the 0/1 Y values conditioned on the values of our predictors <span class="math inline">\(X_1, X_2, ..., X_k\)</span> turns out to be non-linear in the <span class="math inline">\(\beta\)</span> coefficients. Its nonlinearity, however, is solely found in its link function, hence the term <em>generalized</em> linear model.</p>
+<p>The particular link function we use in logistic regression is called the <strong>logit link</strong>.</p>
+<p><span class="math display">\[
+logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k
+\]</span></p>
+<p>The inverse of the logit function is called the <strong>logistic function</strong>. If logit(<span class="math inline">\(\pi\)</span>) = <span class="math inline">\(\eta\)</span>, then <span class="math inline">\(\pi = \frac{exp(\eta)}{1 + exp(\eta)}\)</span></p>
+<p>The plot below displays the logistic function <span class="math inline">\(y = \frac{e^x}{1 + e^x}\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">43201</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">runif</span>(<span class="dv">200</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">6</span>, <span class="at">max =</span> <span class="dv">6</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">exp</span>(x) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(x)))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(temp, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>As you can see in the figure above, the logistic function <span class="math inline">\(\frac{e^x}{1 + e^x}\)</span> takes any value <span class="math inline">\(x\)</span> in the real numbers and returns a value between 0 and 1.</p>
+</section>
+<section id="the-logit-or-log-odds" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="the-logit-or-log-odds"><span class="header-section-number">15.6</span> The logit or log odds</h2>
+<p>We usually focus on the <strong>logit</strong> in statistical work, which is the inverse of the logistic function.</p>
+<ul>
+<li>If we have a probability <span class="math inline">\(\pi &lt; 0.5\)</span>, then <span class="math inline">\(logit(\pi) &lt; 0\)</span>.</li>
+<li>If our probability <span class="math inline">\(\pi &gt; 0.5\)</span>, then <span class="math inline">\(logit(\pi) &gt; 0\)</span>.</li>
+<li>Finally, if <span class="math inline">\(\pi = 0.5\)</span>, then <span class="math inline">\(logit(\pi) = 0\)</span>.</li>
+</ul>
+</section>
+<section id="interpreting-the-coefficients-of-a-logistic-regression-model" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="interpreting-the-coefficients-of-a-logistic-regression-model"><span class="header-section-number">15.7</span> Interpreting the Coefficients of a Logistic Regression Model</h2>
+<p>The critical thing to remember in interpreting a logistic regression model is that the logit is the log odds function. Exponentiating the logit yields the odds.</p>
+<p>So, suppose we have a yes/no outcome variable, where yes = 1, and no = 0, and <span class="math inline">\(\pi\)</span> = Pr(y = 1). Our model holds that:</p>
+<p><span class="math display">\[
+logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k
+\]</span></p>
+<p>The odds of a yes response (the odds that Y = 1) at the level <span class="math inline">\(X_1, X_2, ..., X_k\)</span> are:</p>
+<p><span class="math display">\[
+Odds(Y = 1) = exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)
+\]</span></p>
+<p>The <strong>probability</strong> of a yes response (Pr(y = 1), or <span class="math inline">\(\pi\)</span>) is just</p>
+<p><span class="math display">\[
+\pi = Pr(Y = 1) = \frac{Odds(Y = 1)}{1 + Odds(Y = 1)} = \frac{exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)}{1 + exp(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k)}
+\]</span></p>
+</section>
+<section id="the-logistic-regression-has-non-constant-variance" class="level2" data-number="15.8">
+<h2 data-number="15.8" class="anchored" data-anchor-id="the-logistic-regression-has-non-constant-variance"><span class="header-section-number">15.8</span> The Logistic Regression has non-constant variance</h2>
+<p>In ordinary least squares regression, the variance <span class="math inline">\(Var(Y | X_1, X_2, ..., X_k) = \sigma^2\)</span> is a constant that does not depend on the predictor values. This is not the case in logistic regression. The mean and variance specifications of the logistic regression model are quite different.</p>
+<p><span class="math display">\[
+logit(\pi) = log\left( \frac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k \\
+\mu[Y | X_1, ..., X_k] = \pi, \\
+Var[Y | X_1, ..., X_k] = \pi(1 - \pi)
+\]</span></p>
+<p>The variance is now a function of the mean, and contains no additional parameter for us to estimate.</p>
+</section>
+<section id="fitting-a-logistic-regression-model-to-our-simulated-data" class="level2" data-number="15.9">
+<h2 data-number="15.9" class="anchored" data-anchor-id="fitting-a-logistic-regression-model-to-our-simulated-data"><span class="header-section-number">15.9</span> Fitting a Logistic Regression Model to our Simulated Data</h2>
+<p>Recall the <code>sim12</code> data we built earlier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim12, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Here is the fitted logistic regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model12b <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> sim12, <span class="at">family =</span> binomial)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>model12b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = y ~ x, family = binomial, data = sim12)
+
+Coefficients:
+(Intercept)            x  
+    -9.1955       0.9566  
+
+Degrees of Freedom: 99 Total (i.e. Null);  98 Residual
+Null Deviance:      138.6 
+Residual Deviance: 70.03    AIC: 74.03</code></pre>
+</div>
+</div>
+<p>The logistic regression equation is:</p>
+<p><span class="math display">\[
+logit(Pr(y = 1)) = log\left( \frac{Pr(y = 1)}{1 - Pr(y = 1)} \right) = -9.1955 + 0.9566 x
+\]</span></p>
+<p>We can exponentiate the results of this model to get to an equation about odds, and eventually, a prediction about probabilities. Suppose, for instance, that we are interested in the prediction when x = 12.</p>
+<p><span class="math display">\[
+logit(Pr(y = 1) | X = 12) = log\left( \frac{Pr(y = 1)}{1 - Pr(y = 1)} \right) = -9.1955 + 0.9566 * 12 = 2.2837
+\]</span></p>
+<p>And we can also get this from the <code>predict</code> function applied to our model, although the <code>predict</code> approach retains a few more decimal places internally:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(model12b, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">12</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1 
+2.284069 </code></pre>
+</div>
+</div>
+<p><span class="math display">\[
+Odds(Y = 1 | X = 12) = exp(-9.20 + 0.96 * 12) = exp(2.2837) = 9.812921
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">predict</span>(model12b, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">12</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1 
+9.81654 </code></pre>
+</div>
+</div>
+<p>The estimated <strong>probability</strong> of a yes response (Pr(y = 1), or <span class="math inline">\(\pi\)</span>) if x = 12 is just</p>
+<p><span class="math display">\[
+\pi = Pr(Y = 1 | X = 12) = \frac{Odds(Y = 1 | X = 12)}{1 + Odds(Y = 1 | X = 12)} = \frac{exp(-9.20 + 0.96 x)}{1 + exp(-9.20 + 0.96 x)} = \frac{9.812921}{1 + 9.812921} = 0.908
+\]</span></p>
+<p>Does this work out?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">predict</span>(model12b, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">12</span>))) <span class="sc">/</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">predict</span>(model12b, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">12</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1 
+0.907549 </code></pre>
+</div>
+</div>
+<p>which is also directly available by running <code>predict</code> with <code>type = "response"</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(model12b, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">12</span>), <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1 
+0.907549 </code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-the-logistic-regression-model" class="level2" data-number="15.10">
+<h2 data-number="15.10" class="anchored" data-anchor-id="plotting-the-logistic-regression-model"><span class="header-section-number">15.10</span> Plotting the Logistic Regression Model</h2>
+<p>We can use the <code>augment</code> function from the <code>broom</code> package to get our fitted probabilities included in the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m12b_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(model12b, sim12, <span class="at">type.predict =</span> <span class="st">"response"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m12b_aug, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fitted Logistic Regression Model for sim12"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I’ll add a little jitter on the vertical scale to the points, so we can avoid overlap, and also make the points a little bigger.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(m12b_aug, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.05</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">pch =</span> <span class="dv">21</span>, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> .fitted), <span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Fitted Logistic Regression for sim12"</span>) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="logistic1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>All right, it’s time to move on to fitting models. We’ll do that next.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./olsfitting.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./logistic2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

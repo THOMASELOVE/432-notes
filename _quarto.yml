@@ -25,6 +25,9 @@ book:
     - ancova_smart.qmd
     - nonlinearity.qmd
     - olsfitting.qmd
+    - logistic1.qmd
+    - logistic2.qmd
+    - logistic3.qmd
     - incomplete.qmd
 
 format:

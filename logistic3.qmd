@@ -1,0 +1,485 @@
+# Logistic Regression with `lrm`
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(ROCR)
+library(pROC)
+library(naniar)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+resect <- read_csv("data/resect.csv", show_col_types = FALSE) 
+```
+
+## Logistic Regression using `lrm`
+
+To obtain the Nagelkerke $R^2$ and the C statistic, as well as some other summaries, I'll now demonstrate the use of `lrm` from the `rms` package to fit a logistic regression model. 
+
+We'll return to the original model, predicting death using resection size alone.
+
+```{r}
+dd <- datadist(resect)
+options(datadist="dd")
+
+res_modC <- lrm(died ~ resection, data=resect, x=TRUE, y=TRUE)
+res_modC
+```
+
+This output specifies the following:
+
+- `Obs` = The number of observations used to fit the model, with `0` = the number of zeros and `1` = the number of ones in our outcome, `died`. Also specified is the maximum absolute value of the derivative at the point where the maximum likelihood function was estimated. I wouldn't worry about that practically, as all you will care about is whether the iterative function-fitting process converged, and R will warn you in other ways if it doesn't.
+- A likelihood ratio test (drop in deviance test) subtracting the residual deviance from the null deviance obtain the Likelihood Ratio $\chi^2$ statistic, subtracting residual df from null df to obtain degrees of freedom, and comparing the resulting test statistic to a $\chi^2$ distribution with the appropriate degrees of freedom to determine a *p* value.
+- A series of discrimination indexes, including the Nagelkerke $R^2$, symbolized R2, and several others we'll discuss shortly.
+- A series of rank discrimination indexes, including the C statistic (area under the ROC curve) and Somers' D (Dxy), and several others.
+- A table of coefficients, standard errors, Wald Z statistics and *p* values based on those Wald statistics.
+
+The C statistic is estimated to be `r round(res_modC$stats["C"],3)`, with an associated (Nagelkerke) $R^2$ = `r round(res_modC$stats["R2"],3)`, both indicating at best mediocre performance for this model, as it turns out.
+
+### Interpreting Nagelkerke $R^2$
+
+There are many ways to calculate $R^2$ for logistic regression. 
+
+- At the [URL linked here](https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faq-what-are-pseudo-r-squareds/) there is a nice summary of the key issue, which is that there are at least three different ways to think about $R^2$ in linear regression that are equivalent in that context, but when you move to a categorical outcome, which interpretation you use leads you down a different path for extension to the new type of outcome. In linear regression...
+    - You might think of $R^2$ as a measure of the proportion of variability explained.
+    - You might think of $R^2$ as measuring the improvement from a null model to a fitted model.
+    - You might think of $R^2$ as the square of the correlation coefficient.
+- Paul Allison, for instance, describes several at [this link](http://statisticalhorizons.com/r2logistic) in a post entitled "What's the Best R-Squared for Logistic Regression?"
+- Jonathan Bartlett looks at McFadden's pseudo $R^2$ in some detail (including some R code) at [this link](http://thestatsgeek.com/2014/02/08/r-squared-in-logistic-regression/), in a post entitled "R squared in logistic regression"
+
+The Nagelkerke approach that is presented as `R2` in the `lrm` output is as good as most of the available approaches, and has the positive feature that it does reach 1 if the fitted model shows as much improvement as possible over the null model (which predicts the mean response for all subjects, and has $R^2$ = 0). The greater the improvement, the higher the Nagelkerke $R^2$.
+
+For model A, our Nagelkerke $R^2$ = `r round(res_modC$stats["R2"],3)`, which is pretty poor. It doesn't technically mean that `r round(100*res_modC$stats["R2"],1)`% of any sort of variation has been explained, though.
+
+### Interpreting the C statistic and Plotting the ROC Curve
+
+The C statistic is a measure of the area under the receiver operating characteristic curve. [This link](http://blog.yhat.com/posts/roc-curves.html) has some nice material that provides some insight into the C statistic and ROC curve. 
+
+- Recall that C ranges from 0 to 1. 0 = BAD, 1 = GOOD.
+    + values of C less than 0.5 indicate that your prediction model is not even as good as simple random guessing of "yes" or "no" for your response.
+    + C = 0.5 for random guessing
+    + C = 1 indicates a perfect classification scheme - one that correctly guesses "yes" for all "yes" patients, and for none of the "no" patients.
+- The closer C is to 1, the happier we'll be, most of the time. 
+    + Often we'll call models with 0.5 < C < 0.8 poor or weak in terms of predictive ability by this measure
+    + 0.8 $\leq$ C < 0.9 are moderately strong in terms of predictive power (indicate good discrimination)
+    + C $\geq$ 0.9 usually indicates a very strong model in this regard (indicate excellent discrimination)
+
+We've seen the ROC curve for this model before, when we looked at model `res_modA` fitted using `glm` in the previous chapter. But, just for completeness, I'll include it. 
+
+**Note.** I change the initial `predict` call from `type = "response"` for a `glm` fit to `type = "fitted"` in a `lrm` fit. Otherwise, this is the same approach.
+
+```{r}
+## requires ROCR package
+prob <- predict(res_modC, resect, type="fitted")
+pred <- prediction(prob, resect$died)
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")
+auc <- performance(pred, measure="auc")
+
+auc <- round(auc@y.values[[1]],3)
+roc.data <- data.frame(fpr=unlist(perf@x.values),
+                       tpr=unlist(perf@y.values),
+                       model="GLM")
+
+ggplot(roc.data, aes(x=fpr, ymin=0, ymax=tpr)) +
+    geom_ribbon(alpha=0.2, fill = "blue") +
+    geom_line(aes(y=tpr), col = "blue") +
+    geom_abline(intercept = 0, slope = 1, lty = "dashed") +
+    labs(title = paste0("Model C: ROC Curve w/ AUC=", auc)) +
+    theme_bw()
+```
+
+### The C statistic and Somers' D
+
+- The C statistic is directly related to **Somers' D statistic**, abbreviated $D_{xy}$, by the equation C = 0.5 + (D/2).
+    + Somers' D and the ROC area only measure how well predicted values from the model can rank-order the responses. For example, predicted probabilities of 0.01 and 0.99 for a pair of subjects are no better than probabilities of 0.2 and 0.8 using rank measures, if the first subject had a lower response value than the second.
+    + Thus, the C statistic (or $D_{xy}$) may not be very sensitive ways to choose between models, even though they provide reasonable summaries of the models individually. 
+    + This is especially true when the models are strong. The Nagelkerke $R^2$ may be more sensitive.
+- But as it turns out, we sometimes have to look at the ROC shapes, as the summary statistic alone isn't enough.
+
+In our case, Somers D (Dxy) = .541, so the C statistic is 0.771.
+
+### Validating the Logistic Regression Model Summary Statistics
+
+Like other regression-fitting tools in `rms`, the `lrm` function has a special `validate` tool to help perform resampling validation of a model, with or without backwards step-wise variable selection. Here, we'll validate our model's summary statistics using 100 bootstrap replications.
+
+```{r}
+set.seed(432001) 
+validate(res_modC, B = 100)
+```
+
+Recall that our area under the curve (C statistic) = `0.5 + (Dxy/2)`, so that we can also use the first row of statistics to validate the C statistic. Accounting for optimism in this manner, our validation-corrected estimates are Dxy = 0.5408, so C = 0.7704, and, from the second row of statistics, we can read off the validated Nagelkerke $R^2$, which is 0.1583.
+
+### Plotting the Summary of the `lrm` approach
+
+The `summary` function applied to an `lrm` fit shows the effect size comparing the 25th percentile to the 75th percentile of resection. 
+
+```{r}
+plot(summary(res_modC))
+summary(res_modC)
+```
+
+So, a move from a resection of 2 cm to a resection of 4 cm is associated with an estimated effect on the log odds of death of 1.48 (with standard error 0.45), or with an estimated effect on the odds ratio for death of 4.41, with 95% CI (1.84, 10.56).
+
+### Plot In-Sample Predictions for Model C
+
+Here we plot the effect of `resection` (and 95% confidence intervals) across the range of observed values of `resection` on the log odds of death. Note the linear effect of `resection` size on the log odds scale.
+
+```{r}
+ggplot(Predict(res_modC))
+```
+
+By applying the `plogis` function within the `Predict` command, we can plot the effect of `resection` on the estimated probability of death. Note the non-linear effect on this probability in this logistic regression model.
+
+```{r}
+ggplot(Predict(res_modC, fun = plogis)) + 
+    labs(y = "Predicted probability from Model C",
+         title = "Model C with the resect data")
+```
+
+The `Predict` function itself provides the raw material being captured in this plot.
+
+```{r}
+head(Predict(res_modC, fun = plogis))
+```
+
+
+### ANOVA from the `lrm` approach
+
+```{r}
+anova(res_modC)
+```
+
+The ANOVA approach applied to a `lrm` fit provides a Wald test for the model as a whole. Here, the use of `resection` is a significant improvement over a null (intercept-only) model. The *p* value is 9 x 10^-4^.
+
+### Are any points particularly influential?
+
+I'll use a cutoff for `dfbeta` here of 0.3, instead of the default 0.2, because I want to focus on truly influential points. Note that we have to use the data frame version of `resect` as `show.influence` isn't tibble-friendly.
+
+```{r}
+inf.C <- which.influence(res_modC, cutoff=0.3)
+inf.C
+
+show.influence(object = inf.C, dframe = data.frame(resect))
+```
+
+It appears that observation 84 may have a meaningful effect on both the intercept and the coefficient for `resection`.
+
+### A Nomogram for Model C
+
+We use the `plogis` function within a nomogram call to get R to produce fitted probabilities (of our outcome, `died`) in this case.
+
+```{r}
+#| fig-height: 6
+plot(nomogram(res_modC, fun=plogis, 
+              fun.at=c(0.05, seq(0.1, 0.9, by = 0.1), 0.95), 
+              funlabel="Pr(died)"))
+```
+
+Since there's no non-linearity in the right hand side of our simple logistic regression model, the nomogram is straightforward. We calculate the points based on the resection by traveling up, and then travel down in a straight vertical line from total points through the linear (log odds) predictor straight to a fitted probability. Note that fitted probabilities above 0.5 are not possible within the range of observed `resection` values in this case.
+
+## Model D: An Augmented Kitchen Sink Model
+
+Can we predict survival from the patient's age, whether the patient had prior tracheal surgery or not, the extent of the resection, and whether intubation was required at the end of surgery? 
+
+### Spearman $\rho^2$ Plot
+
+Let's start by considering the limited use of non-linear terms for predictors that look important in a Spearman $\rho^2$ plot.
+
+```{r}
+plot(spearman2(died ~ age + prior + resection + intubated, data=resect))
+```
+
+The most important variable appears to be whether intubation was required, so I'll include `intubated`'s interaction with the linear effect of the next most (apparently) important variable, `resection`, and also a cubic spline for `resection`, with three knots. Since `prior` and `age` look less important, I'll simply add them as linear terms.
+
+### Fitting Model D using `lrm`
+
+Note the use of `%ia%` here. This insures that only the linear part of the `resection` term will be used in the interaction with `intubated`.
+
+```{r}
+dd <- datadist(resect)
+options(datadist="dd")
+
+res_modD <- lrm(died ~ age + prior + rcs(resection, 3) +
+                 intubated + intubated %ia% resection, 
+               data=resect, x=TRUE, y=TRUE)
+```
+
+### Assessing Model D using `lrm`'s tools
+
+```{r}
+res_modD
+```
+
+- The model likelihood ratio test suggests that at least some of these predictors are helpful.
+- The Nagelkerke $R^2$ of 0.46, and the C statistic of 0.88 indicate a meaningful improvement in discrimination over our model with `resection` alone.
+- The Wald Z tests see some potential need to prune the model, as none of the elements reaches statistical significance without the others. The product term between `intubated` and `resection`, in particular, doesn't appear to have helped much, once we already had the main effects.
+
+### ANOVA and Wald Tests for Model D
+
+```{r}
+anova(res_modD)
+```
+
+Neither the interaction term nor the non-linearity from the cubic spline appears to be statistically significant, based on the Wald tests via ANOVA. However it is clear that `intubated` has a significant impact as a main effect.
+
+### Effect Sizes in Model D
+
+```{r}
+plot(summary(res_modD))
+summary(res_modD)
+```
+
+The effect sizes are perhaps best described in terms of odds ratios. The odds ratio for death isn't significantly different from 1 for any variable, but the impact of `resection` and `intubated`, though not strong enough to be significant, look more substantial (if poorly estimated) than the effects of `age` and `prior`.
+
+### Plot In-Sample Predictions for Model D
+
+Here are plots of the effects across the range of each predictor (holding the others constant) on the log odds scale. Note the non-linear effect of resection implied by the use of a spline there.
+
+```{r}
+ggplot(Predict(res_modD))
+```
+
+We can also capture and plot these results on the probability scale, as follows^[Although I've yet to figure out how to get the y axis relabeled properly without simply dumping the Predict results into a new tibble and starting over with creating the plots.].
+
+```{r}
+ggplot(Predict(res_modD, fun = plogis))
+```
+
+### Plotting the ROC curve for Model D
+
+Again, remember to use `type = "fitted"` with a `lrm` fit.
+
+```{r}
+## requires ROCR package
+prob <- predict(res_modD, resect, type="fitted")
+pred <- prediction(prob, resect$died)
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")
+auc <- performance(pred, measure="auc")
+
+auc <- round(auc@y.values[[1]],3)
+roc.data <- data.frame(fpr=unlist(perf@x.values),
+                       tpr=unlist(perf@y.values),
+                       model="GLM")
+
+ggplot(roc.data, aes(x=fpr, ymin=0, ymax=tpr)) +
+    geom_ribbon(alpha=0.2, fill = "blue") +
+    geom_line(aes(y=tpr), col = "blue") +
+    geom_abline(intercept = 0, slope = 1, lty = "dashed") +
+    labs(title = paste0("ROC Curve w/ AUC=", auc)) +
+    theme_bw()
+```
+
+The AUC fitted with `ROCR` (0.883) is slightly different than what `lrm` has told us (0.880), and this also happens if we use the `pROC` approach, demonstrated below.
+
+```{r}
+## requires pROC package
+roc.modD <- 
+    roc(resect$died ~ predict(res_modD, type="fitted"),
+        ci = TRUE)
+
+roc.modD
+plot(roc.modD)
+```
+
+### Validation of Model D summaries
+
+```{r}
+set.seed(432002)
+validate(res_modD, B = 100)
+```
+
+The C statistic indicates fairly strong discrimination, at C = `r round(res_modD$stats["C"],2)`, although after validation, this looks much weaker (based on Dxy = `r set.seed(432002); round(validate(res_modD, B = 100)[45],4)`, we would have C = 0.5 + `r set.seed(432002); round(validate(res_modD, B = 100)[45],4)`/2 = `r set.seed(432002); round(0.5 + 0.5*validate(res_modD, B = 100)[45],2)`) and the Nagelkerke $R^2$ is also reasonably good, at `r round(res_modD$stats["R2"],2)`, although this, too, is overly optimistic, and we bias-correct through our validation study to `r set.seed(432002); round(validate(res_modD, B = 100)[46],2)`.
+
+## Model E: Fitting a Reduced Model in light of Model D
+
+Can you suggest a reduced model (using a subset of the independent variables in model D) that adequately predicts survival? 
+
+Based on the anova for model D and the Spearman rho-squared plot, it appears that a two-predictor model using intubation and resection may be sufficient. Neither of the other potential predictors shows a statistically detectable effect in its Wald test.
+
+```{r}
+res_modE <- lrm(died ~ intubated + resection, data=resect, 
+                x=TRUE, y=TRUE)
+res_modE
+```
+
+The model equation is that the log odds of death is -4.637 + 2.864 `intubated` + 0.548 `resection`. 
+
+This implies that:
+
+- for intubated patients, the equation is -1.773 + 0.548 `resection`, while 
+- for non-intubated patients, the equation is -4.637 + 0.548 `resection`.
+
+We can use the `ilogit` function within the `faraway` package to help plot this.
+
+### A Plot comparing the two intubation groups
+
+```{r}
+ggplot(resect, aes(x = resection, y = died, 
+                   col = factor(intubated))) + 
+    scale_color_manual(values = c("blue", "red")) +
+    geom_jitter(size = 2, height = 0.1) +
+    geom_line(aes(x = resection, 
+                  y = faraway::ilogit(-4.637 + 0.548*resection)),
+              col = "blue") +
+    geom_line(aes(x = resection,
+                  y = faraway::ilogit(-1.773 + 0.548*resection)),
+              col = "red") +
+    geom_text(x = 4, y = 0.2, label = "Not Intubated", 
+              col="blue") +
+    geom_text(x = 2.5, y = 0.6, label = "Intubated Patients", 
+              col="red") +
+    labs(x = "Extent of Resection (in cm.)",
+         y = "Death (1,0) and estimated probability of death",
+         title = "resect data, Model E")
+    
+```
+
+The effect of `intubation` appears to be very large, compared to the resection size effect.
+
+### Nomogram for Model E
+
+A nomogram of the model would help, too. 
+
+```{r}
+plot(nomogram(res_modE, fun=plogis, 
+              fun.at=c(0.05, seq(0.1, 0.9, by=0.1), 0.95), 
+              funlabel="Pr(died)"))
+```
+
+Again, we see that the effect of intubation is enormous, compared to the effect of resection. Another way to see this is to plot the effect sizes directly.
+
+### Effect Sizes from Model E
+
+```{r}
+plot(summary(res_modE))
+summary(res_modE)
+```
+
+### Plot In-Sample Predictions for Model E
+
+Here are plots of the effects across the range of each predictor (holding the other constant) on the log odds scale.
+
+```{r}
+ggplot(Predict(res_modE))
+```
+
+We can also capture and plot these results on the probability scale, as follows.
+
+```{r}
+ggplot(Predict(res_modE, fun = plogis))
+```
+
+### ANOVA for Model E
+
+```{r}
+anova(res_modE)
+```
+
+
+### Validation of Model E
+
+```{r}
+validate(res_modE, method="boot", B=40)
+```
+
+Our bootstrap validated assessments of discrimination and goodness of fit look somewhat more reasonable now. 
+
+### Do any points seem particularly influential?
+
+As a last step, I'll look at influence, and residuals, associated with model E.
+
+```{r}
+inf.E <- which.influence(res_modE, cutoff=0.3)
+
+inf.E
+
+show.influence(inf.E, dframe = data.frame(resect))
+```
+
+### Fitting Model E using `glm` to get plots about influence
+
+```{r}
+res_modEglm <- glm(died ~ intubated + resection, 
+                  data=resect, family="binomial")
+par(mfrow=c(1,2))
+plot(res_modEglm, which=c(4:5))
+```
+
+Using this `glm` residuals approach, we again see that points 84 and 94 have the largest influence on our model E.
+
+## Concordance: Comparing Model C, D and E's predictions
+
+To start, we'll gather the predictions fomade by each model (C, D and E) on the probability scale, in one place. Sadly, `augment` from `broom` doesn't work well with `lrm` fits, so we have to do this on our own.
+
+```{r}
+resect_preds <- resect |>
+    mutate(C = predict(res_modC, type = "fitted"),
+           D = predict(res_modD, type = "fitted"),
+           E = predict(res_modE, type = "fitted"))
+
+head(resect_preds)
+```
+
+And now, we'll use the `pivot_longer()` function from the **tidyr** package (part of the tidyverse) to arrange the models and predicted probabilities in a more useful manner for plotting.
+
+```{r}
+res_p <- resect_preds |>
+  pivot_longer(cols = 7:9, names_to = "model", values_to = "prediction") |>
+  select(subj_id, died, model, prediction)
+
+head(res_p)
+```
+
+Here's the resulting plot.
+
+```{r}
+ggplot(res_p, aes(x = factor(died), y = prediction, 
+                  group = model, col = model)) +
+    geom_jitter(width = 0.25) + 
+    geom_hline(yintercept = 0.5) +
+    facet_wrap( ~ model) + 
+    guides(color = "none") +
+    labs(title = "Comparing Predictions for our Three Models",
+         subtitle = "A graphical view of concordance",
+         x = "Actual mortality status (1 = died)",
+         y = "Predicted probability of death")
+```
+
+We could specify a particular rule, for example: if the predicted probability of death is 0.5 or greater, then predict "Died".
+
+```{r}
+res_p$rule.5 <- ifelse(res_p$prediction >= 0.5, 
+                       "Predict Died", "Predict Alive")
+
+ftable(table(res_p$model, res_p$rule.5, res_p$died))
+```
+
+And perhaps build the linked table of row probabilities...
+
+```{r}
+round(100*prop.table(
+    ftable(table(res_p$model, res_p$rule.5, res_p$died))
+    ,1),2)
+```
+
+For example, in model E, 93.44% of those predicted to be alive actually survived, and 75% of those predicted to die actually died.
+
+- Model D does a little better in one direction (94.17% of those predicted by Model D to be alive actually survived) but worse in the other (71.43% of those predicted by Model D to die actually died.)
+- Model C does worse than each of the others in both predicting those who survive and those who die.
+
+Note that the approaches discussed here would be useful if we had a new sample to predict on, as well. We could then compare the errors for that new data made by this sort of classification scheme either graphically or in a table.
+
+## Conclusions
+
+It appears that `intubated` status and, to a lesser degree, the extent of the `resection` both play a meaningful role in predicting death associated with tracheal carina resection surgery. Patients who are intubated are associated with worse outcomes (greater risk of death) and more extensive resections are also associated with worse outcomes.
