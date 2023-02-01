@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 24&nbsp; Modeling a Count Outcome</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./count2.html" rel="next">
+<link href="./binaryregression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">24.1</span>  R Setup Used Here</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">24.2</span>  Data Load</a></li>
+  <li><a href="#creating-a-useful-analytic-subset-ohioa" id="toc-creating-a-useful-analytic-subset-ohioa" class="nav-link" data-scroll-target="#creating-a-useful-analytic-subset-ohioa"><span class="toc-section-number">24.3</span>  Creating A Useful Analytic Subset, <code>ohioA</code></a>
+  <ul class="collapse">
+  <li><a href="#is-age-group-associated-with-physhealth" id="toc-is-age-group-associated-with-physhealth" class="nav-link" data-scroll-target="#is-age-group-associated-with-physhealth"><span class="toc-section-number">24.3.1</span>  Is age group associated with <code>physhealth</code>?</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-in-the-18-49-group" id="toc-exploratory-data-analysis-in-the-18-49-group" class="nav-link" data-scroll-target="#exploratory-data-analysis-in-the-18-49-group"><span class="toc-section-number">24.4</span>  Exploratory Data Analysis (in the 18-49 group)</a>
+  <ul class="collapse">
+  <li><a href="#build-a-subset-of-those-ages-18-49" id="toc-build-a-subset-of-those-ages-18-49" class="nav-link" data-scroll-target="#build-a-subset-of-those-ages-18-49"><span class="toc-section-number">24.4.1</span>  Build a subset of those ages 18-49</a></li>
+  <li><a href="#centering-bmi" id="toc-centering-bmi" class="nav-link" data-scroll-target="#centering-bmi"><span class="toc-section-number">24.4.2</span>  Centering <code>bmi</code></a></li>
+  <li><a href="#distribution-of-the-outcome" id="toc-distribution-of-the-outcome" class="nav-link" data-scroll-target="#distribution-of-the-outcome"><span class="toc-section-number">24.4.3</span>  Distribution of the Outcome</a></li>
+  <li><a href="#scatterplot-matrix" id="toc-scatterplot-matrix" class="nav-link" data-scroll-target="#scatterplot-matrix"><span class="toc-section-number">24.4.4</span>  Scatterplot Matrix</a></li>
+  <li><a href="#summary-of-the-final-subset-of-data" id="toc-summary-of-the-final-subset-of-data" class="nav-link" data-scroll-target="#summary-of-the-final-subset-of-data"><span class="toc-section-number">24.4.5</span>  Summary of the final subset of data</a></li>
+  </ul></li>
+  <li><a href="#modeling-strategies-explored-here" id="toc-modeling-strategies-explored-here" class="nav-link" data-scroll-target="#modeling-strategies-explored-here"><span class="toc-section-number">24.5</span>  Modeling Strategies Explored Here</a>
+  <ul class="collapse">
+  <li><a href="#what-will-we-demonstrate" id="toc-what-will-we-demonstrate" class="nav-link" data-scroll-target="#what-will-we-demonstrate"><span class="toc-section-number">24.5.1</span>  What Will We Demonstrate?</a></li>
+  <li><a href="#extra-data-file-for-harry-and-sally" id="toc-extra-data-file-for-harry-and-sally" class="nav-link" data-scroll-target="#extra-data-file-for-harry-and-sally"><span class="toc-section-number">24.5.2</span>  Extra Data File for Harry and Sally</a></li>
+  </ul></li>
+  <li><a href="#the-ols-approach" id="toc-the-ols-approach" class="nav-link" data-scroll-target="#the-ols-approach"><span class="toc-section-number">24.6</span>  The OLS Approach</a>
+  <ul class="collapse">
+  <li><a href="#interpreting-the-coefficients" id="toc-interpreting-the-coefficients" class="nav-link" data-scroll-target="#interpreting-the-coefficients"><span class="toc-section-number">24.6.1</span>  Interpreting the Coefficients</a></li>
+  <li><a href="#store-fitted-values-and-residuals" id="toc-store-fitted-values-and-residuals" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals"><span class="toc-section-number">24.6.2</span>  Store fitted values and residuals</a></li>
+  <li><a href="#specify-the-r2-and-loglikelihood-values" id="toc-specify-the-r2-and-loglikelihood-values" class="nav-link" data-scroll-target="#specify-the-r2-and-loglikelihood-values"><span class="toc-section-number">24.6.3</span>  Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</a></li>
+  <li><a href="#check-model-assumptions" id="toc-check-model-assumptions" class="nav-link" data-scroll-target="#check-model-assumptions"><span class="toc-section-number">24.6.4</span>  Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally" id="toc-predictions-for-harry-and-sally" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally"><span class="toc-section-number">24.6.5</span>  Predictions for Harry and Sally</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="toc-section-number">24.6.6</span>  Notes</a></li>
+  </ul></li>
+  <li><a href="#ols-model-on-logphyshealth-1-days" id="toc-ols-model-on-logphyshealth-1-days" class="nav-link" data-scroll-target="#ols-model-on-logphyshealth-1-days"><span class="toc-section-number">24.7</span>  OLS model on log(<code>physhealth</code> + 1) days</a>
+  <ul class="collapse">
+  <li><a href="#interpreting-the-coefficients-1" id="toc-interpreting-the-coefficients-1" class="nav-link" data-scroll-target="#interpreting-the-coefficients-1"><span class="toc-section-number">24.7.1</span>  Interpreting the Coefficients</a></li>
+  <li><a href="#store-fitted-values-and-residuals-1" id="toc-store-fitted-values-and-residuals-1" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-1"><span class="toc-section-number">24.7.2</span>  Store fitted values and residuals</a></li>
+  <li><a href="#specify-the-r2-and-loglikelihood-values-1" id="toc-specify-the-r2-and-loglikelihood-values-1" class="nav-link" data-scroll-target="#specify-the-r2-and-loglikelihood-values-1"><span class="toc-section-number">24.7.3</span>  Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</a></li>
+  <li><a href="#getting-r2-on-the-scale-of-physhealth" id="toc-getting-r2-on-the-scale-of-physhealth" class="nav-link" data-scroll-target="#getting-r2-on-the-scale-of-physhealth"><span class="toc-section-number">24.7.4</span>  Getting <span class="math inline">\(R^2\)</span> on the scale of <code>physhealth</code></a></li>
+  <li><a href="#check-model-assumptions-1" id="toc-check-model-assumptions-1" class="nav-link" data-scroll-target="#check-model-assumptions-1"><span class="toc-section-number">24.7.5</span>  Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-1" id="toc-predictions-for-harry-and-sally-1" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-1"><span class="toc-section-number">24.7.6</span>  Predictions for Harry and Sally</a></li>
+  </ul></li>
+  <li><a href="#a-poisson-regression-model" id="toc-a-poisson-regression-model" class="nav-link" data-scroll-target="#a-poisson-regression-model"><span class="toc-section-number">24.8</span>  A Poisson Regression Model</a>
+  <ul class="collapse">
+  <li><a href="#the-fitted-equation" id="toc-the-fitted-equation" class="nav-link" data-scroll-target="#the-fitted-equation"><span class="toc-section-number">24.8.1</span>  The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-2" id="toc-interpreting-the-coefficients-2" class="nav-link" data-scroll-target="#interpreting-the-coefficients-2"><span class="toc-section-number">24.8.2</span>  Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors" id="toc-testing-the-predictors" class="nav-link" data-scroll-target="#testing-the-predictors"><span class="toc-section-number">24.8.3</span>  Testing the Predictors</a></li>
+  <li><a href="#correcting-for-overdispersion-with-coeftestcoefci" id="toc-correcting-for-overdispersion-with-coeftestcoefci" class="nav-link" data-scroll-target="#correcting-for-overdispersion-with-coeftestcoefci"><span class="toc-section-number">24.8.4</span>  Correcting for Overdispersion with <code>coeftest</code>/<code>coefci</code></a></li>
+  <li><a href="#store-fitted-values-and-residuals-2" id="toc-store-fitted-values-and-residuals-2" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-2"><span class="toc-section-number">24.8.5</span>  Store fitted values and residuals</a></li>
+  <li><a href="#rootogram-see-the-fit-of-a-count-regression-model" id="toc-rootogram-see-the-fit-of-a-count-regression-model" class="nav-link" data-scroll-target="#rootogram-see-the-fit-of-a-count-regression-model"><span class="toc-section-number">24.8.6</span>  Rootogram: see the fit of a count regression model</a></li>
+  <li><a href="#specify-the-r2-and-loglikelihood-values-2" id="toc-specify-the-r2-and-loglikelihood-values-2" class="nav-link" data-scroll-target="#specify-the-r2-and-loglikelihood-values-2"><span class="toc-section-number">24.8.7</span>  Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-2" id="toc-check-model-assumptions-2" class="nav-link" data-scroll-target="#check-model-assumptions-2"><span class="toc-section-number">24.8.8</span>  Check model assumptions</a></li>
+  <li><a href="#using-glm.diag.plots-from-the-boot-package" id="toc-using-glm.diag.plots-from-the-boot-package" class="nav-link" data-scroll-target="#using-glm.diag.plots-from-the-boot-package"><span class="toc-section-number">24.8.9</span>  Using <code>glm.diag.plots</code> from the <code>boot</code> package</a></li>
+  <li><a href="#predictions-for-harry-and-sally-2" id="toc-predictions-for-harry-and-sally-2" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-2"><span class="toc-section-number">24.8.10</span>  Predictions for Harry and Sally</a></li>
+  </ul></li>
+  <li><a href="#overdispersion-in-a-poisson-model" id="toc-overdispersion-in-a-poisson-model" class="nav-link" data-scroll-target="#overdispersion-in-a-poisson-model"><span class="toc-section-number">24.9</span>  Overdispersion in a Poisson Model</a>
+  <ul class="collapse">
+  <li><a href="#testing-for-overdispersion" id="toc-testing-for-overdispersion" class="nav-link" data-scroll-target="#testing-for-overdispersion"><span class="toc-section-number">24.9.1</span>  Testing for Overdispersion?</a></li>
+  </ul></li>
+  <li><a href="#fitting-the-quasi-poisson-model" id="toc-fitting-the-quasi-poisson-model" class="nav-link" data-scroll-target="#fitting-the-quasi-poisson-model"><span class="toc-section-number">24.10</span>  Fitting the Quasi-Poisson Model</a>
+  <ul class="collapse">
+  <li><a href="#the-fitted-equation-1" id="toc-the-fitted-equation-1" class="nav-link" data-scroll-target="#the-fitted-equation-1"><span class="toc-section-number">24.10.1</span>  The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-3" id="toc-interpreting-the-coefficients-3" class="nav-link" data-scroll-target="#interpreting-the-coefficients-3"><span class="toc-section-number">24.10.2</span>  Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors-1" id="toc-testing-the-predictors-1" class="nav-link" data-scroll-target="#testing-the-predictors-1"><span class="toc-section-number">24.10.3</span>  Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals-3" id="toc-store-fitted-values-and-residuals-3" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-3"><span class="toc-section-number">24.10.4</span>  Store fitted values and residuals</a></li>
+  <li><a href="#specify-the-r2-and-loglikelihood-values-3" id="toc-specify-the-r2-and-loglikelihood-values-3" class="nav-link" data-scroll-target="#specify-the-r2-and-loglikelihood-values-3"><span class="toc-section-number">24.10.5</span>  Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-3" id="toc-check-model-assumptions-3" class="nav-link" data-scroll-target="#check-model-assumptions-3"><span class="toc-section-number">24.10.6</span>  Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-3" id="toc-predictions-for-harry-and-sally-3" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-3"><span class="toc-section-number">24.10.7</span>  Predictions for Harry and Sally</a></li>
+  </ul></li>
+  <li><a href="#poisson-and-quasi-poisson-models-using-glm-from-the-rms-package" id="toc-poisson-and-quasi-poisson-models-using-glm-from-the-rms-package" class="nav-link" data-scroll-target="#poisson-and-quasi-poisson-models-using-glm-from-the-rms-package"><span class="toc-section-number">24.11</span>  Poisson and Quasi-Poisson models using <code>Glm</code> from the <code>rms</code> package</a>
+  <ul class="collapse">
+  <li><a href="#refitting-the-original-poisson-regression-with-glm" id="toc-refitting-the-original-poisson-regression-with-glm" class="nav-link" data-scroll-target="#refitting-the-original-poisson-regression-with-glm"><span class="toc-section-number">24.11.1</span>  Refitting the original Poisson regression with <code>Glm</code></a></li>
+  <li><a href="#refitting-the-overdispersed-poisson-regression-with-glm" id="toc-refitting-the-overdispersed-poisson-regression-with-glm" class="nav-link" data-scroll-target="#refitting-the-overdispersed-poisson-regression-with-glm"><span class="toc-section-number">24.11.2</span>  Refitting the overdispersed Poisson regression with <code>Glm</code></a></li>
+  <li><a href="#anova-on-a-glm-fit" id="toc-anova-on-a-glm-fit" class="nav-link" data-scroll-target="#anova-on-a-glm-fit"><span class="toc-section-number">24.11.3</span>  ANOVA on a <code>Glm</code> fit</a></li>
+  <li><a href="#ggplots-from-glm-fit" id="toc-ggplots-from-glm-fit" class="nav-link" data-scroll-target="#ggplots-from-glm-fit"><span class="toc-section-number">24.11.4</span>  ggplots from <code>Glm</code> fit</a></li>
+  <li><a href="#summary-of-a-glm-fit" id="toc-summary-of-a-glm-fit" class="nav-link" data-scroll-target="#summary-of-a-glm-fit"><span class="toc-section-number">24.11.5</span>  Summary of a <code>Glm</code> fit</a></li>
+  <li><a href="#plot-of-the-summary" id="toc-plot-of-the-summary" class="nav-link" data-scroll-target="#plot-of-the-summary"><span class="toc-section-number">24.11.6</span>  Plot of the Summary</a></li>
+  <li><a href="#nomogram-of-a-glm-fit" id="toc-nomogram-of-a-glm-fit" class="nav-link" data-scroll-target="#nomogram-of-a-glm-fit"><span class="toc-section-number">24.11.7</span>  Nomogram of a <code>Glm</code> fit</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-count1" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>In this chapter, and the next two chapters, I use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in <a href="smart.html"><span>Chapter&nbsp;6</span></a> to demonstrate regression models for count outcomes.</p>
+<p>Methods discussed in the chapter include:</p>
+<ul>
+<li>Ordinary Least Squares</li>
+<li>Poisson Regression</li>
+<li>Overdispersed Quasi-Poisson Regression</li>
+</ul>
+<section id="r-setup-used-here" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">24.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(countreg)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-load" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="data-load"><span class="header-section-number">24.2</span> Data Load</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smart_oh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/smart_ohio.Rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="creating-a-useful-analytic-subset-ohioa" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="creating-a-useful-analytic-subset-ohioa"><span class="header-section-number">24.3</span> Creating A Useful Analytic Subset, <code>ohioA</code></h2>
+<p>For this work, I’ll include the subset of all observations in <code>smart_oh</code> with complete data on these 14 variables.</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 83%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>SEQNO</code></td>
+<td>Subject identification code</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>mmsa_name</code></td>
+<td>Name of statistical area</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>genhealth</code></td>
+<td>Five categories (E, VG, G, F, P) on general health</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>physhealth</code></td>
+<td>Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>menthlth</code></td>
+<td>Now thinking about your mental health, which includes stress, depression, and problems with emotions, for how many days during the past 30 days was your mental health not good?</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>healthplan</code></td>
+<td>1 if the subject has any kind of health care coverage, 0 otherwise</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>costprob</code></td>
+<td>1 indicates Yes to “Was there a time in the past 12 months when you needed to see a doctor but could not because of cost?”</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>agegroup</code></td>
+<td>13 age groups from 18 through 80+</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>female</code></td>
+<td>1 if subject is female</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>incomegroup</code></td>
+<td>8 income groups from &lt; 10,000 to 75,000 or more</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>bmi</code></td>
+<td>body-mass index</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>smoke100</code></td>
+<td>1 if Yes to “Have you smoked at least 100 cigarettes in your entire life?”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>alcdays</code></td>
+<td># of days out of the past 30 on which the subject had at least one alcoholic drink</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ohioA <span class="ot">&lt;-</span> smart_oh <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(SEQNO, mmsa_name, genhealth, physhealth, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>           menthealth, healthplan, costprob, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>           agegroup, female, incomegroup, bmi, smoke100, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>           alcdays) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="is-age-group-associated-with-physhealth" class="level3" data-number="24.3.1">
+<h3 data-number="24.3.1" class="anchored" data-anchor-id="is-age-group-associated-with-physhealth"><span class="header-section-number">24.3.1</span> Is age group associated with <code>physhealth</code>?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ohioA, <span class="fu">aes</span>(<span class="at">x =</span> agegroup, <span class="at">y =</span> physhealth)) <span class="sc">+</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_violin</span>(<span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It’s hard to see much of anything here. The main conclusion seems to be that 0 is by far the most common response.</p>
+<p>Here’s a table by age group of:</p>
+<ul>
+<li>the number of respondents in that age group,</li>
+<li>the group’s mean <code>physhealth</code> response (remember that these are the number of poor physical health days in the last 30),</li>
+<li>their median <code>physhealth</code> response (which turns out to be 0 in each group), and</li>
+<li>the percentage of group members who responded 0.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ohioA <span class="sc">|&gt;</span> <span class="fu">group_by</span>(agegroup) <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">round</span>(<span class="fu">mean</span>(physhealth),<span class="dv">2</span>), </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">median =</span> <span class="fu">median</span>(physhealth),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">percent_0s =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">sum</span>(physhealth <span class="sc">==</span> <span class="dv">0</span>)<span class="sc">/</span>n,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 5
+   agegroup     n  mean median percent_0s
+   &lt;fct&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+ 1 18-24      297  2.31      0       59.6
+ 2 25-29      259  2.53      0       66  
+ 3 30-34      296  2.14      0       69.3
+ 4 35-39      366  3.67      0       63.9
+ 5 40-44      347  4.18      0       62.8
+ 6 45-49      409  4.46      0       63.3
+ 7 50-54      472  4.76      0       60.4
+ 8 55-59      608  6.71      0       57.1
+ 9 60-64      648  5.9       0       57.6
+10 65-69      604  6.09      0       56  
+11 70-74      490  4.89      0       61.6
+12 75-79      338  6.38      0       54.1
+13 80-96      374  6.1       0       56.4</code></pre>
+</div>
+</div>
+<p>We can see a real change between the 45-49 age group and the 50-54 age group. The mean difference is clear from the table above, and the plot below (of the percentage with a zero response) in each age group identifies the same story.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ohioA <span class="sc">|&gt;</span> <span class="fu">group_by</span>(agegroup) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">percent_0s =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">sum</span>(physhealth <span class="sc">==</span> <span class="dv">0</span>)<span class="sc">/</span>n,<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> agegroup, <span class="at">x =</span> percent_0s)) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> percent_0s)) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"% with no Bad Physical Health Days in last 30"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Age Group"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It looks like we have a fairly consistent result in the younger age range (18-49) or the older range (50+). On the theory that most of the people reading this document are in that younger range, we’ll focus on those respondents in what follows.</p>
+</section>
+</section>
+<section id="exploratory-data-analysis-in-the-18-49-group" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="exploratory-data-analysis-in-the-18-49-group"><span class="header-section-number">24.4</span> Exploratory Data Analysis (in the 18-49 group)</h2>
+<p>We want to predict the 0-30 <code>physhealth</code> count variable for the 18-49 year old respondents.</p>
+<p>To start, we’ll use two predictors:</p>
+<ul>
+<li>the respondent’s body mass index, and</li>
+<li>whether the respondent has smoked 100 cigarettes in their lifetime.</li>
+</ul>
+<p>We anticipate that each of these variables will have positive associations with the <code>physhealth</code> score. That is, heavier people, and those who have used tobacco will be less healthy, and thus have higher numbers of poor physical health days.</p>
+<section id="build-a-subset-of-those-ages-18-49" class="level3" data-number="24.4.1">
+<h3 data-number="24.4.1" class="anchored" data-anchor-id="build-a-subset-of-those-ages-18-49"><span class="header-section-number">24.4.1</span> Build a subset of those ages 18-49</h3>
+<p>First, we’ll identify the subset of respondents who are between 18 and 49 years of age.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ohioA_young.raw <span class="ot">&lt;-</span> ohioA <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(agegroup <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"18-24"</span>, <span class="st">"25-29"</span>, <span class="st">"30-34"</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"35-39"</span>, <span class="st">"40-44"</span>, <span class="st">"45-49"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">droplevels</span>()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ohioA_young.raw <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(physhealth, bmi, smoke100, agegroup) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   physhealth          bmi           smoke100       agegroup  
+ Min.   : 0.000   Min.   :14.00   Min.   :0.0000   18-24:297  
+ 1st Qu.: 0.000   1st Qu.:23.74   1st Qu.:0.0000   25-29:259  
+ Median : 0.000   Median :27.32   Median :0.0000   30-34:296  
+ Mean   : 3.337   Mean   :28.79   Mean   :0.4189   35-39:366  
+ 3rd Qu.: 2.000   3rd Qu.:32.43   3rd Qu.:1.0000   40-44:347  
+ Max.   :30.000   Max.   :75.52   Max.   :1.0000   45-49:409  </code></pre>
+</div>
+</div>
+</section>
+<section id="centering-bmi" class="level3" data-number="24.4.2">
+<h3 data-number="24.4.2" class="anchored" data-anchor-id="centering-bmi"><span class="header-section-number">24.4.2</span> Centering <code>bmi</code></h3>
+<p>I’m going to center the <code>bmi</code> variable to help me interpret the final models later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ohioA_young <span class="ot">&lt;-</span> ohioA_young.raw <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">bmi_c =</span> bmi <span class="sc">-</span> <span class="fu">mean</span>(bmi)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, let’s look more closely at the distribution of these variables, starting with our outcome.</p>
+</section>
+<section id="distribution-of-the-outcome" class="level3" data-number="24.4.3">
+<h3 data-number="24.4.3" class="anchored" data-anchor-id="distribution-of-the-outcome"><span class="header-section-number">24.4.3</span> Distribution of the Outcome</h3>
+<p>What’s the distribution of <code>physhealth</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ohioA_young.raw, <span class="fu">aes</span>(<span class="at">x =</span> physhealth)) <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ohioA_young.raw <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(physhealth <span class="sc">==</span> <span class="dv">0</span>, physhealth <span class="sc">==</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  `physhealth == 0` `physhealth == 30`     n
+  &lt;lgl&gt;             &lt;lgl&gt;              &lt;int&gt;
+1 FALSE             FALSE                612
+2 FALSE             TRUE                  98
+3 TRUE              FALSE               1264</code></pre>
+</div>
+</div>
+<p>Most of our respondents said zero, the minimum allowable value, although there is also a much smaller bump at 30, the maximum value we will allow.</p>
+<p>Dealing with this distribution is going to be a bit of a challenge. We will develop a series of potential modeling approaches for this sort of data, but before we do that, let’s look at the distribution of our other two variables, and the pairwise associations, in a scatterplot matrix.</p>
+</section>
+<section id="scatterplot-matrix" class="level3" data-number="24.4.4">
+<h3 data-number="24.4.4" class="anchored" data-anchor-id="scatterplot-matrix"><span class="header-section-number">24.4.4</span> Scatterplot Matrix</h3>
+<p>Now, here’s the scatterplot matrix for those 1974 subjects, using the centered <code>bmi</code> data captured in the <code>bmi_c</code> variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> ohioA_young <span class="sc">|&gt;</span> <span class="fu">select</span>(bmi_c, smoke100, physhealth)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So <code>bmi_c</code> and <code>smoke100</code> each have modest positive correlations with <code>physhealth</code> and only a very small correlation with each other. Here are some summary statistics for this final data.</p>
+</section>
+<section id="summary-of-the-final-subset-of-data" class="level3" data-number="24.4.5">
+<h3 data-number="24.4.5" class="anchored" data-anchor-id="summary-of-the-final-subset-of-data"><span class="header-section-number">24.4.5</span> Summary of the final subset of data</h3>
+<p>Remember that since the mean of <code>bmi</code> is 28.8, the <code>bmi_c</code> values are just <code>bmi</code> - 28.8 for each subject.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ohioA_young <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(bmi, bmi_c, smoke100, physhealth) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      bmi            bmi_c            smoke100        physhealth    
+ Min.   :14.00   Min.   :-14.791   Min.   :0.0000   Min.   : 0.000  
+ 1st Qu.:23.74   1st Qu.: -5.051   1st Qu.:0.0000   1st Qu.: 0.000  
+ Median :27.32   Median : -1.471   Median :0.0000   Median : 0.000  
+ Mean   :28.79   Mean   :  0.000   Mean   :0.4189   Mean   : 3.337  
+ 3rd Qu.:32.43   3rd Qu.:  3.636   3rd Qu.:1.0000   3rd Qu.: 2.000  
+ Max.   :75.52   Max.   : 46.729   Max.   :1.0000   Max.   :30.000  </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="modeling-strategies-explored-here" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="modeling-strategies-explored-here"><span class="header-section-number">24.5</span> Modeling Strategies Explored Here</h2>
+<p>We are going to predict <code>physhealth</code> using <code>bmi_c</code> and <code>smoke100</code>.</p>
+<ul>
+<li>Remember that <code>physhealth</code> is a count of the number of poor physical health days in the past 30.</li>
+<li>As a result, <code>physhealth</code> is restricted to taking values between 0 and 30.</li>
+</ul>
+<p>We will demonstrate the use of each of the following regression models, some of which are better choices than others.</p>
+<ol type="1">
+<li>Ordinary Least Squares (OLS) predicting <code>physhealth</code></li>
+<li>OLS predicting the logarithm of (<code>physhealth</code> + 1)</li>
+<li>Poisson regression, which is appropriate for predicting counts</li>
+<li>Poisson regression, adjusted to account for overdispersion</li>
+</ol>
+<p>and, in <a href="count2.html"><span>Chapter&nbsp;25</span></a>:</p>
+<ol start="5" type="1">
+<li>Negative binomial regression, also used for counts and which adjusts for overdispersion</li>
+</ol>
+<p>and, in <a href="count3.html"><span>Chapter&nbsp;26</span></a>:</p>
+<ol start="6" type="1">
+<li>Zero-inflated models, in both the Poisson and Negative Binomial varieties, which allow us to fit counts that have lots of zero values</li>
+<li>A “hurdle” model, which allows us to separately fit a model to predict the incidence of “0” and then a separate model to predict the value of <code>physhealth</code> when we know it is not zero</li>
+<li>Tobit regression, where a lower (and upper) bound may be set, but the underlying model describes a latent variable which can extend beyond these boundaries</li>
+</ol>
+<section id="what-will-we-demonstrate" class="level3" data-number="24.5.1">
+<h3 data-number="24.5.1" class="anchored" data-anchor-id="what-will-we-demonstrate"><span class="header-section-number">24.5.1</span> What Will We Demonstrate?</h3>
+<p>With each approach, we will fit the model and specify procedures for doing so in R. Then we will:</p>
+<ol type="1">
+<li>Specify the fitted model equation</li>
+<li>Interpret the model’s coefficient estimates and 95% confidence intervals around those estimates.</li>
+<li>Perform a test of whether each variable adds value to the model, when the other one is already included.</li>
+<li>Store the fitted values and appropriate residuals for each model.</li>
+<li>Summarize the model’s apparent <span class="math inline">\(R^2\)</span> value, the proportion of variation explained, and the model log likelihood.</li>
+<li>Perform checks of model assumptions as appropriate.</li>
+<li>Describe how predictions would be made for two new subjects.
+<ul>
+<li>Harry has a BMI that is 10 kg/m<sup>2</sup> higher than the average across all respondents and has smoked more than 100 cigarettes in his life.</li>
+<li>Sally has a BMI that is 5 kg/m<sup>2</sup> less than the average across all respondents and has not smoked more than 100 cigarettes in her life.</li>
+</ul></li>
+</ol>
+<p>In addition, for some of the new models, we provide a little of the mathematical background, and point to other resources you can use to learn more about the model.</p>
+</section>
+<section id="extra-data-file-for-harry-and-sally" class="level3" data-number="24.5.2">
+<h3 data-number="24.5.2" class="anchored" data-anchor-id="extra-data-file-for-harry-and-sally"><span class="header-section-number">24.5.2</span> Extra Data File for Harry and Sally</h3>
+<p>To make our lives a little easier, I’ll create a little tibble containing the necessary data for Harry and Sally.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>hs_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">subj =</span> <span class="fu">c</span>(<span class="st">"Harry"</span>, <span class="st">"Sally"</span>), </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bmi_c =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="sc">-</span><span class="dv">5</span>), <span class="at">smoke100 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>hs_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  subj  bmi_c smoke100
+  &lt;chr&gt; &lt;dbl&gt;    &lt;dbl&gt;
+1 Harry    10        1
+2 Sally    -5        0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-ols-approach" class="level2" data-number="24.6">
+<h2 data-number="24.6" class="anchored" data-anchor-id="the-ols-approach"><span class="header-section-number">24.6</span> The OLS Approach</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mod_ols1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> ohioA_young)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = physhealth ~ bmi_c + smoke100, data = ohioA_young)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.1472  -3.6639  -2.2426  -0.7807  28.8777 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.57046    0.21648  11.874  &lt; 2e-16 ***
+bmi_c        0.14437    0.02305   6.263 4.61e-10 ***
+smoke100     1.83061    0.33469   5.470 5.09e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.328 on 1971 degrees of freedom
+Multiple R-squared:  0.0356,    Adjusted R-squared:  0.03462 
+F-statistic: 36.37 on 2 and 1971 DF,  p-value: 3.072e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                2.5 %   97.5 %
+(Intercept) 2.1459143 2.995005
+bmi_c       0.0991636 0.189573
+smoke100    1.1742213 2.486995</code></pre>
+</div>
+</div>
+<section id="interpreting-the-coefficients" class="level3" data-number="24.6.1">
+<h3 data-number="24.6.1" class="anchored" data-anchor-id="interpreting-the-coefficients"><span class="header-section-number">24.6.1</span> Interpreting the Coefficients</h3>
+<ul>
+<li>The intercept, 2.57, is the predicted <code>physhealth</code> (in days) for a subject with average BMI who has not smoked 100 cigarettes or more.</li>
+<li>The <code>bmi_c</code> coefficient, 0.144, indicates that for each additional kg/m<sup>2</sup> of BMI, while holding <code>smoke100</code> constant, the predicted <code>physhealth</code> value increases by 0.144 day.</li>
+<li>The <code>smoke100</code> coefficient, 1.83, indicates that a subject who has smoked 100 cigarettes or more has a predicted <code>physhealth</code> value 1.83 days larger than another subject with the same <code>bmi</code> but who has not smoked 100 cigarettes.</li>
+</ul>
+</section>
+<section id="store-fitted-values-and-residuals" class="level3" data-number="24.6.2">
+<h3 data-number="24.6.2" class="anchored" data-anchor-id="store-fitted-values-and-residuals"><span class="header-section-number">24.6.2</span> Store fitted values and residuals</h3>
+<p>We can use <code>broom</code> to do this. Here, for instance, is a table of the first six predictions and residuals.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sm_ols_1 <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod_ols1, ohioA_young)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>sm_ols_1 <span class="sc">|&gt;</span> <span class="fu">select</span>(physhealth, .fitted, .resid) <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  physhealth .fitted .resid
+       &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+1          0    2.13  -2.13
+2          0    2.25  -2.25
+3          0    3.14  -3.14
+4         30    5.72  24.3 
+5          0    3.20  -3.20
+6          0    3.83  -3.83</code></pre>
+</div>
+</div>
+<p>It turns out that 0 of the 1974 predictions that we make are below 0, and the largest prediction made by this model is 11.15 days.</p>
+</section>
+<section id="specify-the-r2-and-loglikelihood-values" class="level3" data-number="24.6.3">
+<h3 data-number="24.6.3" class="anchored" data-anchor-id="specify-the-r2-and-loglikelihood-values"><span class="header-section-number">24.6.3</span> Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</h3>
+<p>The <code>glance</code> function in the <code>broom</code> package gives us the raw and adjusted <span class="math inline">\(R^2\)</span> values, and the model log(likelihood), among other summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_ols1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squ…¹ sigma stati…² p.value    df logLik    AIC    BIC devia…³
+      &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+1     0.036       0.035  7.33    36.4       0     2 -6731. 13470. 13492. 105831.
+# … with 2 more variables: df.residual &lt;dbl&gt;, nobs &lt;dbl&gt;, and abbreviated
+#   variable names ¹​adj.r.squared, ²​statistic, ³​deviance</code></pre>
+</div>
+</div>
+<p>Here, we have</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Model</th>
+<th style="text-align: right;"><span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">log(likelihood)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">OLS</td>
+<td style="text-align: right;">0.036</td>
+<td style="text-align: right;">-6730.98</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="check-model-assumptions" class="level3" data-number="24.6.4">
+<h3 data-number="24.6.4" class="anchored" data-anchor-id="check-model-assumptions"><span class="header-section-number">24.6.4</span> Check model assumptions</h3>
+<p>Here is a plot of the residuals vs.&nbsp;the fitted values for this OLS model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sm_ols_1, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs. Fitted Values for OLS model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>As usual, we can check OLS assumptions (linearity, homoscedasticity and normality) with R’s complete set of residual plots.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_ols1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We see the problem with our residuals. They don’t follow a Normal distribution.</p>
+</section>
+<section id="predictions-for-harry-and-sally" class="level3" data-number="24.6.5">
+<h3 data-number="24.6.5" class="anchored" data-anchor-id="predictions-for-harry-and-sally"><span class="header-section-number">24.6.5</span> Predictions for Harry and Sally</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_ols1, <span class="at">newdata =</span> hs_data,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit        lwr      upr
+1 5.844750  -8.541164 20.23067
+2 1.848618 -12.529923 16.22716</code></pre>
+</div>
+</div>
+<p>The prediction for Harry is 5.8 days, and for Sally is 1.8 days. The prediction intervals for each include some values below 0, even though 0 is the smallest possible value.</p>
+</section>
+<section id="notes" class="level3" data-number="24.6.6">
+<h3 data-number="24.6.6" class="anchored" data-anchor-id="notes"><span class="header-section-number">24.6.6</span> Notes</h3>
+<ul>
+<li>This model could have been estimated using the <code>ols</code> function in the <code>rms</code> package, as well.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">datadist</span>(ohioA_young)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"dd"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>(mod_ols1a <span class="ot">&lt;-</span> <span class="fu">ols</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> ohioA_young, <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model
+ 
+ ols(formula = physhealth ~ bmi_c + smoke100, data = ohioA_young, 
+     x = TRUE, y = TRUE)
+ 
+                 Model Likelihood    Discrimination    
+                       Ratio Test           Indexes    
+ Obs    1974    LR chi2     71.55    R2       0.036    
+ sigma7.3276    d.f.            2    R2 adj   0.035    
+ d.f.   1971    Pr(&gt; chi2) 0.0000    g        1.570    
+ 
+ Residuals
+ 
+      Min       1Q   Median       3Q      Max 
+ -11.1472  -3.6639  -2.2426  -0.7807  28.8777 
+ 
+ 
+           Coef   S.E.   t     Pr(&gt;|t|)
+ Intercept 2.5705 0.2165 11.87 &lt;0.0001 
+ bmi_c     0.1444 0.0230  6.26 &lt;0.0001 
+ smoke100  1.8306 0.3347  5.47 &lt;0.0001 
+ </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="ols-model-on-logphyshealth-1-days" class="level2" data-number="24.7">
+<h2 data-number="24.7" class="anchored" data-anchor-id="ols-model-on-logphyshealth-1-days"><span class="header-section-number">24.7</span> OLS model on log(<code>physhealth</code> + 1) days</h2>
+<p>We could try to solve the problem of fitting some predictions below 0 by log-transforming the data, so as to force values to be at least 0. Since we have undefined values when we take the log of 0, we’ll add one to each of the <code>physhealth</code> values before taking logs, and then transform back when we want to make predictions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mod_ols_log1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(physhealth <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> ohioA_young)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_ols_log1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(physhealth + 1) ~ bmi_c + smoke100, data = ohioA_young)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.7079 -0.7058 -0.5051  0.5053  3.0484 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.57746    0.03099  18.634  &lt; 2e-16 ***
+bmi_c        0.01912    0.00330   5.796 7.91e-09 ***
+smoke100     0.23679    0.04791   4.942 8.38e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.049 on 1971 degrees of freedom
+Multiple R-squared:  0.03003,   Adjusted R-squared:  0.02905 
+F-statistic: 30.51 on 2 and 1971 DF,  p-value: 8.897e-14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_ols_log1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 0.51668682 0.63823590
+bmi_c       0.01265192 0.02559421
+smoke100    0.14282518 0.33075147</code></pre>
+</div>
+</div>
+<section id="interpreting-the-coefficients-1" class="level3" data-number="24.7.1">
+<h3 data-number="24.7.1" class="anchored" data-anchor-id="interpreting-the-coefficients-1"><span class="header-section-number">24.7.1</span> Interpreting the Coefficients</h3>
+<ul>
+<li>The intercept, 0.58, is the predicted logarithm of (<code>physhealth</code> + 1) (in days) for a subject with average BMI who has not smoked 100 cigarettes or more.
+<ul>
+<li>We can exponentiate to see that the prediction for (<code>physhealth</code> + 1) here is <code>exp(0.58)</code> = 1.79 so the predicted <code>physhealth</code> for a subject with average BMI who has not smoked 100 cigarettes is 0.79 days.</li>
+</ul></li>
+<li>The <code>bmi_c</code> coefficient, 0.019, indicates that for each additional kg/m<sup>2</sup> of BMI, while holding <code>smoke100</code> constant, the predicted logarithm of (<code>physhealth</code> + 1) increases by 0.019</li>
+<li>The <code>smoke100</code> coefficient, 0.24, indicates that a subject who has smoked 100 cigarettes or more has a predicted log of (<code>physhealth</code> + 1) value that is 0.24 larger than another subject with the same <code>bmi</code> but who has not smoked 100 cigarettes.</li>
+</ul>
+</section>
+<section id="store-fitted-values-and-residuals-1" class="level3" data-number="24.7.2">
+<h3 data-number="24.7.2" class="anchored" data-anchor-id="store-fitted-values-and-residuals-1"><span class="header-section-number">24.7.2</span> Store fitted values and residuals</h3>
+<p>We can use <code>broom</code> to help us with this. Here, for instance, is a table of the first six predictions and residuals, on the scale of our transformed response, log(<code>physhealth</code> + 1).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sm_ols_log1 <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod_ols_log1, ohioA_young)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>sm_ols_log1 <span class="ot">&lt;-</span> sm_ols_log1 <span class="sc">|&gt;</span> </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">log</span>(physhealth <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>sm_ols_log1 <span class="sc">|&gt;</span> </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(physhealth, outcome, .fitted, .resid) <span class="sc">|&gt;</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  physhealth outcome .fitted .resid
+       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+1          0    0      0.520 -0.520
+2          0    0      0.535 -0.535
+3          0    0      0.647 -0.647
+4         30    3.43   0.995  2.44 
+5          0    0      0.656 -0.656
+6          0    0      0.739 -0.739</code></pre>
+</div>
+</div>
+<p>Note that the <code>outcome</code> used in this model is log(<code>physhealth</code> + 1), so the <code>.fitted</code> and <code>.resid</code> values react to that outcome, and not to our original <code>physhealth</code>.</p>
+<p>Another option would be to calculate the model-predicted <code>physhealth</code>, which I’ll call <em>ph</em> for a moment, with the formula:</p>
+<p><span class="math display">\[
+ph = e^{.fitted} - 1
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>sm_ols_log1 <span class="ot">&lt;-</span> sm_ols_log1 <span class="sc">|&gt;</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">pred.physhealth =</span> <span class="fu">exp</span>(.fitted) <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">res.physhealth =</span> physhealth <span class="sc">-</span> pred.physhealth)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>sm_ols_log1 <span class="sc">|&gt;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(physhealth, pred.physhealth, res.physhealth) <span class="sc">|&gt;</span> </span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  physhealth pred.physhealth res.physhealth
+       &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;
+1          0           0.681         -0.681
+2          0           0.708         -0.708
+3          0           0.910         -0.910
+4         30           1.70          28.3  
+5          0           0.926         -0.926
+6          0           1.09          -1.09 </code></pre>
+</div>
+</div>
+<p>It turns out that 0 of the 1974 predictions that we make are below 0, and the largest prediction made by this model is 4.52 days.</p>
+</section>
+<section id="specify-the-r2-and-loglikelihood-values-1" class="level3" data-number="24.7.3">
+<h3 data-number="24.7.3" class="anchored" data-anchor-id="specify-the-r2-and-loglikelihood-values-1"><span class="header-section-number">24.7.3</span> Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</h3>
+<p>The <code>glance</code> function in the <code>broom</code> package gives us the raw and adjusted <span class="math inline">\(R^2\)</span> values, and the model log(likelihood), among other summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_ols_log1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
+    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1    0.03   0.029  1.05    30.5       0     2 -2894. 5796. 5818.   2169.    1971
+# … with 1 more variable: nobs &lt;dbl&gt;, and abbreviated variable names
+#   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
+</div>
+</div>
+<p>Here, we have</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Model</th>
+<th style="text-align: right;">Scale</th>
+<th style="text-align: right;"><span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">log(likelihood)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">OLS on log</td>
+<td style="text-align: right;">log(<code>physhealth</code> + 1)</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">-2893.83</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="getting-r2-on-the-scale-of-physhealth" class="level3" data-number="24.7.4">
+<h3 data-number="24.7.4" class="anchored" data-anchor-id="getting-r2-on-the-scale-of-physhealth"><span class="header-section-number">24.7.4</span> Getting <span class="math inline">\(R^2\)</span> on the scale of <code>physhealth</code></h3>
+<p>We could find the correlation of our model-predicted <code>physhealth</code> values, after back-transformation, and our observed <code>physhealth</code> values, if we wanted to, and then square that to get a sort of <span class="math inline">\(R^2\)</span> value. But this model is not linear in <code>physhealth</code>, of course, so it’s not completely comparable to our prior OLS model.</p>
+</section>
+<section id="check-model-assumptions-1" class="level3" data-number="24.7.5">
+<h3 data-number="24.7.5" class="anchored" data-anchor-id="check-model-assumptions-1"><span class="header-section-number">24.7.5</span> Check model assumptions</h3>
+<p>As usual, we can check OLS assumptions (linearity, homoscedasticity and normality) with R’s complete set of residual plots. Of course, these residuals and fitted values are now on the log(<code>physhealth</code> + 1) scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_ols_log1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="predictions-for-harry-and-sally-1" class="level3" data-number="24.7.6">
+<h3 data-number="24.7.6" class="anchored" data-anchor-id="predictions-for-harry-and-sally-1"><span class="header-section-number">24.7.6</span> Predictions for Harry and Sally</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_ols_log1, <span class="at">newdata =</span> hs_data, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit       lwr      upr
+1 1.005480 -1.053893 3.064854
+2 0.481846 -1.576472 2.540164</code></pre>
+</div>
+</div>
+<p>Again, these predictions are on the log(<code>physhealth</code> + 1) scale, and so we have to exponentiate them, and then subtract 1, to see them on the original <code>physhealth</code> scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">predict</span>(mod_ols_log1, <span class="at">newdata =</span> hs_data, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">interval =</span> <span class="st">"prediction"</span>, <span class="at">type =</span> <span class="st">"response"</span>)) <span class="sc">-</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        fit        lwr      upr
+1 1.7332198 -0.6514221 20.43133
+2 0.6190605 -0.7932970 11.68175</code></pre>
+</div>
+</div>
+<p>The prediction for Harry is now 1.73 days, and for Sally is 0.62 days. The prediction intervals for each again include some values below 0, which is the smallest possible value.</p>
+</section>
+</section>
+<section id="a-poisson-regression-model" class="level2" data-number="24.8">
+<h2 data-number="24.8" class="anchored" data-anchor-id="a-poisson-regression-model"><span class="header-section-number">24.8</span> A Poisson Regression Model</h2>
+<p>The <code>physhealth</code> data describe a count. Specifically a count of the number of days where the subject felt poorly in the last 30. Why wouldn’t we model this count with linear regression?</p>
+<ul>
+<li>A count can only be positive. Linear regression would estimate some subjects as having negative counts.</li>
+<li>A count is unlikely to follow a Normal distribution. In fact, it’s far more likely that the log of the counts will follow a Poisson distribution.</li>
+</ul>
+<p>So, we’ll try that. The Poisson distribution is used to model a <em>count</em> outcome - that is, an outcome with possible values (0, 1, 2, …). The model takes a somewhat familiar form to the models we’ve used for linear and logistic regression<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. If our outcome is <em>y</em> and our linear predictors <em>X</em>, then the model is:</p>
+<p><span class="math display">\[
+y_i \sim \mbox{Poisson}(\lambda_i)
+\]</span></p>
+<p>The parameter <span class="math inline">\(\lambda\)</span> must be positive, so it makes sense to fit a linear regression on the logarithm of this…</p>
+<p><span class="math display">\[
+\lambda_i = exp(\beta_0 + \beta_1 X_1 + ... \beta_k X_k)
+\]</span></p>
+<p>The coefficients <span class="math inline">\(\beta\)</span> can be exponentiated and treated as multiplicative effects.</p>
+<p>We’ll run a generalized linear model with a log link function, ensuring that all of the predicted values will be positive, and using a Poisson error distribution. This is called <strong>Poisson regression</strong>.</p>
+<p>Poisson regression may be appropriate when the dependent variable is a count of events. The events must be independent - the occurrence of one event must not make any other more or less likely. That’s hard to justify in our case, but we can take a look.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mod_poiss1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100, </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(),</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ohioA_young)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_poiss1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = physhealth ~ bmi_c + smoke100, family = poisson(), 
+    data = ohioA_young)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-6.588  -2.604  -2.087  -0.533  10.688  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) 0.906991   0.018699   48.51   &lt;2e-16 ***
+bmi_c       0.035051   0.001421   24.66   &lt;2e-16 ***
+smoke100    0.532505   0.024903   21.38   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 20222  on 1973  degrees of freedom
+Residual deviance: 19151  on 1971  degrees of freedom
+AIC: 21645
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_poiss1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 0.87011622 0.94342323
+bmi_c       0.03225125 0.03782255
+smoke100    0.48373882 0.58136497</code></pre>
+</div>
+</div>
+<section id="the-fitted-equation" class="level3" data-number="24.8.1">
+<h3 data-number="24.8.1" class="anchored" data-anchor-id="the-fitted-equation"><span class="header-section-number">24.8.1</span> The Fitted Equation</h3>
+<p>The model equation is</p>
+<pre><code>log(physhealth) = 0.91 + 0.035 bmi_c + 0.53 smoke100</code></pre>
+<p>It looks like both <code>bmi</code> and <code>smoke_100</code> have confidence intervals excluding 0.</p>
+</section>
+<section id="interpreting-the-coefficients-2" class="level3" data-number="24.8.2">
+<h3 data-number="24.8.2" class="anchored" data-anchor-id="interpreting-the-coefficients-2"><span class="header-section-number">24.8.2</span> Interpreting the Coefficients</h3>
+<p>Our new model for <span class="math inline">\(y_i\)</span> = counts of poor <code>physhealth</code> days in the last 30, follows the regression equation:</p>
+<p><span class="math display">\[
+y_i \sim \mbox{Poisson}(exp(0.91 + 0.035 bmi_c + 0.53 smoke100))
+\]</span></p>
+<p>where <code>smoke100</code> is 1 if the subject has smoked 100 cigarettes (lifetime) and 0 otherwise, and <code>bmi_c</code> is just the centered body-mass index value in kg/m<sup>2</sup>. We interpret the coefficients as follows:</p>
+<ul>
+<li>The constant term, 0.91, gives us the intercept of the regression - the prediction if <code>smoke100 = 0</code> and <code>bmi_c = 0</code>. In this case, because we’ve centered BMI, it implies that <code>exp(0.91)</code> = 2.48 is the predicted days of poor <code>physhealth</code> for a non-smoker with average BMI.</li>
+<li>The coefficient of <code>bmi_c</code>, 0.035, is the expected difference in count of poor <code>physhealth</code> days (on the log scale) for each additional kg/m<sup>2</sup> of body mass index. The expected multiplicative <em>increase</em> is <span class="math inline">\(e^{0.035}\)</span> = 1.036, corresponding to a 3.6% difference in the count.</li>
+<li>The coefficient of <code>smoke100</code>, 0.53, tells us that the predictive difference between those who have and who have not smoked 100 cigarettes can be found by multiplying the <code>physhealth</code> count by <code>exp(0.53)</code> = 1.7, yielding a 70% increase of the <code>physhealth</code> count.</li>
+</ul>
+<p>As with linear or logistic regression, each coefficient is interpreted as a comparison where one predictor changes by one unit, while the others remain constant.</p>
+</section>
+<section id="testing-the-predictors" class="level3" data-number="24.8.3">
+<h3 data-number="24.8.3" class="anchored" data-anchor-id="testing-the-predictors"><span class="header-section-number">24.8.3</span> Testing the Predictors</h3>
+<p>We can use the Wald tests (z tests) provided with the Poisson regression output, or we can fit the model and then run an ANOVA to obtain a test based on the deviance (a simple transformation of the log likelihood ratio.)</p>
+<ul>
+<li>By the Wald tests shown above, each predictor clearly adds significant predictive value to the model given the other predictor, and we note that the <em>p</em> values are as small as R will support.</li>
+<li>The ANOVA approach for this model lets us check the impact of adding <code>smoke100</code> to a model already containing <code>bmi_c</code>.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_poiss1, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: poisson, link: log
+
+Response: physhealth
+
+Terms added sequentially (first to last)
+
+         Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                      1973      20222              
+bmi_c     1   609.46      1972      19612 &lt; 2.2e-16 ***
+smoke100  1   461.46      1971      19151 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>To obtain a <em>p</em> value for <code>smoke100</code>’s impact after <code>bmi_c</code> is accounted for, we compare the difference in deviance to a chi-square distribution with 1 degree of freedom. To check the effect of <code>bmi_c</code>, we could refit the model with <code>bmi_c</code> entering last, and again run an ANOVA.</p>
+<p>We could also run a likelihood-ratio test for each predictor, by fitting the model with and without that predictor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>mod_poiss1_without_bmi <span class="ot">&lt;-</span> <span class="fu">glm</span>(physhealth <span class="sc">~</span> smoke100,</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">family =</span> <span class="fu">poisson</span>(),</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> ohioA_young)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_poiss1, mod_poiss1_without_bmi, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: physhealth ~ bmi_c + smoke100
+Model 2: physhealth ~ smoke100
+  Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+1      1971      19151                          
+2      1972      19692 -1  -540.98 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="correcting-for-overdispersion-with-coeftestcoefci" class="level3" data-number="24.8.4">
+<h3 data-number="24.8.4" class="anchored" data-anchor-id="correcting-for-overdispersion-with-coeftestcoefci"><span class="header-section-number">24.8.4</span> Correcting for Overdispersion with <code>coeftest</code>/<code>coefci</code></h3>
+<p>The main assumption we’ll think about in a Poisson model is about <strong>overdispersion</strong>. We might deal with the overdispersion we see in this model by changing the nature of the tests we run within this model, using the <code>coeftest</code> or <code>coefci</code> approaches from the <code>lmtest</code> package, as I’ll demonstrate next, or we might refit the model using a quasi-likelihood approach, as I’ll show in the material to come.</p>
+<p>Here, we’ll use the <code>coeftest</code> and <code>coefci</code> approach from <code>lmtest</code> combined with robust sandwich estimation (via the <code>sandwich</code> package) to re-compute the Wald tests.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(mod_poiss1, <span class="at">vcov. =</span> sandwich)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+z test of coefficients:
+
+             Estimate Std. Error z value  Pr(&gt;|z|)    
+(Intercept) 0.9069908  0.0717221 12.6459 &lt; 2.2e-16 ***
+bmi_c       0.0350508  0.0061178  5.7293 1.008e-08 ***
+smoke100    0.5325053  0.1004300  5.3023 1.144e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coefci</span>(mod_poiss1, <span class="at">vcov. =</span> sandwich)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 0.76641801 1.04756366
+bmi_c       0.02306016 0.04704145
+smoke100    0.33566606 0.72934460</code></pre>
+</div>
+</div>
+<p>Both predictors are still significant, but the standard errors are more appropriate. Later, we’ll fit this approach by changing the estimation method to a quasi-likelihood approach.</p>
+</section>
+<section id="store-fitted-values-and-residuals-2" class="level3" data-number="24.8.5">
+<h3 data-number="24.8.5" class="anchored" data-anchor-id="store-fitted-values-and-residuals-2"><span class="header-section-number">24.8.5</span> Store fitted values and residuals</h3>
+<p>What happens if we try using the <code>broom</code> package in this case? We can, if we like, get our residuals and predicted values right on the scale of our <code>physhealth</code> response.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>sm_poiss1 <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod_poiss1, ohioA_young,</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">type.predict =</span> <span class="st">"response"</span>)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>sm_poiss1 <span class="sc">|&gt;</span> </span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(physhealth, .fitted) <span class="sc">|&gt;</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  physhealth .fitted
+       &lt;dbl&gt;   &lt;dbl&gt;
+1          0    2.23
+2          0    2.29
+3          0    3.10
+4         30    5.32
+5          0    3.15
+6          0    3.68</code></pre>
+</div>
+</div>
+</section>
+<section id="rootogram-see-the-fit-of-a-count-regression-model" class="level3" data-number="24.8.6">
+<h3 data-number="24.8.6" class="anchored" data-anchor-id="rootogram-see-the-fit-of-a-count-regression-model"><span class="header-section-number">24.8.6</span> Rootogram: see the fit of a count regression model</h3>
+<p>A <strong>rootogram</strong> is a very useful way to visualize the fit of a count regression model<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The <code>rootogram</code> function in the <code>countreg</code> package makes this pretty straightforward. By default, this fits a hanging rootogram on the square root of the frequencies.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rootogram</span>(mod_poiss1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The red curved line is the theoretical Poisson fit. “Hanging” from each point on the red line is a bar, the height of which represents the difference between expected and observed counts. A bar hanging below 0 indicates underfitting. A bar hanging above 0 indicates overfitting. The counts have been transformed with a square root transformation to prevent smaller counts from getting obscured and overwhelmed by larger counts. We see a great deal of underfitting for counts of 0, and overfitting for most other counts, especially 1-6, with some underfitting again by <code>physhealth</code> above 14 days.</p>
+</section>
+<section id="specify-the-r2-and-loglikelihood-values-2" class="level3" data-number="24.8.7">
+<h3 data-number="24.8.7" class="anchored" data-anchor-id="specify-the-r2-and-loglikelihood-values-2"><span class="header-section-number">24.8.7</span> Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</h3>
+<p>We can calculate the <span class="math inline">\(R^2\)</span> as the squared correlation of the fitted values and the observed values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The correlation of observed and fitted values</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>(poiss_r <span class="ot">&lt;-</span> <span class="fu">with</span>(sm_poiss1, <span class="fu">cor</span>(physhealth, .fitted)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1846814</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-square</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>poiss_r<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03410723</code></pre>
+</div>
+</div>
+<p>The <code>glance</code> function in the <code>broom</code> package gives us model log(likelihood), among other summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_poiss1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  null.deviance df.null  logLik    AIC    BIC deviance df.residual  nobs
+          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+1        20222.    1973 -10820. 21645. 21662.   19151.        1971  1974</code></pre>
+</div>
+</div>
+<p>Here, we have</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Model</th>
+<th style="text-align: right;">Scale</th>
+<th style="text-align: right;"><span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">log(likelihood)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Poisson</td>
+<td style="text-align: right;">log(<code>physhealth</code>)</td>
+<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">-10189.33</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="check-model-assumptions-2" class="level3" data-number="24.8.8">
+<h3 data-number="24.8.8" class="anchored" data-anchor-id="check-model-assumptions-2"><span class="header-section-number">24.8.8</span> Check model assumptions</h3>
+<p>The Poisson model is a classical generalized linear model, estimated using the method of maximum likelihood. While the default <code>plot</code> option for a <code>glm</code> still shows the plots we would use to assess the assumptions of an OLS model, we don’t actually get much from that, since our Poisson model has different assumptions. It can be useful to look at a plot of residuals vs.&nbsp;fitted values on the original <code>physhealth</code> scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sm_poiss1, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs. Fitted `physhealth`"</span>,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Original Poisson Regression model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="using-glm.diag.plots-from-the-boot-package" class="level3" data-number="24.8.9">
+<h3 data-number="24.8.9" class="anchored" data-anchor-id="using-glm.diag.plots-from-the-boot-package"><span class="header-section-number">24.8.9</span> Using <code>glm.diag.plots</code> from the <code>boot</code> package</h3>
+<p>The <code>glm.diag.plots</code> function from the <code>boot</code> package makes a series of diagnostic plots for generalized linear models.</p>
+<ul>
+<li>(Top, Left) Jackknife deviance residuals against fitted values. This is essentially identical to what you obtain with <code>plot(mod_poiss1, which = 1)</code>. A <em>jackknife deviance</em> residual is also called a likelihood residual. It is the change in deviance when this observation is omitted from the data.</li>
+<li>(Top, Right) Normal Q-Q plot of standardized deviance residuals. (Dotted line shows expectation if those standardized residuals followed a Normal distribution, and these residuals generally should.) The result is similar to what you obtain with <code>plot(mod_poiss1, which = 2)</code>.</li>
+<li>(Bottom, Left) Cook statistic vs.&nbsp;standardized leverage
+<ul>
+<li>n = # of observations, p = # of parameters estimated</li>
+<li>Horizontal dotted line is at <span class="math inline">\(\frac{8}{n - 2p}\)</span>. Points above the line have high influence on the model.</li>
+<li>Vertical line is at <span class="math inline">\(\frac{2p}{n - 2p}\)</span>. Points to the right of the line have high leverage.</li>
+</ul></li>
+<li>(Bottom, Right) Index plot of Cook’s statistic to help identify the observations with high influence. This is essentially the same plot as <code>plot(mod_poiss1, which = 4)</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glm.diag.plots</span>(mod_poiss1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>When working with these plots, it is possible to use the <code>iden</code> command to perform some interactive identification of points in your R terminal. But that doesn’t play out effectively in an HTML summary document like this, so we’ll leave that out.</p>
+</section>
+<section id="predictions-for-harry-and-sally-2" class="level3" data-number="24.8.10">
+<h3 data-number="24.8.10" class="anchored" data-anchor-id="predictions-for-harry-and-sally-2"><span class="header-section-number">24.8.10</span> Predictions for Harry and Sally</h3>
+<p>The predictions from a <code>glm</code> fit like this don’t include prediction intervals. But we can get predictions on the scale of our original response variable, <code>physhealth</code>, like this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_poiss1, <span class="at">newdata =</span> hs_data, <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$fit
+       1        2 
+5.989478 2.078688 
+
+$se.fit
+         1          2 
+0.11544326 0.04314273 
+
+$residual.scale
+[1] 1</code></pre>
+</div>
+</div>
+<p>By using <code>response</code> as the type, these predictions fall on the original <code>physhealth</code> scale. The prediction for Harry is now 5.99 days, and for Sally is 2.08 days.</p>
+</section>
+</section>
+<section id="overdispersion-in-a-poisson-model" class="level2" data-number="24.9">
+<h2 data-number="24.9" class="anchored" data-anchor-id="overdispersion-in-a-poisson-model"><span class="header-section-number">24.9</span> Overdispersion in a Poisson Model</h2>
+<p>Poisson regressions do not supply an independent variance parameter <span class="math inline">\(\sigma\)</span>, and as a result can be overdispersed, and usually are. Under the Poisson distribution, the variance equals the mean - so the standard deviation equals the square root of the mean. The notion of <strong>overdispersion</strong> arises here. When fitting generalized linear models with Poisson error distributions, the residual deviance and its degrees of freedom should be approximately equal if the model fits well.</p>
+<p>If the residual deviance is far greater than the degrees of freedom, then overdispersion may well be a problem. In this case, the residual deviance is about 8.5 times the size of the residual degrees of freedom, so that’s a clear indication of overdispersion. We saw earlier that the Poisson regression model requires that the outcome (here the <code>physhealth</code> counts) be independent. A possible reason for the overdispersion we see here is that <code>physhealth</code> on different days likely do not occur independently of one another but likely “cluster” together.</p>
+<section id="testing-for-overdispersion" class="level3" data-number="24.9.1">
+<h3 data-number="24.9.1" class="anchored" data-anchor-id="testing-for-overdispersion"><span class="header-section-number">24.9.1</span> Testing for Overdispersion?</h3>
+<p>Gelman and Hill provide an overdispersion test in R for a Poisson model as follows…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod_poiss1, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> arm<span class="sc">::</span><span class="fu">display</span>(mod_poiss1)<span class="sc">$</span>n</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>glm(formula = physhealth ~ bmi_c + smoke100, family = poisson(), 
+    data = ohioA_young)
+            coef.est coef.se
+(Intercept) 0.91     0.02   
+bmi_c       0.04     0.00   
+smoke100    0.53     0.02   
+---
+  n = 1974, k = 3
+  residual deviance = 19150.9, null deviance = 20221.8 (difference = 1070.9)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> arm<span class="sc">::</span><span class="fu">display</span>(mod_poiss1)<span class="sc">$</span>k</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>glm(formula = physhealth ~ bmi_c + smoke100, family = poisson(), 
+    data = ohioA_young)
+            coef.est coef.se
+(Intercept) 0.91     0.02   
+bmi_c       0.04     0.00   
+smoke100    0.53     0.02   
+---
+  n = 1974, k = 3
+  residual deviance = 19150.9, null deviance = 20221.8 (difference = 1070.9)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> (ohioA_young<span class="sc">$</span>physhealth <span class="sc">-</span> yhat) <span class="sc">/</span> <span class="fu">sqrt</span>(yhat)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"overdispersion ratio is "</span>, <span class="fu">sum</span>(z<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span> (n <span class="sc">-</span> k), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>overdispersion ratio is  15.58261 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p value of overdispersion test is "</span>, </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pchisq</span>(<span class="fu">sum</span>(z<span class="sc">^</span><span class="dv">2</span>), <span class="at">df =</span> n<span class="sc">-</span>k, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p value of overdispersion test is  0 </code></pre>
+</div>
+</div>
+<p>The p value here is 0, indicating that the probability is essentially zero that a random variable from a <span class="math inline">\(\chi^2\)</span> distribution with (n - k) = 1971 degrees of freedom would be as large as what we observed in this case. So there is significant overdispersion.</p>
+<p>In summary, the <code>physhealth</code> counts are overdispersed by a factor of 15.581, which is enormous (even a factor of 2 would be considered large) and also highly statistically significant. The basic correction for overdisperson is to multiply all regression standard errors by <span class="math inline">\(\sqrt{15.581}\)</span> = 3.95.</p>
+<p>The <code>quasipoisson</code> model and the negative binomial model that we’ll fit below are very similar. We write the overdispersed “quasiPoisson” model as:</p>
+<p><span class="math display">\[
+y_i \sim \mbox{overdispersed Poisson} (\mu_i exp(X_i \beta), \omega)
+\]</span></p>
+<p>where <span class="math inline">\(\omega\)</span> is the overdispersion parameter, 15.581, in our case. The Poisson model we saw previously is then just the overdispersed Poisson model with <span class="math inline">\(\omega = 1\)</span>.</p>
+</section>
+</section>
+<section id="fitting-the-quasi-poisson-model" class="level2" data-number="24.10">
+<h2 data-number="24.10" class="anchored" data-anchor-id="fitting-the-quasi-poisson-model"><span class="header-section-number">24.10</span> Fitting the Quasi-Poisson Model</h2>
+<p>To deal with overdispersion, one useful approach is to apply a <strong>quasi-likelihood estimation procedure</strong>, as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>mod_poiss_od1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100, </span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ohioA_young)</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_poiss_od1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = physhealth ~ bmi_c + smoke100, family = quasipoisson(), 
+    data = ohioA_young)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-6.588  -2.604  -2.087  -0.533  10.688  
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.906991   0.073818  12.287  &lt; 2e-16 ***
+bmi_c       0.035051   0.005611   6.247 5.11e-10 ***
+smoke100    0.532505   0.098308   5.417 6.81e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for quasipoisson family taken to be 15.58436)
+
+    Null deviance: 20222  on 1973  degrees of freedom
+Residual deviance: 19151  on 1971  degrees of freedom
+AIC: NA
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_poiss_od1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 0.75877174 1.04831740
+bmi_c       0.02383574 0.04583252
+smoke100    0.34039368 0.72606948</code></pre>
+</div>
+</div>
+<p>This “quasi-Poisson regression” model uses the same mean function as Poisson regression, but now estimated by quasi-maximum likelihood estimation or, equivalently, through the method of generalized estimating equations, where the inference is adjusted by an estimated dispersion parameter. Sometimes, though I won’t demonstrate this here, people fit an “adjusted” Poisson regression model, where this estimation by quasi-ML is augmented to adjust the inference via sandwich estimates of the covariances<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<section id="the-fitted-equation-1" class="level3" data-number="24.10.1">
+<h3 data-number="24.10.1" class="anchored" data-anchor-id="the-fitted-equation-1"><span class="header-section-number">24.10.1</span> The Fitted Equation</h3>
+<p>The model equation is still <code>log(physhealth) = 0.91 + 0.035 bmi_c + 0.53 smoke100</code>. The estimated coefficients are still statistically significant, but the standard errors for each coefficient are considerably larger when we account for overdispersion.</p>
+<p>The dispersion parameter for the quasi-Poisson family is now taken to be a bit less than the square root of the ratio of the residual deviance and its degrees of freedom. This is a much more believable model, as a result.</p>
+</section>
+<section id="interpreting-the-coefficients-3" class="level3" data-number="24.10.2">
+<h3 data-number="24.10.2" class="anchored" data-anchor-id="interpreting-the-coefficients-3"><span class="header-section-number">24.10.2</span> Interpreting the Coefficients</h3>
+<p>No meaningful change from the Poisson model we saw previously.</p>
+</section>
+<section id="testing-the-predictors-1" class="level3" data-number="24.10.3">
+<h3 data-number="24.10.3" class="anchored" data-anchor-id="testing-the-predictors-1"><span class="header-section-number">24.10.3</span> Testing the Predictors</h3>
+<p>Again, we can use the Wald tests (z tests) provided with the Poisson regression output, or we can fit the model and then run an ANOVA to obtain a test based on the deviance (a simple transformation of the log likelihood ratio.)</p>
+<ul>
+<li>By the Wald tests shown above, each predictor clearly adds significant predictive value to the model given the other predictor, and we note that the <em>p</em> values are as small as R will support.</li>
+<li>The ANOVA approach for this model lets us check the impact of adding <code>smoke100</code> to a model already containing <code>bmi_c</code>.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_poiss_od1, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: quasipoisson, link: log
+
+Response: physhealth
+
+Terms added sequentially (first to last)
+
+         Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                      1973      20222              
+bmi_c     1   609.46      1972      19612 4.011e-10 ***
+smoke100  1   461.46      1971      19151 5.282e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The result is unchanged. To obtain a <em>p</em> value for <code>smoke100</code>’s impact after <code>bmi_c</code> is accounted for, we compare the difference in deviance to a chi-square distribution with 1 degree of freedom. The result is incredibly statistically significant.</p>
+<p>To check the effect of <code>bmi_c</code>, we could refit the model with and without <code>bmi_c</code>, and again run an ANOVA. I’ll skip that here.</p>
+</section>
+<section id="store-fitted-values-and-residuals-3" class="level3" data-number="24.10.4">
+<h3 data-number="24.10.4" class="anchored" data-anchor-id="store-fitted-values-and-residuals-3"><span class="header-section-number">24.10.4</span> Store fitted values and residuals</h3>
+<p>What happens if we try using the <code>broom</code> package in this case? We can, if we like, get our predicted values right on the scale of our <code>physhealth</code> response.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>sm_poiss_od1 <span class="ot">&lt;-</span> <span class="fu">augment</span>(mod_poiss_od1, ohioA_young,</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">type.predict =</span> <span class="st">"response"</span>)</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>sm_poiss_od1 <span class="sc">|&gt;</span> </span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(physhealth, .fitted) <span class="sc">|&gt;</span></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  physhealth .fitted
+       &lt;dbl&gt;   &lt;dbl&gt;
+1          0    2.23
+2          0    2.29
+3          0    3.10
+4         30    5.32
+5          0    3.15
+6          0    3.68</code></pre>
+</div>
+</div>
+<p>It turns out that 0 of the 1974 predictions that we make are below 0, and the largest prediction made by this model is 21.7 days.</p>
+<p>The <code>rootogram</code> function we’ve shown doesn’t support overdispersed Poisson models at the moment.</p>
+</section>
+<section id="specify-the-r2-and-loglikelihood-values-3" class="level3" data-number="24.10.5">
+<h3 data-number="24.10.5" class="anchored" data-anchor-id="specify-the-r2-and-loglikelihood-values-3"><span class="header-section-number">24.10.5</span> Specify the <span class="math inline">\(R^2\)</span> and log(likelihood) values</h3>
+<p>We can calculate the <span class="math inline">\(R^2\)</span> as the squared correlation of the fitted values and the observed values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The correlation of observed and fitted values</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>(poiss_od_r <span class="ot">&lt;-</span> <span class="fu">with</span>(sm_poiss_od1, <span class="fu">cor</span>(physhealth, .fitted)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1846814</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-square</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>poiss_od_r<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03410723</code></pre>
+</div>
+</div>
+<p>The <code>glance</code> function in the <code>broom</code> package gives us model log(likelihood), among other summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_poiss_od1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  null.deviance df.null logLik   AIC   BIC deviance df.residual  nobs
+          &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+1        20222.    1973     NA    NA    NA   19151.        1971  1974</code></pre>
+</div>
+</div>
+<p>Here, we have</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Model</th>
+<th style="text-align: right;">Scale</th>
+<th style="text-align: right;"><span class="math inline">\(R^2\)</span></th>
+<th style="text-align: right;">log(likelihood)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Poisson</td>
+<td style="text-align: right;">log(<code>physhealth</code>)</td>
+<td style="text-align: right;">0.034</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="check-model-assumptions-3" class="level3" data-number="24.10.6">
+<h3 data-number="24.10.6" class="anchored" data-anchor-id="check-model-assumptions-3"><span class="header-section-number">24.10.6</span> Check model assumptions</h3>
+<p>Having dealt with the overdispersion, this should be a cleaner model in some ways, but the diagnostics (other than the dispersion) will be the same. Here is a plot of residuals vs.&nbsp;fitted values on the original <code>physhealth</code> scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sm_poiss_od1, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs. Fitted `physhealth`"</span>,</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Overdispersed Poisson Regression model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I’ll skip the <code>glm.diag.plots</code> results, since you’ve already seen them.</p>
+</section>
+<section id="predictions-for-harry-and-sally-3" class="level3" data-number="24.10.7">
+<h3 data-number="24.10.7" class="anchored" data-anchor-id="predictions-for-harry-and-sally-3"><span class="header-section-number">24.10.7</span> Predictions for Harry and Sally</h3>
+<p>The predictions from this overdispersed Poisson regression will match those in the original Poisson regression, but the standard error will be larger.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_poiss_od1, <span class="at">newdata =</span> hs_data, <span class="at">se.fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$fit
+       1        2 
+5.989478 2.078688 
+
+$se.fit
+        1         2 
+0.4557357 0.1703147 
+
+$residual.scale
+[1] 3.947703</code></pre>
+</div>
+</div>
+<p>By using <code>response</code> as the type, these predictions fall on the original <code>physhealth</code> scale. Again, the prediction for Harry is 5.99 days, and for Sally is 2.08 days.</p>
+</section>
+</section>
+<section id="poisson-and-quasi-poisson-models-using-glm-from-the-rms-package" class="level2" data-number="24.11">
+<h2 data-number="24.11" class="anchored" data-anchor-id="poisson-and-quasi-poisson-models-using-glm-from-the-rms-package"><span class="header-section-number">24.11</span> Poisson and Quasi-Poisson models using <code>Glm</code> from the <code>rms</code> package</h2>
+<p>The <code>Glm</code> function in the <code>rms</code> package can be used to fit both the original Poisson regression and the quasi-Poisson model accounting for overdispersion.</p>
+<section id="refitting-the-original-poisson-regression-with-glm" class="level3" data-number="24.11.1">
+<h3 data-number="24.11.1" class="anchored" data-anchor-id="refitting-the-original-poisson-regression-with-glm"><span class="header-section-number">24.11.1</span> Refitting the original Poisson regression with <code>Glm</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(ohioA_young)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>mod_poi_Glm_1 <span class="ot">&lt;-</span> <span class="fu">Glm</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100,</span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="fu">poisson</span>(), </span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ohioA_young, </span>
+<span id="cb103-7"><a href="#cb103-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">x =</span> T, <span class="at">y =</span> T)</span>
+<span id="cb103-8"><a href="#cb103-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-9"><a href="#cb103-9" aria-hidden="true" tabindex="-1"></a>mod_poi_Glm_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>General Linear Model
+ 
+ Glm(formula = physhealth ~ bmi_c + smoke100, family = poisson(), 
+     data = ohioA_young, x = T, y = T)
+ 
+                        Model Likelihood    
+                              Ratio Test    
+       Obs    1974    LR chi2    1070.93    
+ Residual d.f.1971    d.f.             2    
+       g 0.4182128    Pr(&gt; chi2) &lt;0.0001    
+ 
+           Coef   S.E.   Wald Z Pr(&gt;|Z|)
+ Intercept 0.9070 0.0187 48.50  &lt;0.0001 
+ bmi_c     0.0351 0.0014 24.66  &lt;0.0001 
+ smoke100  0.5325 0.0249 21.38  &lt;0.0001 
+ </code></pre>
+</div>
+</div>
+</section>
+<section id="refitting-the-overdispersed-poisson-regression-with-glm" class="level3" data-number="24.11.2">
+<h3 data-number="24.11.2" class="anchored" data-anchor-id="refitting-the-overdispersed-poisson-regression-with-glm"><span class="header-section-number">24.11.2</span> Refitting the overdispersed Poisson regression with <code>Glm</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(ohioA_young)</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a>mod_poi_od_Glm_1 <span class="ot">&lt;-</span> <span class="fu">Glm</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100,</span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="fu">quasipoisson</span>(), </span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ohioA_young, </span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">x =</span> T, <span class="at">y =</span> T)</span>
+<span id="cb105-8"><a href="#cb105-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-9"><a href="#cb105-9" aria-hidden="true" tabindex="-1"></a>mod_poi_od_Glm_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>General Linear Model
+ 
+ Glm(formula = physhealth ~ bmi_c + smoke100, family = quasipoisson(), 
+     data = ohioA_young, x = T, y = T)
+ 
+                        Model Likelihood    
+                              Ratio Test    
+       Obs    1974    LR chi2    1070.93    
+ Residual d.f.1971    d.f.             2    
+       g 0.4182128    Pr(&gt; chi2) &lt;0.0001    
+ 
+           Coef   S.E.   Wald Z Pr(&gt;|Z|)
+ Intercept 0.9070 0.0738 12.29  &lt;0.0001 
+ bmi_c     0.0351 0.0056  6.25  &lt;0.0001 
+ smoke100  0.5325 0.0983  5.42  &lt;0.0001 
+ </code></pre>
+</div>
+</div>
+<p>The big advantage here is that we have access to the usual <code>ANOVA</code>, <code>summary</code>, and <code>nomogram</code> features that <code>rms</code> brings to fitting models.</p>
+</section>
+<section id="anova-on-a-glm-fit" class="level3" data-number="24.11.3">
+<h3 data-number="24.11.3" class="anchored" data-anchor-id="anova-on-a-glm-fit"><span class="header-section-number">24.11.3</span> ANOVA on a <code>Glm</code> fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_poi_od_Glm_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Wald Statistics          Response: physhealth 
+
+ Factor     Chi-Square d.f. P     
+ bmi_c      39.03      1    &lt;.0001
+ smoke100   29.34      1    &lt;.0001
+ TOTAL      74.39      2    &lt;.0001</code></pre>
+</div>
+</div>
+<p>This shows the individual Wald <span class="math inline">\(\chi^2\)</span> tests without having to refit the model.</p>
+</section>
+<section id="ggplots-from-glm-fit" class="level3" data-number="24.11.4">
+<h3 data-number="24.11.4" class="anchored" data-anchor-id="ggplots-from-glm-fit"><span class="header-section-number">24.11.4</span> ggplots from <code>Glm</code> fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(mod_poi_od_Glm_1, <span class="at">fun =</span> exp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="summary-of-a-glm-fit" class="level3" data-number="24.11.5">
+<h3 data-number="24.11.5" class="anchored" data-anchor-id="summary-of-a-glm-fit"><span class="header-section-number">24.11.5</span> Summary of a <code>Glm</code> fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_poi_od_Glm_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Effects              Response : physhealth 
+
+ Factor   Low     High   Diff.  Effect  S.E.     Lower 0.95 Upper 0.95
+ bmi_c    -5.0513 3.6362 8.6875 0.30450 0.048742 0.20891    0.4001    
+ smoke100  0.0000 1.0000 1.0000 0.53251 0.098308 0.33971    0.7253    </code></pre>
+</div>
+</div>
+</section>
+<section id="plot-of-the-summary" class="level3" data-number="24.11.6">
+<h3 data-number="24.11.6" class="anchored" data-anchor-id="plot-of-the-summary"><span class="header-section-number">24.11.6</span> Plot of the Summary</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(mod_poi_od_Glm_1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nomogram-of-a-glm-fit" class="level3" data-number="24.11.7">
+<h3 data-number="24.11.7" class="anchored" data-anchor-id="nomogram-of-a-glm-fit"><span class="header-section-number">24.11.7</span> Nomogram of a <code>Glm</code> fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(mod_poi_od_Glm_1, <span class="at">fun =</span> exp, </span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">funlabel =</span> <span class="st">"physhealth days"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count1_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Note the use of <code>fun=exp</code> in both the ggplot of Predict and the nomogram. What’s that doing?</p>
+<p>In the next chapter, we’ll expand beyond Poisson regression to consider a Negative Binomial model.</p>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>This discussion is motivated by Section 6.2 of Gelman and Hill.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>See http://data.library.virginia.edu/getting-started-with-negative-binomial-regression-modeling/<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>See Zeileis A Kleiber C Jackman S <em>Regression Models for Count Data in R</em> Vignette at https://cran.r-project.org/web/packages/pscl/vignettes/countreg.pdf<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./binaryregression.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./count2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

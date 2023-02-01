@@ -1,0 +1,314 @@
+# Negative Binomial Models for Count Data {#sec-count2}
+
+We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in @sec-smart to demonstrate regression models for count outcomes, as we did in @sec-count1.
+
+Methods discussed in the chapter include:
+
+- Negative Binomial Regression
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+#library(VGAM)
+
+library(broom)
+library(boot)
+library(countreg)
+library(MASS)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+## Data Load and Subset Creation
+
+```{r}
+smart_oh <- readRDS("data/smart_ohio.Rds")
+```
+
+As in @sec-count1, we'll create a subset of these data for analysis. 
+
+```{r}
+ohioA <- smart_oh |>
+    select(SEQNO, mmsa_name, genhealth, physhealth, 
+           menthealth, healthplan, costprob, 
+           agegroup, female, incomegroup, bmi, smoke100, 
+           alcdays) |>
+    drop_na()
+
+ohioA_young <- ohioA |>
+    filter(agegroup %in% c("18-24", "25-29", "30-34", 
+                           "35-39", "40-44", "45-49")) |>
+    droplevels() |>
+  mutate(bmi_c = bmi - mean(bmi))
+```
+
+## Setup for this Chapter
+
+Again, we're going to predict `physhealth` using `bmi_c` and `smoke100`. 
+
+- Remember that `physhealth` is a count of the number of poor physical health days in the past 30. 
+- As a result, `physhealth` is restricted to taking values between 0 and 30. 
+
+In this chapter, we demonstrate Negative binomial regression, which (like Poisson regression discussed in @sec-count1) is also used for counts and adjusts for overdispersion.
+
+### What Will We Demonstrate?
+
+With this new approach, we will again fit the model and specify procedures for doing so in R. Then we will:
+
+1. Specify the fitted model equation
+2. Interpret the model's coefficient estimates and 95% confidence intervals around those estimates.
+3. Perform a test of whether each variable adds value to the model, when the other one is already included.
+4. Store the fitted values and appropriate residuals for each model.
+5. Summarize the model's apparent $R^2$ value, the proportion of variation explained, and the model log likelihood.
+6. Perform checks of model assumptions as appropriate.
+7. Describe how predictions would be made for two new subjects.
+    - Harry has a BMI that is 10 kg/m^2^ higher than the average across all respondents and has smoked more than 100 cigarettes in his life.
+    - Sally has a BMI that is 5 kg/m^2^ less than the average across all respondents and has not smoked more than 100 cigarettes in her life.
+
+In addition, for some of the new models, we provide a little of the mathematical background, and point to other resources you can use to learn more about the model.
+    
+### Extra Data File for Harry and Sally    
+    
+To make our lives a little easier, I'll create a little tibble containing the necessary data for Harry and Sally.
+
+```{r}
+hs_data <- tibble(subj = c("Harry", "Sally"),
+                  bmi_c = c(10, -5),
+                  smoke100 = c(1, 0))
+hs_data
+```
+
+### Our Poisson Model (for comparison)
+
+```{r}
+mod_poiss1 <- glm(physhealth ~ bmi_c + smoke100, 
+                  family = poisson(),
+                  data = ohioA_young)
+```
+
+
+## Negative Binomial Model
+
+Another approach to dealing with overdispersion is to fit a negative binomial model^[See https://cran.r-project.org/web/packages/pscl/vignettes/countreg.pdf for more details.] to predict the log(`physhealth`) counts. This involves the fitting of an additional parameter, $\theta$. That's our dispersion parameter^[This $\theta$ is the inverse of the dispersion parameter estimated for these models by most other software packages, like SAS, Stata and SPSS. See https://stats.idre.ucla.edu/r/dae/negative-binomial-regression/ for more details.] 
+
+Sometimes, people will fit a model where $\theta$ is known, for instance a geometric model (where $\theta$ = 1), and then this can be directly plugged into a `glm()` fit, but the more common scenario is that we are going to iteratively estimate the $\beta$ coefficients and $\theta$. To do this, I'll use the `glm.nb` function from the **MASS** package.
+
+```{r}
+mod_nb1 <- glm.nb(physhealth ~ bmi_c + smoke100, link = log,
+                  data = ohioA_young)
+
+summary(mod_nb1)
+confint(mod_nb1)
+```
+
+### The Fitted Equation
+
+The form of the model equation for a negative binomial regression is the same as that for Poisson regression. 
+
+```
+log(physhealth) = 0.87 + 0.036 bmi_c + 0.60 smoke100
+```
+
+### Comparison with the (raw) Poisson model
+
+To compare the negative binomial model to the Poisson model (without the overdispersion) we can use the `logLik` function to make a comparison. Note that the Poisson model is a subset of the negative binomial.
+
+```{r}
+logLik(mod_nb1)
+logLik(mod_poiss1)
+2 * (logLik(mod_nb1) - logLik(mod_poiss1))
+     
+pchisq(2 * (logLik(mod_nb1) - logLik(mod_poiss1)), df = 1, lower.tail = FALSE)
+```
+
+Here, the difference in the log likelihoods is large enough that the resulting *p* value is very small. This strongly suggests that the negative binomial model, which adds the dispersion parameter, is more appropriate than the raw Poisson model.
+
+However, both the regression coefficients and the standard errors are rather similar to the quasi-Poisson and the sandwich-adjusted Poisson results above. Thus, in terms of predicted means, all three models give very similar results; the associated Wald tests also lead to the same conclusions.
+
+### Interpreting the Coefficients
+
+There's only a small change here from the Poisson models we saw previously.
+
+- The constant term, 0.87, gives us the intercept of the regression - the prediction if `smoke100 = 0` and `bmi_c = 0`. In this case, because we've centered BMI, it implies that `exp(0.87)` = `r round(exp(0.87),2)` is the predicted days of poor `physhealth` for a non-smoker with average BMI. 
+- The coefficient of `bmi_c`, 0.036, is the expected difference in count of poor `physhealth` days (on the log scale) for each additional kg/m^2^ of body mass index. The expected multiplicative *increase* is $e^{0.036}$ = `r round(exp(0.036),3)`, corresponding to a 3.7% difference in the count.
+- The coefficient of `smoke100`, 0.60, tells us that the predictive difference between those who have and who have not smoked 100 cigarettes can be found by multiplying the `physhealth` count by exp(0.6) = `r round(exp(0.6),2)`, yielding essentially an 82% increase of the `physhealth` count.
+
+### Interpretation of Coefficients in terms of IRRs
+
+We might be interested in looking at incident rate ratios rather than coefficients. The coefficients have an additive effect in the log(y) scale, and the IRR have a multiplicative effect in the y scale. To do this, we can exponentiate our model coefficients. This also applies to the confidence intervals.
+
+```{r}
+exp(coef(mod_nb1))
+exp(confint(mod_nb1))
+```
+
+As an example, then, the incident rate for `smoke100` = 1 is 1.82 times the incident rate of `physhealth` days for the reference group (`smoke100` = 0). The percent change in the incident rate of `physhealth` is a 3.6% increase for every kg/m^2^ increase in centered `bmi`.
+
+### Testing the Predictors
+
+Again, we can use the Wald tests (z tests) provided with the negative binomial regression output. 
+
+As an alternative, we probably should not use the standard `anova` process, because the models there don't re-estimate $\theta$ for each new model, as the warning message below indicates.
+
+```{r}
+anova(mod_nb1)
+```
+
+So, instead, if we want, for instance to assess the significance of `bmi_c`, after `smoke100` is already included in the model, we fit both models (with and without `bmi_c`) and then compare those models with a likelihood ratio test.
+
+```{r}
+mod_nb1_without_bmi <- glm.nb(physhealth ~ smoke100, 
+                              link = log,
+                              data = ohioA_young)
+
+anova(mod_nb1, mod_nb1_without_bmi)
+```
+
+And we could compare the negative binomial models with and without `smoke100` in a similar way.
+
+```{r}
+mod_nb1_without_smoke <- glm.nb(physhealth ~ bmi_c, 
+                                link = log,
+                                data = ohioA_young)
+
+anova(mod_nb1, mod_nb1_without_smoke)
+```
+
+### Store fitted values and residuals
+
+The `broom` package works in this case, too. We'll look here at predicted (fitted) values on the scale of our `physhealth` response.
+
+```{r}
+sm_nb1 <- augment(mod_nb1, ohioA_young,
+                     type.predict = "response")
+
+sm_nb1 |> 
+    select(physhealth, .fitted) |>
+    head()
+```
+
+### Rootogram for Negative Binomial model
+
+Here's the rootogram for the negative binomial model.
+
+```{r}
+rootogram(mod_nb1, max = 30)
+```
+
+Again, the red curved line is the theoretical (negative binomial) fit. "Hanging" from each point on the red line is a bar, the height of which represents the difference between expected and observed counts. A bar hanging below 0 indicates underfitting. A bar hanging above 0 indicates overfitting. The counts have been transformed with a square root transformation to prevent smaller counts from getting obscured and overwhelmed by larger counts. 
+
+The match looks much better than the Poisson model, which is a sign that accounting for overdispersion is very important. Even this model badly underfits the number of 30 values, however.
+
+### Simulating what the Negative Binomial model predicts
+
+We can use the parameters of the negative binomial model to simulate data^[See http://data.library.virginia.edu/getting-started-with-negative-binomial-regression-modeling/] and compare the simulated results to our observed `physhealth` data.
+
+```{r}
+par(mfrow=c(1,2))
+ohioA_young$physhealth |> 
+    table() |> barplot(main = "Observed physhealth")
+set.seed(432122)
+rnbinom(n = nrow(ohioA_young), 
+        size = mod_nb1$theta,
+        mu = exp(coef(mod_nb1)[1])) |>
+    table() |> barplot(main = "Simulated physhealth")
+```
+
+Again we see that the simulated data badly underfits the 30 values, and includes some predictions larger than 30.
+
+### Specify the $R^2$ and log(likelihood) values
+
+We can calculate the $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(nb_r <- with(sm_nb1, cor(physhealth, .fitted)))
+
+# R-square
+nb_r^2
+```
+
+The `glance` function in the `broom` package gives us model log(likelihood), among other summaries.
+
+```{r}
+glance(mod_nb1) |> round(3)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Negative Binomial | log(`physhealth`) | .034 | -3484.27
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values on the original `physhealth` scale.
+
+```{r}
+ggplot(sm_nb1, aes(x = .fitted, y = .resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted `physhealth`",
+         subtitle = "Negative Binomial Regression model")
+```
+
+Here are the `glm` diagnostic plots from the `boot` package.
+
+```{r, fig.height = 6}
+glm.diag.plots(mod_nb1)
+```
+
+From the lower left plot, we see fewer points with large values of both Cook's distance and leverage, so that's a step in the right direction. The upper right plot still has some issues, but we're closer to a desirable result there, too.
+
+### Predictions for Harry and Sally
+
+The predictions from this negative binomial regression model will be only a little different than those from the Poisson models.
+
+```{r}
+predict(mod_nb1, newdata = hs_data, se.fit = TRUE,
+        type = "response")
+```
+
+As we've seen in the past, when we use `response` as the type, the predictions fall on the original `physhealth` scale. The prediction for Harry is 6.2 days, and for Sally is 2.0 days. 
+
+## The Problem: Too Few Zeros
+
+Remember that we observe more than 1000 zeros in our `physhealth` data.
+
+```{r}
+ohioA_young |> count(physhealth == 0)
+```
+
+Let's go back to our Poisson model (without overdispersion) for a moment, and concentrate on the zero values. 
+
+```{r}
+# predict expected mean physhealth for each subject
+mu <- predict(mod_poiss1, type = "response")
+
+# sum the probabilities of a zero count for each mean
+exp <- sum(dpois(x = 0, lambda = mu))
+
+# predicted number of zeros from Poisson model
+round(exp)
+```
+
+As we've seen previously, we're severely underfitting zero counts. We can compare the observed number of zero `physhealth` results to the expected number of zero values from the likelihood-based models.
+
+```{r}
+round(c("Obs" = sum(ohioA_young$physhealth == 0),
+  "Poisson" = sum(dpois(0, fitted(mod_poiss1))),
+  "NB" = sum(dnbinom(0, mu = fitted(mod_nb1), size = mod_nb1$theta))),0)
+```
+
+There are at least two ways to tackle this problem.
+
+- Fitting a model which deliberately inflates the number of zeros that are fitted
+- Fitting a hurdle model
+
+We'll look at those options, next.
+

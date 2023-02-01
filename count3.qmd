@@ -1,0 +1,952 @@
+# Zero-Inflated Models for Count Data {#sec-count3}
+
+We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in @sec-smart to demonstrate regression models for count outcomes, as we did in @sec-count1.
+
+Methods discussed in the chapter include:
+
+- Negative Binomial Regression
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(lmtest)
+library(MASS)
+library(pscl)
+library(VGAM)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+## Data Load and Subset Creation
+
+```{r}
+smart_oh <- readRDS("data/smart_ohio.Rds")
+```
+
+As in @sec-count1, we'll create a subset of these data for analysis. 
+
+```{r}
+ohioA <- smart_oh |>
+    select(SEQNO, mmsa_name, genhealth, physhealth, 
+           menthealth, healthplan, costprob, 
+           agegroup, female, incomegroup, bmi, smoke100, 
+           alcdays) |>
+    drop_na()
+
+ohioA_young <- ohioA |>
+    filter(agegroup %in% c("18-24", "25-29", "30-34", 
+                           "35-39", "40-44", "45-49")) |>
+    droplevels() |>
+  mutate(bmi_c = bmi - mean(bmi))
+```
+
+## Setup for this Chapter
+
+Again, we're going to predict `physhealth` using `bmi_c` and `smoke100`. 
+
+- Remember that `physhealth` is a count of the number of poor physical health days in the past 30. 
+- As a result, `physhealth` is restricted to taking values between 0 and 30. 
+
+In this chapter, we demonstrate:
+
+- Zero-inflated Poisson models
+- Zero-inflated Negative Binomial models
+- Hurdle models
+- Tobit models
+
+### What Will We Demonstrate?
+
+With each new approach, we again will fit the model and specify procedures for doing so in R. Then we will:
+
+1. Specify the fitted model equation
+2. Interpret the model's coefficient estimates and 95% confidence intervals around those estimates.
+3. Perform a test of whether each variable adds value to the model, when the other one is already included.
+4. Store the fitted values and appropriate residuals for each model.
+5. Summarize the model's apparent $R^2$ value, the proportion of variation explained, and the model log likelihood.
+6. Perform checks of model assumptions as appropriate.
+7. Describe how predictions would be made for two new subjects.
+    - Harry has a BMI that is 10 kg/m^2^ higher than the average across all respondents and has smoked more than 100 cigarettes in his life.
+    - Sally has a BMI that is 5 kg/m^2^ less than the average across all respondents and has not smoked more than 100 cigarettes in her life.
+
+In addition, for some of the new models, we provide a little of the mathematical background, and point to other resources you can use to learn more about the model.
+    
+### Extra Data File for Harry and Sally    
+    
+To make our lives a little easier, I'll create a little tibble containing the necessary data for Harry and Sally.
+
+```{r}
+hs_data <- tibble(subj = c("Harry", "Sally"),
+                  bmi_c = c(10, -5),
+                  smoke100 = c(1, 0))
+hs_data
+```
+
+### Previous Models (for comparison)
+
+```{r}
+mod_poiss1 <- glm(physhealth ~ bmi_c + smoke100, 
+                  family = poisson(),
+                  data = ohioA_young)
+
+mod_nb1 <- glm.nb(physhealth ~ bmi_c + smoke100, 
+                  link = log,
+                  data = ohioA_young)
+```
+
+## The Zero-Inflated Poisson Regression Model
+
+There are at least two ways to tackle the problem of not predicting enough 0 values.
+
+- Fitting a model which deliberately inflates the number of zeros that are fitted
+- Fitting a hurdle model
+
+The zero-inflated Poisson or (ZIP) model is used to describe count data with an excess of zero counts^[See https://stats.idre.ucla.edu/r/dae/zip/ for more on the zero-inflated poisson model.]. The model posits that there are two processes involved:
+
+- a logit model is used to predict excess zeros
+- while a Poisson model is used to predict the counts, generally
+
+The `pscl` package is used here, which can conflict with the `countreg` package we used to fit rootograms. 
+
+To run the zero-inflated Poisson model, we use the following:
+
+```{r}
+mod_zip1 <- zeroinfl(physhealth ~ bmi_c + smoke100, 
+                     data = ohioA_young)
+
+summary(mod_zip1)
+confint(mod_zip1)
+```
+
+The output describes two separate regression models. Below the model call, we see information on a Poisson regression model. Then we see another block describing the inflation model.
+
+Each predictor (`bmi_c` and `smoke100`) appears to be statistically significant in each part of the model.
+
+### Comparison to a null model
+
+To show that this model fits better than the null model (the model with intercept only), we can compare them directly with a chi-squared test. Since we have two predictors in the full model, the degrees of freedom for this test is 2.
+
+```{r}
+mod_zipnull <- pscl::zeroinfl(physhealth ~ 1, 
+                     data = ohioA_young)
+
+summary(mod_zipnull)
+
+pchisq(2 * (logLik(mod_zip1) - logLik(mod_zipnull)), df = 2, lower.tail = FALSE)
+```
+
+### Comparison to a Poisson Model with the Vuong test
+
+```{r}
+vuong(mod_zip1, mod_poiss1)
+```
+
+Certainly, the ZIP model is a significant improvement over the standard Poisson model, as the Vuong test reveals.
+
+### The Fitted Equation
+
+The form of the model equation for a zero-inflated Poisson regression requires us to take two separate models into account. First we have a logistic regression model to predict the log odds of zero `physhealth` days. That takes care of the *extra* zeros. Then, to predict the number of `physhealth` days, we have a Poisson model, which may produce some additional zero count estimates.
+
+### Interpreting the Coefficients
+
+We can exponentiate the logistic regression coefficients to obtain results in terms of odds ratios for that model, and that can be of some help in understanding the process behind excess zeros.
+
+Also, exponentiating the coefficients of the count model help us describe those counts on the original scale of `physhealth`.
+
+```{r}
+exp(coef(mod_zip1))
+```
+
+For example,
+
+- in the model for `physhealth` = 0, the odds of `physhealth` = 0 are 79% as high for subjects with `smoke100` = 1 as for non-smokers with the same BMI.
+- in the Poisson model for `physhealth`, the `physhealth` count is estimated to increase by 1.48 for smokers as compared to non-smokers with the same BMI. 
+
+### Testing the Predictors
+
+We can test the model with and without `bmi_c`, for example, by fitting the model both ways, and comparing the results with either a Wald or Likelihood Ratio test, each of which is available in the `lmtest` package.
+
+```{r}
+mod_zip1_nobmi <- zeroinfl(physhealth ~ smoke100, 
+                     data = ohioA_young)
+
+lmtest::waldtest(mod_zip1, mod_zip1_nobmi)
+```
+
+```{r}
+lmtest::lrtest(mod_zip1, mod_zip1_nobmi)
+```
+
+### Store fitted values and residuals
+
+The `broom` package does not work with the `zeroinfl` tool. So we need to build up the fitted values and residuals ourselves.
+
+```{r}
+sm_zip1 <- ohioA_young |>
+    mutate(fitted = fitted(mod_zip1, type = "response"),
+           resid = resid(mod_zip1, type = "response"))
+
+sm_zip1 |> 
+    dplyr::select(physhealth, fitted, resid) |>
+    head()
+```
+
+### Modeled Number of Zero Counts
+
+The zero-inflated model is designed to perfectly match the number of observed zeros. We can compare the observed number of zero `physhealth` results to the expected number of zero values from the likelihood-based models.
+
+```{r}
+round(c("Obs" = sum(ohioA_young$physhealth == 0),
+  "Poisson" = sum(dpois(0, fitted(mod_poiss1))),
+  "NB" = sum(dnbinom(0, mu = fitted(mod_nb1), size = mod_nb1$theta)),
+  "ZIP" = sum(predict(mod_zip1, type = "prob")[,1])), 0)
+```
+
+### Rootogram for ZIP model
+
+Here's the rootogram for the zero-inflated Poisson model.
+
+```{r}
+countreg::rootogram(mod_zip1, max = 30)
+```
+
+The zero frequencies are perfectly matched here, but we can see that counts of 1 and 2 are now substantially underfit, and values between 6 and 13 are overfit.
+
+### Specify the $R^2$ and log (likelihood) values
+
+We can calculate a proxy for $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(zip_r <- with(sm_zip1, cor(physhealth, fitted)))
+
+# R-square
+zip_r^2
+```
+
+```{r}
+logLik(mod_zip1)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Zero-Inflated Poisson | Complex: log(`physhealth`) | .035 | -5679.83
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values on the original `physhealth` scale.
+
+```{r}
+ggplot(sm_zip1, aes(x = fitted, y = resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted `physhealth`",
+         subtitle = "Zero-Inflated Poisson Regression model")
+```
+
+### Predictions for Harry and Sally
+
+The predictions from this ZIP regression model are obtained as follows...
+
+```{r}
+predict(mod_zip1, newdata = hs_data, type = "response")
+```
+
+As we've seen in the past, when we use `response` as the type, the predictions fall on the original `physhealth` scale. The prediction for Harry is 6.0 days, and for Sally is 2.1 days. 
+
+
+## The Zero-Inflated Negative Binomial Regression Model
+
+As an alternative to the ZIP model, we might consider a zero-inflated negative binomial regression^[See https://stats.idre.ucla.edu/r/dae/zinb/]. This will involve a logistic regression to predict the probability of a 0, and then a negative binomial model to describe the counts of `physhealth`.
+
+To run the zero-inflated negative binomial model, we use the following code:
+
+```{r}
+mod_zinb1 <- pscl::zeroinfl(physhealth ~ bmi_c + smoke100, 
+                      dist = "negbin", data = ohioA_young)
+
+summary(mod_zinb1)
+confint(mod_zinb1)
+```
+
+### Comparison to a null model
+
+To show that this model fits better than the null model (the model with intercept only), we can compare them directly with a chi-squared test. Since we have two predictors in the full model, the degrees of freedom for this test is 2.
+
+```{r}
+mod_zinbnull <- pscl::zeroinfl(physhealth ~ 1, dist = "negbin",
+                     data = ohioA_young)
+
+summary(mod_zinbnull)
+
+pchisq(2 * (logLik(mod_nb1) - logLik(mod_zinbnull)), df = 2, lower.tail = FALSE)
+```
+
+### Comparison to a Negative Binomial Model: Vuong test
+
+```{r}
+vuong(mod_zinb1, mod_nb1)
+```
+
+The zero-inflated negative binomial model is a significant improvement over the standard negative binomial model according to the the raw or AIC-corrected Vuong tests, but not according to the BIC-corrected test.
+
+### The Fitted Equation
+
+Like the ZIP, the zero-inflated negative binomial regression also requires us to take two separate models into account. First we have a logistic regression model to predict the log odds of zero `physhealth` days. That takes care of the *extra* zeros. Then, to predict the number of `physhealth` days, we have a negative binomial regression, with a $\theta$ term, and this negative binomial regression model may also produce some additional zero count estimates.
+
+### Interpreting the Coefficients
+
+As with the zip, we can exponentiate the logistic regression coefficients to obtain results in terms of odds ratios for that model, and that can be of some help in understanding the process behind excess zeros.
+
+```{r}
+exp(coef(mod_zinb1))
+```
+
+For example,
+
+- in the model for `physhealth` = 0, the odds of `physhealth` = 0 are 88.1% as high for subjects with `smoke100` = 1 as for non-smokers with the same BMI.
+
+Interpreting the negative binomial piece works the same way as it did in the negative binomial regression.
+
+### Testing the Predictors
+
+We can test the model with and without `bmi_c`, for example, by fitting the model both ways, and comparing the results with either a Wald or Likelihood Ratio test, each of which is available in the `lmtest` package.
+
+```{r}
+mod_zinb1_nobmi <- pscl::zeroinfl(physhealth ~ smoke100, 
+                            dist = "negbin",
+                            data = ohioA_young)
+
+lmtest::waldtest(mod_zinb1, mod_zinb1_nobmi)
+```
+
+```{r}
+lmtest::lrtest(mod_zinb1, mod_zinb1_nobmi)
+```
+
+### Store fitted values and residuals
+
+Again, we need to build up the fitted values and residuals without the `broom` package.
+
+```{r}
+sm_zinb1 <- ohioA_young |>
+    mutate(fitted = fitted(mod_zinb1, type = "response"),
+           resid = resid(mod_zinb1, type = "response"))
+
+sm_zip1 |> 
+    dplyr::select(physhealth, fitted, resid) |>
+    head()
+```
+
+### Modeled Number of Zero Counts
+
+Once again, we can compare the observed number of zero `physhealth` results to the expected number of zero values from the likelihood-based models.
+
+```{r}
+round(c("Obs" = sum(ohioA_young$physhealth == 0),
+  "Poisson" = sum(dpois(0, fitted(mod_poiss1))),
+  "NB" = sum(dnbinom(0, mu = fitted(mod_nb1), size = mod_nb1$theta)),
+  "ZIP" = sum(predict(mod_zip1, type = "prob")[,1]),
+  "ZINB" = sum(predict(mod_zinb1, type = "prob")[,1])),0)
+```
+
+So, the Poisson model is clearly inappropriate, but the zero-inflated (Poisson and NB) and the negative binomial model all give reasonable fits in this regard.
+
+### Rootogram for Zero-Inflated Negative Binomial model
+
+Here's the rootogram for the zero-inflated negative binomial model.
+
+```{r}
+countreg::rootogram(mod_zinb1, max = 30)
+```
+
+As in the ZIP model, the zero frequencies are perfectly matched here, but we can see that counts of 1 and 2 are now closer to the data we observe than in the ZIP model. We are still substantially underfitting values of 30.
+
+### Specify the $R^2$ and log (likelihood) values
+
+We can calculate a proxy for $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(zinb_r <- with(sm_zinb1, cor(physhealth, fitted)))
+
+# R-square
+zinb_r^2
+```
+
+```{r}
+logLik(mod_zinb1)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Zero-Inflated Negative Binomial | Complex: log(`physhealth`) | .035 | -3469.27
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values on the original `physhealth` scale.
+
+```{r}
+ggplot(sm_zinb1, aes(x = fitted, y = resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted `physhealth`",
+         subtitle = "Zero-Inflated Negative Binomial Regression model")
+```
+
+### Predictions for Harry and Sally
+
+The predictions from this zero-inflated negative binomial regression model are obtained as follows...
+
+```{r}
+predict(mod_zinb1, newdata = hs_data, type = "response")
+```
+
+As we've seen in the past, when we use `response` as the type, the predictions fall on the original `physhealth` scale. The prediction for Harry is 6.2 days, and for Sally is 2.0 days. 
+
+## A "hurdle" model (with Poisson)
+
+Much of the discussion here of hurdle models comes from Clay Ford at the University of Virginia^[http://data.library.virginia.edu/getting-started-with-hurdle-models/ is an excellent introduction, by Clay Ford, a Statistical Research Consultant at the University of Virginia Library. I can also recommend https://rpubs.com/kaz_yos/pscl-2 as a place to learn more about the `pscl` package, and the fitting and interpretation of both hurdle and zero-inflated regression models. That `rpubs` site has a link to [this article by Hu, Pavlicova and Nunes from the Am J Drug Alcohol Abuse](https://www.ncbi.nlm.nih.gov/pubmed/21854279) which provides a real set of examples from a trial of a behavioral health intervention meant to reduce the risk of unprotected sexual occasions as part of a strategy to reduce HIV risk.]. Ford describes a hurdle model as follows:
+
+> The hurdle model is a two-part model that specifies one process for zero counts and another process for positive counts. The idea is that positive counts occur once a threshold is crossed, or put another way, a hurdle is cleared. If the hurdle is not cleared, then we have a count of 0.
+
+> The first part of the model is typically a binary logit model. This models whether an observation takes a positive count or not. The second part of the model is usually a truncated Poisson or Negative Binomial model. Truncated means we're only fitting positive counts. If we were to fit a hurdle model to our [medicare] data, the interpretation would be that one process governs whether a patient visits a doctor or not, and another process governs how many visits are made.
+
+To fit a hurdle model, we'll use the `hurdle` function in the `pscl` package.
+
+```{r}
+mod_hur1 <- pscl::hurdle(physhealth ~ bmi_c + smoke100,
+                   dist = "poisson", zero.dist = "binomial",
+                   data = ohioA_young)
+
+summary(mod_hur1)
+confint(mod_hur1)
+```
+
+We are using the default settings here, using the same predictors for both models:
+
+- a **Binomial** model to predict the probability of `physhealth` = 0 given our predictors, as specified by the `zero.dist` argument in the `hurdle` function, and
+- a (truncated) **Poisson** model to predict the positive-count of `physhealth` given those same predictors, as specified by the `dist` argument in the `hurdle` function.
+
+### Comparison to a null model
+
+To show that this model fits better than the null model (the model with intercept only), we can compare them directly with a chi-squared test. Since we have two predictors in the full model, the degrees of freedom for this test is 2.
+
+```{r}
+mod_hurnull <- pscl::hurdle(physhealth ~ 1, dist = "poisson", 
+                      zero.dist = "binomial", 
+                      data = ohioA_young)
+
+summary(mod_hurnull)
+
+pchisq(2 * (logLik(mod_hur1) - logLik(mod_hurnull)), df = 2, lower.tail = FALSE)
+```
+
+### Comparison to a Poisson Model: Vuong test
+
+```{r}
+vuong(mod_hur1, mod_poiss1)
+```
+
+The hurdle model shows a detectable improvement over the standard Poisson model according to this test.
+
+### Comparison to a Zero-Inflated Poisson Model: Vuong test
+
+Is the hurdle model comparable to the zero-inflated Poisson?
+
+```{r}
+vuong(mod_hur1, mod_zip1)
+```
+
+The hurdle model doesn't show a substantial improvement over the zero-inflated Poisson model according to this test.
+
+### The Fitted Equation
+
+The form of the model equation for this hurdle also requires us to take two separate models into account. First we have a logistic regression model to predict the log odds of zero `physhealth` days. That takes care of the zeros. Then, to predict the number of `physhealth` days, we use a truncated Poisson model, which is truncated to produce only estimates greater than zero.
+
+### Interpreting the Coefficients
+
+We can exponentiate the logistic regression coefficients to obtain results in terms of odds ratios for that model, and that can be of some help in understanding the process behind excess zeros.
+
+Also, exponentiating the coefficients of the count model help us describe those counts on the original scale of `physhealth`.
+
+```{r}
+exp(coef(mod_hur1))
+```
+
+For example,
+
+- in the model for `physhealth` = 0, the odds of `physhealth` = 0 are 127% as high for subjects with `smoke100` = 1 as for non-smokers with the same BMI.
+- in the Poisson model for `physhealth`, the `physhealth` count is estimated to increase by 1.48 for smokers as compared to non-smokers with the same BMI. 
+
+### Testing the Predictors
+
+We can test the model with and without `bmi_c`, for example, by fitting the model both ways, and comparing the results with either a Wald or Likelihood Ratio test, each of which is available in the `lmtest` package.
+
+```{r}
+mod_hur1_nobmi <- pscl::hurdle(physhealth ~ smoke100,
+                         dist = "poisson", 
+                         zero.dist = "binomial",
+                         data = ohioA_young)
+
+lmtest::waldtest(mod_hur1, mod_hur1_nobmi)
+```
+
+```{r}
+lmtest::lrtest(mod_hur1, mod_hur1_nobmi)
+```
+
+### Store fitted values and residuals
+
+The `broom` package does not work with the `hurdle` class of models. Again we need to build up the fitted values and residuals ourselves.
+
+```{r}
+sm_hur1 <- ohioA_young |>
+    mutate(fitted = fitted(mod_hur1, type = "response"),
+           resid = resid(mod_hur1, type = "response"))
+
+sm_hur1 |> 
+    dplyr::select(physhealth, fitted, resid) |>
+    head()
+```
+
+### Modeled Number of Zero Counts
+
+Once again, we can compare the observed number of zero `physhealth` results to the expected number of zero values from the likelihood-based models.
+
+```{r}
+round(c("Obs" = sum(ohioA_young$physhealth == 0),
+  "Poisson" = sum(dpois(0, fitted(mod_poiss1))),
+  "NB" = sum(dnbinom(0, mu = fitted(mod_nb1), size = mod_nb1$theta)),
+  "ZIP" = sum(predict(mod_zip1, type = "prob")[,1]),
+  "ZINB" = sum(predict(mod_zinb1, type = "prob")[,1]),
+  "Hurdle" = sum(predict(mod_hur1, type = "prob")[,1])),0)
+```
+
+The hurdle model does about as well as the negative binomial and zero-inflated models. All but the Poisson give reasonable fits in this regard.
+
+### Rootogram for Hurdle Model
+
+```{r}
+countreg::rootogram(mod_hur1, max = 30)
+```
+
+The results are still not perfect, of course. In fitting the zeros exactly, we're underfitting counts of 1, 2, and 30, and overfitting many of the counts between 6 and 20. We still have a problem here with overdispersion. That's why we'll consider a hurdle model with a negative binomial regression for the counts in a moment.
+
+### Understanding the Modeled Counts in Detail
+
+The expected mean count uses both parts of the hurdle model. Mathematically, we want...
+
+$$
+E[y | {\bf x}] = \frac{1 - f_1(0 | {\bf x})}{1 - f_2(0 | {\bf x})} \mu_2({\bf x})
+$$
+
+where
+
+- our count of `physhealth` is $y$
+- our predictors are represented by **x**
+- and the expected count is the product of a ratio and a mean.
+
+> The ratio is the probability of a non-zero in the first process divided the probability of a non-zero in the second untruncated process. The f symbols represent distributions. Recall these are logistic and Poisson, respectively, by default but can be others. The mean is for the untruncated version of the positive-count process.
+
+If we want to see the expected hurdle counts, we can get them using some clever applications of the `predict` function.
+
+The first six expected mean counts ($E[y | {\bf x}]$ from the equation above) are:
+
+```{r}
+head(predict(mod_hur1, type = "response"))
+```
+
+The ratio of non-zero probabilities, $\frac{1 - f_1(0 | {\bf x})}{1 - f_2(0 | {\bf x})}$, from the mathematical expression above can be extracted by:
+
+```{r}
+head(predict(mod_hur1, type = "zero"))
+```
+
+The mean for the untruncated process, $\mu_2({\bf x})$, can also be obtained by:
+
+```{r}
+head(predict(mod_hur1, type = "count"))
+```
+
+and we can multiply these last two pieces together to verify that they match our expected hurdle counts.
+
+```{r}
+head(predict(mod_hur1, type = "zero") * predict(mod_hur1, type = "count"),5)
+```
+
+### Specify the $R^2$ and log (likelihood) values
+
+We can calculate a proxy for $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(hur1_r <- with(sm_hur1, cor(physhealth, fitted)))
+
+# R-square
+hur1_r^2
+```
+
+```{r}
+logLik(mod_hur1)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Hurdle Model (Poisson) | Complex: log(`physhealth`) | .035 | -5679.83
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values on the original `physhealth` scale.
+
+```{r}
+ggplot(sm_hur1, aes(x = fitted, y = resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted `physhealth`",
+         subtitle = "Hurdle model with Poisson counts")
+```
+
+### Predictions for Harry and Sally
+
+The predictions from this zero-inflated negative binomial regression model are obtained as follows...
+
+```{r}
+predict(mod_hur1, newdata = hs_data, type = "response")
+```
+
+As we've seen in the past, when we use `response` as the type, the predictions fall on the original `physhealth` scale. The prediction for Harry is 6.0 days, and for Sally is 2.1 days. 
+
+## A "hurdle" model (with negative binomial for overdispersion)
+
+Let's account for overdispersion better with a negative binomial model for the counts in our hurdle model. We specify that the positive-count process be fit with this NB model using `dist = negbin`.
+
+```{r}
+mod_hur_nb1 <- pscl::hurdle(physhealth ~ bmi_c + smoke100,
+                   dist = "negbin", zero.dist = "binomial",
+                   data = ohioA_young)
+
+summary(mod_hur_nb1)
+confint(mod_hur_nb1)
+```
+
+### Comparison to a null model
+
+To show that this model fits better than the null model (the model with intercept only), we can compare them directly with a chi-squared test. Since we have two predictors in the full model, the degrees of freedom for this test is 2.
+
+```{r}
+mod_hur_nb_null <- pscl::hurdle(physhealth ~ 1, dist = "negbin", 
+                      zero.dist = "binomial", 
+                      data = ohioA_young)
+
+summary(mod_hur_nb_null)
+
+pchisq(2 * (logLik(mod_hur_nb1) - logLik(mod_hur_nb_null)), df = 2, lower.tail = FALSE)
+```
+
+### Comparison to a Negative Binomial Model: Vuong test
+
+```{r}
+vuong(mod_hur_nb1, mod_nb1)
+```
+
+The hurdle model is a significant improvement over the standard negative binomial model according to the raw and AIC-corrected versions of this test, but not the BIC-corrected version.
+
+### Comparison to a Zero-Inflated NB Model: Vuong test
+
+Is the hurdle model comparable to the zero-inflated Poisson?
+
+```{r}
+vuong(mod_hur_nb1, mod_zinb1)
+```
+
+The hurdle model is just barely a significant improvement over the zero-inflated Negative Binomial model.
+
+### Comparing the Hurdle Models with AIC and BIC
+
+```{r}
+AIC(mod_hur1); BIC(mod_hur1)
+```
+
+```{r}
+AIC(mod_hur_nb1); BIC(mod_hur_nb1)
+```
+
+The negative binomial approach certainly looks better than the Poisson here.
+
+
+### The Fitted Equation
+
+The form of the model equation for this hurdle also requires us to take two separate models into account. First we have a logistic regression model to predict the log odds of zero `physhealth` days. That takes care of the zeros. Then, to predict the number of `physhealth` days, we use a truncated negative binomial model, which is truncated to produce only estimates greater than zero, with $\theta$ estimated as `exp(-1.123)` or `r round(exp(-1.123), 3)`.
+
+### Interpreting the Coefficients
+
+We can exponentiate the logistic regression coefficients to obtain results in terms of odds ratios for that model, and that can be of some help in understanding the process behind excess zeros.
+
+```{r}
+exp(coef(mod_hur_nb1))
+```
+
+For example,
+
+- in the model for `physhealth` = 0, the odds of `physhealth` = 0 are 127% as high for subjects with `smoke100` = 1 as for non-smokers with the same BMI.
+
+### Testing the Predictors
+
+We can test the model with and without `bmi_c`, for example, by fitting the model both ways, and comparing the results with either a Wald or Likelihood Ratio test, each of which is available in the `lmtest` package.
+
+```{r}
+mod_hurnb1_nobmi <- pscl::hurdle(physhealth ~ smoke100,
+                         dist = "negbin", 
+                         zero.dist = "binomial",
+                         data = ohioA_young)
+
+lmtest::waldtest(mod_hur_nb1, mod_hurnb1_nobmi)
+```
+
+```{r}
+lmtest::lrtest(mod_hur_nb1, mod_hurnb1_nobmi)
+```
+
+
+### Store fitted values and residuals
+
+Again we need to build up the fitted values and residuals, without `broom` to help.
+
+```{r}
+sm_hur_nb1 <- ohioA_young |>
+    mutate(fitted = fitted(mod_hur_nb1, type = "response"),
+           resid = resid(mod_hur_nb1, type = "response"))
+
+sm_hur_nb1 |> 
+    dplyr::select(physhealth, fitted, resid) |>
+    head()
+```
+
+### Rootogram for NB Hurdle Model
+
+```{r}
+countreg::rootogram(mod_hur_nb1, max = 30)
+```
+
+This improves the situation, but we're still underfitting the 30s.
+
+### Specify the $R^2$ and log (likelihood) values
+
+We can calculate a proxy for $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(hurnb1_r <- with(sm_hur_nb1, cor(physhealth, fitted)))
+
+# R-square
+hurnb1_r^2
+```
+
+```{r}
+logLik(mod_hur_nb1)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Hurdle Model (Neg. Bin.) | Complex: log(`physhealth`) | .035 | -3469.07
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values on the original `physhealth` scale.
+
+```{r}
+ggplot(sm_hur_nb1, aes(x = fitted, y = resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted `physhealth`",
+         subtitle = "Hurdle model with Negative Binomial counts")
+```
+
+### Predictions for Harry and Sally
+
+The predictions from this zero-inflated negative binomial regression model are obtained as follows...
+
+```{r}
+predict(mod_hur_nb1, newdata = hs_data, type = "response")
+```
+
+The prediction for Harry is 6.22 days, and for Sally is 2.01 days. 
+
+### Note: Fitting a Different Hurdle Model for Counts and Pr(zero)
+
+Suppose we wanted to use only `bmi_c` to predict the probability of a zero count, but use both predictors in the model for the positive counts. We use the `|` command.
+
+```{r}
+mod_hur_new1 <- 
+    pscl::hurdle(physhealth ~ bmi_c + smoke100 | bmi_c,
+           dist = "negbin", zero.dist = "binomial",
+           data = ohioA_young)
+
+summary(mod_hur_new1)
+```
+
+### Hanging Rootogram for this new Hurdle Model
+
+```{r}
+countreg::rootogram(mod_hur_new1, max = 30)
+```
+
+Not a meaningful improvement, certainly.
+
+## A Tobit (Censored) Regression Model
+
+The idea of the **tobit** model (sometimes called a **censored regression** model) is to estimate associations for outcomes where we can see either left-censoring (censoring from below) or right-censoring (censoring from above.) 
+
+Consider the variable `physhealth`, which is restricted to fall between 0 and 30 by the way the measure was constructed. But supposed we think about a broader and latent (unobserved) variable describing physical health. Among the people with `physhealth` = 0, some would be incredible athletes and others would be in much poorer physical health but still healthy enough to truthfully answer 0. On the other end, some of the people responding 30 are in substantially worse physical health than others with that same response. 
+
+- Censoring from below takes place when values at or below a threshold (in this case 0) take that value.
+- Censoring from above takes place when values at or above a threshold (here, 30) take that value.
+
+Several examples of tobit analysis are available at https://stats.idre.ucla.edu/r/dae/tobit-models/, which is my primary source for the material here on those models.
+
+The tobit model postulates that the value 0 in our model is just the lower limit of the underlying measure of poor physical health that we would actually observe in the population if we had a stronger measure. Similarly, we'll postulate that 30 is just the upper limit of "poor health" that we can see. The approach I'll take to run the tobit model comes from the `vglm` function in the `VGAM` package.
+
+Here's the model, and its summary. Note that the default Lower value for a tobit model is 0, so we didn't technically have to list that here.
+
+```{r}
+mod_tob1 <- vglm(physhealth ~ bmi_c + smoke100, 
+                 tobit(Lower = 0, Upper = 30),
+                 type.fitted = "censored",
+                 data = ohioA_young)
+
+summary(mod_tob1)
+confint(mod_tob1)
+```
+
+### The Fitted Equation
+
+Because we've used the censoring approach, our model will limit its predictions to the range of [0, 30], where any predictions outside that range are censored. Values below 0 are fitted as 0, and values above 30 are fitted as 30.
+
+The model equation is 
+
+```
+physhealth = -9.29 + 0.37 bmi_c + 4.35 smoke100
+```
+### Interpreting the Coefficients
+
+Tobit model regression coefficients are interpreted as we would a set of OLS coefficients, *except* that the linear effect is on the uncensored *latent variable*, rather than on the observed outcome.
+
+In our case, 
+
+- a one-unit increase in `bmi_c` is associated with a 0.37 day increase in the predicted value of `physhealth`, holding `smoke100` constant
+- a move from `smoke100` = 0 to 1 is associated with a 4.35 day increase in the predicted value of `physhealth`, holding `bmi_c` constant
+- the coefficient labeled `(Intercept):1` is the intercept for the model and is the predicted value of `physhealth` when `smoke100` = 0 and `bmi_c` = 0. Note that this value is -9.29, which is outside the range of `physhealth` values we observed.
+- the coefficient labeled `(Intercept):2` is a statistic we can use after we exponentiate it, as follows:
+    - here `(Intercept):2` = 2.87, and exp(2.87) = `r exp(2.87)`, which is analogous to the square root of the residual variance in OLS regression, which is summarized for our OLS model as `Residual standard error: 17.64`.
+
+### Testing the Predictors
+
+We can test the model with and without `bmi_c`, for example, by fitting the model both ways, and comparing the results with either a Wald or Likelihood Ratio test, each of which is available in the `lmtest` package.
+
+```{r}
+mod_tob_nobmi <- vglm(physhealth ~ smoke100, 
+                      tobit(Lower = 0, Upper = 30),
+                      type.fitted = "censored",
+                      data = ohioA_young)
+
+lmtest::waldtest(mod_tob1, mod_tob_nobmi)
+```
+
+The likelihood ratio test we have used in some other settings isn't available here.
+
+### Store fitted values and residuals
+
+The residuals and fitted values from the tobit model can be stored and then summarized in several ways:
+
+```{r}
+sm_tob1 <- ohioA_young |>
+    mutate(fitted = fitted(mod_tob1,
+                           type.fitted = "censored"),
+           resid = physhealth - fitted)
+
+sm_tob1 |> 
+    dplyr::select(physhealth, fitted, resid) |>
+    head()
+```
+
+### Building Something Like a Rootogram
+
+Building a rootogram is tricky for a tobit model, to say the least, but we can approximate a piece of the issue by plotting the rounded fitted values against the observed `physhealth` data.
+
+```{r}
+ggplot(sm_tob1, aes(x = physhealth, y = round(fitted))) +
+    geom_jitter(width = 0.2) + 
+    geom_abline(intercept = 0, slope = 1, col = "red")
+```
+
+Note that the model never predicts a subject to have an underlying `physhealth` worse than about 13 (remember that larger numbers indicate worse health here.) 
+
+### Tables of the Observed and Fitted `physhealth` from Tobit
+
+```{r}
+addmargins(table(round(sm_tob1$physhealth)))
+```
+
+```{r}
+addmargins(table(round(sm_tob1$fitted)))
+```
+
+### Specify the $R^2$ and log (likelihood) values
+
+We can calculate a proxy for $R^2$ as the squared correlation of the fitted values and the observed values.
+
+```{r}
+# The correlation of observed and fitted values
+(tob1_r <- with(sm_tob1, cor(physhealth, fitted)))
+
+# R-square
+tob1_r^2
+```
+
+```{r}
+logLik(mod_tob1)
+```
+
+Here, we have
+
+Model | Scale | $R^2$ | log(likelihood)
+----------: | ------: | --------: | ---------:
+Tobit | `physhealth` | .008 | -3420.58
+
+### Check model assumptions
+
+Here is a plot of residuals vs. fitted values.
+
+```{r}
+ggplot(sm_tob1, aes(x = fitted, y = resid)) +
+    geom_point() +
+    labs(title = "Residuals vs. Fitted Values for Tobit 1")
+```
+
+Here is a normal Q-Q plot of the Tobit Model 1 residuals.
+
+```{r}
+qqnorm(sm_tob1$resid)
+```
+
+### Predictions for Harry and Sally
+
+The predictions from this tobit model are obtained as follows...
+
+```{r}
+predict(mod_tob1, newdata = hs_data, type = "response")
+```
+
+The prediction for both Harry and Sally under the tobit model would be truncated to 0 days. 
+
