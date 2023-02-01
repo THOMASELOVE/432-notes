@@ -10,6 +10,7 @@ book:
   date-format: iso
   chapters:
     - index.qmd
+    - incomplete.qmd
     - setup.qmd
     - nhanes.qmd
     - nh432cb.qmd
@@ -37,10 +38,16 @@ book:
     - count1.qmd
     - count2.qmd
     - count3.qmd
-    - incomplete.qmd
+    - ordinaloutcome.qmd
+    - multinomial.qmd
+    - survival_data.qmd
+    - cox1.qmd
+    - cox2.qmd
+    - references.qmd
 
 format:
   html:
     theme: cosmo
     code-overflow: wrap
+    bibliography: references.bib
 

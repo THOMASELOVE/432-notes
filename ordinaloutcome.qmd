@@ -1,19 +1,32 @@
-# Modeling an Ordinal Categorical Outcome in Ohio SMART
+# Modeling an Ordinal Categorical Outcome
 
-## Preliminaries
-
-```{r, message = FALSE}
-library(gmodels)
-library(nnet)
-```
+## R Setup Used Here
 
 ```{r}
-smart_oh <- readRDS(here("data", "smart_ohio.Rds"))
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(gmodels)
+library(MASS)
+library(nnet)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+smart_oh <- readRDS("data/smart_ohio.Rds")
 ```
 
 ## A subset of the Ohio SMART data
 
-Let's consider the following data. The outcome we'll study now is `genhealth`, which has five ordered categories. I'll include the subset of all observations in `smart_oh` with complete data on these 7 variables.
+Let's consider the following data, which uses part of the `smart_oh` data we built in @sec-smart. The outcome we'll study now is `genhealth`, which has five ordered categories. I'll include the subset of all observations in `smart_oh` with complete data on these 7 variables.
 
 Variable | Description
 --------: | -----------------------------------------------
@@ -28,11 +41,11 @@ Variable | Description
 To make my life easier later, I'm going to drop any subjects with missing data on these variables. I'm also going to drop the subjects who have no missing data, but have a listed `bmi` above 60.
 
 ```{r}
-sm1 <- smart_oh %>%
+sm1 <- smart_oh |>
     select(SEQNO, genhealth, physhealth, costprob, veg_day,
-           incomegroup, bmi) %>%
-    filter(bmi <= 60) %>%
-    drop_na
+           incomegroup, bmi) |>
+    filter(bmi <= 60) |>
+    drop_na()
 ```
 
 In total, we have `r nrow(sm1)` subjects in the `sm1` sample.
@@ -42,7 +55,7 @@ In total, we have `r nrow(sm1)` subjects in the `sm1` sample.
 We will store the information in our outcome, `genhealth` in both a numeric form (`gen_n`) and an ordered factor (`gen_h`) with some abbreviated labels) because we'll have some use for each approach in this material.
 
 ```{r}
-sm1 <- sm1 %>%
+sm1 <- sm1 |>
     mutate(genh = fct_recode(genhealth,
                              "1-E" = "1_Excellent",
                              "2_VG" = "2_VeryGood",
@@ -52,7 +65,7 @@ sm1 <- sm1 %>%
            genh = factor(genh, ordered = TRUE),
            gen_n = as.numeric(genhealth))
 
-sm1 %>% count(genh, gen_n, genhealth)
+sm1 |> count(genh, gen_n, genhealth)
 ```
 
 ## Building Cross-Tabulations
@@ -110,7 +123,7 @@ xtabs(~ incomegroup + genh, data = sm1)
 We can store the elements of a cross-tabulation in a tibble, like this:
 
 ```{r}
-(sm1.tableA <- sm1 %>% count(incomegroup, genh))
+(sm1.tableA <- sm1 |> count(incomegroup, genh))
 ```
 
 From such a tibble, we can visualize the data in many ways, but we can also return to `xtabs` and include the frequencies (`n`) in that setup.
@@ -178,7 +191,7 @@ To begin, we'll predict each subject's `genh` response using just one predictor,
 Let's start with a quick table of summary statistics.
 
 ```{r}
-sm1 %>% group_by(genh) %>%
+sm1 |> group_by(genh) |>
     summarize(n(), mean(veg_day), sd(veg_day), median(veg_day))
 ```
 
@@ -194,7 +207,7 @@ ggplot(sm1, aes(x = genhealth, y = veg_day)) +
 
 ### Describing the Proportional-Odds Cumulative Logit Model
 
-To fit the ordinal logistic regression model (specifically, a proportional-odds cumulative-logit model) in this situation, we'll use the `polr` function in the `MASS` library.
+To fit the ordinal logistic regression model (specifically, a proportional-odds cumulative-logit model) in this situation, we'll use the `polr` function in the `MASS` package.
 
 - Our outcome is `genh`, which has five ordered levels, with `1-E` best and `5-P` worst.
 - Our model will include one quantitative predictor, `veg_day`.
@@ -248,7 +261,7 @@ In this case, a positive coefficient $\beta_1$ for `veg_day` means that increasi
 
 ### Fitting a Proportional Odds Logistic Regression with `polr`
 
-Our model `m1` will use proportional odds logistic regression (sometimes called an *ordered logit* model) to predict `genh` on the basis of `veg_day`. The `polr` function can help us do this. Note that we include `Hess = TRUE` to retain what is called the *Hessian* matrix, which lets R calculate standard errors more effectively in `summary` and other follow-up descriptions of the model.
+Our model `m1` will use proportional odds logistic regression (sometimes called an *ordered logit* model) to predict `genh` on the basis of `veg_day`. The `polr` function from the MASS package will be our main tool. Note that we include `Hess = TRUE` to retain what is called the *Hessian* matrix, which lets R calculate standard errors more effectively in `summary` and other follow-up descriptions of the model.
 
 ```{r}
 m1 <- polr(genh ~ veg_day, 
@@ -273,8 +286,14 @@ We're going to start by using our model `m1` to predict the `genh` for Harry and
 For example, what are the log odds that Harry, with `veg_day` = 2, will describe his `genh` as Excellent (`genh` $\leq$ 1)?
 
 $$
-logit[Pr(genh \leq 1)] = \zeta_1 - \beta_1 veg\_day \\
-logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg\_day \\
+logit[Pr(genh \leq 1)] = \zeta_1 - \beta_1 veg\_day
+$$
+
+$$
+logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg\_day 
+$$
+
+$$
 logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) (2) = -1.7172
 $$
 
@@ -290,8 +309,14 @@ So the model estimates a 15% probability that Harry will describe his `genh` as 
 OK. Now, what are the log odds that Harry, who eats 2 servings per day, will describe his `genh` as either Excellent or Very Good (`genh` $\leq$ 2)?
 
 $$
-logit[Pr(genh \leq 2)] = \zeta_2 - \beta_1 veg\_day \\
+logit[Pr(genh \leq 2)] = \zeta_2 - \beta_1 veg\_day 
+$$
+
+$$
 logit[Pr(genh \leq 2)] = -0.4065 - (-0.1847) veg\_day \\
+$$
+
+$$
 logit[Pr(genh \leq 2)] = -0.4065 - (-0.1847) (2) = -0.0371
 $$
 
@@ -353,9 +378,18 @@ summary(m1)
 The first part of the output provides coefficient estimates for the `veg_day` predictor, and these are followed by the estimates for the various model intercepts. Plugging in the estimates, we have:
 
 $$ 
-logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg_day \\
-logit[Pr(genh \leq 2)]  = -0.4065 - (-0.1847) veg_day \\
-logit[Pr(genh \leq 3)]  =  1.0202 - (-0.1847) veg_day \\
+logit[Pr(genh \leq 1)] = -2.0866 - (-0.1847) veg_day 
+$$
+
+$$
+logit[Pr(genh \leq 2)]  = -0.4065 - (-0.1847) veg_day 
+$$
+
+$$
+logit[Pr(genh \leq 3)]  =  1.0202 - (-0.1847) veg_day 
+$$
+
+$$
 logit[Pr(genh \leq 4)] =  2.5002 - (-0.1847) veg_day 
 $$
 
@@ -506,7 +540,7 @@ Now, we'll model `genh` using `veg_day`, `bmi` and `costprob`.
 ### Scatterplot Matrix
 
 ```{r, message = FALSE}
-GGally::ggpairs(sm1 %>% 
+GGally::ggpairs(sm1 |> 
                     select(bmi, veg_day, costprob, genh))
 ```
 

@@ -1,14 +1,31 @@
-# Analyzing Literary Styles with Multinomial Logistic Regression
+# Multinomial Logistic Regression
 
-```{r add libraries you need, echo=FALSE, message=FALSE}
-library(nnet)
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(knitr)
 library(MASS)
-library(tidyverse)
+library(nnet)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+authorship <- read_csv("data/authorship.csv", show_col_types = FALSE) 
 ```
 
 ## The Authorship Example
 
-This example is based on the work of Jeffrey S. Simonoff (2003) *Analyzing Categorical Data* in Chapter 10. Related data and R code are available at http://people.stern.nyu.edu/jsimonof/AnalCatData/Splus/. Meanwhile, the data set and analysis are based on the work of Peng RD and Hengartner NW (2002) Quantitative analysis of literary styles, *The American Statistician*, 56, 175-185.
+This example is based on the work of Jeffrey S. Simonoff (2003) *Analyzing Categorical Data* in Chapter 10. Related data and R code are available at [this link](http://people.stern.nyu.edu/jsimonof/AnalCatData/Splus/). Meanwhile, the data set and analysis are based on the work of Peng RD and Hengartner NW (2002) Quantitative analysis of literary styles, *The American Statistician*, 56, 175-185.
 
 The `authorship.csv` data file contains 841 rows. Each row describes a block of text that contains 1700 total words from one of several books by four authors: Jane Austen (samples from 7 books), Jack London (6 books), John Milton (2 books), or William Shakespeare (12 books). The data include counts within the blocks of text of 69 function words, such as "a", "by", "no", "that" and "with". The goal of our analysis, mirroring that of Simonoff, will be to use the incidence of these function words to build a model that distinguishes the authors.
 
@@ -37,11 +54,11 @@ Again, following Simonoff, we will focus on 11 words from the set of 69 potentia
 - "be", "been", "had", "it", "may", "not", "on", "the", "upon", "was" and "which"
 
 ```{r}
-auth2 <- authorship %>%
+auth2 <- authorship |>
     select(Author, BookID, be, been, had, it, may, not, 
            on, the, upon, was, which)
 
-auth2.long <- auth2 %>%
+auth2.long <- auth2 |>
     gather("word", "n", 3:13)
 
 auth2.long
@@ -53,7 +70,6 @@ auth2.long
 ggplot(auth2.long, aes(x = Author, y = n)) +
     geom_boxplot() +
     facet_wrap(~ word, ncol = 3, scales = "free_y") + 
-    theme_bw() +
     labs(x = "", y = "")
 ```
 
@@ -78,7 +94,7 @@ z1 <- summary(authnom1)$coefficients/summary(authnom1)$standard.errors
 round(z1,2)
 
 p1 <- (1 - pnorm(abs(z1), 0, 1)) * 2
-pander(round(p1,3))
+kable(round(p1,3))
 ```
 
 Simonoff suggests that "been" and "may" can be dropped. What do we think?
@@ -205,7 +221,7 @@ been_dat
 Now, we gather the data by author name and probability
 
 ```{r}
-been_dat_long <- been_dat %>%
+been_dat_long <- been_dat |>
     gather("name", "prob", 2:5)
 been_dat_long
 ```
@@ -215,8 +231,7 @@ been_dat_long
 ```{r plot of estimated probabilities}
 ggplot(been_dat_long, aes(x = been_count, y = prob, 
                           col = name)) +
-    geom_line(size = 1.5) + 
-    theme_bw() + 
+    geom_line(linewidth = 1.5) +
     labs(x = "Count of the word `been`", 
          y = "Model probability")
 ```
@@ -234,7 +249,6 @@ been.long$Auth <- fct_relevel(been.long$Author,
 ggplot(been.long, aes(x = Auth, y = n, fill = Auth)) +
     geom_boxplot() +
     guides(fill = "none") +
-    theme_bw() +
     labs(x = "", y = "Count of the word `been`")
 ```
 

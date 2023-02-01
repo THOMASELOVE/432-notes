@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 28&nbsp; Multinomial Logistic Regression</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./survival_data.html" rel="next">
+<link href="./ordinaloutcome.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">28.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">28.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#the-authorship-example" id="toc-the-authorship-example" class="nav-link" data-scroll-target="#the-authorship-example"><span class="toc-section-number">28.2</span>  The Authorship Example</a></li>
+  <li><a href="#focus-on-11-key-words" id="toc-focus-on-11-key-words" class="nav-link" data-scroll-target="#focus-on-11-key-words"><span class="toc-section-number">28.3</span>  Focus on 11 key words</a>
+  <ul class="collapse">
+  <li><a href="#side-by-side-boxplots" id="toc-side-by-side-boxplots" class="nav-link" data-scroll-target="#side-by-side-boxplots"><span class="toc-section-number">28.3.1</span>  Side by Side Boxplots</a></li>
+  </ul></li>
+  <li><a href="#a-multinomial-logistic-regression-model" id="toc-a-multinomial-logistic-regression-model" class="nav-link" data-scroll-target="#a-multinomial-logistic-regression-model"><span class="toc-section-number">28.4</span>  A Multinomial Logistic Regression Model</a>
+  <ul class="collapse">
+  <li><a href="#testing-model-1" id="toc-testing-model-1" class="nav-link" data-scroll-target="#testing-model-1"><span class="toc-section-number">28.4.1</span>  Testing Model 1</a></li>
+  </ul></li>
+  <li><a href="#model-2" id="toc-model-2" class="nav-link" data-scroll-target="#model-2"><span class="toc-section-number">28.5</span>  Model 2</a>
+  <ul class="collapse">
+  <li><a href="#comparing-model-2-to-model-1" id="toc-comparing-model-2-to-model-1" class="nav-link" data-scroll-target="#comparing-model-2-to-model-1"><span class="toc-section-number">28.5.1</span>  Comparing Model 2 to Model 1</a></li>
+  <li><a href="#testing-model-2" id="toc-testing-model-2" class="nav-link" data-scroll-target="#testing-model-2"><span class="toc-section-number">28.5.2</span>  Testing Model 2</a></li>
+  <li><a href="#a-little-history" id="toc-a-little-history" class="nav-link" data-scroll-target="#a-little-history"><span class="toc-section-number">28.5.3</span>  A little history</a></li>
+  </ul></li>
+  <li><a href="#classification-table" id="toc-classification-table" class="nav-link" data-scroll-target="#classification-table"><span class="toc-section-number">28.6</span>  Classification Table</a></li>
+  <li><a href="#probability-curves-based-on-a-single-predictor" id="toc-probability-curves-based-on-a-single-predictor" class="nav-link" data-scroll-target="#probability-curves-based-on-a-single-predictor"><span class="toc-section-number">28.7</span>  Probability Curves based on a Single Predictor</a>
+  <ul class="collapse">
+  <li><a href="#produce-the-plot-of-estimated-probabilities-based-on-been-counts" id="toc-produce-the-plot-of-estimated-probabilities-based-on-been-counts" class="nav-link" data-scroll-target="#produce-the-plot-of-estimated-probabilities-based-on-been-counts"><span class="toc-section-number">28.7.1</span>  Produce the Plot of Estimated Probabilities based on “been” counts</a></li>
+  <li><a href="#boxplot-of-been-counts" id="toc-boxplot-of-been-counts" class="nav-link" data-scroll-target="#boxplot-of-been-counts"><span class="toc-section-number">28.7.2</span>  Boxplot of “been” counts</a></li>
+  <li><a href="#quote-sources" id="toc-quote-sources" class="nav-link" data-scroll-target="#quote-sources"><span class="toc-section-number">28.7.3</span>  Quote Sources</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">28.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="28.1.1">
+<h3 data-number="28.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">28.1.1</span> Data Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>authorship <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/authorship.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="the-authorship-example" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="the-authorship-example"><span class="header-section-number">28.2</span> The Authorship Example</h2>
+<p>This example is based on the work of Jeffrey S. Simonoff (2003) <em>Analyzing Categorical Data</em> in Chapter 10. Related data and R code are available at <a href="http://people.stern.nyu.edu/jsimonof/AnalCatData/Splus/">this link</a>. Meanwhile, the data set and analysis are based on the work of Peng RD and Hengartner NW (2002) Quantitative analysis of literary styles, <em>The American Statistician</em>, 56, 175-185.</p>
+<p>The <code>authorship.csv</code> data file contains 841 rows. Each row describes a block of text that contains 1700 total words from one of several books by four authors: Jane Austen (samples from 7 books), Jack London (6 books), John Milton (2 books), or William Shakespeare (12 books). The data include counts within the blocks of text of 69 function words, such as “a”, “by”, “no”, “that” and “with”. The goal of our analysis, mirroring that of Simonoff, will be to use the incidence of these function words to build a model that distinguishes the authors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>authorship<span class="sc">$</span>Author <span class="ot">&lt;-</span> <span class="fu">factor</span>(authorship<span class="sc">$</span>Author, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Shakespeare"</span>, <span class="st">"Austen"</span>, <span class="st">"London"</span>, <span class="st">"Milton"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>authorship</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 841 × 71
+   BookID Author     a   all  also    an   and   any   are    as    at    be
+    &lt;dbl&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1      1 Austen    46    12     0     3    66     9     4    16    13    13
+ 2      1 Austen    35    10     0     7    44     4     3    18    16     9
+ 3      1 Austen    46     2     0     3    40     1    13    11     9    23
+ 4      1 Austen    40     7     0     4    64     3     3    20    13    20
+ 5      1 Austen    29     5     0     6    52     5    14    17     6    16
+ 6      1 Austen    27     8     0     3    42     2    15    11    14    12
+ 7      1 Austen    34     8     0    15    44     2     6    16    14    11
+ 8      1 Austen    38     6     1     2    67     3     6    17     4    21
+ 9      1 Austen    34    12     0     5    50     2     8     7    13     7
+10      1 Austen    54     8     0     6    44     4     8    13    17    14
+# … with 831 more rows, and 59 more variables: been &lt;dbl&gt;, but &lt;dbl&gt;, by &lt;dbl&gt;,
+#   can &lt;dbl&gt;, do &lt;dbl&gt;, down &lt;dbl&gt;, even &lt;dbl&gt;, every &lt;dbl&gt;, `for` &lt;dbl&gt;,
+#   from &lt;dbl&gt;, had &lt;dbl&gt;, has &lt;dbl&gt;, have &lt;dbl&gt;, her &lt;dbl&gt;, his &lt;dbl&gt;,
+#   `if` &lt;dbl&gt;, `in` &lt;dbl&gt;, into &lt;dbl&gt;, is &lt;dbl&gt;, it &lt;dbl&gt;, its &lt;dbl&gt;,
+#   may &lt;dbl&gt;, more &lt;dbl&gt;, must &lt;dbl&gt;, my &lt;dbl&gt;, no &lt;dbl&gt;, not &lt;dbl&gt;,
+#   now &lt;dbl&gt;, of &lt;dbl&gt;, on &lt;dbl&gt;, one &lt;dbl&gt;, only &lt;dbl&gt;, or &lt;dbl&gt;, our &lt;dbl&gt;,
+#   should &lt;dbl&gt;, so &lt;dbl&gt;, some &lt;dbl&gt;, such &lt;dbl&gt;, than &lt;dbl&gt;, that &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>To-morrow, and to-morrow, and to-morrow, Creeps in this petty pace from day to day, To the last syllable of recorded time; And all our yesterdays have lighted fools The way to dusty death. Out, out, brief candle! Life’s but a walking shadow, a poor player, That struts and frets his hour upon the stage, And then is heard no more. It is a tale Told by an idiot, full of sound and fury, Signifying nothing.</p>
+</blockquote>
+</section>
+<section id="focus-on-11-key-words" class="level2" data-number="28.3">
+<h2 data-number="28.3" class="anchored" data-anchor-id="focus-on-11-key-words"><span class="header-section-number">28.3</span> Focus on 11 key words</h2>
+<p>Again, following Simonoff, we will focus on 11 words from the set of 69 potential predictors in the data, specifically…</p>
+<ul>
+<li>“be”, “been”, “had”, “it”, “may”, “not”, “on”, “the”, “upon”, “was” and “which”</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>auth2 <span class="ot">&lt;-</span> authorship <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Author, BookID, be, been, had, it, may, not, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>           on, the, upon, was, which)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>auth2.long <span class="ot">&lt;-</span> auth2 <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gather</span>(<span class="st">"word"</span>, <span class="st">"n"</span>, <span class="dv">3</span><span class="sc">:</span><span class="dv">13</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>auth2.long</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9,251 × 4
+   Author BookID word      n
+   &lt;fct&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+ 1 Austen      1 be       13
+ 2 Austen      1 be        9
+ 3 Austen      1 be       23
+ 4 Austen      1 be       20
+ 5 Austen      1 be       16
+ 6 Austen      1 be       12
+ 7 Austen      1 be       11
+ 8 Austen      1 be       21
+ 9 Austen      1 be        7
+10 Austen      1 be       14
+# … with 9,241 more rows</code></pre>
+</div>
+</div>
+<section id="side-by-side-boxplots" class="level3" data-number="28.3.1">
+<h3 data-number="28.3.1" class="anchored" data-anchor-id="side-by-side-boxplots"><span class="header-section-number">28.3.1</span> Side by Side Boxplots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(auth2.long, <span class="fu">aes</span>(<span class="at">x =</span> Author, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> word, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="multinomial_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Oh! do not attack me with your watch. A watch is always too fast or too slow. I cannot be dictated to by a watch.</p>
+</blockquote>
+</section>
+</section>
+<section id="a-multinomial-logistic-regression-model" class="level2" data-number="28.4">
+<h2 data-number="28.4" class="anchored" data-anchor-id="a-multinomial-logistic-regression-model"><span class="header-section-number">28.4</span> A Multinomial Logistic Regression Model</h2>
+<p>Let’s start with a multinomial model to predict <code>Author</code> on the basis of these 11 key predictors, using the <code>multinom</code> function from the <code>nnet</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>authnom1 <span class="ot">&lt;-</span> <span class="fu">multinom</span>(Author <span class="sc">~</span> be <span class="sc">+</span> been <span class="sc">+</span> had <span class="sc">+</span> it <span class="sc">+</span> may <span class="sc">+</span> not <span class="sc">+</span> on <span class="sc">+</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                         the <span class="sc">+</span> upon <span class="sc">+</span> was <span class="sc">+</span> which, <span class="at">data=</span>authorship, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">maxit=</span><span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  52 (36 variable)
+initial  value 1165.873558 
+iter  10 value 293.806160
+iter  20 value 273.554538
+iter  30 value 192.309644
+iter  40 value 71.091334
+iter  50 value 48.419335
+iter  60 value 46.808141
+iter  70 value 46.184752
+iter  80 value 46.026162
+iter  90 value 45.932823
+iter 100 value 45.897793
+iter 110 value 45.868017
+iter 120 value 45.863256
+final  value 45.863228 
+converged</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(authnom1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = Author ~ be + been + had + it + may + not + 
+    on + the + upon + was + which, data = authorship, maxit = 200)
+
+Coefficients:
+       (Intercept)          be       been       had          it         may
+Austen  -15.504834  0.48974946  0.5380318 0.4620513  0.00388835 -0.15025084
+London  -14.671720 -0.07497073  0.1733116 0.4842272  0.08674782 -0.01590702
+Milton   -1.776866 -0.10891178 -0.9127155 0.5319573 -0.82046587 -0.06760436
+               not        on         the      upon       was       which
+Austen -0.08861462 0.5967404 -0.02361614 -2.119001 0.7021371  0.10370827
+London -0.32567063 0.5749969  0.12039782 -1.914428 0.6767581 -0.59121054
+Milton  0.05575887 0.5198173  0.08739368 -2.042475 0.3048202 -0.05939104
+
+Std. Errors:
+       (Intercept)        be      been       had         it       may       not
+Austen    4.892258 0.1643694 0.3117357 0.2695081 0.09554376 0.3008164 0.1078329
+London    5.372898 0.1916618 0.3308759 0.2812555 0.11355697 0.4946804 0.1440760
+Milton    5.417300 0.1613282 0.5910561 0.3187304 0.23015421 0.3500753 0.1309306
+              on        the      upon       was     which
+Austen 0.2213827 0.03457288 0.6426484 0.1808681 0.1646472
+London 0.2251642 0.03088881 0.7072129 0.1768901 0.2542886
+Milton 0.2223575 0.04783646 0.6436399 0.1820885 0.2111105
+
+Residual Deviance: 91.72646 
+AIC: 163.7265 </code></pre>
+</div>
+</div>
+<section id="testing-model-1" class="level3" data-number="28.4.1">
+<h3 data-number="28.4.1" class="anchored" data-anchor-id="testing-model-1"><span class="header-section-number">28.4.1</span> Testing Model 1</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>z1 <span class="ot">&lt;-</span> <span class="fu">summary</span>(authnom1)<span class="sc">$</span>coefficients<span class="sc">/</span><span class="fu">summary</span>(authnom1)<span class="sc">$</span>standard.errors</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(z1,<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       (Intercept)    be  been  had    it   may   not   on   the  upon  was
+Austen       -3.17  2.98  1.73 1.71  0.04 -0.50 -0.82 2.70 -0.68 -3.30 3.88
+London       -2.73 -0.39  0.52 1.72  0.76 -0.03 -2.26 2.55  3.90 -2.71 3.83
+Milton       -0.33 -0.68 -1.54 1.67 -3.56 -0.19  0.43 2.34  1.83 -3.17 1.67
+       which
+Austen  0.63
+London -2.32
+Milton -0.28</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z1), <span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(p1,<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">(Intercept)</th>
+<th style="text-align: right;">be</th>
+<th style="text-align: right;">been</th>
+<th style="text-align: right;">had</th>
+<th style="text-align: right;">it</th>
+<th style="text-align: right;">may</th>
+<th style="text-align: right;">not</th>
+<th style="text-align: right;">on</th>
+<th style="text-align: right;">the</th>
+<th style="text-align: right;">upon</th>
+<th style="text-align: right;">was</th>
+<th style="text-align: right;">which</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Austen</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: right;">0.086</td>
+<td style="text-align: right;">0.968</td>
+<td style="text-align: right;">0.617</td>
+<td style="text-align: right;">0.411</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.495</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.529</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">London</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.696</td>
+<td style="text-align: right;">0.600</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">0.445</td>
+<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">0.024</td>
+<td style="text-align: right;">0.011</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Milton</td>
+<td style="text-align: right;">0.743</td>
+<td style="text-align: right;">0.500</td>
+<td style="text-align: right;">0.123</td>
+<td style="text-align: right;">0.095</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.847</td>
+<td style="text-align: right;">0.670</td>
+<td style="text-align: right;">0.019</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.094</td>
+<td style="text-align: right;">0.778</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Simonoff suggests that “been” and “may” can be dropped. What do we think?</p>
+<blockquote class="blockquote">
+<p>The proper function of man is to live, not to exist. I shall not waste my days in trying to prolong them. I shall use my time.</p>
+</blockquote>
+</section>
+</section>
+<section id="model-2" class="level2" data-number="28.5">
+<h2 data-number="28.5" class="anchored" data-anchor-id="model-2"><span class="header-section-number">28.5</span> Model 2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>authnom2 <span class="ot">&lt;-</span> <span class="fu">multinom</span>(Author <span class="sc">~</span> be <span class="sc">+</span> had <span class="sc">+</span> it <span class="sc">+</span> not <span class="sc">+</span> on <span class="sc">+</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                         the <span class="sc">+</span> upon <span class="sc">+</span> was <span class="sc">+</span> which, <span class="at">data=</span>authorship, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">maxit=</span><span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  44 (30 variable)
+initial  value 1165.873558 
+iter  10 value 304.985478
+iter  20 value 285.428679
+iter  30 value 143.301103
+iter  40 value 54.589791
+iter  50 value 52.140470
+iter  60 value 51.421454
+iter  70 value 51.012790
+iter  80 value 50.888718
+iter  90 value 50.834262
+iter 100 value 50.743136
+final  value 50.743111 
+converged</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(authnom2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = Author ~ be + had + it + not + on + the + 
+    upon + was + which, data = authorship, maxit = 200)
+
+Coefficients:
+       (Intercept)          be       had          it         not        on
+Austen   -16.55647  0.45995950 0.6698612  0.02621612 -0.03684654 0.4676716
+London   -16.06419 -0.13378141 0.6052164  0.10517792 -0.27934022 0.4958923
+Milton    -2.22344 -0.07031256 0.1737526 -0.81984885  0.05444678 0.5363108
+                the      upon       was       which
+Austen -0.001852454 -1.950761 0.6543956  0.06363998
+London  0.128565811 -1.643829 0.6418607 -0.54690144
+Milton  0.074236636 -1.762533 0.2932065 -0.08748272
+
+Std. Errors:
+       (Intercept)        be       had         it        not        on
+Austen    4.723001 0.1293729 0.2201823 0.08657746 0.08771157 0.1949021
+London    5.202732 0.1587639 0.2306803 0.10117217 0.11608348 0.2072383
+Milton    4.593806 0.1499103 0.2057258 0.21551377 0.12103678 0.1895226
+              the      upon       was     which
+Austen 0.02945139 0.5620273 0.1524982 0.1466250
+London 0.02739965 0.6219927 0.1512911 0.2087120
+Milton 0.04463721 0.6246766 0.1601393 0.1928361
+
+Residual Deviance: 101.4862 
+AIC: 161.4862 </code></pre>
+</div>
+</div>
+<section id="comparing-model-2-to-model-1" class="level3" data-number="28.5.1">
+<h3 data-number="28.5.1" class="anchored" data-anchor-id="comparing-model-2-to-model-1"><span class="header-section-number">28.5.1</span> Comparing Model 2 to Model 1</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(authnom1, authnom2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio tests of Multinomial Models
+
+Response: Author
+                                                             Model Resid. df
+1              be + had + it + not + on + the + upon + was + which      2493
+2 be + been + had + it + may + not + on + the + upon + was + which      2487
+  Resid. Dev   Test    Df LR stat.   Pr(Chi)
+1  101.48622                                
+2   91.72646 1 vs 2     6 9.759767 0.1351402</code></pre>
+</div>
+</div>
+</section>
+<section id="testing-model-2" class="level3" data-number="28.5.2">
+<h3 data-number="28.5.2" class="anchored" data-anchor-id="testing-model-2"><span class="header-section-number">28.5.2</span> Testing Model 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>z2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(authnom2)<span class="sc">$</span>coefficients<span class="sc">/</span><span class="fu">summary</span>(authnom2)<span class="sc">$</span>standard.errors</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(z2,<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       (Intercept)    be  had    it   not   on   the  upon  was which
+Austen       -3.51  3.56 3.04  0.30 -0.42 2.40 -0.06 -3.47 4.29  0.43
+London       -3.09 -0.84 2.62  1.04 -2.41 2.39  4.69 -2.64 4.24 -2.62
+Milton       -0.48 -0.47 0.84 -3.80  0.45 2.83  1.66 -2.82 1.83 -0.45</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z2), <span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(p2,<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       (Intercept)    be   had    it   not    on   the  upon   was which
+Austen       0.000 0.000 0.002 0.762 0.674 0.016 0.950 0.001 0.000 0.664
+London       0.002 0.399 0.009 0.299 0.016 0.017 0.000 0.008 0.000 0.009
+Milton       0.628 0.639 0.398 0.000 0.653 0.005 0.096 0.005 0.067 0.650</code></pre>
+</div>
+</div>
+</section>
+<section id="a-little-history" class="level3" data-number="28.5.3">
+<h3 data-number="28.5.3" class="anchored" data-anchor-id="a-little-history"><span class="header-section-number">28.5.3</span> A little history</h3>
+<p>Simonoff has an interesting note: Consider the lifetimes of these four authors:</p>
+<ul>
+<li>William Shakespeare was born in 1564 and died in 1616</li>
+<li>John Milton was born in 1608 (44 years after Shakespeare) and died in 1674</li>
+<li>Jane Austen was born in 1775 (211 years after Shakespeare) and died in 1817</li>
+<li>Jack London was born in 1876 (312 years after Shakespeare) and died in 1916</li>
+</ul>
+<p>How many significant coefficients does each author display relative to Shakespeare?</p>
+</section>
+</section>
+<section id="classification-table" class="level2" data-number="28.6">
+<h2 data-number="28.6" class="anchored" data-anchor-id="classification-table"><span class="header-section-number">28.6</span> Classification Table</h2>
+<p>How well does this model (model 2) distinguish these authors based on blocks of 1700 words of text?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(authorship<span class="sc">$</span>Author, <span class="fu">predict</span>(authnom2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             
+              Shakespeare Austen London Milton
+  Shakespeare         168      3      1      1
+  Austen                4    308      5      0
+  London                0      1    294      1
+  Milton                2      0      1     52</code></pre>
+</div>
+</div>
+<p>Based on this classification table, I’d say it does a nice job. Almost 98% of the blocks of text are correctly classified.</p>
+<blockquote class="blockquote">
+<p>Fly, envious Time, till thou run out thy race; Call on the lazy leaden-stepping hours, Whose speed is but the heavy plummet’s pace; And glut thyself with what thy womb devours, Which is no more then what is false and vain, And merely mortal dross; So little is our loss, So little is thy gain. For when, as each thing bad thou hast entomb’d And last of all thy greedy self consumed, Then long Eternity shall greet our bliss, With an individual kiss; And Joy shall overtake us, as a flood, When every thing that is sincerely good, And perfectly divine, With truth, and peace, and love, shall ever shine, About the supreme throne Of Him, to whose happy-making sight, alone, When once our heavenly-guided soul shall climb, Then all this earthly grossness quit, Attired with stars, we shall for ever sit, Triumphing over Death, and Chance, and thee, O Time!</p>
+</blockquote>
+</section>
+<section id="probability-curves-based-on-a-single-predictor" class="level2" data-number="28.7">
+<h2 data-number="28.7" class="anchored" data-anchor-id="probability-curves-based-on-a-single-predictor"><span class="header-section-number">28.7</span> Probability Curves based on a Single Predictor</h2>
+<p>In situations where only one predictor is used, we can develop nice plots of estimated probabilities for each group as a function of the predictor. Suppose we look at the single word “been” (note that this was left out of Model 2.)</p>
+<p>Note that the possible values for counts of “been” in the data range from 0 to 27…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(authorship<span class="sc">$</span>been)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   2.000   4.000   4.614   7.000  27.000 </code></pre>
+</div>
+</div>
+<p>Now, we’ll build a model to predict the author based solely on the counts of the word “been”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>authnom3 <span class="ot">&lt;-</span> <span class="fu">multinom</span>(Author <span class="sc">~</span> been, </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span>authorship, <span class="at">maxit=</span><span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  12 (6 variable)
+initial  value 1165.873558 
+iter  10 value 757.915093
+iter  20 value 755.454631
+final  value 755.454551 
+converged</code></pre>
+</div>
+</div>
+<p>Next, we’ll build a grid of the predicted log odds for each author (as compared to Shakespeare) using the fitted coefficients. The grid will cover every possible value from 0 to 27, increasing by 0.1, using the following trick in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>beengrid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>,<span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">270</span>)<span class="sc">/</span><span class="dv">10</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>austenlogit <span class="ot">&lt;-</span> beengrid <span class="sc">%*%</span> <span class="fu">coef</span>(authnom3)[<span class="dv">1</span>,]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>londonlogit <span class="ot">&lt;-</span> beengrid <span class="sc">%*%</span> <span class="fu">coef</span>(authnom3)[<span class="dv">2</span>,]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>miltonlogit <span class="ot">&lt;-</span> beengrid <span class="sc">%*%</span> <span class="fu">coef</span>(authnom3)[<span class="dv">3</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we’ll use that grid of logit values to estimate the fitted probabilities for each value of “been” between 0 and 27.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>austenprob <span class="ot">&lt;-</span> <span class="fu">exp</span>(austenlogit)<span class="sc">/</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">exp</span>(austenlogit) <span class="sc">+</span> <span class="fu">exp</span>(londonlogit) <span class="sc">+</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">exp</span>(miltonlogit) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>londonprob <span class="ot">&lt;-</span> <span class="fu">exp</span>(londonlogit)<span class="sc">/</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">exp</span>(austenlogit) <span class="sc">+</span> <span class="fu">exp</span>(londonlogit) <span class="sc">+</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>         <span class="fu">exp</span>(miltonlogit) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>miltonprob <span class="ot">&lt;-</span> <span class="fu">exp</span>(miltonlogit)<span class="sc">/</span> </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">exp</span>(austenlogit) <span class="sc">+</span> <span class="fu">exp</span>(londonlogit) <span class="sc">+</span> </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>         <span class="fu">exp</span>(miltonlogit) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>shakesprob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> austenprob <span class="sc">-</span> londonprob <span class="sc">-</span> miltonprob</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>been_dat <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(<span class="at">been_count =</span> beengrid[,<span class="dv">2</span>], </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>                       <span class="at">austen =</span> austenprob[,<span class="dv">1</span>], </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">london =</span> londonprob[,<span class="dv">1</span>], </span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">milton =</span> miltonprob[,<span class="dv">1</span>], </span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>                       <span class="at">shakespeare =</span> shakesprob[,<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `data_frame()` was deprecated in tibble 1.1.0.
+ℹ Please use `tibble()` instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>been_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 271 × 5
+   been_count austen london milton shakespeare
+        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+ 1        0   0.0258  0.136  0.285       0.553
+ 2        0.1 0.0288  0.147  0.272       0.553
+ 3        0.2 0.0321  0.158  0.258       0.551
+ 4        0.3 0.0357  0.171  0.245       0.548
+ 5        0.4 0.0396  0.184  0.232       0.545
+ 6        0.5 0.0438  0.197  0.219       0.540
+ 7        0.6 0.0484  0.211  0.207       0.534
+ 8        0.7 0.0534  0.225  0.195       0.527
+ 9        0.8 0.0587  0.240  0.183       0.518
+10        0.9 0.0644  0.256  0.171       0.509
+# … with 261 more rows</code></pre>
+</div>
+</div>
+<p>Now, we gather the data by author name and probability</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>been_dat_long <span class="ot">&lt;-</span> been_dat <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gather</span>(<span class="st">"name"</span>, <span class="st">"prob"</span>, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>been_dat_long</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,084 × 3
+   been_count name     prob
+        &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1        0   austen 0.0258
+ 2        0.1 austen 0.0288
+ 3        0.2 austen 0.0321
+ 4        0.3 austen 0.0357
+ 5        0.4 austen 0.0396
+ 6        0.5 austen 0.0438
+ 7        0.6 austen 0.0484
+ 8        0.7 austen 0.0534
+ 9        0.8 austen 0.0587
+10        0.9 austen 0.0644
+# … with 1,074 more rows</code></pre>
+</div>
+</div>
+<section id="produce-the-plot-of-estimated-probabilities-based-on-been-counts" class="level3" data-number="28.7.1">
+<h3 data-number="28.7.1" class="anchored" data-anchor-id="produce-the-plot-of-estimated-probabilities-based-on-been-counts"><span class="header-section-number">28.7.1</span> Produce the Plot of Estimated Probabilities based on “been” counts</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(been_dat_long, <span class="fu">aes</span>(<span class="at">x =</span> been_count, <span class="at">y =</span> prob, </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">col =</span> name)) <span class="sc">+</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Count of the word `been`"</span>, </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Model probability"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="multinomial_files/figure-html/plot of estimated probabilities-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="boxplot-of-been-counts" class="level3" data-number="28.7.2">
+<h3 data-number="28.7.2" class="anchored" data-anchor-id="boxplot-of-been-counts"><span class="header-section-number">28.7.2</span> Boxplot of “been” counts</h3>
+<p>Compare this to what we see in the raw counts of the word “been”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>been.long <span class="ot">&lt;-</span> <span class="fu">filter</span>(auth2.long, word <span class="sc">==</span> <span class="st">"been"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>been.long<span class="sc">$</span>Auth <span class="ot">&lt;-</span> <span class="fu">fct_relevel</span>(been.long<span class="sc">$</span>Author, </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Austen"</span>, <span class="st">"London"</span>, <span class="st">"Milton"</span>, <span class="st">"Shakespeare"</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># releveling to make the colors match the model plot</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(been.long, <span class="fu">aes</span>(<span class="at">x =</span> Auth, <span class="at">y =</span> n, <span class="at">fill =</span> Auth)) <span class="sc">+</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Count of the word `been`"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="multinomial_files/figure-html/side by side boxplot of been by author-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="quote-sources" class="level3" data-number="28.7.3">
+<h3 data-number="28.7.3" class="anchored" data-anchor-id="quote-sources"><span class="header-section-number">28.7.3</span> Quote Sources</h3>
+<ol type="1">
+<li>To-morrow, and to-morrow, and to-morrow … Shakespeare <em>Macbeth</em> Act 5.</li>
+<li>Oh! do not attack me with your watch. … Jane Austen <em>Mansfield Park</em></li>
+<li>The proper function of man is to live, not to exist. … Jack London <em>The Bulletin</em> San Francisco 1916-12-02.</li>
+<li>Fly, envious Time, till thou run out thy race … John Milton <em>On Time</em></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ordinaloutcome.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./survival_data.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

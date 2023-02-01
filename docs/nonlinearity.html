@@ -83,6 +83,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -161,6 +180,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -300,7 +324,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
@@ -386,7 +435,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="the-pollution-data" class="level2" data-number="13.2">
 <h2 data-number="13.2" class="anchored" data-anchor-id="the-pollution-data"><span class="header-section-number">13.2</span> The <code>pollution</code> data</h2>
-<p>Consider the <code>pollution</code> data set, which contain 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961. The data come from <span class="citation" data-cites="McDonald1973">@McDonald1973</span>, and are available at http://www4.stat.ncsu.edu/~boos/var.select/pollution.html and our web site.</p>
+<p>Consider the <code>pollution</code> data set, which contain 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961. The data come from <span class="citation" data-cites="McDonald1973">McDonald and Schwing (<a href="references.html#ref-McDonald1973" role="doc-biblioref">1973</a>)</span>, and are available at http://www4.stat.ncsu.edu/~boos/var.select/pollution.html and our web site.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pollution</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1134,7 +1183,7 @@ $colnames
 <li>Sometimes I hold myself to a tougher standard, or <span class="math inline">\(n / 50\)</span> predictors, at maximum.</li>
 </ul>
 <p>So if you have 97 observations in your data, then you can probably just barely justify the use of a stepwise analysis using the main effects alone of 5 candidate variables (with one additional DF for the intercept term) using the <span class="math inline">\(n/15\)</span> limit.</p>
-<p><span class="citation" data-cites="Harrell2001">@Harrell2001</span> also mentions that if you have a <strong>narrowly distributed</strong> predictor, without a lot of variation to work with, then an even larger sample size <span class="math inline">\(n\)</span> should be required. See <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, Section 10.3 for more details.</p>
+<p><span class="citation" data-cites="Harrell2001">Harrell (<a href="references.html#ref-Harrell2001" role="doc-biblioref">2001</a>)</span> also mentions that if you have a <strong>narrowly distributed</strong> predictor, without a lot of variation to work with, then an even larger sample size <span class="math inline">\(n\)</span> should be required. See <span class="citation" data-cites="Vittinghoff2012">Vittinghoff et al. (<a href="references.html#ref-Vittinghoff2012" role="doc-biblioref">2012</a>)</span>, Section 10.3 for more details.</p>
 </section>
 <section id="the-importance-of-collinearity" class="level3" data-number="13.8.2">
 <h3 data-number="13.8.2" class="anchored" data-anchor-id="the-importance-of-collinearity"><span class="header-section-number">13.8.2</span> The Importance of Collinearity</h3>
@@ -1142,7 +1191,7 @@ $colnames
 <p>Collinearity denotes correlation between predictors high enough to degrade the precision of the regression coefficient estimates substantially for some or all of the correlated predictors</p>
 </blockquote>
 <ul>
-<li><p><span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, section 10.4.1</p></li>
+<li><p><span class="citation" data-cites="Vittinghoff2012">Vittinghoff et al. (<a href="references.html#ref-Vittinghoff2012" role="doc-biblioref">2012</a>)</span>, section 10.4.1</p></li>
 <li><p>Can one predictor in a model be predicted well using the other predictors in the model?</p>
 <ul>
 <li>Strong correlations (for instance, <span class="math inline">\(r \geq 0.8\)</span>) are especially troublesome.</li>
@@ -1173,7 +1222,7 @@ $colnames
 <ul>
 <li>When we are attempting to <strong>identify multiple independent predictors</strong> (the explanatory model approach), then we will need to choose between collinear variables
 <ul>
-<li>options suggested by <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span>, p.&nbsp;422, include choosing on the basis of plausibility as a causal factor,</li>
+<li>options suggested by <span class="citation" data-cites="Vittinghoff2012">Vittinghoff et al. (<a href="references.html#ref-Vittinghoff2012" role="doc-biblioref">2012</a>)</span>, p.&nbsp;422, include choosing on the basis of plausibility as a causal factor,</li>
 <li>choosing the variable that has higher data quality (is measured more accurately or has fewer missing values.)</li>
 <li>Often, we choose to include a variable that is statistically significant as a predictor, and drop others, should we be so lucky.</li>
 </ul></li>
@@ -1199,7 +1248,7 @@ $colnames
 </section>
 <section id="spending-df-on-non-linearity-the-spearman-plot" class="level2" data-number="13.9">
 <h2 data-number="13.9" class="anchored" data-anchor-id="spending-df-on-non-linearity-the-spearman-plot"><span class="header-section-number">13.9</span> Spending DF on Non-Linearity: The Spearman Plot</h2>
-<p>We need a flexible approach to assessing non-linearity and fitting models with non-linear predictors. This will lead us to a measure of what <span class="citation" data-cites="Harrell2001">@Harrell2001</span> calls <strong>potential predictive punch</strong> which hides the true form of the regression from the analyst so as to preserve statistical properties, but that lets us make sensible decisions about whether a predictor should be included in a model, and the number of parameters (degrees of freedom, essentially) we are willing to devote to it.</p>
+<p>We need a flexible approach to assessing non-linearity and fitting models with non-linear predictors. This will lead us to a measure of what <span class="citation" data-cites="Harrell2001">Harrell (<a href="references.html#ref-Harrell2001" role="doc-biblioref">2001</a>)</span> calls <strong>potential predictive punch</strong> which hides the true form of the regression from the analyst so as to preserve statistical properties, but that lets us make sensible decisions about whether a predictor should be included in a model, and the number of parameters (degrees of freedom, essentially) we are willing to devote to it.</p>
 <p>What if we want to consider where best to spend our degrees of freedom on non-linear predictor terms, like interactions, polynomial functions or curved splines to represent our input data? The approach we’ll find useful in the largest variety of settings is a combination of</p>
 <ol type="1">
 <li>a rank correlation assessment of potential predictive punch (using a Spearman <span class="math inline">\(\rho^2\)</span> plot, available in the <code>Hmisc</code> package), followed by</li>
@@ -1260,6 +1309,17 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>But to really delve into the details of how well this complex model works, and to help plot what is actually being fit, we’ll probably want to fit the model using an alternative method for fitting linear models, called <code>ols</code>, from the <code>rms</code> package developed by Frank Harrell and colleagues. That’s where we’re heading, in <a href="olsfitting.html"><span>Chapter&nbsp;14</span></a>.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Harrell2001" class="csl-entry" role="doc-biblioentry">
+Harrell, Frank E. 2001. <em>Regression Modeling Strategies</em>. New York: Springer.
+</div>
+<div id="ref-McDonald1973" class="csl-entry" role="doc-biblioentry">
+McDonald, Gary C., and Richard C. Schwing. 1973. <span>“Instabilities of Regression Estimates Relating Air Pollution to Mortality.”</span> <em>Technometrics</em> 15 (3): 463–81.
+</div>
+<div id="ref-Vittinghoff2012" class="csl-entry" role="doc-biblioentry">
+Vittinghoff, Eric, David V. Glidden, Stephen C. Shiboski, and Charles E. McCulloch. 2012. <em>Regression Methods in Biostatistics: Linear, Logistic, Survival, and Repeated Measures Models</em>. Second Edition. Springer-Verlag, Inc. <a href="http://www.biostat.ucsf.edu/vgsm/">http://www.biostat.ucsf.edu/vgsm/</a>.
+</div>
+</div>
 </section>
 </section>
 

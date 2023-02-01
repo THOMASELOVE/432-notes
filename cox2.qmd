@@ -1,8 +1,31 @@
-# Cox Regression Models for Survival Data: Example 2
+# Cox Regression Models, Part 2
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(survival) 
+library(survminer)
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+leukem <- read_csv("data/leukem.csv", show_col_types = FALSE) 
+```
 
 ## A Second Example: The `leukem` data
 
-```{r read in data sets you will use}
+```{r}
 leukem
 ```
 
@@ -125,7 +148,7 @@ ggplot(Predict(modA_cph, age))
 
 The first survival plot I'll show displays 95% confidence intervals for the probability of survival at the median `age` at diagnosis in the sample, which turns out to be `r median(leukem$age)` years, with numbers of patients still at risk indicated every 12 months of time in the study. We can substitute in **conf = `bars`** to get a different flavor for this sort of plot. 
 
-```{r surv_leukem_modelA_cph_survplot1}
+```{r}
 survplot(modA_cph, age=median(leukem$age), conf.int=.95, 
          col='blue', time.inc=12, n.risk=TRUE,
          conf='bands', type="kaplan-meier", 
@@ -134,7 +157,7 @@ survplot(modA_cph, age=median(leukem$age), conf.int=.95,
 
 Or we can generate a survival plot that shows survival probabilities over time across a range of values for `age` at diagnosis, as follows...
 
-```{r surv_leukem_modelA_cph_survplot2}
+```{r}
 survplot(modA_cph, levels.only=TRUE, time.inc=12, 
          type="kaplan-meier", 
          xlab="Study Survival Time in Months")

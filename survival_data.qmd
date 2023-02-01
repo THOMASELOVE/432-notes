@@ -1,4 +1,4 @@
-# Exploring Time To Event / Survival Data
+# Time To Event / Survival Data
 
 In many medical studies, the main outcome variable is the time to the occurrence of a particular event. 
 
@@ -9,6 +9,28 @@ In many medical studies, the main outcome variable is the time to the occurrence
 These notes on survival analysis are just an introduction to the key ideas of the field. The PQHS department offers an entire course on survival analysis (PQHS 435) and I recommend that to those of you interested in deeper learning about the approaches we'll discuss, or in learning more about other approaches to survival analysis.
 
 The OpenIntro Statistics extra material on [Survival Analysis in R, written by David Diez](https://www.openintro.org/stat/surv.php) is a very useful guide to survival analysis in R, using the `survival` package and supplemented by the `KMsurv` and `OIsurv` packages. A PDF version of that material is available, along with a full set of the code used in that guide. 
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(mosaic)
+library(survival) 
+library(survminer)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+hem <- read_csv("data/hem.csv", show_col_types = FALSE) 
+```
 
 ## An Outline of Key Topics Discussed in these Notes
 
@@ -105,25 +127,25 @@ O'Donnell et al. (2000) studied the effect of the apolipoprotein E gene on the r
 - `recur` = indicator of whether or not they had a recurrent event (1 = subject had a recurrence, 0 subject did not have a recurrence), and 
 - `genotype` = the subject's apolipoprotein E genotype (0 = Homozygous $\epsilon3/\epsilon3$ and 1 = At least one $\epsilon2$ or $\epsilon4$ allele)
 
-```{r surv_hem_head}
-hem %>% head(.,4)
+```{r}
+hem |> head(4)
 ```
 
-```{r surv_recur_table}
+```{r}
 table(hem$recur)
 ```
 
 We have 70 patients at the start, and observe 18 events (rest are censored.)
 
-```{r surv_skim_hem}
-mosaic::favstats(time ~ recur, data = hem)
+```{r}
+favstats(time ~ recur, data = hem)
 ```
 
 The median survival time looks like 23 weeks in the patients who do not exhibit a recurrence, but only 11 weeks in those who do.
 
-### Building a Survival Object
+## Building a Survival Object
 
-```{r surv_hemsurv_object}
+```{r}
 hemsurv <- Surv(time = hem$time, event = hem$recur)
 
 head(hemsurv, 4)
@@ -136,17 +158,17 @@ This object both displays the survival time for each subject, and indicates whet
 
 Remember that 18 of the subjects experienced a recurrent hemorrhage, and the other 52 are therefore censored.
 
-### Kaplan-Meier Estimate of the Survival Function
+## Kaplan-Meier Estimate of the Survival Function
 
 To build a Kaplan-Meier estimate of the survival function (to account properly for censoring), we take the survival object we have created, and use the `survfit` function from the `survival` package.
 
-```{r surv_KM_for_hem_no_genotype}
+```{r}
 hemfit1 <- survfit(hemsurv ~ 1)
 ```
 
 We can look at the `hemfit1` object directly, although the K-M estimate is usually plotted.
 
-```{r surv_KMfit_for_hem_no_genotype}
+```{r}
 print(hemfit1, print.rmean=TRUE)
 ```
 
@@ -156,7 +178,7 @@ We see that 18 events occurred out of a total of 70 subjects. The median surviva
 
 We also observe a **restricted mean survival time** estimate. The restricted mean uses as its upper limit the largest observed or censored survival time, which here is a censored value: 53.9 months. So it is the mean survival time, assuming all censored subjects lived hemorrhage-free for 53.9 months.
 
-```{r surv_hemfit1_summary}
+```{r}
 summary(hemfit1)
 ```
 
@@ -171,7 +193,7 @@ A Kaplan-Meier plot graphically represents this summary.
 
 Now, let's plot the Kaplan-Meier estimate, so we can see what is going on.
 
-```{r surv_hem_base_KMplot_no_genotype}
+```{r}
 plot(hemfit1, ylab="Pr(Hemorrhage-Free Survival)",
      xlab="Months of Follow-Up",
      main="Kaplan-Meier Plot for hem Data")
@@ -186,7 +208,7 @@ The steps down indicate events (recurrences.) The estimated probability of survi
 
 ### Using `survminer` to draw survival curves
 
-Another approach to plotting the Kaplan-Meier estimate comes from `ggsurvplot`, from the `survminer` package.
+Another approach to plotting the Kaplan-Meier estimate comes from `ggsurvplot`, from the **survminer** package.
 
 ```{r}
 ggsurvplot(hemfit1, data = hem)
@@ -215,7 +237,7 @@ This sort of plot is really designed to work best when we compare multiple group
 
 Now, suppose we want to compare the hemorrhage-free survival functions for subjects classified by their apoliprotein E genotype. Working with the same survival object `hemsurv` we now run the `survfit` function to compare across the two `genotype` groups.
 
-```{r surv_fit_hemfit2}
+```{r}
 hemfit2 <- survfit(hemsurv ~ hem$genotype)
 print(hemfit2, print.rmean=TRUE)
 ```
@@ -225,9 +247,11 @@ print(hemfit2, print.rmean=TRUE)
 
 ### Kaplan-Meier Survival Function Estimates, by Genotype
 
-I find I have to crank the `fig.height` in Markdown up to at least 6 to get the risk table to show up nicely in this setting.
+I find I have to crank the figure height in Quarto up to at least 6 to get the risk table to show up nicely in this setting.
 
-```{r, fig.height = 6}
+```{r}
+#| fig-height: 6
+
 ggsurvplot(hemfit2, data = hem,
            conf.int = TRUE,
            xlab = "Time in months",
@@ -244,7 +268,7 @@ It appears that patients who were homozygous for the $\epsilon3$ allele of this 
 
 To obtain a significance test comparing these two survival curves, we turn to a *log rank* test, which tests the null hypothesis $H_0: S_1(t) = S_2(t)$ for all $t$ where the two exposures have survival functions $S_1(t)$ and $S_2(t)$. We use the `survdiff` function to explore this test, which uses a $\chi^2$ statistic to do the testing.
 
-```{r surv_hemsurv_log_rank_test}
+```{r}
 survdiff(hemsurv ~ hem$genotype)
 ```
 
@@ -256,7 +280,7 @@ Based on the log rank test, we conclude that there is a statistically significan
 
 An alternative approach to testing is the *Peto and Peto modification of the Gehan-Wilcoxon test*, which results from adding `rho=1` to the `survdiff` function (`rho=0`, the default, yields the log rank test.)
 
-```{r surv_hemsurv_Peto-Peto_GW_test}
+```{r}
 survdiff(hemsurv ~ hem$genotype, rho=1)
 ```
 
@@ -268,7 +292,9 @@ As compared to the log rank test, this Peto-Peto modification (and others using 
 
 We can add the log rank test result to our "fancy" K-M plot. Visit https://github.com/kassambara/survminer/ for more options.
 
-```{r fig.height = 7}
+```{r}
+#| fig-height: 7
+
 ggsurvplot(hemfit2, data = hem, size = 1,
    palette = c("purple", "darkgoldenrod"), # custom colors
    conf.int = TRUE, # Add confidence interval
@@ -287,7 +313,9 @@ ggsurvplot(hemfit2, data = hem, size = 1,
 
 We can even add a plot of the number of censored subjects at each time point, as well as a median survival pointer (which, of course, we've seen that we can't estimate in one of the groups), and customize the style of the confidence intervals. Again, see https://github.com/kassambara/survminer/ for even more customized results.
 
-```{r, fig.height = 7}
+```{r}
+#| fig-height: 7
+
 ggsurvplot(hemfit2,              
            data = hem, 
            palette = c("#E7B800", "#2E9FDF"),
@@ -334,9 +362,7 @@ Our first estimator of the hazard function, $H(t)$ will be the inverse Kaplan-Me
 - To start, we will take the negative of the log of the Kaplan-Meier survival estimate. That takes care of the first *t*-1 levels of the eventual estimate.
 - To complete the process, we will repeat the final one of those time-specific estimates at the end.
 
-```{r surv_hem_inverse_KM_estofhazard}
-# hemsurv <- Surv(hem$time, hem$recur) 
-# hemfit1 <- survfit(hemsurv ~ 1)
+```{r}
 H_est1 <- -log(hemfit1$surv)
 H_est1 <- c(H_est1, tail(H_est1, 1))
 ```
@@ -348,10 +374,10 @@ head(H_est1,5) # first 5 values
 tail(H_est1, 5) # last 5
 ```
 
-We can create a little data frame containing the times and hazard estimates, like this:
+We can create a little tibble containing the times and hazard estimates, like this:
 
 ```{r}
-haz_hem <- data_frame(
+haz_hem <- tibble(
     time = c(hemfit1$time, tail(hemfit1$time, 1)),
     inverse_KM = H_est1
 )
@@ -374,7 +400,7 @@ ggplot(haz_hem, aes(x = time, y = inverse_KM)) +
 
 An alternative estimate of the cumulative hazard is called the Nelson-Aalen estimate, captured here in `H_est2`.
 
-```{r surv_hem_nelson_aalen}
+```{r}
 h_st <- hemfit1$n.event / hemfit1$n.risk
 H_est2 <- cumsum(h_st)
 H_est2 <- c(H_est2, tail(H_est2, 1))
@@ -385,12 +411,11 @@ head(haz_hem)
 
 ### Convert Wide Data to Long
 
-In order to easily plot the two hazard function estimates in the same graph, we'll want to convert these data from wide format to long format, with the `gather` function.
+In order to easily plot the two hazard function estimates in the same graph, we'll want to convert these data from wide format to long format, with the `pivot_longer` function.
 
 ```{r}
-haz_hem_comp <- gather(haz_hem, key = "method", 
-                       value = "hazardest", 
-                       inverse_KM:Nelson_Aalen)
+haz_hem_comp <- pivot_longer(data = haz_hem, cols = 2:3,
+                             names_to = "method", values_to = "hazardest")
 
 head(haz_hem_comp)
 ```
@@ -400,7 +425,7 @@ head(haz_hem_comp)
 ```{r}
 ggplot(haz_hem_comp, aes(x = time, y = hazardest, 
                     col = method)) + 
-    geom_step(size = 2) + 
+    geom_step(linewidth = 2) + 
     scale_x_continuous(breaks = c(0, 12, 24, 36, 48)) +
     labs(x = "Months of Follow-Up", 
          y = "Cumulative Hazard",

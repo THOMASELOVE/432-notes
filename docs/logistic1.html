@@ -83,6 +83,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -161,6 +180,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -300,7 +324,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
@@ -345,7 +394,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>Sources for this material include <span class="citation" data-cites="Harrell2001">@Harrell2001</span>, <span class="citation" data-cites="HarrellRMSnotes">@HarrellRMSnotes</span>, <span class="citation" data-cites="RamseySchafer2002">@RamseySchafer2002</span> (chapters 20-21), <span class="citation" data-cites="Vittinghoff2012">@Vittinghoff2012</span> (chapter 5) and <span class="citation" data-cites="Faraway2006">@Faraway2006</span> (chapter 2).</p>
+<p>Sources for this material include <span class="citation" data-cites="Harrell2001">Harrell (<a href="references.html#ref-Harrell2001" role="doc-biblioref">2001</a>)</span>, <span class="citation" data-cites="HarrellRMSnotes">Harrell (<a href="references.html#ref-HarrellRMSnotes" role="doc-biblioref">2018</a>)</span>, <span class="citation" data-cites="RamseySchafer2002">Ramsey and Schafer (<a href="references.html#ref-RamseySchafer2002" role="doc-biblioref">2002</a>)</span> (chapters 20-21), <span class="citation" data-cites="Vittinghoff2012">Vittinghoff et al. (<a href="references.html#ref-Vittinghoff2012" role="doc-biblioref">2012</a>)</span> (chapter 5) and <span class="citation" data-cites="Faraway2006">Faraway (<a href="references.html#ref-Faraway2006" role="doc-biblioref">2006</a>)</span> (chapter 2).</p>
 <section id="r-setup-used-here" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">19.1</span> R Setup Used Here</h2>
 <div class="cell">
@@ -592,6 +641,23 @@ Odds(Y = 1 | X = 12) = exp(-9.20 + 0.96 * 12) = exp(2.2837) = 9.812921
 <p>All right, it’s time to move on to fitting models. We’ll do that next.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Faraway2006" class="csl-entry" role="doc-biblioentry">
+Faraway, Julian J. 2006. <em>Extending the Linear Model with r</em>. Boca Raton, FL: CRC Press.
+</div>
+<div id="ref-Harrell2001" class="csl-entry" role="doc-biblioentry">
+Harrell, Frank E. 2001. <em>Regression Modeling Strategies</em>. New York: Springer.
+</div>
+<div id="ref-HarrellRMSnotes" class="csl-entry" role="doc-biblioentry">
+———. 2018. <em>Regression Modeling Strategies Course Notes</em>. <a href="http://www.fharrell.com/#links">http://www.fharrell.com/#links</a>.
+</div>
+<div id="ref-RamseySchafer2002" class="csl-entry" role="doc-biblioentry">
+Ramsey, Fred L., and Daniel W. Schafer. 2002. <em>The Statistical Sleuth: A Course in Methods of Data Analysis</em>. Second Edition. Pacific Grove, CA: Duxbury.
+</div>
+<div id="ref-Vittinghoff2012" class="csl-entry" role="doc-biblioentry">
+Vittinghoff, Eric, David V. Glidden, Stephen C. Shiboski, and Charles E. McCulloch. 2012. <em>Regression Methods in Biostatistics: Linear, Logistic, Survival, and Repeated Measures Models</em>. Second Edition. Springer-Verlag, Inc. <a href="http://www.biostat.ucsf.edu/vgsm/">http://www.biostat.ucsf.edu/vgsm/</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->

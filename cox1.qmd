@@ -1,4 +1,26 @@
-# Cox Regression Models for Survival Data: Example 1
+# Cox Regression Models, Part 1
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(broom)
+library(survival) 
+library(rms)
+library(tidyverse) 
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+hem <- read_csv("data/hem.csv", show_col_types = FALSE) 
+```
 
 The Cox proportional hazards (Cox regression) model fits survival data with a constant (i.e. not varying over time) covariate $x$ to a hazard function of the form:
 

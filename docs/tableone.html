@@ -83,6 +83,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -160,6 +179,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -299,7 +323,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
@@ -389,7 +438,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 data-number="18.3" class="anchored" data-anchor-id="two-examples-from-the-new-england-journal-of-medicine"><span class="header-section-number">18.3</span> Two examples from the <em>New England Journal of Medicine</em></h2>
 <section id="a-simple-table-1" class="level3" data-number="18.3.1">
 <h3 data-number="18.3.1" class="anchored" data-anchor-id="a-simple-table-1"><span class="header-section-number">18.3.1</span> A simple Table 1</h3>
-<p>Table 1 is especially common in the context of clinical research. Consider the excerpt below, from a January 2015 article in the <em>New England Journal of Medicine</em> <span class="citation" data-cites="Tolaney2015">[@Tolaney2015]</span>.</p>
+<p>Table 1 is especially common in the context of clinical research. Consider the excerpt below, from a January 2015 article in the <em>New England Journal of Medicine</em> <span class="citation" data-cites="Tolaney2015">(<a href="references.html#ref-Tolaney2015" role="doc-biblioref">Tolaney et al. 2015</a>)</span>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="images/Tolaney-snip1.png" class="img-fluid" style="width:50.0%"></p>
@@ -400,7 +449,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="a-group-comparison" class="level3" data-number="18.3.2">
 <h3 data-number="18.3.2" class="anchored" data-anchor-id="a-group-comparison"><span class="header-section-number">18.3.2</span> A group comparison</h3>
-<p>A more typical Table 1 involves a group comparison, for example in this excerpt from <span class="citation" data-cites="Roy2008">@Roy2008</span>. This Table 1 describes a multi-center randomized clinical trial comparing two different approaches to caring for patients with heart failure and atrial fibrillation<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>A more typical Table 1 involves a group comparison, for example in this excerpt from <span class="citation" data-cites="Roy2008">Roy et al. (<a href="references.html#ref-Roy2008" role="doc-biblioref">2008</a>)</span>. This Table 1 describes a multi-center randomized clinical trial comparing two different approaches to caring for patients with heart failure and atrial fibrillation<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="images/Roy-snip1.png" class="img-fluid" style="width:90.0%"></p>
@@ -411,8 +460,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="the-mr-clean-trial" class="level2" data-number="18.4">
 <h2 data-number="18.4" class="anchored" data-anchor-id="the-mr-clean-trial"><span class="header-section-number">18.4</span> The MR CLEAN trial</h2>
-<p><span class="citation" data-cites="Berkhemer2015">@Berkhemer2015</span> reported on the MR CLEAN trial, involving 500 patients with acute ischemic stroke caused by a proximal intracranial arterial occlusion. The trial was conducted at 16 medical centers in the Netherlands, where 233 were randomly assigned to the intervention (intraarterial treatment plus usual care) and 267 to control (usual care alone.) The primary outcome was the modified Rankin scale score at 90 days; this categorical scale measures functional outcome, with scores ranging from 0 (no symptoms) to 6 (death). The fundamental conclusion of <span class="citation" data-cites="Berkhemer2015">@Berkhemer2015</span> was that in patients with acute ischemic stroke caused by a proximal intracranial occlusion of the anterior circulation, intraarterial treatment administered within 6 hours after stroke onset was effective and safe.</p>
-<p>Here’s the Table 1 from <span class="citation" data-cites="Berkhemer2015">@Berkhemer2015</span>.</p>
+<p><span class="citation" data-cites="Berkhemer2015">Berkhemer et al. (<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">2015</a>)</span> reported on the MR CLEAN trial, involving 500 patients with acute ischemic stroke caused by a proximal intracranial arterial occlusion. The trial was conducted at 16 medical centers in the Netherlands, where 233 were randomly assigned to the intervention (intraarterial treatment plus usual care) and 267 to control (usual care alone.) The primary outcome was the modified Rankin scale score at 90 days; this categorical scale measures functional outcome, with scores ranging from 0 (no symptoms) to 6 (death). The fundamental conclusion of <span class="citation" data-cites="Berkhemer2015">Berkhemer et al. (<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">2015</a>)</span> was that in patients with acute ischemic stroke caused by a proximal intracranial occlusion of the anterior circulation, intraarterial treatment administered within 6 hours after stroke onset was effective and safe.</p>
+<p>Here’s the Table 1 from <span class="citation" data-cites="Berkhemer2015">Berkhemer et al. (<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">2015</a>)</span>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="images/Berkhemer-snip4complete.png" class="img-fluid" style="width:90.0%"></p>
@@ -427,7 +476,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="simulated-fakestroke-data" class="level2" data-number="18.5">
 <h2 data-number="18.5" class="anchored" data-anchor-id="simulated-fakestroke-data"><span class="header-section-number">18.5</span> Simulated <code>fakestroke</code> data</h2>
-<p>Consider the simulated data, available on our <a href="https://github.com/THOMASELOVE/432-data">Data and Code website</a> in the <code>fakestroke.csv</code> file, which I built to let us mirror the Table 1 for MR CLEAN <span class="citation" data-cites="Berkhemer2015">[@Berkhemer2015]</span>. The <code>fakestroke.csv</code> file contains the following 18 variables for 500 patients.</p>
+<p>Consider the simulated data, available on our <a href="https://github.com/THOMASELOVE/432-data">Data and Code website</a> in the <code>fakestroke.csv</code> file, which I built to let us mirror the Table 1 for MR CLEAN <span class="citation" data-cites="Berkhemer2015">(<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">Berkhemer et al. 2015</a>)</span>. The <code>fakestroke.csv</code> file contains the following 18 variables for 500 patients.</p>
 <table class="table">
 <colgroup>
 <col style="width: 21%">
@@ -610,7 +659,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>place Intervention before Control in the <code>trt</code> variable,</li>
 <li>reorder the <code>mrankin</code> scale as 0, 1, 2, &gt; 2, and</li>
-<li>rearrange the <code>ia.occlus</code> variable to the order<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> presented in <span class="citation" data-cites="Berkhemer2015">@Berkhemer2015</span>.</li>
+<li>rearrange the <code>ia.occlus</code> variable to the order<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> presented in <span class="citation" data-cites="Berkhemer2015">Berkhemer et al. (<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">2015</a>)</span>.</li>
 </ul>
 <p>To accomplish this, we’ll use the <code>fct_relevel</code> function from the <code>forcats</code> package (loaded with the rest of the core <code>tidyverse</code> packages) to reorder our levels manually.</p>
 <div class="cell">
@@ -665,7 +714,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The categorical data presentation looks much improved.</p>
 <section id="what-summaries-should-we-show" class="level3" data-number="18.7.1">
 <h3 data-number="18.7.1" class="anchored" data-anchor-id="what-summaries-should-we-show"><span class="header-section-number">18.7.1</span> What summaries should we show?</h3>
-<p>Now, we’ll move on to the issue of making a decision about what type of summary to show for the quantitative variables. Since the <code>fakestroke</code> data are just simulated and only match the summary statistics of the original results, not the details, we’ll adopt the decisions made by <span class="citation" data-cites="Berkhemer2015">@Berkhemer2015</span>, which were to use medians and interquartile ranges to summarize the distributions of all of the continuous variables <strong>except</strong> systolic blood pressure.</p>
+<p>Now, we’ll move on to the issue of making a decision about what type of summary to show for the quantitative variables. Since the <code>fakestroke</code> data are just simulated and only match the summary statistics of the original results, not the details, we’ll adopt the decisions made by <span class="citation" data-cites="Berkhemer2015">Berkhemer et al. (<a href="references.html#ref-Berkhemer2015" role="doc-biblioref">2015</a>)</span>, which were to use medians and interquartile ranges to summarize the distributions of all of the continuous variables <strong>except</strong> systolic blood pressure.</p>
 <ul>
 <li>Specifying certain quantitative variables as <em>non-normal</em> causes R to show them with medians and the 25th and 75th percentiles, rather than means and standard deviations, and also causes those variables to be tested using non-parametric tests, like the Wilcoxon signed rank test, rather than the t test. The <code>test</code> column indicates this with the word <code>nonnorm</code>.
 <ul>
@@ -675,7 +724,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Specifying <em>exact</em> tests for certain categorical variables (we’ll try this for the <code>location</code> and <code>mrankin</code> variables) can be done, and these changes will be noted in the <code>test</code> column, as well.
 <ul>
 <li>In real data situations, I would rarely be concerned about this issue, and often choose Pearson (approximate) options across the board. This is reasonable so long as the number of subjects falling in each category is reasonably large, say above 10. If not, then an exact test may be a tiny improvement.</li>
-<li>Paraphrasing <span class="citation" data-cites="Rosenbaum2017">@Rosenbaum2017</span>, having an exact rather than an approximate test result is about as valuable as having a nice crease in your trousers.</li>
+<li>Paraphrasing <span class="citation" data-cites="Rosenbaum2017">Rosenbaum (<a href="references.html#ref-Rosenbaum2017" role="doc-biblioref">2017</a>)</span>, having an exact rather than an approximate test result is about as valuable as having a nice crease in your trousers.</li>
 </ul></li>
 </ul>
 <p>To finish our Table 1, then, we need to specify which variables should be treated as non-Normal in the <code>print</code> statement - notice that we don’t need to redo the <code>CreateTableOne</code> for this change.</p>
@@ -939,7 +988,7 @@ extra.ica 0.129370206</code></pre>
 </section>
 <section id="a-controlled-biological-experiment---the-blood-brain-barrier" class="level2" data-number="18.10">
 <h2 data-number="18.10" class="anchored" data-anchor-id="a-controlled-biological-experiment---the-blood-brain-barrier"><span class="header-section-number">18.10</span> A Controlled Biological Experiment - The Blood-Brain Barrier</h2>
-<p>My source for the data and the following explanatory paragraph is page 307 from <span class="citation" data-cites="RamseySchafer2002">@RamseySchafer2002</span>. The original data come from <span class="citation" data-cites="Barnett1995">@Barnett1995</span>.</p>
+<p>My source for the data and the following explanatory paragraph is page 307 from <span class="citation" data-cites="RamseySchafer2002">Ramsey and Schafer (<a href="references.html#ref-RamseySchafer2002" role="doc-biblioref">2002</a>)</span>. The original data come from <span class="citation" data-cites="Barnett1995">Barnett et al. (<a href="references.html#ref-Barnett1995" role="doc-biblioref">1995</a>)</span>.</p>
 <blockquote class="blockquote">
 <p>The human brain (and that of rats, coincidentally) is protected from the bacteria and toxins that course through the bloodstream by something called the blood-brain barrier. After a method of disrupting the barrier was developed, researchers tested this new mechanism, as follows. A series of 34 rats were inoculated with human lung cancer cells to induce brain tumors. After 9-11 days they were infused with either the barrier disruption (BD) solution or, as a control, a normal saline (NS) solution. Fifteen minutes later, the rats received a standard dose of a particular therapeutic antibody (L6-F(ab’)2. The key measure of the effectiveness of transmission across the brain-blood barrier is the ratio of the antibody concentration in the brain tumor to the antibody concentration in normal tissue outside the brain. The rats were then sacrificed, and the amounts of antibody in the brain tumor and in normal tissue from the liver were measured. The study’s primary objective is to determine whether the antibody concentration in the tumor increased when the blood-barrier disruption infusion was given, and if so, by how much?</p>
 </blockquote>
@@ -1028,7 +1077,7 @@ extra.ica 0.129370206</code></pre>
 </section>
 <section id="a-table-1-for-bloodbrain" class="level2" data-number="18.12">
 <h2 data-number="18.12" class="anchored" data-anchor-id="a-table-1-for-bloodbrain"><span class="header-section-number">18.12</span> A Table 1 for <code>bloodbrain</code></h2>
-<p><span class="citation" data-cites="Barnett1995">@Barnett1995</span> did not provide a Table 1 for these data, so let’s build one to compare the two <code>solutions</code> (<code>BD</code> vs.&nbsp;<code>NS</code>) on the covariates and outcomes, plus the natural logarithm of the tumor/liver concentration ratio (<code>tlratio</code>). We’ll opt to treat the sacrifice time (<code>sactime</code>) and the days post-inoculation of lung cancer cells (<code>postin</code>) as categorical rather than quantitative variables.</p>
+<p><span class="citation" data-cites="Barnett1995">Barnett et al. (<a href="references.html#ref-Barnett1995" role="doc-biblioref">1995</a>)</span> did not provide a Table 1 for these data, so let’s build one to compare the two <code>solutions</code> (<code>BD</code> vs.&nbsp;<code>NS</code>) on the covariates and outcomes, plus the natural logarithm of the tumor/liver concentration ratio (<code>tlratio</code>). We’ll opt to treat the sacrifice time (<code>sactime</code>) and the days post-inoculation of lung cancer cells (<code>postin</code>) as categorical rather than quantitative variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bloodbrain <span class="ot">&lt;-</span> bloodbrain <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">logTL =</span> <span class="fu">log</span>(tlratio))</span>
@@ -1231,13 +1280,33 @@ sex     0.0000000</code></pre>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Barnett1995" class="csl-entry" role="doc-biblioentry">
+Barnett, Peggy A., Simon Roman-Golstein, Fred Ramsey, et al. 1995. <span>“Differential Permeability and Quantitative MR Imaging of a Human Lung Carcinoma Brain Xenograft in the Nude Rat.”</span> <em>American Journal of Pathology</em> 146(2): 436–49. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1869863/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1869863/</a>.
+</div>
+<div id="ref-Berkhemer2015" class="csl-entry" role="doc-biblioentry">
+Berkhemer, Olvert A., Puck S. S. Fransen, Debbie Buemer, et al. 2015. <span>“A Randomized Trial of Intraarterial Treatment for Acute Ischemic Stroke.”</span> <em>New England Journal of Medicine</em> 372: 11–20. <a href="http://www.nejm.org/doi/full/10.1056/NEJMoa1411587">http://www.nejm.org/doi/full/10.1056/NEJMoa1411587</a>.
+</div>
+<div id="ref-RamseySchafer2002" class="csl-entry" role="doc-biblioentry">
+Ramsey, Fred L., and Daniel W. Schafer. 2002. <em>The Statistical Sleuth: A Course in Methods of Data Analysis</em>. Second Edition. Pacific Grove, CA: Duxbury.
+</div>
+<div id="ref-Rosenbaum2017" class="csl-entry" role="doc-biblioentry">
+Rosenbaum, Paul R. 2017. <em>Observation and Experiment: An Introduction to Causal Inference</em>. Cambridge, MA: Harvard University Press.
+</div>
+<div id="ref-Roy2008" class="csl-entry" role="doc-biblioentry">
+Roy, Denis, Mario Talajic, Stanley Nattel, et al. 2008. <span>“Rhythm Control Versus Rate Control for Atrial Fibrillation and Heart Failure.”</span> <em>New England Journal of Medicine</em> 358: 2667–77. <a href="http://www.nejm.org/doi/full/10.1056/NEJMoa0708789">http://www.nejm.org/doi/full/10.1056/NEJMoa0708789</a>.
+</div>
+<div id="ref-Tolaney2015" class="csl-entry" role="doc-biblioentry">
+Tolaney, Sara M, William T. Barry, T. Dang Chau, et al. 2015. <span>“Adjuvant Paclitaxel and Trastuzumab for Node-Negative, HER2-Positive Breast Cancer.”</span> <em>New England Journal of Medicine</em> 372: 134–41. <a href="http://www.nejm.org/doi/full/10.1056/NEJMoa1406281">http://www.nejm.org/doi/full/10.1056/NEJMoa1406281</a>.
+</div>
+</div>
 </section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn1"><p>HER2 = human epidermal growth factor receptor type 2. Over-expression of this occurs in 15-20% of invasive breast cancers, and has been associated with poor outcomes.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>The complete Table 1 appears on pages 2668-2669 of <span class="citation" data-cites="Roy2008">@Roy2008</span>, but I have only reproduced the first page and the footnote in this excerpt.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The complete Table 1 appears on pages 2668-2669 of <span class="citation" data-cites="Roy2008">Roy et al. (<a href="references.html#ref-Roy2008" role="doc-biblioref">2008</a>)</span>, but I have only reproduced the first page and the footnote in this excerpt.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>The five categories are Intracranial ICA, ICA with involvement of the M1 middle cerebral artery segment, M1 middle cerebral artery segment, M2 middle cerebral artery segment, A1 or A2 anterior cerebral artery segment<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>We might also have considered reordering the <code>ia.occlus</code> factor by its frequency, using the <code>fct_infreq</code> function<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>

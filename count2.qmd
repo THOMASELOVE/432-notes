@@ -14,8 +14,6 @@ Methods discussed in the chapter include:
 
 knitr::opts_chunk$set(comment = NA)
 
-#library(VGAM)
-
 library(broom)
 library(boot)
 library(countreg)

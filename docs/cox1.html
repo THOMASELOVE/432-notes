@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science for Biological, Medical and Health Research - 30&nbsp; Cox Regression Models, Part 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./cox2.html" rel="next">
+<link href="./survival_data.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science for Biological, Medical and Health Research</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">30.1</span>  R Setup Used Here</a>
+  <ul class="collapse">
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">30.1.1</span>  Data Load</a></li>
+  </ul></li>
+  <li><a href="#sources-used-in-building-this-material" id="toc-sources-used-in-building-this-material" class="nav-link" data-scroll-target="#sources-used-in-building-this-material"><span class="toc-section-number">30.2</span>  Sources used in building this material</a></li>
+  <li><a href="#fitting-a-cox-model-in-r-with-coxph" id="toc-fitting-a-cox-model-in-r-with-coxph" class="nav-link" data-scroll-target="#fitting-a-cox-model-in-r-with-coxph"><span class="toc-section-number">30.3</span>  Fitting a Cox Model in R with <code>coxph</code></a>
+  <ul class="collapse">
+  <li><a href="#summarizing-the-fit" id="toc-summarizing-the-fit" class="nav-link" data-scroll-target="#summarizing-the-fit"><span class="toc-section-number">30.3.1</span>  Summarizing the Fit</a></li>
+  <li><a href="#glancing-at-the-model" id="toc-glancing-at-the-model" class="nav-link" data-scroll-target="#glancing-at-the-model"><span class="toc-section-number">30.3.2</span>  Glancing at the model?</a></li>
+  <li><a href="#plot-the-baseline-survival-function" id="toc-plot-the-baseline-survival-function" class="nav-link" data-scroll-target="#plot-the-baseline-survival-function"><span class="toc-section-number">30.3.3</span>  Plot the baseline survival function</a></li>
+  <li><a href="#plot-the-genotype-effect" id="toc-plot-the-genotype-effect" class="nav-link" data-scroll-target="#plot-the-genotype-effect"><span class="toc-section-number">30.3.4</span>  Plot the genotype effect</a></li>
+  <li><a href="#testing-the-key-assumption-proportional-hazards" id="toc-testing-the-key-assumption-proportional-hazards" class="nav-link" data-scroll-target="#testing-the-key-assumption-proportional-hazards"><span class="toc-section-number">30.3.5</span>  Testing the Key Assumption: Proportional Hazards</a></li>
+  <li><a href="#plotting-the-cox.zph-results-for-the-cfit-model" id="toc-plotting-the-cox.zph-results-for-the-cfit-model" class="nav-link" data-scroll-target="#plotting-the-cox.zph-results-for-the-cfit-model"><span class="toc-section-number">30.3.6</span>  Plotting the <code>cox.zph</code> results for the <code>cfit</code> model</a></li>
+  </ul></li>
+  <li><a href="#fitting-a-cox-model-using-cph-from-the-rms-package" id="toc-fitting-a-cox-model-using-cph-from-the-rms-package" class="nav-link" data-scroll-target="#fitting-a-cox-model-using-cph-from-the-rms-package"><span class="toc-section-number">30.4</span>  Fitting a Cox Model using <code>cph</code> from the <code>rms</code> package</a>
+  <ul class="collapse">
+  <li><a href="#the-main-cph-results" id="toc-the-main-cph-results" class="nav-link" data-scroll-target="#the-main-cph-results"><span class="toc-section-number">30.4.1</span>  The Main <code>cph</code> results</a></li>
+  <li><a href="#using-anova-with-cph" id="toc-using-anova-with-cph" class="nav-link" data-scroll-target="#using-anova-with-cph"><span class="toc-section-number">30.4.2</span>  Using <code>anova</code> with <code>cph</code></a></li>
+  <li><a href="#effect-sizes-after-cph-fit" id="toc-effect-sizes-after-cph-fit" class="nav-link" data-scroll-target="#effect-sizes-after-cph-fit"><span class="toc-section-number">30.4.3</span>  Effect Sizes after <code>cph</code> fit</a></li>
+  <li><a href="#validating-cph-summaries" id="toc-validating-cph-summaries" class="nav-link" data-scroll-target="#validating-cph-summaries"><span class="toc-section-number">30.4.4</span>  Validating <code>cph</code> summaries</a></li>
+  <li><a href="#plotting-survival-functions-for-each-genotype" id="toc-plotting-survival-functions-for-each-genotype" class="nav-link" data-scroll-target="#plotting-survival-functions-for-each-genotype"><span class="toc-section-number">30.4.5</span>  Plotting Survival Functions for each Genotype</a></li>
+  <li><a href="#genotypes-effect-on-log-relative-hazard" id="toc-genotypes-effect-on-log-relative-hazard" class="nav-link" data-scroll-target="#genotypes-effect-on-log-relative-hazard"><span class="toc-section-number">30.4.6</span>  Genotype’s effect on log relative hazard</a></li>
+  <li><a href="#nomogram-of-our-simple-hem-model" id="toc-nomogram-of-our-simple-hem-model" class="nav-link" data-scroll-target="#nomogram-of-our-simple-hem-model"><span class="toc-section-number">30.4.7</span>  Nomogram of our simple <code>hem</code> model</a></li>
+  <li><a href="#assessing-the-proportional-hazards-assumption" id="toc-assessing-the-proportional-hazards-assumption" class="nav-link" data-scroll-target="#assessing-the-proportional-hazards-assumption"><span class="toc-section-number">30.4.8</span>  Assessing the Proportional Hazards Assumption</a></li>
+  <li><a href="#plot-to-check-ph-assumption" id="toc-plot-to-check-ph-assumption" class="nav-link" data-scroll-target="#plot-to-check-ph-assumption"><span class="toc-section-number">30.4.9</span>  Plot to Check PH Assumption</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="r-setup-used-here" class="level2" data-number="30.1">
+<h2 data-number="30.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">30.1</span> R Setup Used Here</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data-load" class="level3" data-number="30.1.1">
+<h3 data-number="30.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">30.1.1</span> Data Load</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hem <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/hem.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Cox proportional hazards (Cox regression) model fits survival data with a constant (i.e.&nbsp;not varying over time) covariate <span class="math inline">\(x\)</span> to a hazard function of the form:</p>
+<p><span class="math display">\[
+h(t | x) = h_0(t) exp[\beta_1 x]
+\]</span></p>
+<p>where we will estimate the unknown value of <span class="math inline">\(\beta_1\)</span> and where <span class="math inline">\(h_0(t)\)</span> is the baseline hazard, which is a non-parametric and unspecified value which depends on <span class="math inline">\(t\)</span> but not on <span class="math inline">\(x\)</span>.</p>
+<ul>
+<li>For particular <span class="math inline">\(x\)</span> values, we will be able to estimate the survival function if we have an estimate of the baseline survival function, <span class="math inline">\(\hat{S_0}(t)\)</span>.</li>
+</ul>
+<p>The estimated survival function for an individual with covariate value <span class="math inline">\(x_k\)</span> turns out to be</p>
+<p><span class="math display">\[
+\hat{S}(t | x_k) = [\hat{S_0}(t)]^{exp(\beta_1 x_k)}
+\]</span></p>
+<p>From Wikipedia (yes, really) …</p>
+<blockquote class="blockquote">
+<p>Survival models can be viewed as consisting of two parts: the underlying hazard function, describing how the risk of event per time unit changes over time at baseline levels of covariates; and the effect parameters, describing how the hazard varies in response to explanatory covariates.</p>
+</blockquote>
+<p>The key assumption in a Cox model is that the hazards are <strong>proportional</strong> - other types of survival models need not have this restriction. Quoting the always reliable (well, it’s better than you think) Wikipedia …</p>
+<blockquote class="blockquote">
+<p>In a proportional hazards model, the unique effect of a unit increase in a covariate is multiplicative with respect to the hazard rate. For example, taking a drug may halve one’s hazard rate for a stroke occurring, or, changing the material from which a manufactured component is constructed may double its hazard rate for failure.</p>
+</blockquote>
+<p>There are two main approaches to fitting Cox models in R.</p>
+<ul>
+<li>the <code>coxph</code> function in the <code>survival</code> package, and</li>
+<li>the <code>cph</code> function in the <code>rms</code> package.</li>
+</ul>
+</section>
+</section>
+<section id="sources-used-in-building-this-material" class="level2" data-number="30.2">
+<h2 data-number="30.2" class="anchored" data-anchor-id="sources-used-in-building-this-material"><span class="header-section-number">30.2</span> Sources used in building this material</h2>
+<ul>
+<li>David Diez’s excellent supplement for the OpenIntro Statistics project, on <a href="https://www.openintro.org/stat/surv.php">Survival Analysis in R</a>. I’ve posted it on our web site, as well.</li>
+<li>Some tools in R to do some fancier work can be viewed at https://cran.r-project.org/web/views/Survival.html</li>
+<li>You might also look at these two blog posts, originally from the Just Another Data blog.
+<ul>
+<li>https://www.r-bloggers.com/survival-analysis-1/<br>
+</li>
+<li>https://www.r-bloggers.com/survival-analysis-2/</li>
+</ul></li>
+<li>https://rpubs.com/daspringate/survival has some great slides, and I’ve stolen from them quite a bit here.</li>
+</ul>
+</section>
+<section id="fitting-a-cox-model-in-r-with-coxph" class="level2" data-number="30.3">
+<h2 data-number="30.3" class="anchored" data-anchor-id="fitting-a-cox-model-in-r-with-coxph"><span class="header-section-number">30.3</span> Fitting a Cox Model in R with <code>coxph</code></h2>
+<p>As a first example, I’ll fit a model to predict time to recurrence in the <code>hem</code> data, on the basis of a single predictor: <code>genotype</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cfit <span class="ot">&lt;-</span> <span class="fu">with</span>(hem, <span class="fu">coxph</span>(<span class="fu">Surv</span>(time, recur) <span class="sc">~</span> genotype))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cfit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(time, recur) ~ genotype)
+
+           coef exp(coef) se(coef)     z      p
+genotype 1.3317    3.7874   0.5699 2.337 0.0195
+
+Likelihood ratio test=6.61  on 1 df, p=0.01015
+n= 70, number of events= 18 </code></pre>
+</div>
+</div>
+<p>This summary provides an overall comparison of the two genotypes, using a proportional hazards model.</p>
+<ul>
+<li>The default approach in R is to use the “efron” method of breaking ties: other options include “breslow” and “exact”.</li>
+</ul>
+<section id="summarizing-the-fit" class="level3" data-number="30.3.1">
+<h3 data-number="30.3.1" class="anchored" data-anchor-id="summarizing-the-fit"><span class="header-section-number">30.3.1</span> Summarizing the Fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(time, recur) ~ genotype)
+
+  n= 70, number of events= 18 
+
+           coef exp(coef) se(coef)     z Pr(&gt;|z|)  
+genotype 1.3317    3.7874   0.5699 2.337   0.0195 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+         exp(coef) exp(-coef) lower .95 upper .95
+genotype     3.787      0.264     1.239     11.57
+
+Concordance= 0.622  (se = 0.061 )
+Likelihood ratio test= 6.61  on 1 df,   p=0.01
+Wald test            = 5.46  on 1 df,   p=0.02
+Score (logrank) test = 6.28  on 1 df,   p=0.01</code></pre>
+</div>
+</div>
+<p>This provides estimates of the <span class="math inline">\(\beta\)</span> value for <code>genotype</code>, including standard errors and <span class="math inline">\(p\)</span> values for a Wald test. Also included is an estimate of the hazard ratio and its confidence interval.</p>
+<ul>
+<li>Here we have a hazard ratio estimate of <code>exp(coef) = 3.787</code>, with 95% CI (1.24, 11.57).</li>
+<li>The hazard ratio is the multiplicative effect of the covariate (here, having at least one of the <span class="math inline">\(\epsilon 2\)</span> or <span class="math inline">\(\epsilon 4\)</span> allele) on the hazard function for recurrent hemorrhage
+<ul>
+<li>A hazard ratio of 1 indicates no effect</li>
+<li>A hazard ratio &gt; 1 indicates an increase in the hazard as the covariate rises</li>
+<li>A hazard ratio &lt; 1 indicates a decrease in the hazard as the covariate rises</li>
+</ul></li>
+</ul>
+<p>We can also <code>tidy</code> the hazard ratio estimate with the <code>broom</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(cfit, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  term     estimate std.error statistic p.value
+  &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 genotype     3.79     0.570      2.34  0.0195</code></pre>
+</div>
+</div>
+<p>In addition, we have several other summaries:</p>
+<ul>
+<li>The <em>concordance</em> measure is only appropriate when we have at least one continuous predictor in our Cox model.</li>
+<li>The Cox &amp; Snell pseudo-<span class="math inline">\(R^2\)</span> reflects the improvement of the model we’ve fit over the model with an intercept alone, but isn’t a proportion of anything (hence the listing of the maximum possible value).</li>
+<li>The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall significance of the model.</li>
+</ul>
+<p>We can obtain a more detailed description of the likelihood-ratio test of the model with <code>anova</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(cfit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+ Cox model: response is Surv(time, recur)
+Terms added sequentially (first to last)
+
+          loglik  Chisq Df Pr(&gt;|Chi|)  
+NULL     -66.675                       
+genotype -63.371 6.6078  1    0.01015 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="glancing-at-the-model" class="level3" data-number="30.3.2">
+<h3 data-number="30.3.2" class="anchored" data-anchor-id="glancing-at-the-model"><span class="header-section-number">30.3.2</span> Glancing at the model?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(cfit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 18
+      n nevent statist…¹ p.val…² stati…³ p.val…⁴ stati…⁵ p.val…⁶ stati…⁷ p.val…⁸
+  &lt;int&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1    70     18      6.61  0.0102    6.28  0.0122    5.46  0.0195      NA      NA
+# … with 8 more variables: r.squared &lt;dbl&gt;, r.squared.max &lt;dbl&gt;,
+#   concordance &lt;dbl&gt;, std.error.concordance &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;,
+#   BIC &lt;dbl&gt;, nobs &lt;int&gt;, and abbreviated variable names ¹​statistic.log,
+#   ²​p.value.log, ³​statistic.sc, ⁴​p.value.sc, ⁵​statistic.wald, ⁶​p.value.wald,
+#   ⁷​statistic.robust, ⁸​p.value.robust</code></pre>
+</div>
+</div>
+<p>Here, we obtain several additional summaries of the model, including most of the important information from a summary of <code>cfit</code>.</p>
+</section>
+<section id="plot-the-baseline-survival-function" class="level3" data-number="30.3.3">
+<h3 data-number="30.3.3" class="anchored" data-anchor-id="plot-the-baseline-survival-function"><span class="header-section-number">30.3.3</span> Plot the baseline survival function</h3>
+<p>Here, we’ll plot the time in terms of months, but scaled to 12 month (one year) groups.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">survfit</span>(cfit), <span class="at">xscale =</span> <span class="dv">12</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Years after initial hemorrhage"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Proportion without recurrent hemorrhage"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Baseline Survival Function"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plot-the-genotype-effect" class="level3" data-number="30.3.4">
+<h3 data-number="30.3.4" class="anchored" data-anchor-id="plot-the-genotype-effect"><span class="header-section-number">30.3.4</span> Plot the genotype effect</h3>
+<p>There are several ways to build these plots. One approach follows. Another uses a <code>cph</code> fit and the <code>survplot</code> function from the <code>rms</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>newdat <span class="ot">&lt;-</span> <span class="fu">with</span>(hem, </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">data.frame</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">genotype =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>               )</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>newdat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  genotype
+1        1
+2        0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">survfit</span>(cfit, <span class="at">newdata =</span> newdat), <span class="at">xscale =</span> <span class="dv">12</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Years after initial hemorrhage"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Proportion without recurrent hemorrhage"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Plotting the genotype effects from the cfit Model"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fl">0.5</span>, <span class="fl">0.2</span>, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>         <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Homozygous "</span>, epsilon, <span class="st">"3 / "</span>, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                   epsilon, <span class="st">"3"</span>)), </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>         <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"At least one "</span>, epsilon,<span class="st">"2 or "</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                   epsilon,<span class="st">"4 Allele"</span>))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>       ),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="dv">1</span>, </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">text.col =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="testing-the-key-assumption-proportional-hazards" class="level3" data-number="30.3.5">
+<h3 data-number="30.3.5" class="anchored" data-anchor-id="testing-the-key-assumption-proportional-hazards"><span class="header-section-number">30.3.5</span> Testing the Key Assumption: Proportional Hazards</h3>
+<p>The <code>cox.zph</code> function in the <code>survival</code> package will test the proportionality of all of the predictors included in your model by creating interactions with time.</p>
+<ul>
+<li>A small <span class="math inline">\(p\)</span> value would indicate a violation of the proportionality assumption.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cox.zph</span>(cfit, <span class="at">transform=</span><span class="st">"km"</span>, <span class="at">global=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         chisq df    p
+genotype  2.09  1 0.15
+GLOBAL    2.09  1 0.15</code></pre>
+</div>
+</div>
+<p>Since the <em>p</em> value here is not significant, we may be all right. But it’s sensible to focus further on plots derived from the model fit, rather than relying solely on this test.</p>
+</section>
+<section id="plotting-the-cox.zph-results-for-the-cfit-model" class="level3" data-number="30.3.6">
+<h3 data-number="30.3.6" class="anchored" data-anchor-id="plotting-the-cox.zph-results-for-the-cfit-model"><span class="header-section-number">30.3.6</span> Plotting the <code>cox.zph</code> results for the <code>cfit</code> model</h3>
+<p><code>cox.zph</code> function can be used to generate a plot for each of the individual predictors in the model. Of course, in this case, we have just one predictor: <code>genotype</code>. If the proportional hazards assumption is appropriate, then we should see a slope of essentially zero in each such plot. A slope that is seriously different from zero suggests a violation of the proportional hazards assumption.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">cox.zph</span>(cfit, <span class="at">transform=</span><span class="st">"km"</span>, <span class="at">global=</span><span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/surv_hem_cfit_coxzph_plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The plot suggests only a slight rise in the plotted values over time, suggesting no serious problem with the proportional hazards assumption. This combined testing and plotting approach is a reasonable starting place for assessing the proportional hazards assumption, but it’s likely insufficient for good practical work.</p>
+<p>Should the proportional hazards assumption fit less well, we have two main options: (1) fit a non-linear term in the covariate in question, and (2) fit a different type of regression model that doesn’t require the proportional hazards assumption.</p>
+</section>
+</section>
+<section id="fitting-a-cox-model-using-cph-from-the-rms-package" class="level2" data-number="30.4">
+<h2 data-number="30.4" class="anchored" data-anchor-id="fitting-a-cox-model-using-cph-from-the-rms-package"><span class="header-section-number">30.4</span> Fitting a Cox Model using <code>cph</code> from the <code>rms</code> package</h2>
+<p>To set up a <code>cph</code> fit for our comparison of genotypes in the <code>hem</code> data, we’ll follow these steps.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">units</span>(hem<span class="sc">$</span>time) <span class="ot">&lt;-</span> <span class="st">"month"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">datadist</span>(hem)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"d"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>hemsurv <span class="ot">&lt;-</span> <span class="fu">Surv</span>(<span class="at">time =</span> hem<span class="sc">$</span>time, <span class="at">event =</span> hem<span class="sc">$</span>recur)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>model_hem <span class="ot">&lt;-</span> <span class="fu">cph</span>(hemsurv <span class="sc">~</span> genotype, <span class="at">data =</span> hem, </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>, <span class="at">surv =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that the <code>surv = TRUE</code> piece is required to get some of the follow-up analyses to work smoothly.</p>
+<section id="the-main-cph-results" class="level3" data-number="30.4.1">
+<h3 data-number="30.4.1" class="anchored" data-anchor-id="the-main-cph-results"><span class="header-section-number">30.4.1</span> The Main <code>cph</code> results</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model_hem</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cox Proportional Hazards Model
+ 
+ cph(formula = hemsurv ~ genotype, data = hem, x = TRUE, y = TRUE, 
+     surv = TRUE)
+ 
+                        Model Tests    Discrimination    
+                                              Indexes    
+ Obs        70    LR chi2      6.61    R2       0.106    
+ Events     18    d.f.            1    R2(1,70) 0.077    
+ Center 0.7229    Pr(&gt; chi2) 0.0102    R2(1,18) 0.268    
+                  Score chi2   6.28    Dxy      0.244    
+                  Pr(&gt; chi2) 0.0122                      
+ 
+          Coef   S.E.   Wald Z Pr(&gt;|Z|)
+ genotype 1.3317 0.5699 2.34   0.0195  
+ </code></pre>
+</div>
+</div>
+<p>Included here are likelihood ratio and score tests for the model as a whole (as compared to the intercept-only model), as well as the usual discrimination indexes.</p>
+<ul>
+<li>These include both an <span class="math inline">\(R^2\)</span> analog due to Nagelkerke (which can go all the way up to 1), and</li>
+<li>Somers’ <span class="math inline">\(Dxy\)</span>, which can also produce an estimate of the C statistic (area under the curve) via the formula C = 0.5 + Dxy / 2, so here C = 0.5 + (.244/2) = 0.622</li>
+<li>For lots more on survival analysis C statistics, look at the <code>survAUC</code> package in R.</li>
+</ul>
+<p>These results are followed by a table of Wald tests for each of the coefficients in the model.</p>
+</section>
+<section id="using-anova-with-cph" class="level3" data-number="30.4.2">
+<h3 data-number="30.4.2" class="anchored" data-anchor-id="using-anova-with-cph"><span class="header-section-number">30.4.2</span> Using <code>anova</code> with <code>cph</code></h3>
+<p>As in other <code>rms</code> fits, we can use <code>anova</code> to obtain more detailed (in terms of combining nonlinear terms and, if available, interactions) tests.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_hem)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Wald Statistics          Response: hemsurv 
+
+ Factor     Chi-Square d.f. P     
+ genotype   5.46       1    0.0195
+ TOTAL      5.46       1    0.0195</code></pre>
+</div>
+</div>
+</section>
+<section id="effect-sizes-after-cph-fit" class="level3" data-number="30.4.3">
+<h3 data-number="30.4.3" class="anchored" data-anchor-id="effect-sizes-after-cph-fit"><span class="header-section-number">30.4.3</span> Effect Sizes after <code>cph</code> fit</h3>
+<p>We can use <code>summary</code> on a <code>cph</code> object to get and plot effect size estimates (here, these are hazard ratios.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_hem)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Effects              Response : hemsurv 
+
+ Factor        Low High Diff. Effect S.E.   Lower 0.95 Upper 0.95
+ genotype      0   1    1     1.3317 0.5699 0.21468     2.4486   
+  Hazard Ratio 0   1    1     3.7873     NA 1.23950    11.5730   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(model_hem))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/surv_hem_cph_summary-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="validating-cph-summaries" class="level3" data-number="30.4.4">
+<h3 data-number="30.4.4" class="anchored" data-anchor-id="validating-cph-summaries"><span class="header-section-number">30.4.4</span> Validating <code>cph</code> summaries</h3>
+<p>For details on these last few indices (D, U, Q, etc.), visit <code>?validate.cph</code> in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">43201</span>); <span class="fu">validate</span>(model_hem)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      index.orig training    test optimism index.corrected  n
+Dxy       0.2441   0.2508  0.2197   0.0311          0.2130 40
+R2        0.1058   0.1203  0.1058   0.0144          0.0914 40
+Slope     1.0000   1.0000 -6.4747   7.4747         -6.4747 40
+D         0.0421   0.0532  0.0421   0.0111          0.0310 40
+U        -0.0150  -0.0168  0.0198  -0.0366          0.0216 40
+Q         0.0571   0.0699  0.0222   0.0477          0.0094 40
+g         0.6705   0.7908  0.6705   0.1203          0.5502 40</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-survival-functions-for-each-genotype" class="level3" data-number="30.4.5">
+<h3 data-number="30.4.5" class="anchored" data-anchor-id="plotting-survival-functions-for-each-genotype"><span class="header-section-number">30.4.5</span> Plotting Survival Functions for each Genotype</h3>
+<p>Here is the <code>survplot</code> approach I mentioned earlier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survplot</span>(model_hem, genotype, </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">n.risk=</span><span class="cn">TRUE</span>, <span class="at">time.inc=</span><span class="dv">12</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">c</span>(<span class="st">"magenta"</span>, <span class="st">"dodgerblue"</span>),</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">"Hemorrhage-Free Survival in Months"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/survplot_model_hem_plot1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can add, for instance, confidence interval bars, with:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survplot</span>(model_hem, genotype, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">conf.int=</span>.<span class="dv">95</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">n.risk=</span><span class="cn">TRUE</span>, <span class="at">time.inc =</span> <span class="dv">12</span>, <span class="at">conf=</span><span class="st">'bars'</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">c</span>(<span class="st">"magenta"</span>, <span class="st">"dodgerblue"</span>),</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">"Hemorrhage-Free Survival Time in Months"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/survplot_model_hem_plot2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For more details, check out R’s help file on <code>survplot</code>.</p>
+</section>
+<section id="genotypes-effect-on-log-relative-hazard" class="level3" data-number="30.4.6">
+<h3 data-number="30.4.6" class="anchored" data-anchor-id="genotypes-effect-on-log-relative-hazard"><span class="header-section-number">30.4.6</span> Genotype’s effect on log relative hazard</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(model_hem, genotype))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/log_rel_haz_hem_model_plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nomogram-of-our-simple-hem-model" class="level3" data-number="30.4.7">
+<h3 data-number="30.4.7" class="anchored" data-anchor-id="nomogram-of-our-simple-hem-model"><span class="header-section-number">30.4.7</span> Nomogram of our simple <code>hem</code> model</h3>
+<p>We can estimate 1-year and 3-year hemorrhage-free survival probabilities, for example, with this model, and incorporate these results into our nomogram.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>survx <span class="ot">&lt;-</span> <span class="fu">Survival</span>(model_hem)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">nomogram</span>(model_hem, <span class="at">fun=</span><span class="fu">list</span>(<span class="cf">function</span>(x) <span class="fu">survx</span>(<span class="dv">12</span>, x),</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">function</span>(x) <span class="fu">survx</span>(<span class="dv">36</span>, x)),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">funlabel=</span><span class="fu">c</span>(<span class="st">"12-month Pr(Survival)"</span>, </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"36-month Pr(Survival)"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/nomogram_model_hem-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Again, this is just a very simple model, with one binary predictor.</p>
+</section>
+<section id="assessing-the-proportional-hazards-assumption" class="level3" data-number="30.4.8">
+<h3 data-number="30.4.8" class="anchored" data-anchor-id="assessing-the-proportional-hazards-assumption"><span class="header-section-number">30.4.8</span> Assessing the Proportional Hazards Assumption</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cox.zph</span>(model_hem, <span class="at">transform=</span><span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         chisq df    p
+genotype  2.09  1 0.15
+GLOBAL    2.09  1 0.15</code></pre>
+</div>
+</div>
+<ul>
+<li>Consider using <code>transform="rank"</code> to transform the survival times by their ranks prior to performing the test.</li>
+<li>Or use <code>transform="identity"</code> as we’ll do in the plot below.</li>
+</ul>
+</section>
+<section id="plot-to-check-ph-assumption" class="level3" data-number="30.4.9">
+<h3 data-number="30.4.9" class="anchored" data-anchor-id="plot-to-check-ph-assumption"><span class="header-section-number">30.4.9</span> Plot to Check PH Assumption</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">cox.zph</span>(model_hem, <span class="st">"identity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="cox1_files/figure-html/ph_plot_check_zph-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./survival_data.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./cox2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

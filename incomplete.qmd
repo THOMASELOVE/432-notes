@@ -1,6 +1,6 @@
-# NOTE: Work in progress.
+# This is work in progress {.unnumbered}
 
-These materials are not yet complete. Additional materials will appear as the semester progresses. We thank you for your patience.
+These materials are not yet finalized, although they are close to complete. Additional materials may appear as the semester progresses. We thank you for your patience.
 
 If you find any typographical or other errors, please let Dr. Love know about them, either through the Typos folder in Campuswire or by email to `Thomas dot Love at case dot edu`.
 

@@ -83,6 +83,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -161,6 +180,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -300,7 +324,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">NOTE: Work in progress.</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
@@ -416,7 +465,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="the-resect-data" class="level2" data-number="20.2">
 <h2 data-number="20.2" class="anchored" data-anchor-id="the-resect-data"><span class="header-section-number">20.2</span> The <code>resect</code> data</h2>
-<p>My source for these data was <span class="citation" data-cites="Riffenburgh2006">@Riffenburgh2006</span>. The data describe 134 patients who had undergone resection of the tracheal carina (most often this is done to address tumors in the trachea), and the <code>resect.csv</code> data file contains the following variables:</p>
+<p>My source for these data was <span class="citation" data-cites="Riffenburgh2006">Riffenburgh (<a href="references.html#ref-Riffenburgh2006" role="doc-biblioref">2006</a>)</span>. The data describe 134 patients who had undergone resection of the tracheal carina (most often this is done to address tumors in the trachea), and the <code>resect.csv</code> data file contains the following variables:</p>
 <ul>
 <li><code>id</code> = a patient ID #,</li>
 <li><code>age</code>= the patient’s age at surgery,</li>
@@ -495,7 +544,7 @@ quantitative variables:
 <ul>
 <li>In a <a href="https://twitter.com/f2harrell/status/936230071219707913">twitter note</a>, Frank suggests that 96 + 8 times the number of candidate parameters might be reasonable so long as the smallest cell of interest (combination of an outcome and a split of the covariates) is 96 or more observations.</li>
 </ul></li>
-<li><span class="citation" data-cites="Peduzzi1996">@Peduzzi1996</span> suggest that if we let <span class="math inline">\(\pi\)</span> be the smaller of the proportions of “yes” or “no” cases in the population of interest, and <em>k</em> be the number of inputs under consideration, then <span class="math inline">\(N = 10k/\pi\)</span> is the minimum number of cases to include, except that if N &lt; 100 by this standard, you should increase it to 100, according to <span class="citation" data-cites="Long1997">@Long1997</span>.
+<li><span class="citation" data-cites="Peduzzi1996">Peduzzi et al. (<a href="references.html#ref-Peduzzi1996" role="doc-biblioref">1996</a>)</span> suggest that if we let <span class="math inline">\(\pi\)</span> be the smaller of the proportions of “yes” or “no” cases in the population of interest, and <em>k</em> be the number of inputs under consideration, then <span class="math inline">\(N = 10k/\pi\)</span> is the minimum number of cases to include, except that if N &lt; 100 by this standard, you should increase it to 100, according to <span class="citation" data-cites="Long1997">Long (<a href="references.html#ref-Long1997" role="doc-biblioref">1997</a>)</span>.
 <ul>
 <li>That suggests that if you have an outcome that happens 10% of the time, and you are running a model with 3 predictors, then you could get away with <span class="math inline">\((10 \times 3)/(0.10) = 300\)</span> observations, but if your outcome happened 40% of the time, you could get away with only <span class="math inline">\((10 \times 3)/(0.40) = 75\)</span> observations, which you’d round up to 100.</li>
 </ul></li>
@@ -1489,6 +1538,17 @@ Prediction FALSE TRUE
 <p>We’ll continue working with these <code>resect</code> data as we fit logistic regression models with the help of the <code>rms</code> package in our next Chapter.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Long1997" class="csl-entry" role="doc-biblioentry">
+Long, J. Scott. 1997. <em>Regression Models for Categorical and Limited Dependent Variables</em>. Thousand Oaks, CA: Sage Publications.
+</div>
+<div id="ref-Peduzzi1996" class="csl-entry" role="doc-biblioentry">
+Peduzzi, Peter, John Concato, Elizabeth Kemper, Theodore R. Holford, and Alvan R. Feinstein. 1996. <span>“A Simulation Study of the Number of Events Per Variable in Logistic Regression Analysis.”</span> <em>Journal of Clinical Epidemiology</em> 49 (12): 1373–79.
+</div>
+<div id="ref-Riffenburgh2006" class="csl-entry" role="doc-biblioentry">
+Riffenburgh, Robert H. 2006. <em>Statistics in Medicine</em>. Second Edition. Burlington, MA: Elsevier Academic Press.
+</div>
+</div>
 </section>
 </section>
 

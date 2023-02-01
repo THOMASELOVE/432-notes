@@ -9,28 +9,45 @@ Here, we'll show all of the R packages used in these notes. The list of R Packag
 
 knitr::opts_chunk$set(comment = NA) ## Dr. Love always includes this
 
+library(arm)
+library(boot)
 library(car)
+library(caret)
+library(countreg) # install via R-Forge
 library(DescTools)
 library(Epi)
 library(equatiomatic)
 library(GGally)
 library(ggridges)
 library(glue)
+library(gmodels)
 library(gt)
 library(gtsummary)
 library(Hmisc)
 library(janitor) 
 library(knitr)
 library(lmboot)
+library(lmtest)
+library(MASS)
+library(mice)
 library(MKinfer)
 library(mosaic)
 library(naniar)
 library(nhanesA)
+library(nnet)
 library(patchwork)
+library(pROC)
+library(pscl)
 library(rms)
+library(ROCR)
 library(rstatix)
+library(sandwich)
 library(simputation)
+library(survival)
+library(survminer)
+library(tableone)
 library(vcd)
+library(VGAM)
 library(visdat)
 
 library(tidymodels)
@@ -47,20 +64,3 @@ Dr. Love prefers `theme_bw()` to the default choice.
 theme_set(theme_bw())
 ```
 
-## Data used in these notes {.unnumbered}
-
-All data sets used in these notes are available on our [432-data website](https://github.com/THOMASELOVE/432-data).
-
-Dr. Love is in the process of moving all of the data loads below to their individual chapters.
-
-```{r}
-#| eval: false
-#| message: false
-#| warning: false
-
-colscr <- read_csv("data/screening.csv", show_col_types = FALSE) 
-colscr2 <- read_csv("data/screening2.csv", show_col_types = FALSE) 
-authorship <- read_csv("data/authorship.csv", show_col_types = FALSE) 
-hem <- read_csv("data/hem.csv", show_col_types = FALSE) 
-leukem <- read_csv("data/leukem.csv", show_col_types = FALSE) 
-```
