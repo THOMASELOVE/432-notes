@@ -456,9 +456,9 @@ Occasionally, you'll see the inverse of VIF reported, and this is called *tolera
 - If we are primarily building a **prediction model** for which inference on the individual predictors is not of interest, then it is totally reasonable to use both predictors in the model, if doing so reduces prediction error. 
     + Collinearity doesn't affect predictions in our model development sample.
     + Collinearity doesn't affect predictions on new data so long as the new data have similar relationships between predictors.
-    + If our key predictor is correlated strongly with a confounder, then if the predictor remains significant after adjustment for the confounder, then this suggests a meaningful independent effect. 
+    + If our key predictor is correlated strongly with a confounder and if the predictor remains an important part of the model after adjustment for the confounder, then this suggests a meaningful independent effect. 
         + If the effects of the predictor are clearly confounded by the adjustment variable, we again have a clear result. 
-        + If neither is statistically significant after adjustment, the data may be inadequate.
+        + If neither appears to add meaningful predictive value after adjustment, the data may be inadequate.
     + If the collinearity is between adjustment variables, but doesn't involve the key predictor, then inclusion of the collinear variables is unlikely to cause substantial problems.
 
 ## Spending DF on Non-Linearity: The Spearman Plot
