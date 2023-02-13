@@ -420,7 +420,7 @@ Using this `glm` residuals approach, we again see that points 84 and 94 have the
 
 ## Concordance: Comparing Model C, D and E's predictions
 
-To start, we'll gather the predictions fomade by each model (C, D and E) on the probability scale, in one place. Sadly, `augment` from `broom` doesn't work well with `lrm` fits, so we have to do this on our own.
+To start, we'll gather the predictions made by each model (C, D and E) on the probability scale, in one place. Sadly, `augment` from `broom` doesn't work well with `lrm` fits, so we have to do this on our own.
 
 ```{r}
 resect_preds <- resect |>

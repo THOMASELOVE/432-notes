@@ -3062,8 +3062,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb159-81"><a href="#cb159-81" aria-hidden="true" tabindex="-1"></a>               <span class="at">NULL =</span> <span class="st">"99"</span>)</span>
 <span id="cb159-82"><a href="#cb159-82" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Unknown levels in `f`: 3, 17, 21, 32, 36, 41, 42, 45, 47, 53, 55, 56,
-59</code></pre>
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `exer1_type = fct_recode(...)`.
+Caused by warning:
+! Unknown levels in `f`: 3, 17, 21, 32, 36, 41, 42, 45, 47, 53, 55, 56, 59</code></pre>
 </div>
 </div>
 <p>The warning generated here is caused by the fact that some of the available types of exercise were not mentioned by people in our sample. Looking at the last few results, we can see how many people fell into several categories.</p>
@@ -3189,7 +3191,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb165-82"><a href="#cb165-82" aria-hidden="true" tabindex="-1"></a>               <span class="at">NULL =</span> <span class="st">"99"</span>)</span>
 <span id="cb165-83"><a href="#cb165-83" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Unknown levels in `f`: 3, 21, 30, 39, 41, 46, 50, 62</code></pre>
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `exer2_type = fct_recode(...)`.
+Caused by warning:
+! Unknown levels in `f`: 3, 21, 30, 39, 41, 46, 50, 62</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a>smart_ohio_raw <span class="sc">|&gt;</span> <span class="fu">count</span>(EXRACT21, exer2_type) <span class="sc">|&gt;</span> <span class="fu">tail</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

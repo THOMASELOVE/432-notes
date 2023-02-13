@@ -1049,7 +1049,7 @@ $resection
 </section>
 <section id="concordance-comparing-model-c-d-and-es-predictions" class="level2" data-number="21.5">
 <h2 data-number="21.5" class="anchored" data-anchor-id="concordance-comparing-model-c-d-and-es-predictions"><span class="header-section-number">21.5</span> Concordance: Comparing Model C, D and E’s predictions</h2>
-<p>To start, we’ll gather the predictions fomade by each model (C, D and E) on the probability scale, in one place. Sadly, <code>augment</code> from <code>broom</code> doesn’t work well with <code>lrm</code> fits, so we have to do this on our own.</p>
+<p>To start, we’ll gather the predictions made by each model (C, D and E) on the probability scale, in one place. Sadly, <code>augment</code> from <code>broom</code> doesn’t work well with <code>lrm</code> fits, so we have to do this on our own.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>resect_preds <span class="ot">&lt;-</span> resect <span class="sc">|&gt;</span></span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">C =</span> <span class="fu">predict</span>(res_modC, <span class="at">type =</span> <span class="st">"fitted"</span>),</span>
