@@ -1,10 +1,13 @@
 # Zero-Inflated Models for Count Data {#sec-count3}
 
-We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in @sec-smart to demonstrate regression models for count outcomes, as we did in @sec-count1.
+We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in @sec-smart to demonstrate regression models for count outcomes, as we did in @sec-count1 and @sec-count2.
 
 Methods discussed in the chapter include:
 
-- Negative Binomial Regression
+- Zero-inflated Poisson Regression
+- Zero-inflated Negative Binomial Regression
+- Two different types of "hurdle" model
+- A Tobit (Censored) Regression Model
 
 ## R Setup Used Here
 
@@ -30,7 +33,7 @@ theme_set(theme_bw())
 smart_oh <- readRDS("data/smart_ohio.Rds")
 ```
 
-As in @sec-count1, we'll create a subset of these data for analysis. 
+As in @sec-count1 and @sec-count2, we'll create a subset of these data for analysis. 
 
 ```{r}
 ohioA <- smart_oh |>

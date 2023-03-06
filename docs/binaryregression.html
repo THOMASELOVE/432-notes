@@ -639,26 +639,25 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>mod_screen_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>General Linear Model
- 
- Glm(formula = screen_rate ~ meanage + female + pct_lowins + system, 
-     family = binomial, data = colscr, weights = subjects, x = T, 
-     y = T)
- 
-                      Model Likelihood    
-                            Ratio Test    
-     Obs      26    LR chi2    2008.90    
- Residual d.f.19    d.f.             6    
-     g 0.4614539    Pr(&gt; chi2) &lt;0.0001    
- 
-              Coef    S.E.   Wald Z Pr(&gt;|Z|)
- Intercept    -1.3270 0.5531  -2.40 0.0164  
- meanage       0.0680 0.0090   7.57 &lt;0.0001 
- female       -0.0193 0.0016 -12.20 &lt;0.0001 
- pct_lowins   -0.0135 0.0009 -15.67 &lt;0.0001 
- system=Sys_2 -0.1382 0.0247  -5.61 &lt;0.0001 
- system=Sys_3 -0.0400 0.0255  -1.57 0.1159  
- system=Sys_4  0.0229 0.0294   0.78 0.4358  
- </code></pre>
+
+Glm(formula = screen_rate ~ meanage + female + pct_lowins + system, 
+    family = binomial, data = colscr, weights = subjects, x = T, 
+    y = T)
+
+                     Model Likelihood    
+                           Ratio Test    
+    Obs      26    LR chi2    2008.90    
+Residual d.f.19    d.f.             6    
+    g 0.4614539    Pr(&gt; chi2) &lt;0.0001    
+
+             Coef    S.E.   Wald Z Pr(&gt;|Z|)
+Intercept    -1.3270 0.5531  -2.40 0.0164  
+meanage       0.0680 0.0090   7.57 &lt;0.0001 
+female       -0.0193 0.0016 -12.20 &lt;0.0001 
+pct_lowins   -0.0135 0.0009 -15.67 &lt;0.0001 
+system=Sys_2 -0.1382 0.0247  -5.61 &lt;0.0001 
+system=Sys_3 -0.0400 0.0255  -1.57 0.1159  
+system=Sys_4  0.0229 0.0294   0.78 0.4358  </code></pre>
 </div>
 </div>
 </section>

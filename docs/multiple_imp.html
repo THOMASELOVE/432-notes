@@ -1878,34 +1878,32 @@ The following fit components were averaged over the 10 model fits:
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>m16_imp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear Regression Model
- 
- fit.mult.impute(formula = phys_tr ~ age_imp + comor + smoke100 + 
-     hx_depress + bmi + activity, fitter = ols, xtrans = fit16_imp, 
-     data = smart_16, x = TRUE, y = TRUE)
- 
-                 Model Likelihood    Discrimination    
-                       Ratio Test           Indexes    
- Obs    1057    LR chi2    219.94    R2       0.188    
- sigma1.2881    d.f.            8    R2 adj   0.182    
- d.f.   1048    Pr(&gt; chi2) 0.0000    g        0.687    
- 
- Residuals
- 
-     Min      1Q  Median      3Q     Max 
- -3.0621 -1.0327 -0.2878  1.1104  2.8018 
- 
- 
-                                Coef    S.E.   t     Pr(&gt;|t|)
- Intercept                       0.4052 0.3352  1.21 0.2271  
- age_imp                        -0.0049 0.0034 -1.46 0.1437  
- comor                           0.3078 0.0302 10.20 &lt;0.0001 
- smoke100                        0.1259 0.0830  1.52 0.1296  
- hx_depress                      0.5120 0.0940  5.45 &lt;0.0001 
- bmi                             0.0164 0.0058  2.83 0.0048  
- activity=Active                -0.1773 0.1513 -1.17 0.2416  
- activity=Insufficiently_Active -0.0396 0.1342 -0.30 0.7680  
- activity=Inactive               0.2401 0.1144  2.10 0.0360  
- </code></pre>
+
+fit.mult.impute(formula = phys_tr ~ age_imp + comor + smoke100 + 
+    hx_depress + bmi + activity, fitter = ols, xtrans = fit16_imp, 
+    data = smart_16, x = TRUE, y = TRUE)
+
+                Model Likelihood    Discrimination    
+                      Ratio Test           Indexes    
+Obs    1057    LR chi2    219.94    R2       0.188    
+sigma1.2881    d.f.            8    R2 adj   0.182    
+d.f.   1048    Pr(&gt; chi2) 0.0000    g        0.687    
+
+Residuals
+
+    Min      1Q  Median      3Q     Max 
+-3.0621 -1.0327 -0.2878  1.1104  2.8018 
+
+                               Coef    S.E.   t     Pr(&gt;|t|)
+Intercept                       0.4052 0.3352  1.21 0.2271  
+age_imp                        -0.0049 0.0034 -1.46 0.1437  
+comor                           0.3078 0.0302 10.20 &lt;0.0001 
+smoke100                        0.1259 0.0830  1.52 0.1296  
+hx_depress                      0.5120 0.0940  5.45 &lt;0.0001 
+bmi                             0.0164 0.0058  2.83 0.0048  
+activity=Active                -0.1773 0.1513 -1.17 0.2416  
+activity=Insufficiently_Active -0.0396 0.1342 -0.30 0.7680  
+activity=Inactive               0.2401 0.1144  2.10 0.0360  </code></pre>
 </div>
 </div>
 </section>

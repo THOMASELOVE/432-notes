@@ -446,10 +446,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in <a href="smart.html"><span>Chapter&nbsp;6</span></a> to demonstrate regression models for count outcomes, as we did in <a href="count1.html"><span>Chapter&nbsp;24</span></a>.</p>
+<p>We will continue to use a count outcome (# of poor physical health days out of the last 30) in OHIO SMART data created in <a href="smart.html"><span>Chapter&nbsp;6</span></a> to demonstrate regression models for count outcomes, as we did in <a href="count1.html"><span>Chapter&nbsp;24</span></a> and <a href="count2.html"><span>Chapter&nbsp;25</span></a>.</p>
 <p>Methods discussed in the chapter include:</p>
 <ul>
-<li>Negative Binomial Regression</li>
+<li>Zero-inflated Poisson Regression</li>
+<li>Zero-inflated Negative Binomial Regression</li>
+<li>Two different types of “hurdle” model</li>
+<li>A Tobit (Censored) Regression Model</li>
 </ul>
 <section id="r-setup-used-here" class="level2" data-number="26.1">
 <h2 data-number="26.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">26.1</span> R Setup Used Here</h2>
@@ -471,7 +474,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smart_oh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/smart_ohio.Rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>As in <a href="count1.html"><span>Chapter&nbsp;24</span></a>, we’ll create a subset of these data for analysis.</p>
+<p>As in <a href="count1.html"><span>Chapter&nbsp;24</span></a> and <a href="count2.html"><span>Chapter&nbsp;25</span></a>, we’ll create a subset of these data for analysis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ohioA <span class="ot">&lt;-</span> smart_oh <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(SEQNO, mmsa_name, genhealth, physhealth, </span>

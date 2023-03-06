@@ -448,35 +448,33 @@ div.csl-indent {
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>newmod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear Regression Model
- 
- ols(formula = y ~ rcs(x9, 5) + rcs(x6, 3) + pol(x14, 2) + x1 + 
-     x13, data = pollution, x = TRUE, y = TRUE)
- 
-                  Model Likelihood    Discrimination    
-                        Ratio Test           Indexes    
- Obs       60    LR chi2     72.02    R2       0.699    
- sigma37.4566    d.f.           10    R2 adj   0.637    
- d.f.      49    Pr(&gt; chi2) 0.0000    g       58.961    
- 
- Residuals
- 
-     Min      1Q  Median      3Q     Max 
- -86.189 -18.554  -1.799  18.645 104.307 
- 
- 
-           Coef      S.E.     t     Pr(&gt;|t|)
- Intercept  796.2658 162.3269  4.91 &lt;0.0001 
- x9          -2.6328   6.3504 -0.41 0.6803  
- x9'        121.4651 124.4827  0.98 0.3340  
- x9''      -219.8025 227.6775 -0.97 0.3391  
- x9'''      151.5700 171.3867  0.88 0.3808  
- x6           7.6817  15.5230  0.49 0.6229  
- x6'        -29.4388  18.0531 -1.63 0.1094  
- x14          0.5652   0.2547  2.22 0.0311  
- x14^2       -0.0010   0.0010 -0.96 0.3407  
- x1           1.0717   0.7317  1.46 0.1494  
- x13         -0.1028   0.1443 -0.71 0.4796  
- </code></pre>
+
+ols(formula = y ~ rcs(x9, 5) + rcs(x6, 3) + pol(x14, 2) + x1 + 
+    x13, data = pollution, x = TRUE, y = TRUE)
+
+                 Model Likelihood    Discrimination    
+                       Ratio Test           Indexes    
+Obs       60    LR chi2     72.02    R2       0.699    
+sigma37.4566    d.f.           10    R2 adj   0.637    
+d.f.      49    Pr(&gt; chi2) 0.0000    g       58.961    
+
+Residuals
+
+    Min      1Q  Median      3Q     Max 
+-86.189 -18.554  -1.799  18.645 104.307 
+
+          Coef      S.E.     t     Pr(&gt;|t|)
+Intercept  796.2658 162.3269  4.91 &lt;0.0001 
+x9          -2.6328   6.3504 -0.41 0.6803  
+x9'        121.4651 124.4827  0.98 0.3340  
+x9''      -219.8025 227.6775 -0.97 0.3391  
+x9'''      151.5700 171.3867  0.88 0.3808  
+x6           7.6817  15.5230  0.49 0.6229  
+x6'        -29.4388  18.0531 -1.63 0.1094  
+x14          0.5652   0.2547  2.22 0.0311  
+x14^2       -0.0010   0.0010 -0.96 0.3407  
+x1           1.0717   0.7317  1.46 0.1494  
+x13         -0.1028   0.1443 -0.71 0.4796  </code></pre>
 </div>
 </div>
 <p>Some of the advantages and disadvantages of fitting linear regression models with <code>ols</code> or <code>lm</code> will reveal themselves over time. For now, one advantage for <code>ols</code> is that the entire variance-covariance matrix is saved. Most of the time, there will be some value to considering both <code>ols</code> and <code>lm</code> approaches.</p>
@@ -569,11 +567,11 @@ div.csl-indent {
 <pre><code>             Effects              Response : y 
 
  Factor Low   High  Diff. Effect   S.E.    Lower 0.95 Upper 0.95
- x9      4.95 15.65 10.70  40.4060 14.0790   3.11970  77.6920   
- x6     10.40 11.50  1.10 -18.2930  8.1499 -39.87600   3.2899   
- x14    11.00 69.00 58.00  28.3480 10.6480   0.14962  56.5470   
- x1     32.75 43.25 10.50  11.2520  7.6833  -9.09500  31.6000   
- x13     4.00 23.75 19.75  -2.0303  2.8502  -9.57830   5.5177   </code></pre>
+ x9      4.95 15.65 10.70  40.4060 14.0790   3.11740  77.6940   
+ x6     10.40 11.50  1.10 -18.2930  8.1499 -39.87800   3.2913   
+ x14    11.00 69.00 58.00  28.3480 10.6480   0.14783  56.5480   
+ x1     32.75 43.25 10.50  11.2520  7.6833  -9.09630  31.6010   
+ x13     4.00 23.75 19.75  -2.0303  2.8502  -9.57870   5.5182   </code></pre>
 </div>
 </div>
 <p>Remember that if you’re looking for the usual <code>lm</code> summary for an <code>ols</code> object, use <code>summary.lm</code>.</p>
@@ -618,17 +616,17 @@ Limits are 0.95 confidence limits</code></pre>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Predict</span>(newmod, <span class="at">x9 =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>, <span class="at">conf.type =</span> <span class="st">'simult'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x9    x6 x14 x1 x13     yhat    lower    upper
-1   5 11.05  30 38   9 913.7392 882.3582 945.1203
-2   6 11.05  30 38   9 916.3490 884.8623 947.8356
-3   7 11.05  30 38   9 921.3093 892.4061 950.2126
-4   8 11.05  30 38   9 927.6464 900.9846 954.3083
-5   9 11.05  30 38   9 934.3853 907.2082 961.5625
-6  10 11.05  30 38   9 940.5510 911.1688 969.9331
-7  11 11.05  30 38   9 945.2225 915.1786 975.2664
-8  12 11.05  30 38   9 948.2885 920.0485 976.5285
-9  13 11.05  30 38   9 950.2608 924.4403 976.0812
-10 14 11.05  30 38   9 951.6671 926.5328 976.8014
-11 15 11.05  30 38   9 953.0342 926.0398 980.0285
+1   5 11.05  30 38   9 913.7392 882.4657 945.0127
+2   6 11.05  30 38   9 916.3490 884.9702 947.7278
+3   7 11.05  30 38   9 921.3093 892.5051 950.1135
+4   8 11.05  30 38   9 927.6464 901.0759 954.2170
+5   9 11.05  30 38   9 934.3853 907.3013 961.4694
+6  10 11.05  30 38   9 940.5510 911.2695 969.8325
+7  11 11.05  30 38   9 945.2225 915.2815 975.1635
+8  12 11.05  30 38   9 948.2885 920.1453 976.4318
+9  13 11.05  30 38   9 950.2608 924.5288 975.9928
+10 14 11.05  30 38   9 951.6671 926.6189 976.7153
+11 15 11.05  30 38   9 953.0342 926.1323 979.9361
 
 Response variable (y): y 
 
@@ -661,22 +659,22 @@ Limits are 0.95 confidence limits</code></pre>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which.influence</span>(newmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$Intercept
-[1]  1  4  7 20 50 55 60
+[1] "1"  "4"  "7"  "20" "50" "55" "60"
 
 $x9
-[1]  1 15 38 39 50 51 52 53 58
+[1] "1"  "15" "38" "39" "50" "51" "52" "53" "58"
 
 $x6
-[1]  2  4  7 16 20 36 50 55 60
+[1] "2"  "4"  "7"  "16" "20" "36" "50" "55" "60"
 
 $x14
-[1]  6  7 27 42 50 56 58 60
+[1] "6"  "7"  "27" "42" "50" "56" "58" "60"
 
 $x1
-[1]  1  7 10 27 52 60
+[1] "1"  "7"  "10" "27" "52" "60"
 
 $x13
-[1]  7  8 60</code></pre>
+[1] "7"  "8"  "60"</code></pre>
 </div>
 </div>
 <p>The implication here, for instance, is that if we drop row 15 from our data frame, and refit the model, this will have a meaningful impact on the estimate of <code>x9</code> but not on the other coefficients. But if we drop, say, row 60, we will affect the estimates of the intercept, <code>x6</code>, <code>x14</code>, <code>x1</code>, and <code>x13</code>.</p>
@@ -686,27 +684,27 @@ $x13
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">residuals</span>(newmod, <span class="at">type =</span> <span class="st">"dfbetas"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              [,1]          [,2]          [,3]          [,4]          [,5]
-[1,] -0.2142788779  0.2464314961 -0.1638633763  0.1420748132 -0.0837601846
-[2,] -0.1609522082 -0.1651907163  0.0813708161 -0.0571478560 -0.0104199085
-[3,]  0.0002978421  0.0003616715 -0.0003743893  0.0003648207 -0.0003104531
-[4,] -0.6689504955  0.1060165855 -0.0582613403  0.0567350766 -0.0514665792
-[5,] -0.0185374830  0.0941987899 -0.0712140473  0.0651961744 -0.0473578767
-[6,] -0.0733189060  0.0441321361 -0.0775996337  0.0686460863 -0.0310662575
-              [,6]          [,7]          [,8]          [,9]         [,10]
-[1,]  0.0885057227 -0.1236601786  0.1976364429 -0.1948087617  0.4602900927
-[2,]  0.1761716451 -0.2487893025  0.1331560976 -0.1425694930  0.0532802632
-[3,] -0.0001793501  0.0001379045 -0.0002413065  0.0001584916 -0.0008536018
-[4,]  0.6480133104 -0.4398587906  0.1281557908 -0.0762194326 -0.1230959028
-[5,] -0.0027596047 -0.0242159160 -0.0125205909  0.0030015343  0.0456581256
-[6,]  0.0598043946 -0.1228968480  0.2222504825 -0.1842672286  0.0425024727
-             [,11]
-[1,]  1.476010e-01
-[2,]  1.561944e-01
-[3,] -8.851148e-05
-[4,] -9.553782e-02
-[5,]  4.318623e-02
-[6,]  5.491929e-02</code></pre>
+<pre><code>      Intercept            x9           x9'          x9''         x9'''
+1 -0.2142788779  0.2464314961 -0.1638633763  0.1420748132 -0.0837601846
+2 -0.1609522082 -0.1651907163  0.0813708161 -0.0571478560 -0.0104199085
+3  0.0002978421  0.0003616715 -0.0003743893  0.0003648207 -0.0003104531
+4 -0.6689504955  0.1060165855 -0.0582613403  0.0567350766 -0.0514665792
+5 -0.0185374830  0.0941987899 -0.0712140473  0.0651961744 -0.0473578767
+6 -0.0733189060  0.0441321361 -0.0775996337  0.0686460863 -0.0310662575
+             x6           x6'           x14         x14^2            x1
+1  0.0885057227 -0.1236601786  0.1976364429 -0.1948087617  0.4602900927
+2  0.1761716451 -0.2487893025  0.1331560976 -0.1425694930  0.0532802632
+3 -0.0001793501  0.0001379045 -0.0002413065  0.0001584916 -0.0008536018
+4  0.6480133104 -0.4398587906  0.1281557908 -0.0762194326 -0.1230959028
+5 -0.0027596047 -0.0242159160 -0.0125205909  0.0030015343  0.0456581256
+6  0.0598043946 -0.1228968480  0.2222504825 -0.1842672286  0.0425024727
+            x13
+1  1.476010e-01
+2  1.561944e-01
+3 -8.851148e-05
+4 -9.553782e-02
+5  4.318623e-02
+6  5.491929e-02</code></pre>
 </div>
 </div>
 </section>

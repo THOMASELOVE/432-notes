@@ -1279,29 +1279,28 @@ AIC: 15686.5 </code></pre>
 <span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>m1_lrm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = genh ~ veg_day, data = sm1, x = T, y = T)
- 
- 
- Frequencies of Responses
- 
-  1-E 2_VG  3_G  4_F  5_P 
-  822 1805 1667  801  299 
- 
-                        Model Likelihood     Discrimination    Rank Discrim.    
-                              Ratio Test            Indexes          Indexes    
- Obs          5394    LR chi2      75.04     R2       0.015    C       0.555    
- max |deriv| 3e-13    d.f.             1    R2(1,5394)0.014    Dxy     0.111    
-                      Pr(&gt; chi2) &lt;0.0001    R2(1,4995)0.015    gamma   0.111    
-                                             Brier    0.247    tau-a   0.082    
- 
-         Coef    S.E.   Wald Z Pr(&gt;|Z|)
- y&gt;=2_VG  2.0866 0.0584  35.76 &lt;0.0001 
- y&gt;=3_G   0.4065 0.0498   8.16 &lt;0.0001 
- y&gt;=4_F  -1.0202 0.0521 -19.58 &lt;0.0001 
- y&gt;=5_P  -2.5002 0.0710 -35.22 &lt;0.0001 
- veg_day -0.1847 0.0218  -8.48 &lt;0.0001 
- </code></pre>
+
+lrm(formula = genh ~ veg_day, data = sm1, x = T, y = T)
+
+
+Frequencies of Responses
+
+ 1-E 2_VG  3_G  4_F  5_P 
+ 822 1805 1667  801  299 
+
+                       Model Likelihood     Discrimination    Rank Discrim.    
+                             Ratio Test            Indexes          Indexes    
+Obs          5394    LR chi2      75.04     R2       0.015    C       0.555    
+max |deriv| 3e-13    d.f.             1    R2(1,5394)0.014    Dxy     0.111    
+                     Pr(&gt; chi2) &lt;0.0001    R2(1,4995)0.015    gamma   0.111    
+                                            Brier    0.247    tau-a   0.082    
+
+        Coef    S.E.   Wald Z Pr(&gt;|Z|)
+y&gt;=2_VG  2.0866 0.0584  35.76 &lt;0.0001 
+y&gt;=3_G   0.4065 0.0498   8.16 &lt;0.0001 
+y&gt;=4_F  -1.0202 0.0521 -19.58 &lt;0.0001 
+y&gt;=5_P  -2.5002 0.0710 -35.22 &lt;0.0001 
+veg_day -0.1847 0.0218  -8.48 &lt;0.0001 </code></pre>
 </div>
 </div>
 <p>The model is highly significant (remember the large sample size) but very weak, with a Nagelkerke <span class="math inline">\(R^2\)</span> of 0.015, and a C statistic of 0.555.</p>
@@ -1405,32 +1404,31 @@ m2  7 15289.40</code></pre>
 <span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>m2_lrm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = genh ~ veg_day + bmi + costprob, data = sm1, x = T, 
-     y = T)
- 
- 
- Frequencies of Responses
- 
-  1-E 2_VG  3_G  4_F  5_P 
-  822 1805 1667  801  299 
- 
-                        Model Likelihood     Discrimination    Rank Discrim.    
-                              Ratio Test            Indexes          Indexes    
- Obs          5394    LR chi2     515.65     R2       0.096    C       0.629    
- max |deriv| 4e-09    d.f.             3    R2(3,5394)0.091    Dxy     0.258    
-                      Pr(&gt; chi2) &lt;0.0001    R2(3,4995)0.098    gamma   0.258    
-                                             Brier    0.231    tau-a   0.192    
- 
-          Coef    S.E.   Wald Z Pr(&gt;|Z|)
- y&gt;=2_VG   0.1252 0.1229   1.02 0.3085  
- y&gt;=3_G   -1.6358 0.1234 -13.26 &lt;0.0001 
- y&gt;=4_F   -3.1534 0.1294 -24.38 &lt;0.0001 
- y&gt;=5_P   -4.6881 0.1412 -33.19 &lt;0.0001 
- veg_day  -0.1713 0.0218  -7.86 &lt;0.0001 
- bmi       0.0667 0.0039  17.31 &lt;0.0001 
- costprob  0.9683 0.0849  11.41 &lt;0.0001 
- </code></pre>
+
+lrm(formula = genh ~ veg_day + bmi + costprob, data = sm1, x = T, 
+    y = T)
+
+
+Frequencies of Responses
+
+ 1-E 2_VG  3_G  4_F  5_P 
+ 822 1805 1667  801  299 
+
+                       Model Likelihood     Discrimination    Rank Discrim.    
+                             Ratio Test            Indexes          Indexes    
+Obs          5394    LR chi2     515.65     R2       0.096    C       0.629    
+max |deriv| 4e-09    d.f.             3    R2(3,5394)0.091    Dxy     0.258    
+                     Pr(&gt; chi2) &lt;0.0001    R2(3,4995)0.098    gamma   0.258    
+                                            Brier    0.231    tau-a   0.192    
+
+         Coef    S.E.   Wald Z Pr(&gt;|Z|)
+y&gt;=2_VG   0.1252 0.1229   1.02 0.3085  
+y&gt;=3_G   -1.6358 0.1234 -13.26 &lt;0.0001 
+y&gt;=4_F   -3.1534 0.1294 -24.38 &lt;0.0001 
+y&gt;=5_P   -4.6881 0.1412 -33.19 &lt;0.0001 
+veg_day  -0.1713 0.0218  -7.86 &lt;0.0001 
+bmi       0.0667 0.0039  17.31 &lt;0.0001 
+costprob  0.9683 0.0849  11.41 &lt;0.0001 </code></pre>
 </div>
 </div>
 <p>It appears that each of the added predictors (<code>bmi</code> and <code>costprob</code>) adds statistically detectable value to the model.</p>
@@ -1625,43 +1623,42 @@ AIC: 15223.53 </code></pre>
 <span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>m3_lrm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = gen_n ~ rcs(veg_day, 3) + rcs(bmi, 4) + incomegroup + 
-     catg(costprob) + bmi %ia% costprob, data = sm1, x = T, y = T)
- 
- 
- Frequencies of Responses
- 
-    1    2    3    4    5 
-  822 1805 1667  801  299 
- 
-                        Model Likelihood      Discrimination    Rank Discrim.    
-                              Ratio Test             Indexes          Indexes    
- Obs          5394    LR chi2    1190.35      R2       0.209    C       0.696    
- max |deriv| 7e-12    d.f.            14    R2(14,5394)0.196    Dxy     0.391    
-                      Pr(&gt; chi2) &lt;0.0001    R2(14,4995)0.210    gamma   0.392    
-                                              Brier    0.214    tau-a   0.291    
- 
-                    Coef    S.E.   Wald Z Pr(&gt;|Z|)
- y&gt;=2                3.7535 0.4852   7.74 &lt;0.0001 
- y&gt;=3                1.8717 0.4838   3.87 0.0001  
- y&gt;=4                0.2035 0.4831   0.42 0.6737  
- y&gt;=5               -1.4386 0.4846  -2.97 0.0030  
- veg_day            -0.2602 0.0633  -4.11 &lt;0.0001 
- veg_day'            0.1756 0.0693   2.53 0.0113  
- bmi                -0.0325 0.0203  -1.60 0.1086  
- bmi'                0.5422 0.0989   5.48 &lt;0.0001 
- bmi''              -1.4579 0.2663  -5.47 &lt;0.0001 
- incomegroup=10-14K  0.2445 0.1705   1.43 0.1516  
- incomegroup=15-19K -0.2626 0.1582  -1.66 0.0969  
- incomegroup=20-24K -0.6434 0.1501  -4.29 &lt;0.0001 
- incomegroup=25-34K -0.7427 0.1459  -5.09 &lt;0.0001 
- incomegroup=35-49K -1.1621 0.1415  -8.21 &lt;0.0001 
- incomegroup=50-74K -1.4579 0.1418 -10.28 &lt;0.0001 
- incomegroup=75K+   -1.8592 0.1361 -13.66 &lt;0.0001 
- costprob=1          1.4576 0.3528   4.13 &lt;0.0001 
- bmi * costprob     -0.0259 0.0116  -2.24 0.0250  
- </code></pre>
+
+lrm(formula = gen_n ~ rcs(veg_day, 3) + rcs(bmi, 4) + incomegroup + 
+    catg(costprob) + bmi %ia% costprob, data = sm1, x = T, y = T)
+
+
+Frequencies of Responses
+
+   1    2    3    4    5 
+ 822 1805 1667  801  299 
+
+                       Model Likelihood      Discrimination    Rank Discrim.    
+                             Ratio Test             Indexes          Indexes    
+Obs          5394    LR chi2    1190.35      R2       0.209    C       0.696    
+max |deriv| 7e-12    d.f.            14    R2(14,5394)0.196    Dxy     0.391    
+                     Pr(&gt; chi2) &lt;0.0001    R2(14,4995)0.210    gamma   0.392    
+                                             Brier    0.214    tau-a   0.291    
+
+                   Coef    S.E.   Wald Z Pr(&gt;|Z|)
+y&gt;=2                3.7535 0.4852   7.74 &lt;0.0001 
+y&gt;=3                1.8717 0.4838   3.87 0.0001  
+y&gt;=4                0.2035 0.4831   0.42 0.6737  
+y&gt;=5               -1.4386 0.4846  -2.97 0.0030  
+veg_day            -0.2602 0.0633  -4.11 &lt;0.0001 
+veg_day'            0.1756 0.0693   2.53 0.0113  
+bmi                -0.0325 0.0203  -1.60 0.1086  
+bmi'                0.5422 0.0989   5.48 &lt;0.0001 
+bmi''              -1.4579 0.2663  -5.47 &lt;0.0001 
+incomegroup=10-14K  0.2445 0.1705   1.43 0.1516  
+incomegroup=15-19K -0.2626 0.1582  -1.66 0.0969  
+incomegroup=20-24K -0.6434 0.1501  -4.29 &lt;0.0001 
+incomegroup=25-34K -0.7427 0.1459  -5.09 &lt;0.0001 
+incomegroup=35-49K -1.1621 0.1415  -8.21 &lt;0.0001 
+incomegroup=50-74K -1.4579 0.1418 -10.28 &lt;0.0001 
+incomegroup=75K+   -1.8592 0.1361 -13.66 &lt;0.0001 
+costprob=1          1.4576 0.3528   4.13 &lt;0.0001 
+bmi * costprob     -0.0259 0.0116  -2.24 0.0250  </code></pre>
 </div>
 </div>
 <p>Another option here would have been to consider building <code>incomegroup</code> as a <code>scored</code> variable, with an order on its own, but I won’t force that here. Here’s the <code>polr</code> version…</p>

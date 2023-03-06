@@ -437,20 +437,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>res_modC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = died ~ resection, data = resect, x = TRUE, y = TRUE)
- 
-                       Model Likelihood     Discrimination    Rank Discrim.    
-                             Ratio Test            Indexes          Indexes    
- Obs           134    LR chi2     12.45     R2       0.167    C       0.771    
-  0            117    d.f.            1     R2(1,134)0.082    Dxy     0.541    
-  1             17    Pr(&gt; chi2) 0.0004    R2(1,44.5)0.227    gamma   0.582    
- max |deriv| 2e-06                          Brier    0.103    tau-a   0.121    
- 
-           Coef    S.E.   Wald Z Pr(&gt;|Z|)
- Intercept -4.4337 0.8799 -5.04  &lt;0.0001 
- resection  0.7417 0.2230  3.33  0.0009  
- </code></pre>
+
+lrm(formula = died ~ resection, data = resect, x = TRUE, y = TRUE)
+
+                      Model Likelihood     Discrimination    Rank Discrim.    
+                            Ratio Test            Indexes          Indexes    
+Obs           134    LR chi2     12.45     R2       0.167    C       0.771    
+ 0            117    d.f.            1     R2(1,134)0.082    Dxy     0.541    
+ 1             17    Pr(&gt; chi2) 0.0004    R2(1,44.5)0.227    gamma   0.582    
+max |deriv| 2e-06                          Brier    0.103    tau-a   0.121    
+
+          Coef    S.E.   Wald Z Pr(&gt;|Z|)
+Intercept -4.4337 0.8799 -5.04  &lt;0.0001 
+resection  0.7417 0.2230  3.33  0.0009  </code></pre>
 </div>
 </div>
 <p>This output specifies the following:</p>
@@ -693,26 +692,25 @@ $resection
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>res_modD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = died ~ age + prior + rcs(resection, 3) + intubated + 
-     intubated %ia% resection, data = resect, x = TRUE, y = TRUE)
- 
-                        Model Likelihood     Discrimination    Rank Discrim.    
-                              Ratio Test            Indexes          Indexes    
- Obs           134    LR chi2      38.08     R2       0.464    C       0.880    
-  0            117    d.f.             6     R2(6,134)0.213    Dxy     0.759    
-  1             17    Pr(&gt; chi2) &lt;0.0001    R2(6,44.5)0.513    gamma   0.770    
- max |deriv| 9e-08                           Brier    0.067    tau-a   0.169    
- 
-                       Coef     S.E.   Wald Z Pr(&gt;|Z|)
- Intercept             -11.3636 4.9099 -2.31  0.0206  
- age                     0.0000 0.0210  0.00  0.9988  
- prior                   0.6269 0.7367  0.85  0.3947  
- resection               3.3799 1.9700  1.72  0.0862  
- resection'             -4.2104 2.7035 -1.56  0.1194  
- intubated               0.4576 2.7848  0.16  0.8695  
- intubated * resection   0.6188 0.7306  0.85  0.3970  
- </code></pre>
+
+lrm(formula = died ~ age + prior + rcs(resection, 3) + intubated + 
+    intubated %ia% resection, data = resect, x = TRUE, y = TRUE)
+
+                       Model Likelihood     Discrimination    Rank Discrim.    
+                             Ratio Test            Indexes          Indexes    
+Obs           134    LR chi2      38.08     R2       0.464    C       0.880    
+ 0            117    d.f.             6     R2(6,134)0.213    Dxy     0.759    
+ 1             17    Pr(&gt; chi2) &lt;0.0001    R2(6,44.5)0.513    gamma   0.770    
+max |deriv| 9e-08                           Brier    0.067    tau-a   0.169    
+
+                      Coef     S.E.   Wald Z Pr(&gt;|Z|)
+Intercept             -11.3636 4.9099 -2.31  0.0206  
+age                     0.0000 0.0210  0.00  0.9988  
+prior                   0.6269 0.7367  0.85  0.3947  
+resection               3.3799 1.9700  1.72  0.0862  
+resection'             -4.2104 2.7035 -1.56  0.1194  
+intubated               0.4576 2.7848  0.16  0.8695  
+intubated * resection   0.6188 0.7306  0.85  0.3970  </code></pre>
 </div>
 </div>
 <ul>
@@ -876,22 +874,21 @@ gp            0.1720   0.1910  0.1632   0.0278          0.1442 95</code></pre>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>res_modE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model
- 
- lrm(formula = died ~ intubated + resection, data = resect, x = TRUE, 
-     y = TRUE)
- 
-                        Model Likelihood     Discrimination    Rank Discrim.    
-                              Ratio Test            Indexes          Indexes    
- Obs           134    LR chi2      33.27     R2       0.413    C       0.867    
-  0            117    d.f.             2     R2(2,134)0.208    Dxy     0.734    
-  1             17    Pr(&gt; chi2) &lt;0.0001    R2(2,44.5)0.505    gamma   0.757    
- max |deriv| 5e-10                           Brier    0.073    tau-a   0.164    
- 
-           Coef    S.E.   Wald Z Pr(&gt;|Z|)
- Intercept -4.6370 1.0430 -4.45  &lt;0.0001 
- intubated  2.8640 0.6479  4.42  &lt;0.0001 
- resection  0.5475 0.2689  2.04  0.0418  
- </code></pre>
+
+lrm(formula = died ~ intubated + resection, data = resect, x = TRUE, 
+    y = TRUE)
+
+                       Model Likelihood     Discrimination    Rank Discrim.    
+                             Ratio Test            Indexes          Indexes    
+Obs           134    LR chi2      33.27     R2       0.413    C       0.867    
+ 0            117    d.f.             2     R2(2,134)0.208    Dxy     0.734    
+ 1             17    Pr(&gt; chi2) &lt;0.0001    R2(2,44.5)0.505    gamma   0.757    
+max |deriv| 5e-10                           Brier    0.073    tau-a   0.164    
+
+          Coef    S.E.   Wald Z Pr(&gt;|Z|)
+Intercept -4.6370 1.0430 -4.45  &lt;0.0001 
+intubated  2.8640 0.6479  4.42  &lt;0.0001 
+resection  0.5475 0.2689  2.04  0.0418  </code></pre>
 </div>
 </div>
 <p>The model equation is that the log odds of death is -4.637 + 2.864 <code>intubated</code> + 0.548 <code>resection</code>.</p>

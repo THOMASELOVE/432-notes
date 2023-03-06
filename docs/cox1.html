@@ -655,21 +655,20 @@ GLOBAL    2.09  1 0.15</code></pre>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model_hem</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cox Proportional Hazards Model
- 
- cph(formula = hemsurv ~ genotype, data = hem, x = TRUE, y = TRUE, 
-     surv = TRUE)
- 
-                        Model Tests    Discrimination    
-                                              Indexes    
- Obs        70    LR chi2      6.61    R2       0.106    
- Events     18    d.f.            1    R2(1,70) 0.077    
- Center 0.7229    Pr(&gt; chi2) 0.0102    R2(1,18) 0.268    
-                  Score chi2   6.28    Dxy      0.244    
-                  Pr(&gt; chi2) 0.0122                      
- 
-          Coef   S.E.   Wald Z Pr(&gt;|Z|)
- genotype 1.3317 0.5699 2.34   0.0195  
- </code></pre>
+
+cph(formula = hemsurv ~ genotype, data = hem, x = TRUE, y = TRUE, 
+    surv = TRUE)
+
+                       Model Tests    Discrimination    
+                                             Indexes    
+Obs        70    LR chi2      6.61    R2       0.106    
+Events     18    d.f.            1    R2(1,70) 0.077    
+Center 0.7229    Pr(&gt; chi2) 0.0102    R2(1,18) 0.268    
+                 Score chi2   6.28    Dxy      0.244    
+                 Pr(&gt; chi2) 0.0122                      
+
+         Coef   S.E.   Wald Z Pr(&gt;|Z|)
+genotype 1.3317 0.5699 2.34   0.0195  </code></pre>
 </div>
 </div>
 <p>Included here are likelihood ratio and score tests for the model as a whole (as compared to the intercept-only model), as well as the usual discrimination indexes.</p>

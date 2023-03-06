@@ -620,21 +620,20 @@ GLOBAL  1.05  1 0.31</code></pre>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>modA_cph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cox Proportional Hazards Model
- 
- cph(formula = Surv(months, alive == 0) ~ age, data = leukem, 
-     x = TRUE, y = TRUE, surv = TRUE, time.inc = 12)
- 
-                        Model Tests    Discrimination    
-                                              Indexes    
- Obs        51    LR chi2     11.85    R2       0.208    
- Events     45    d.f.            1    R2(1,51) 0.192    
- Center 1.6152    Pr(&gt; chi2) 0.0006    R2(1,45) 0.214    
-                  Score chi2  12.29    Dxy      0.301    
-                  Pr(&gt; chi2) 0.0005                      
- 
-     Coef   S.E.   Wald Z Pr(&gt;|Z|)
- age 0.0324 0.0095 3.40   0.0007  
- </code></pre>
+
+cph(formula = Surv(months, alive == 0) ~ age, data = leukem, 
+    x = TRUE, y = TRUE, surv = TRUE, time.inc = 12)
+
+                       Model Tests    Discrimination    
+                                             Indexes    
+Obs        51    LR chi2     11.85    R2       0.208    
+Events     45    d.f.            1    R2(1,51) 0.192    
+Center 1.6152    Pr(&gt; chi2) 0.0006    R2(1,45) 0.214    
+                 Score chi2  12.29    Dxy      0.301    
+                 Pr(&gt; chi2) 0.0005                      
+
+    Coef   S.E.   Wald Z Pr(&gt;|Z|)
+age 0.0324 0.0095 3.40   0.0007  </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(modA_cph)) <span class="co"># hazard ratio estimate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1040,25 +1039,24 @@ GLOBAL  6.07  3 0.108</code></pre>
 <span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>modC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cox Proportional Hazards Model
- 
- cph(formula = Surv(months, alive == 0) ~ rcs(age, 3) + plab + 
-     maxtemp, data = leukem, x = TRUE, y = TRUE, surv = TRUE, 
-     time.inc = 12)
- 
-                         Model Tests    Discrimination    
-                                               Indexes    
- Obs         51    LR chi2     19.75    R2       0.322    
- Events      45    d.f.            4    R2(4,51) 0.266    
- Center 20.3856    Pr(&gt; chi2) 0.0006    R2(4,45) 0.295    
-                   Score chi2  18.66    Dxy      0.438    
-                   Pr(&gt; chi2) 0.0009                      
- 
-         Coef    S.E.   Wald Z Pr(&gt;|Z|)
- age      0.0804 0.0283  2.84  0.0045  
- age'    -0.0629 0.0332 -1.90  0.0580  
- plab    -0.0736 0.0381 -1.93  0.0536  
- maxtemp  0.1788 0.1145  1.56  0.1184  
- </code></pre>
+
+cph(formula = Surv(months, alive == 0) ~ rcs(age, 3) + plab + 
+    maxtemp, data = leukem, x = TRUE, y = TRUE, surv = TRUE, 
+    time.inc = 12)
+
+                        Model Tests    Discrimination    
+                                              Indexes    
+Obs         51    LR chi2     19.75    R2       0.322    
+Events      45    d.f.            4    R2(4,51) 0.266    
+Center 20.3856    Pr(&gt; chi2) 0.0006    R2(4,45) 0.295    
+                  Score chi2  18.66    Dxy      0.438    
+                  Pr(&gt; chi2) 0.0009                      
+
+        Coef    S.E.   Wald Z Pr(&gt;|Z|)
+age      0.0804 0.0283  2.84  0.0045  
+age'    -0.0629 0.0332 -1.90  0.0580  
+plab    -0.0736 0.0381 -1.93  0.0536  
+maxtemp  0.1788 0.1145  1.56  0.1184  </code></pre>
 </div>
 </div>
 </section>
