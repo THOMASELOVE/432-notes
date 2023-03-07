@@ -8,7 +8,7 @@ In many medical studies, the main outcome variable is the time to the occurrence
 
 These notes on survival analysis are just an introduction to the key ideas of the field. The PQHS department offers an entire course on survival analysis (PQHS 435) and I recommend that to those of you interested in deeper learning about the approaches we'll discuss, or in learning more about other approaches to survival analysis.
 
-The OpenIntro Statistics extra material on [Survival Analysis in R, written by David Diez](https://www.openintro.org/stat/surv.php) is a very useful guide to survival analysis in R, using the `survival` package and supplemented by the `KMsurv` and `OIsurv` packages. A PDF version of that material is available, along with a full set of the code used in that guide. 
+The OpenIntro Statistics extra material on [Survival Analysis in R, written by David Diez](https://www.openintro.org/book/surv_in_r/) is a very useful guide to survival analysis in R, using the `survival` package and supplemented by the `KMsurv` and `OIsurv` packages. A PDF version of that material is available, along with a full set of the code used in that guide, along with instructions to obtain the packages. 
 
 ## R Setup Used Here
 

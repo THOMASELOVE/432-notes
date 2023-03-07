@@ -53,12 +53,12 @@ There are two main approaches to fitting Cox models in R.
 
 ## Sources used in building this material
 
-- David Diez's excellent supplement for the OpenIntro Statistics project, on [Survival Analysis in R](https://www.openintro.org/stat/surv.php). I've posted it on our web site, as well.
-- Some tools in R to do some fancier work can be viewed at https://cran.r-project.org/web/views/Survival.html
+- David Diez's excellent supplement for the OpenIntro Statistics project, on [Survival Analysis in R](https://www.openintro.org/book/surv_in_r/).
+- Some tools in R to do some fancier work can be viewed at <https://cran.r-project.org/web/views/Survival.html>
 - You might also look at these two blog posts, originally from the Just Another Data blog.
-    - https://www.r-bloggers.com/survival-analysis-1/  
-    - https://www.r-bloggers.com/survival-analysis-2/
-- https://rpubs.com/daspringate/survival has some great slides, and I've stolen from them quite a bit here.
+    - <https://www.r-bloggers.com/survival-analysis-1/>  
+    - <https://www.r-bloggers.com/survival-analysis-2/>
+- <https://rpubs.com/daspringate/survival> has some great slides, and I've stolen from them quite a bit here.
 
 ## Fitting a Cox Model in R with `coxph`
 
