@@ -565,7 +565,7 @@ m16_imp <-
     fit.mult.impute(phys_tr ~ age_imp + comor + smoke100 +
                         hx_depress + bmi + activity,
                     fitter = ols, xtrans = fit16_imp,
-                    data = smart_16, x = TRUE, y = TRUE)
+                    data = smart_16, fitargs=list(x=TRUE,y=TRUE))
 ```
 
 ### Summaries and Coefficients

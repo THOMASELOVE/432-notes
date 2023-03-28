@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -711,7 +711,7 @@ div.csl-indent {
  8  1051      6     50  
  9    89      5     41.7
 10    94      5     41.7
-# … with 1,123 more rows</code></pre>
+# ℹ 1,123 more rows</code></pre>
 </div>
 </div>
 <p>The case numbers identified here are row numbers. Extract the data for case 17, for instance, with the <code>slice</code> function.</p>
@@ -719,12 +719,10 @@ div.csl-indent {
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>smart_cle1 <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">17</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
-      SEQNO physh…¹ genhe…²   bmi age_imp female race_…³ inter…⁴ smoke…⁵ activ…⁶
-      &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;  
-1    2.02e9       0 1_Exce…    NA      50      0 White …      NA      NA &lt;NA&gt;   
-# … with 2 more variables: drinks_wk &lt;dbl&gt;, veg_day &lt;dbl&gt;, and abbreviated
-#   variable names ¹​physhealth, ²​genhealth, ³​race_eth, ⁴​internet30, ⁵​smoke100,
-#   ⁶​activity</code></pre>
+    SEQNO physhealth genhealth   bmi age_imp female race_eth internet30 smoke100
+    &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;dbl&gt;    &lt;dbl&gt;
+1  2.02e9          0 1_Excell…    NA      50      0 White n…         NA       NA
+# ℹ 3 more variables: activity &lt;fct&gt;, drinks_wk &lt;dbl&gt;, veg_day &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <section id="plotting-missingness" class="level3" data-number="7.3.1">
@@ -914,7 +912,7 @@ div.csl-indent {
  8 age_imp        11    0.971
  9 internet30      7    0.618
 10 genhealth       4    0.353
-# … with 14 more rows</code></pre>
+# ℹ 14 more rows</code></pre>
 </div>
 </div>
 <p>We will impute these variables using several different strategies, all supported nicely by the <code>simputation</code> package.</p>

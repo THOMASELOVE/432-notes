@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -1437,7 +1437,7 @@ comor               1       1        1       1   1     0          1        1</co
  8 activityInsufficiently_Active -0.0695    0.124      -0.561 5.75e- 1  1057
  9 activityInactive               0.262     0.103       2.54  1.11e- 2  1057
 10 (Intercept)                    0.363     0.332       1.10  2.74e- 1  1057
-# … with 80 more rows</code></pre>
+# ℹ 80 more rows</code></pre>
 </div>
 </div>
 <p>Then, we’ll pool results across the 10 imputations</p>
@@ -1824,7 +1824,7 @@ Bootstrap bias-corrected median |error| 2.0000 2.0000
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit.mult.impute</span>(phys_tr <span class="sc">~</span> age_imp <span class="sc">+</span> comor <span class="sc">+</span> smoke100 <span class="sc">+</span></span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>                        hx_depress <span class="sc">+</span> bmi <span class="sc">+</span> activity,</span>
 <span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">fitter =</span> ols, <span class="at">xtrans =</span> fit16_imp,</span>
-<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> smart_16, <span class="at">x =</span> <span class="cn">TRUE</span>, <span class="at">y =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> smart_16, <span class="at">fitargs=</span><span class="fu">list</span>(<span class="at">x=</span><span class="cn">TRUE</span>,<span class="at">y=</span><span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Variance Inflation Factors Due to Imputation:
@@ -1881,7 +1881,7 @@ The following fit components were averaged over the 10 model fits:
 
 fit.mult.impute(formula = phys_tr ~ age_imp + comor + smoke100 + 
     hx_depress + bmi + activity, fitter = ols, xtrans = fit16_imp, 
-    data = smart_16, x = TRUE, y = TRUE)
+    data = smart_16, fitargs = list(x = TRUE, y = TRUE))
 
                 Model Likelihood    Discrimination    
                       Ratio Test           Indexes    

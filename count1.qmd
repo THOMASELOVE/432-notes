@@ -551,7 +551,7 @@ Here, we have
 
 Model | Scale | $R^2$ | log(likelihood)
 ----------: | ------: | --------: | ---------:
-Poisson | log(`physhealth`) | 0.185 | -10189.33
+Poisson | log(`physhealth`) | 0.034 | -10189.33
 
 ### Check model assumptions
 

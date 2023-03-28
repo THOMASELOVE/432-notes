@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -542,14 +542,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(cfit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 18
-      n nevent statist…¹ p.val…² stati…³ p.val…⁴ stati…⁵ p.val…⁶ stati…⁷ p.val…⁸
-  &lt;int&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-1    70     18      6.61  0.0102    6.28  0.0122    5.46  0.0195      NA      NA
-# … with 8 more variables: r.squared &lt;dbl&gt;, r.squared.max &lt;dbl&gt;,
+      n nevent statistic.log p.value.log statistic.sc p.value.sc statistic.wald
+  &lt;int&gt;  &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+1    70     18          6.61      0.0102         6.28     0.0122           5.46
+# ℹ 11 more variables: p.value.wald &lt;dbl&gt;, statistic.robust &lt;dbl&gt;,
+#   p.value.robust &lt;dbl&gt;, r.squared &lt;dbl&gt;, r.squared.max &lt;dbl&gt;,
 #   concordance &lt;dbl&gt;, std.error.concordance &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;,
-#   BIC &lt;dbl&gt;, nobs &lt;int&gt;, and abbreviated variable names ¹​statistic.log,
-#   ²​p.value.log, ³​statistic.sc, ⁴​p.value.sc, ⁵​statistic.wald, ⁶​p.value.wald,
-#   ⁷​statistic.robust, ⁸​p.value.robust</code></pre>
+#   BIC &lt;dbl&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
 <p>Here, we obtain several additional summaries of the model, including most of the important information from a summary of <code>cfit</code>.</p>

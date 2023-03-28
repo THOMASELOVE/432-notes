@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -832,11 +832,10 @@ smoke100    1.1742213 2.486995</code></pre>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_ols1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
-  r.squared adj.r.squ…¹ sigma stati…² p.value    df logLik    AIC    BIC devia…³
-      &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-1     0.036       0.035  7.33    36.4       0     2 -6731. 13470. 13492. 105831.
-# … with 2 more variables: df.residual &lt;dbl&gt;, nobs &lt;dbl&gt;, and abbreviated
-#   variable names ¹​adj.r.squared, ²​statistic, ³​deviance</code></pre>
+  r.squared adj.r.squared sigma statistic p.value    df logLik    AIC    BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1     0.036         0.035  7.33      36.4       0     2 -6731. 13470. 13492.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;dbl&gt;, nobs &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <p>Here, we have</p>
@@ -1034,11 +1033,10 @@ ph = e^{.fitted} - 1
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_ols_log1) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
-  r.squ…¹ adj.r…² sigma stati…³ p.value    df logLik   AIC   BIC devia…⁴ df.re…⁵
-    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-1    0.03   0.029  1.05    30.5       0     2 -2894. 5796. 5818.   2169.    1971
-# … with 1 more variable: nobs &lt;dbl&gt;, and abbreviated variable names
-#   ¹​r.squared, ²​adj.r.squared, ³​statistic, ⁴​deviance, ⁵​df.residual</code></pre>
+  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1      0.03         0.029  1.05      30.5       0     2 -2894. 5796. 5818.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;dbl&gt;, nobs &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <p>Here, we have</p>
@@ -1329,7 +1327,7 @@ smoke100    0.33566606 0.72934460</code></pre>
 <tr class="odd">
 <td style="text-align: right;">Poisson</td>
 <td style="text-align: right;">log(<code>physhealth</code>)</td>
-<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">0.034</td>
 <td style="text-align: right;">-10189.33</td>
 </tr>
 </tbody>
