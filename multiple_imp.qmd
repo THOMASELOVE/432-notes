@@ -202,14 +202,14 @@ a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "comor")
 ```
 
-- If we have two subjects with the same values of `age_imp`, `smoke100`, `hx_depress`, `bmi`, and `activity`, but Harry has a `comor` score that is one point higher than Sally's, then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
+- If we have two subjects with the same values of `age_imp`, `smoke100`, `hx_depress`, `bmi`, and `activity`, but Harry has a `comor` score that is one point higher than Sally's, then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be 0.302 higher than Sally's, with a 95% confidence interval around that estimate ranging from (0.237, 0.367).
 
 ```{r, echo = FALSE}
 a <- tidy(m_1cc, conf.int = TRUE) |>
     filter(term == "hx_depress")
 ```
 
-- If we have two subjects with the same values of `age_imp`, `comor`, `smoke100`, `bmi`, and `activity`, but Harry has a history of depression (`hx_depress` = 1) while Sally does not have such a history (so Sally's `hx_depress` = 0), then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r round(a$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
+- If we have two subjects with the same values of `age_imp`, `comor`, `smoke100`, `bmi`, and `activity`, but Harry has a history of depression (`hx_depress` = 1) while Sally does not have such a history (so Sally's `hx_depress` = 0), then the model predicts that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be 0.472 higher than Sally's, with a 95% confidence interval around that estimate ranging from (0.267, 0.677).
 
 ```{r, echo = FALSE}
 a <- tidy(m_1cc, conf.int = TRUE) |>
@@ -234,9 +234,9 @@ a3 <- tidy(m_1cc, conf.int = TRUE) |>
 ```
 
 - From the tidied set of coefficients, we can describe the `activity` effects as follows.
-    - If Sally is "Highly Active" and Harry is "Active" but they otherwise have the same values of all predictors, then our prediction is that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be `r abs(round(a$estimate, 3))` lower than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a$conf.low,3)`, `round(a$conf.high,3)`).
-    - If instead Harry is "Insufficiently Active" but nothing else changes, then our prediction is that Harry's transformed outcome will be `r abs(round(a2$estimate, 3))` lower than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a2$conf.low,3)`, `round(a2$conf.high,3)`).
-    - If instead Harry is "Inactive" but nothing else changes, then our prediction is that Harry's transformed outcome will be `r round(a2$estimate, 3)` higher than Sally's, with a 95% confidence interval around that estimate ranging from (`round(a2$conf.low,3)`, `round(a2$conf.high,3)`).
+    - If Sally is "Highly Active" and Harry is "Active" but they otherwise have the same values of all predictors, then our prediction is that Harry's transformed outcome (specifically the natural logarithm of (his `physhealth` days + 1)) will be 0.230 lower than Sally's, with a 95% confidence interval around that estimate ranging from (0.534 lower than Sally's to 0.074 higher than Sally's).
+    - If instead Harry is "Insufficiently Active" but nothing else changes, then our prediction is that Harry's transformed outcome will be 0.117 lower than Sally's, with a 95% confidence interval around that estimate ranging from (0.391 lower to 0.157 higher than Sally's.)
+    - If instead Harry is "Inactive" but nothing else changes, then our prediction is that Harry's transformed outcome will be 0.256 higher than Sally's, with a 95% confidence interval around that estimate ranging from (0.030 to 0.482 higher than Sally's.)
     
 ### Making Predictions with the Model
 
