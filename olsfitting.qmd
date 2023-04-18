@@ -1,6 +1,6 @@
 # Using `ols` to fit linear models {#sec-ols}
 
-Back at the end of @sec-non-lin, we fit a model to the `pollution` data that predicted our outcome `y` = Age-Adjusted Mortality Rate, using:
+Back at the end of @sec-non-lin, we fit a model to the `pollution` data that predicted an outcome `y` = Age-Adjusted Mortality Rate, using:
 
 - a restricted cubic spline with 5 knots on `x9`
 - a restricted cubic spline with 3 knots on `x6`
