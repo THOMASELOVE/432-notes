@@ -216,6 +216,7 @@ round(c("Obs" = sum(ohioA_young$physhealth == 0),
 Here's the rootogram for the zero-inflated Poisson model.
 
 ```{r}
+#| message: false
 countreg::rootogram(mod_zip1, max = 30)
 ```
 
@@ -549,7 +550,7 @@ The results are still not perfect, of course. In fitting the zeros exactly, we'r
 The expected mean count uses both parts of the hurdle model. Mathematically, we want...
 
 $$
-E[y | {\bf x}] = \frac{1 - f_1(0 | {\bf x})}{1 - f_2(0 | {\bf x})} \mu_2({\bf x})
+E[y | x] = \frac{1 - f_1(0 | x)}{1 - f_2(0 | x)} \mu_2(x)
 $$
 
 where
@@ -562,19 +563,19 @@ where
 
 If we want to see the expected hurdle counts, we can get them using some clever applications of the `predict` function.
 
-The first six expected mean counts ($E[y | {\bf x}]$ from the equation above) are:
+The first six expected mean counts ($E[y | x]$ from the equation above) are:
 
 ```{r}
 head(predict(mod_hur1, type = "response"))
 ```
 
-The ratio of non-zero probabilities, $\frac{1 - f_1(0 | {\bf x})}{1 - f_2(0 | {\bf x})}$, from the mathematical expression above can be extracted by:
+The ratio of non-zero probabilities, $\frac{1 - f_1(0 | x)}{1 - f_2(0 | x)}$, from the mathematical expression above can be extracted by:
 
 ```{r}
 head(predict(mod_hur1, type = "zero"))
 ```
 
-The mean for the untruncated process, $\mu_2({\bf x})$, can also be obtained by:
+The mean for the untruncated process, $\mu_2(x)$, can also be obtained by:
 
 ```{r}
 head(predict(mod_hur1, type = "count"))

@@ -8,6 +8,8 @@ book:
   author: "Thomas E. Love"
   date: last-modified
   date-format: iso
+  search: true
+  downloads: [pdf]
   chapters:
     - index.qmd
     - incomplete.qmd
@@ -50,4 +52,8 @@ format:
     theme: cosmo
     code-overflow: wrap
     bibliography: references.bib
+  pdf:
+    documentclass: scrreprt
+
+editor: source
 
