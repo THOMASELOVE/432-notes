@@ -2,7 +2,7 @@
 
 In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled "431 Review" show elements of the two studies involved in a "[431 Project B](https://thomaselove.github.io/431-projectB-2022/)" using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called **nh432** that we developed in @sec-nh432-build and then summarized in @sec-nh432-book. Note that we'll ignore the issue of sampling weights and assume a "missing completely at random" (MCAR) mechanism in these "431 Review" chapters, so that we can work with complete cases.
 
-The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until 2023-06-01.
+The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until June 1.
 
 ## R Setup
 
@@ -15,7 +15,6 @@ knitr::opts_chunk$set(comment = NA)
 library(janitor) 
 library(broom)
 library(car)
-library(equatiomatic)
 library(GGally)
 library(gt)
 library(Hmisc)
@@ -112,15 +111,6 @@ Here are the coefficients obtained from fitting the model `m1`.
 m1 <- lm(SLPWKEND ~ SLPWKDAY + SBP + PHQ9 + SLPTROUB, data = dat1)
 
 m1
-```
-
-We can use the `extract_eq()` function from the **equatiomatic** package to display the model attractively, but I won't show that output here, because it interferes with my ability to create a PDF of this work. Instead, I'll just show the code.
-
-```{r}
-#| eval: false
-extract_eq(m1, use_coefs = TRUE, coef_digits = 3,
-           wrap = TRUE, operator_location = "start")
-
 ```
 
 If Harry and Sally have the same values of SLPWKDAY, SBP and SLPTROUB, but Harry's PHQ9 is one point higher than Sally's, then model `m1` predicts that Harry will sleep 0.029 hours less than Sally on the weekends.
@@ -288,14 +278,6 @@ m2 <- lm(SLPWKEND ~ SLPWKDAY + SLPTROUB, data = dat1)
 m2
 ```
 
-Again, I'll show only the code to present the equation, so I can produce a PDF version of these notes.
-
-```{r}
-#| eval: false
-extract_eq(m2, use_coefs = TRUE, coef_digits = 3,
-           wrap = TRUE, operator_location = "start")
-```
-
 Note that the slopes of both SLPWKDAY and SLPTROUB have changed from model `m1` (although not very much), and that the intercept has changed more substantially.
 
 ### Using `broom` functions on `m2`
@@ -460,16 +442,6 @@ m3 <- lm(log(HSCRP) ~ MEANPULSE + SROH + HOSPITAL,
          data = dat2_train)
 ```
 
-Again, I'll show only the code to present the equation, so I can produce a PDF version of these notes.
-
-```{r}
-#| eval: false
-extract_eq(m3, use_coefs = TRUE, coef_digits = 3,
-           terms_per_line = 3, wrap = TRUE, 
-           operator_location = "start")
-```
-
-
 ```{r}
 tidy(m3, conf.int = TRUE, conf.level = 0.90) |>
   kable(digits = 3)
@@ -499,14 +471,6 @@ Let's now fit the simple regression model, `m4`, with only MEANPULSE as a predic
 ```{r}
 m4 <- lm(log(HSCRP) ~ MEANPULSE,
          data = dat2_train)
-```
-
-Again, I'll show only the code to present the equation, so I can produce a PDF version of these notes.
-
-```{r}
-#| eval: false
-extract_eq(m4, use_coefs = TRUE, coef_digits = 3,
-           wrap = TRUE, operator_location = "start")
 ```
 
 Now, let's look at the tidied coefficients.

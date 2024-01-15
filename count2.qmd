@@ -17,6 +17,7 @@ knitr::opts_chunk$set(comment = NA)
 library(broom)
 library(boot)
 library(countreg)
+library(topmodels)
 library(MASS)
 library(tidyverse) 
 

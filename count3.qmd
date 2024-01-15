@@ -115,7 +115,7 @@ The zero-inflated Poisson or (ZIP) model is used to describe count data with an 
 - a logit model is used to predict excess zeros
 - while a Poisson model is used to predict the counts, generally
 
-The `pscl` package is used here, which can conflict with the `countreg` package we used to fit rootograms. 
+The `pscl` package is used here, which can conflict with the `topmodels` package we used to fit rootograms. 
 
 To run the zero-inflated Poisson model, we use the following:
 
@@ -217,7 +217,7 @@ Here's the rootogram for the zero-inflated Poisson model.
 
 ```{r}
 #| message: false
-countreg::rootogram(mod_zip1, max = 30)
+topmodels::rootogram(mod_zip1, max = 30)
 ```
 
 The zero frequencies are perfectly matched here, but we can see that counts of 1 and 2 are now substantially underfit, and values between 6 and 13 are overfit.
@@ -368,7 +368,7 @@ So, the Poisson model is clearly inappropriate, but the zero-inflated (Poisson a
 Here's the rootogram for the zero-inflated negative binomial model.
 
 ```{r}
-countreg::rootogram(mod_zinb1, max = 30)
+topmodels::rootogram(mod_zinb1, max = 30)
 ```
 
 As in the ZIP model, the zero frequencies are perfectly matched here, but we can see that counts of 1 and 2 are now closer to the data we observe than in the ZIP model. We are still substantially underfitting values of 30.
@@ -540,7 +540,7 @@ The hurdle model does about as well as the negative binomial and zero-inflated m
 ### Rootogram for Hurdle Model
 
 ```{r}
-countreg::rootogram(mod_hur1, max = 30)
+topmodels::rootogram(mod_hur1, max = 30)
 ```
 
 The results are still not perfect, of course. In fitting the zeros exactly, we're underfitting counts of 1, 2, and 30, and overfitting many of the counts between 6 and 20. We still have a problem here with overdispersion. That's why we'll consider a hurdle model with a negative binomial regression for the counts in a moment.
@@ -739,7 +739,7 @@ sm_hur_nb1 |>
 ### Rootogram for NB Hurdle Model
 
 ```{r}
-countreg::rootogram(mod_hur_nb1, max = 30)
+topmodels::rootogram(mod_hur_nb1, max = 30)
 ```
 
 This improves the situation, but we're still underfitting the 30s.
@@ -803,7 +803,7 @@ summary(mod_hur_new1)
 ### Hanging Rootogram for this new Hurdle Model
 
 ```{r}
-countreg::rootogram(mod_hur_new1, max = 30)
+topmodels::rootogram(mod_hur_new1, max = 30)
 ```
 
 Not a meaningful improvement, certainly.

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,48 +47,19 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -101,8 +73,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -139,10 +110,12 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -152,11 +125,16 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./olsfitting.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using `ols` to fit linear models</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -164,228 +142,264 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Setup</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  <a href="./smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  <a href="./count1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  <a href="./count2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  <a href="./count3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">14.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="header-section-number">14.1</span> R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">14.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="header-section-number">14.1.1</span> Data Load</a></li>
   </ul></li>
-  <li><a href="#fitting-a-model-with-ols" id="toc-fitting-a-model-with-ols" class="nav-link" data-scroll-target="#fitting-a-model-with-ols"><span class="toc-section-number">14.2</span>  Fitting a model with <code>ols</code></a>
+  <li><a href="#fitting-a-model-with-ols" id="toc-fitting-a-model-with-ols" class="nav-link" data-scroll-target="#fitting-a-model-with-ols"><span class="header-section-number">14.2</span> Fitting a model with <code>ols</code></a>
   <ul class="collapse">
-  <li><a href="#the-model-likelihood-ratio-test" id="toc-the-model-likelihood-ratio-test" class="nav-link" data-scroll-target="#the-model-likelihood-ratio-test"><span class="toc-section-number">14.2.1</span>  The Model Likelihood Ratio Test</a></li>
-  <li><a href="#the-g-statistic" id="toc-the-g-statistic" class="nav-link" data-scroll-target="#the-g-statistic"><span class="toc-section-number">14.2.2</span>  The g statistic</a></li>
+  <li><a href="#the-model-likelihood-ratio-test" id="toc-the-model-likelihood-ratio-test" class="nav-link" data-scroll-target="#the-model-likelihood-ratio-test"><span class="header-section-number">14.2.1</span> The Model Likelihood Ratio Test</a></li>
+  <li><a href="#the-g-statistic" id="toc-the-g-statistic" class="nav-link" data-scroll-target="#the-g-statistic"><span class="header-section-number">14.2.2</span> The g statistic</a></li>
   </ul></li>
-  <li><a href="#anova-for-an-ols-model" id="toc-anova-for-an-ols-model" class="nav-link" data-scroll-target="#anova-for-an-ols-model"><span class="toc-section-number">14.3</span>  ANOVA for an <code>ols</code> model</a></li>
-  <li><a href="#effect-estimates" id="toc-effect-estimates" class="nav-link" data-scroll-target="#effect-estimates"><span class="toc-section-number">14.4</span>  Effect Estimates</a>
+  <li><a href="#anova-for-an-ols-model" id="toc-anova-for-an-ols-model" class="nav-link" data-scroll-target="#anova-for-an-ols-model"><span class="header-section-number">14.3</span> ANOVA for an <code>ols</code> model</a></li>
+  <li><a href="#effect-estimates" id="toc-effect-estimates" class="nav-link" data-scroll-target="#effect-estimates"><span class="header-section-number">14.4</span> Effect Estimates</a>
   <ul class="collapse">
-  <li><a href="#simultaneous-confidence-intervals" id="toc-simultaneous-confidence-intervals" class="nav-link" data-scroll-target="#simultaneous-confidence-intervals"><span class="toc-section-number">14.4.1</span>  Simultaneous Confidence Intervals</a></li>
+  <li><a href="#simultaneous-confidence-intervals" id="toc-simultaneous-confidence-intervals" class="nav-link" data-scroll-target="#simultaneous-confidence-intervals"><span class="header-section-number">14.4.1</span> Simultaneous Confidence Intervals</a></li>
   </ul></li>
-  <li><a href="#the-predict-function-for-an-ols-model" id="toc-the-predict-function-for-an-ols-model" class="nav-link" data-scroll-target="#the-predict-function-for-an-ols-model"><span class="toc-section-number">14.5</span>  The <code>Predict</code> function for an <code>ols</code> model</a></li>
-  <li><a href="#checking-influence-via-dfbeta" id="toc-checking-influence-via-dfbeta" class="nav-link" data-scroll-target="#checking-influence-via-dfbeta"><span class="toc-section-number">14.6</span>  Checking Influence via <code>dfbeta</code></a>
+  <li><a href="#the-predict-function-for-an-ols-model" id="toc-the-predict-function-for-an-ols-model" class="nav-link" data-scroll-target="#the-predict-function-for-an-ols-model"><span class="header-section-number">14.5</span> The <code>Predict</code> function for an <code>ols</code> model</a></li>
+  <li><a href="#checking-influence-via-dfbeta" id="toc-checking-influence-via-dfbeta" class="nav-link" data-scroll-target="#checking-influence-via-dfbeta"><span class="header-section-number">14.6</span> Checking Influence via <code>dfbeta</code></a>
   <ul class="collapse">
-  <li><a href="#using-the-residuals-command-for-dfbetas" id="toc-using-the-residuals-command-for-dfbetas" class="nav-link" data-scroll-target="#using-the-residuals-command-for-dfbetas"><span class="toc-section-number">14.6.1</span>  Using the <code>residuals</code> command for <code>dfbetas</code></a></li>
-  <li><a href="#using-the-residuals-command-for-other-summaries" id="toc-using-the-residuals-command-for-other-summaries" class="nav-link" data-scroll-target="#using-the-residuals-command-for-other-summaries"><span class="toc-section-number">14.6.2</span>  Using the <code>residuals</code> command for other summaries</a></li>
+  <li><a href="#using-the-residuals-command-for-dfbetas" id="toc-using-the-residuals-command-for-dfbetas" class="nav-link" data-scroll-target="#using-the-residuals-command-for-dfbetas"><span class="header-section-number">14.6.1</span> Using the <code>residuals</code> command for <code>dfbetas</code></a></li>
+  <li><a href="#using-the-residuals-command-for-other-summaries" id="toc-using-the-residuals-command-for-other-summaries" class="nav-link" data-scroll-target="#using-the-residuals-command-for-other-summaries"><span class="header-section-number">14.6.2</span> Using the <code>residuals</code> command for other summaries</a></li>
   </ul></li>
-  <li><a href="#model-validation-and-correcting-for-optimism" id="toc-model-validation-and-correcting-for-optimism" class="nav-link" data-scroll-target="#model-validation-and-correcting-for-optimism"><span class="toc-section-number">14.7</span>  Model Validation and Correcting for Optimism</a></li>
-  <li><a href="#building-a-nomogram-for-our-model" id="toc-building-a-nomogram-for-our-model" class="nav-link" data-scroll-target="#building-a-nomogram-for-our-model"><span class="toc-section-number">14.8</span>  Building a Nomogram for Our Model</a></li>
+  <li><a href="#model-validation-and-correcting-for-optimism" id="toc-model-validation-and-correcting-for-optimism" class="nav-link" data-scroll-target="#model-validation-and-correcting-for-optimism"><span class="header-section-number">14.7</span> Model Validation and Correcting for Optimism</a></li>
+  <li><a href="#building-a-nomogram-for-our-model" id="toc-building-a-nomogram-for-our-model" class="nav-link" data-scroll-target="#building-a-nomogram-for-our-model"><span class="header-section-number">14.8</span> Building a Nomogram for Our Model</a></li>
   </ul>
 </nav>
     </div>
@@ -394,7 +408,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-ols" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></h1>
+<h1 class="title"><span id="sec-ols" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></h1>
 </div>
 
 
@@ -570,11 +584,11 @@ x13         -0.1028   0.1443 -0.71 0.4796  </code></pre>
 <pre><code>             Effects              Response : y 
 
  Factor Low   High  Diff. Effect   S.E.    Lower 0.95 Upper 0.95
- x9      4.95 15.65 10.70  40.4060 14.0790   3.11990  77.6920   
- x6     10.40 11.50  1.10 -18.2930  8.1499 -39.87600   3.2898   
- x14    11.00 69.00 58.00  28.3480 10.6480   0.14972  56.5470   
- x1     32.75 43.25 10.50  11.2520  7.6833  -9.09490  31.6000   
- x13     4.00 23.75 19.75  -2.0303  2.8502  -9.57820   5.5177   </code></pre>
+ x9      4.95 15.65 10.70  40.4060 14.0790   3.10720  77.7040   
+ x6     10.40 11.50  1.10 -18.2930  8.1499 -39.88300   3.2972   
+ x14    11.00 69.00 58.00  28.3480 10.6480   0.14012  56.5560   
+ x1     32.75 43.25 10.50  11.2520  7.6833  -9.10190  31.6070   
+ x13     4.00 23.75 19.75  -2.0303  2.8502  -9.58080   5.5202   </code></pre>
 </div>
 </div>
 <p>Remember that if you’re looking for the usual <code>lm</code> summary for an <code>ols</code> object, use <code>summary.lm</code>.</p>
@@ -619,17 +633,17 @@ Limits are 0.95 confidence limits</code></pre>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Predict</span>(newmod, <span class="at">x9 =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>, <span class="at">conf.type =</span> <span class="st">'simult'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x9    x6 x14 x1 x13     yhat    lower    upper
-1   5 11.05  30 38   9 913.7392 882.3702 945.1082
-2   6 11.05  30 38   9 916.3490 884.8743 947.8236
-3   7 11.05  30 38   9 921.3093 892.4172 950.2015
-4   8 11.05  30 38   9 927.6464 900.9948 954.2981
-5   9 11.05  30 38   9 934.3853 907.2186 961.5521
-6  10 11.05  30 38   9 940.5510 911.1800 969.9219
-7  11 11.05  30 38   9 945.2225 915.1901 975.2549
-8  12 11.05  30 38   9 948.2885 920.0593 976.5177
-9  13 11.05  30 38   9 950.2608 924.4502 976.0713
-10 14 11.05  30 38   9 951.6671 926.5424 976.7918
-11 15 11.05  30 38   9 953.0342 926.0501 980.0182
+1   5 11.05  30 38   9 913.7392 882.4399 945.0385
+2   6 11.05  30 38   9 916.3490 884.9443 947.7537
+3   7 11.05  30 38   9 921.3093 892.4814 950.1373
+4   8 11.05  30 38   9 927.6464 901.0540 954.2389
+5   9 11.05  30 38   9 934.3853 907.2789 961.4917
+6  10 11.05  30 38   9 940.5510 911.2453 969.8566
+7  11 11.05  30 38   9 945.2225 915.2568 975.1882
+8  12 11.05  30 38   9 948.2885 920.1221 976.4550
+9  13 11.05  30 38   9 950.2608 924.5076 976.0140
+10 14 11.05  30 38   9 951.6671 926.5982 976.7359
+11 15 11.05  30 38   9 953.0342 926.1101 979.9583
 
 Response variable (y): y 
 
@@ -795,8 +809,8 @@ Slope         1.0000   1.0000    0.9217    0.0783          0.9217 40</code></pre
 <p>An area with a combination of predictor values leading to a total of 100 points, for instance, would lead to a prediction of a Mortality Rate near 905. An area with a total of 140 points would have a predicted Mortality Rate of 955, roughly.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-Harrell2001" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-Harrell2001" class="csl-entry" role="listitem">
 Harrell, Frank E. 2001. <em>Regression Modeling Strategies</em>. New York: Springer.
 </div>
 </div>
@@ -830,9 +844,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -897,6 +925,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

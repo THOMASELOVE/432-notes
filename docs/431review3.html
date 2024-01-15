@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -120,10 +91,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -133,11 +106,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./431review3.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -145,235 +123,271 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Setup</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  <a href="./smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  <a href="./count1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  <a href="./count2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  <a href="./count3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup" id="toc-r-setup" class="nav-link active" data-scroll-target="#r-setup"><span class="toc-section-number">5.1</span>  R Setup</a>
+  <li><a href="#r-setup" id="toc-r-setup" class="nav-link active" data-scroll-target="#r-setup"><span class="header-section-number">5.1</span> R Setup</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">5.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="header-section-number">5.1.1</span> Data Load</a></li>
   </ul></li>
-  <li><a href="#modeling-weekend-sleep-hours" id="toc-modeling-weekend-sleep-hours" class="nav-link" data-scroll-target="#modeling-weekend-sleep-hours"><span class="toc-section-number">5.2</span>  Modeling Weekend Sleep Hours</a>
+  <li><a href="#modeling-weekend-sleep-hours" id="toc-modeling-weekend-sleep-hours" class="nav-link" data-scroll-target="#modeling-weekend-sleep-hours"><span class="header-section-number">5.2</span> Modeling Weekend Sleep Hours</a>
   <ul class="collapse">
-  <li><a href="#should-we-transform-our-outcome" id="toc-should-we-transform-our-outcome" class="nav-link" data-scroll-target="#should-we-transform-our-outcome"><span class="toc-section-number">5.2.1</span>  Should we transform our outcome?</a></li>
-  <li><a href="#scatterplot-matrix" id="toc-scatterplot-matrix" class="nav-link" data-scroll-target="#scatterplot-matrix"><span class="toc-section-number">5.2.2</span>  Scatterplot Matrix</a></li>
-  <li><a href="#collinearity" id="toc-collinearity" class="nav-link" data-scroll-target="#collinearity"><span class="toc-section-number">5.2.3</span>  Collinearity?</a></li>
-  <li><a href="#fitting-and-displaying-model-m1" id="toc-fitting-and-displaying-model-m1" class="nav-link" data-scroll-target="#fitting-and-displaying-model-m1"><span class="toc-section-number">5.2.4</span>  Fitting and Displaying Model <code>m1</code></a></li>
-  <li><a href="#using-broom-functions-on-model-m1" id="toc-using-broom-functions-on-model-m1" class="nav-link" data-scroll-target="#using-broom-functions-on-model-m1"><span class="toc-section-number">5.2.5</span>  Using <strong>broom</strong> functions on Model <code>m1</code></a></li>
-  <li><a href="#residual-plots-for-model-m1" id="toc-residual-plots-for-model-m1" class="nav-link" data-scroll-target="#residual-plots-for-model-m1"><span class="toc-section-number">5.2.6</span>  Residual Plots for Model <code>m1</code></a></li>
-  <li><a href="#fitting-and-displaying-model-m2" id="toc-fitting-and-displaying-model-m2" class="nav-link" data-scroll-target="#fitting-and-displaying-model-m2"><span class="toc-section-number">5.2.7</span>  Fitting and Displaying Model <code>m2</code></a></li>
-  <li><a href="#using-broom-functions-on-m2" id="toc-using-broom-functions-on-m2" class="nav-link" data-scroll-target="#using-broom-functions-on-m2"><span class="toc-section-number">5.2.8</span>  Using <code>broom</code> functions on <code>m2</code></a></li>
-  <li><a href="#residual-plots-for-model-m2" id="toc-residual-plots-for-model-m2" class="nav-link" data-scroll-target="#residual-plots-for-model-m2"><span class="toc-section-number">5.2.9</span>  Residual Plots for Model <code>m2</code></a></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="toc-section-number">5.2.10</span>  Conclusions</a></li>
+  <li><a href="#should-we-transform-our-outcome" id="toc-should-we-transform-our-outcome" class="nav-link" data-scroll-target="#should-we-transform-our-outcome"><span class="header-section-number">5.2.1</span> Should we transform our outcome?</a></li>
+  <li><a href="#scatterplot-matrix" id="toc-scatterplot-matrix" class="nav-link" data-scroll-target="#scatterplot-matrix"><span class="header-section-number">5.2.2</span> Scatterplot Matrix</a></li>
+  <li><a href="#collinearity" id="toc-collinearity" class="nav-link" data-scroll-target="#collinearity"><span class="header-section-number">5.2.3</span> Collinearity?</a></li>
+  <li><a href="#fitting-and-displaying-model-m1" id="toc-fitting-and-displaying-model-m1" class="nav-link" data-scroll-target="#fitting-and-displaying-model-m1"><span class="header-section-number">5.2.4</span> Fitting and Displaying Model <code>m1</code></a></li>
+  <li><a href="#using-broom-functions-on-model-m1" id="toc-using-broom-functions-on-model-m1" class="nav-link" data-scroll-target="#using-broom-functions-on-model-m1"><span class="header-section-number">5.2.5</span> Using <strong>broom</strong> functions on Model <code>m1</code></a></li>
+  <li><a href="#residual-plots-for-model-m1" id="toc-residual-plots-for-model-m1" class="nav-link" data-scroll-target="#residual-plots-for-model-m1"><span class="header-section-number">5.2.6</span> Residual Plots for Model <code>m1</code></a></li>
+  <li><a href="#fitting-and-displaying-model-m2" id="toc-fitting-and-displaying-model-m2" class="nav-link" data-scroll-target="#fitting-and-displaying-model-m2"><span class="header-section-number">5.2.7</span> Fitting and Displaying Model <code>m2</code></a></li>
+  <li><a href="#using-broom-functions-on-m2" id="toc-using-broom-functions-on-m2" class="nav-link" data-scroll-target="#using-broom-functions-on-m2"><span class="header-section-number">5.2.8</span> Using <code>broom</code> functions on <code>m2</code></a></li>
+  <li><a href="#residual-plots-for-model-m2" id="toc-residual-plots-for-model-m2" class="nav-link" data-scroll-target="#residual-plots-for-model-m2"><span class="header-section-number">5.2.9</span> Residual Plots for Model <code>m2</code></a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">5.2.10</span> Conclusions</a></li>
   </ul></li>
-  <li><a href="#modeling-high-sensitivity-c-reactive-protein" id="toc-modeling-high-sensitivity-c-reactive-protein" class="nav-link" data-scroll-target="#modeling-high-sensitivity-c-reactive-protein"><span class="toc-section-number">5.3</span>  Modeling High-Sensitivity C-Reactive Protein</a>
+  <li><a href="#modeling-high-sensitivity-c-reactive-protein" id="toc-modeling-high-sensitivity-c-reactive-protein" class="nav-link" data-scroll-target="#modeling-high-sensitivity-c-reactive-protein"><span class="header-section-number">5.3</span> Modeling High-Sensitivity C-Reactive Protein</a>
   <ul class="collapse">
-  <li><a href="#partitioning-the-data" id="toc-partitioning-the-data" class="nav-link" data-scroll-target="#partitioning-the-data"><span class="toc-section-number">5.3.1</span>  Partitioning the Data</a></li>
-  <li><a href="#transforming-the-outcome" id="toc-transforming-the-outcome" class="nav-link" data-scroll-target="#transforming-the-outcome"><span class="toc-section-number">5.3.2</span>  Transforming the Outcome?</a></li>
-  <li><a href="#scatterplot-matrix-and-collinearity" id="toc-scatterplot-matrix-and-collinearity" class="nav-link" data-scroll-target="#scatterplot-matrix-and-collinearity"><span class="toc-section-number">5.3.3</span>  Scatterplot Matrix and Collinearity</a></li>
-  <li><a href="#fit-model-m3" id="toc-fit-model-m3" class="nav-link" data-scroll-target="#fit-model-m3"><span class="toc-section-number">5.3.4</span>  Fit Model <code>m3</code></a></li>
-  <li><a href="#residual-plots-for-m3" id="toc-residual-plots-for-m3" class="nav-link" data-scroll-target="#residual-plots-for-m3"><span class="toc-section-number">5.3.5</span>  Residual Plots for <code>m3</code></a></li>
-  <li><a href="#fit-model-m4" id="toc-fit-model-m4" class="nav-link" data-scroll-target="#fit-model-m4"><span class="toc-section-number">5.3.6</span>  Fit Model <code>m4</code></a></li>
-  <li><a href="#residual-plots-for-m4" id="toc-residual-plots-for-m4" class="nav-link" data-scroll-target="#residual-plots-for-m4"><span class="toc-section-number">5.3.7</span>  Residual Plots for <code>m4</code></a></li>
-  <li><a href="#in-sample-fit-quality-comparison-m3-vs.-m4" id="toc-in-sample-fit-quality-comparison-m3-vs.-m4" class="nav-link" data-scroll-target="#in-sample-fit-quality-comparison-m3-vs.-m4"><span class="toc-section-number">5.3.8</span>  In-Sample Fit Quality Comparison (<code>m3</code> vs.&nbsp;<code>m4</code>)</a></li>
-  <li><a href="#testing-the-models-in-new-data" id="toc-testing-the-models-in-new-data" class="nav-link" data-scroll-target="#testing-the-models-in-new-data"><span class="toc-section-number">5.3.9</span>  Testing the models in new data</a></li>
-  <li><a href="#conclusions-1" id="toc-conclusions-1" class="nav-link" data-scroll-target="#conclusions-1"><span class="toc-section-number">5.3.10</span>  Conclusions</a></li>
+  <li><a href="#partitioning-the-data" id="toc-partitioning-the-data" class="nav-link" data-scroll-target="#partitioning-the-data"><span class="header-section-number">5.3.1</span> Partitioning the Data</a></li>
+  <li><a href="#transforming-the-outcome" id="toc-transforming-the-outcome" class="nav-link" data-scroll-target="#transforming-the-outcome"><span class="header-section-number">5.3.2</span> Transforming the Outcome?</a></li>
+  <li><a href="#scatterplot-matrix-and-collinearity" id="toc-scatterplot-matrix-and-collinearity" class="nav-link" data-scroll-target="#scatterplot-matrix-and-collinearity"><span class="header-section-number">5.3.3</span> Scatterplot Matrix and Collinearity</a></li>
+  <li><a href="#fit-model-m3" id="toc-fit-model-m3" class="nav-link" data-scroll-target="#fit-model-m3"><span class="header-section-number">5.3.4</span> Fit Model <code>m3</code></a></li>
+  <li><a href="#residual-plots-for-m3" id="toc-residual-plots-for-m3" class="nav-link" data-scroll-target="#residual-plots-for-m3"><span class="header-section-number">5.3.5</span> Residual Plots for <code>m3</code></a></li>
+  <li><a href="#fit-model-m4" id="toc-fit-model-m4" class="nav-link" data-scroll-target="#fit-model-m4"><span class="header-section-number">5.3.6</span> Fit Model <code>m4</code></a></li>
+  <li><a href="#residual-plots-for-m4" id="toc-residual-plots-for-m4" class="nav-link" data-scroll-target="#residual-plots-for-m4"><span class="header-section-number">5.3.7</span> Residual Plots for <code>m4</code></a></li>
+  <li><a href="#in-sample-fit-quality-comparison-m3-vs.-m4" id="toc-in-sample-fit-quality-comparison-m3-vs.-m4" class="nav-link" data-scroll-target="#in-sample-fit-quality-comparison-m3-vs.-m4"><span class="header-section-number">5.3.8</span> In-Sample Fit Quality Comparison (<code>m3</code> vs.&nbsp;<code>m4</code>)</a></li>
+  <li><a href="#testing-the-models-in-new-data" id="toc-testing-the-models-in-new-data" class="nav-link" data-scroll-target="#testing-the-models-in-new-data"><span class="header-section-number">5.3.9</span> Testing the models in new data</a></li>
+  <li><a href="#conclusions-1" id="toc-conclusions-1" class="nav-link" data-scroll-target="#conclusions-1"><span class="header-section-number">5.3.10</span> Conclusions</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -383,7 +397,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-431-regression" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></h1>
+<h1 class="title"><span id="sec-431-regression" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></h1>
 </div>
 
 
@@ -399,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled “431 Review” show elements of the two studies involved in a “<a href="https://thomaselove.github.io/431-projectB-2022/">431 Project B</a>” using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called <strong>nh432</strong> that we developed in <a href="nhanes.html"><span>Chapter&nbsp;1</span></a> and then summarized in <a href="nh432cb.html"><span>Chapter&nbsp;2</span></a>. Note that we’ll ignore the issue of sampling weights and assume a “missing completely at random” (MCAR) mechanism in these “431 Review” chapters, so that we can work with complete cases.</p>
-<p>The 431 course notes are at <a href="https://thomaselove.github.io/431-notes/" class="uri">https://thomaselove.github.io/431-notes/</a> and will remain there until 2023-06-01.</p>
+<p>The 431 course notes are at <a href="https://thomaselove.github.io/431-notes/" class="uri">https://thomaselove.github.io/431-notes/</a> and will remain there until June 1.</p>
 <section id="r-setup" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="r-setup"><span class="header-section-number">5.1</span> R Setup</h2>
 <div class="cell">
@@ -408,16 +422,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor) </span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(equatiomatic)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="data-load" class="level3" data-number="5.1.1">
 <h3 data-number="5.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">5.1.1</span> Data Load</h3>
@@ -572,15 +585,10 @@ Coefficients:
     5.26266      0.52661     -0.00560     -0.02945     -0.20813  </code></pre>
 </div>
 </div>
-<p>We can use the <code>extract_eq()</code> function from the <strong>equatiomatic</strong> package to display the model attractively, but I won’t show that output here, because it interferes with my ability to create a PDF of this work. Instead, I’ll just show the code.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_eq</span>(m1, <span class="at">use_coefs =</span> <span class="cn">TRUE</span>, <span class="at">coef_digits =</span> <span class="dv">3</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">wrap =</span> <span class="cn">TRUE</span>, <span class="at">operator_location =</span> <span class="st">"start"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>If Harry and Sally have the same values of SLPWKDAY, SBP and SLPTROUB, but Harry’s PHQ9 is one point higher than Sally’s, then model <code>m1</code> predicts that Harry will sleep 0.029 hours less than Sally on the weekends.</p>
 <p>A summary of the regression model <code>m1</code> provides lots of useful information about the parameters (including their standard errors) and the quality of fit (at least as measured by <span class="math inline">\(R^2\)</span> and adjusted <span class="math inline">\(R^2\)</span>.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -610,7 +618,7 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h3 data-number="5.2.5" class="anchored" data-anchor-id="using-broom-functions-on-model-m1"><span class="header-section-number">5.2.5</span> Using <strong>broom</strong> functions on Model <code>m1</code></h3>
 <p>If we want to actually use the information in the model summary elsewhere, we use the <code>tidy()</code> and <code>glance()</code> functions from the <strong>broom</strong> package to help us.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 7
   term        estimate std.error statistic  p.value conf.low conf.high
@@ -624,13 +632,13 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>We can produce a neater version of the <code>tidy()</code> output, produced using the <code>gt()</code> function, but I will just show the code here, since it causes trouble when I build a PDF of these Notes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="sc">-</span><span class="fu">c</span>(term), \(x) <span class="fu">round_half_up</span>(x, <span class="at">digits =</span> <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="sc">-</span><span class="fu">c</span>(term), \(x) <span class="fu">round_half_up</span>(x, <span class="at">digits =</span> <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that none of the 90% confidence intervals here cross zero. This just means that we have a pretty good handle on the direction of effects - for example, our estimate for the slope of SLPWKDAY is positive, suggesting that people who sleep more during the week also sleep more on the weekend, after accounting for SBP, PHQ9 and SLPTROUB.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
@@ -643,12 +651,12 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>The adjusted <span class="math inline">\(R^2\)</span> value isn’t a percentage or proportion of anything, but it is a handy index when comparing two models fit to the same outcome for the same observations. It penalizes the raw <span class="math inline">\(R^2\)</span> value for models that require more coefficients to be fit. If the raw <span class="math inline">\(R^2\)</span> is much larger than the adjusted <span class="math inline">\(R^2\)</span> value, this is also an indication that the model may be “overfit” - capitalizing on noise in the data more than we’d like, so that the amount of signal in the predictors may be overstated by raw <span class="math inline">\(R^2\)</span>.</p>
 <p>Here’s a cleaner presentation of some of the more important elements in the <code>glance()</code> output:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m1) <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m1) <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">r2</th>
@@ -695,14 +703,14 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>A residual for a point in a regression model is just the observed value of our outcome (here, SLPWKEND) minus the value predicted by the model based on the predictor values (also called the fitted value.)</p>
 <p>The four key plots that R will generate for you to help assess these results are shown below for model <code>m1</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## I used </span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="do">## #| fig.height: 8 </span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="do">## at the top of this code chunk</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the plots tall enough to see well</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m1); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## I used </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="do">## #| fig.height: 8 </span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="do">## at the top of this code chunk</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the plots tall enough to see well</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m1); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <section id="residuals-vs.-fitted-values" class="level4" data-number="5.2.6.1">
@@ -725,10 +733,10 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 <p>Suppose we wanted to look at the data for case 210, identified by these plots as a potential outlier, or at least a poorly fit point.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m1, <span class="at">data =</span> dat1)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">210</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, SLPWKEND, .fitted, .resid, .std.resid, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m1, <span class="at">data =</span> dat1)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">210</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, SLPWKEND, .fitted, .resid, .std.resid, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 13
   SEQN   SLPWKEND .fitted .resid .std.resid SLPWKDAY   SBP  PHQ9 SLPTROUB SROH 
@@ -746,7 +754,7 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 <p>We can use the <code>outlierTest()</code> function in the <strong>car</strong> package to help assess whether this value is unusual enough to merit more careful consideration. This function actually works with the studentized residual, which is similar to the standardized residual we saw above. Here, this point (SEQN 111688) is fit poorly enough to be flagged by the Bonferroni outlier test as a mean-shift outlier.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outlierTest</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outlierTest</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    rstudent unadjusted p-value Bonferroni p
 210 4.131972         3.8289e-05     0.049508</code></pre>
@@ -776,10 +784,10 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 <p>Here, for example, we identify the points with largest leverage and with largest Cook’s distance, across the points used to fit <code>m1</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m1, <span class="at">data =</span> dat1)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(.hat) <span class="sc">|&gt;</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, .hat, .resid, .fitted, .cooksd, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m1, <span class="at">data =</span> dat1)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(.hat) <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, .hat, .resid, .fitted, .cooksd, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 13
   SEQN     .hat .resid .fitted .cooksd SLPWKEND SLPWKDAY   SBP  PHQ9 SLPTROUB
@@ -787,8 +795,8 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 1 123474 0.0268  -1.03    8.03 0.00250        7        8   126    25        0
 # ℹ 3 more variables: SROH &lt;fct&gt;, .sigma &lt;dbl&gt;, .std.resid &lt;dbl&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(.cooksd) <span class="sc">|&gt;</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, .hat, .resid, .fitted, .cooksd, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dat1_aug <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(.cooksd) <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, .hat, .resid, .fitted, .cooksd, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 13
   SEQN     .hat .resid .fitted .cooksd SLPWKEND SLPWKDAY   SBP  PHQ9 SLPTROUB
@@ -805,9 +813,9 @@ F-statistic:  89.3 on 4 and 1288 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We will now move on to compare the results of this model (<code>m1</code>) to a smaller model.</p>
 <p>Our second model, <code>m2</code> is a subset of <code>m1</code>, including only the two predictors directly related to sleep, SLPWKDAY and SLPTROUB.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(SLPWKEND <span class="sc">~</span> SLPWKDAY <span class="sc">+</span> SLPTROUB, <span class="at">data =</span> dat1)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(SLPWKEND <span class="sc">~</span> SLPWKDAY <span class="sc">+</span> SLPTROUB, <span class="at">data =</span> dat1)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -818,20 +826,15 @@ Coefficients:
      4.4813       0.5301      -0.2862  </code></pre>
 </div>
 </div>
-<p>Again, I’ll show only the code to present the equation, so I can produce a PDF version of these notes.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_eq</span>(m2, <span class="at">use_coefs =</span> <span class="cn">TRUE</span>, <span class="at">coef_digits =</span> <span class="dv">3</span>,</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">wrap =</span> <span class="cn">TRUE</span>, <span class="at">operator_location =</span> <span class="st">"start"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>Note that the slopes of both SLPWKDAY and SLPTROUB have changed from model <code>m1</code> (although not very much), and that the intercept has changed more substantially.</p>
 </section>
 <section id="using-broom-functions-on-m2" class="level3" data-number="5.2.8">
 <h3 data-number="5.2.8" class="anchored" data-anchor-id="using-broom-functions-on-m2"><span class="header-section-number">5.2.8</span> Using <code>broom</code> functions on <code>m2</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 17%">
 <col style="width: 13%">
@@ -885,12 +888,12 @@ Coefficients:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m2) <span class="sc">|&gt;</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m2) <span class="sc">|&gt;</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">r2</th>
@@ -920,22 +923,22 @@ Coefficients:
 </div>
 <p>Since we want to compare the fit of <code>m1</code> to that of <code>m2</code>, we probably want to do so in a single table, like this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>temp1 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m1) <span class="sc">|&gt;</span> </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m1"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>temp2 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m2) <span class="sc">|&gt;</span> </span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m2"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(temp1, temp2) <span class="sc">|&gt;</span></span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>temp1 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m1) <span class="sc">|&gt;</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>temp2 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m2) <span class="sc">|&gt;</span> </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m2"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(temp1, temp2) <span class="sc">|&gt;</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;">model</th>
@@ -990,12 +993,12 @@ Coefficients:
 <section id="residual-plots-for-model-m2" class="level3" data-number="5.2.9">
 <h3 data-number="5.2.9" class="anchored" data-anchor-id="residual-plots-for-model-m2"><span class="header-section-number">5.2.9</span> Residual Plots for Model <code>m2</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">## I used #| fig.height: 8 in this code chunk</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the plots tall enough to see well</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m2); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="do">## I used #| fig.height: 8 in this code chunk</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the plots tall enough to see well</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m2); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The residual plots here show (even more starkly than in model <code>m1</code>) the discrete nature of our outcome and the two variables we’re using to predict it. I see no especially serious problems with the assumptions of linearity or constant variance here, and while there are still some fairly poorly fit values, there are no highly influential points, so I’ll accept these residual plots as indicative of a fairly reasonable model on the whole.</p>
@@ -1016,12 +1019,12 @@ Coefficients:
 </ul>
 <p>In this case, we’ll use all NHANES participants with complete data on the relevant variables to fit the three-predictor model, and then a second model using mean pulse rate alone.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> nh432 <span class="sc">|&gt;</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, PULSE1, PULSE2, SROH, HOSPITAL) <span class="sc">|&gt;</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MEANPULSE =</span> <span class="fl">0.5</span><span class="sc">*</span>(PULSE1 <span class="sc">+</span> PULSE2))</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> nh432 <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, PULSE1, PULSE2, SROH, HOSPITAL) <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MEANPULSE =</span> <span class="fl">0.5</span><span class="sc">*</span>(PULSE1 <span class="sc">+</span> PULSE2))</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 3,117
 Columns: 7
@@ -1038,20 +1041,20 @@ $ MEANPULSE &lt;dbl&gt; 72.0, 70.5, 76.5, 92.0, 63.0, 93.0, 74.0, 58.5, 65.0, 85
 <h3 data-number="5.3.1" class="anchored" data-anchor-id="partitioning-the-data"><span class="header-section-number">5.3.1</span> Partitioning the Data</h3>
 <p>Before partitioning, it’s always a good idea to be sure that the number of rows in the tibble matches the number of distinct (unique) values in the identifier column.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">nrow</span>(dat2), <span class="fu">n_distinct</span>(dat2 <span class="sc">|&gt;</span> <span class="fu">select</span>(SEQN)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">nrow</span>(dat2), <span class="fu">n_distinct</span>(dat2 <span class="sc">|&gt;</span> <span class="fu">select</span>(SEQN)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 <p>OK. Now, be sure to set a seed so that we can replicate the selection. We’ll put 70% of the data in our training sample, setting aside the remaining 30% for the test sample.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432005</span>)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>dat2_train <span class="ot">&lt;-</span> <span class="fu">slice_sample</span>(dat2, <span class="at">prop =</span> <span class="fl">0.70</span>)</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>dat2_test <span class="ot">&lt;-</span> <span class="fu">anti_join</span>(dat2, dat2_train, <span class="at">by =</span> <span class="st">"SEQN"</span>)</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">nrow</span>(dat2), <span class="fu">nrow</span>(dat2_train), <span class="fu">nrow</span>(dat2_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">432005</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>dat2_train <span class="ot">&lt;-</span> <span class="fu">slice_sample</span>(dat2, <span class="at">prop =</span> <span class="fl">0.70</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>dat2_test <span class="ot">&lt;-</span> <span class="fu">anti_join</span>(dat2, dat2_train, <span class="at">by =</span> <span class="st">"SEQN"</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">nrow</span>(dat2), <span class="fu">nrow</span>(dat2_train), <span class="fu">nrow</span>(dat2_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3117 2181  936</code></pre>
 </div>
@@ -1062,26 +1065,26 @@ $ MEANPULSE &lt;dbl&gt; 72.0, 70.5, 76.5, 92.0, 63.0, 93.0, 74.0, 58.5, 65.0, 85
 <h3 data-number="5.3.2" class="anchored" data-anchor-id="transforming-the-outcome"><span class="header-section-number">5.3.2</span> Transforming the Outcome?</h3>
 <p>Let’s use the Box-Cox approach to help us think about which potential transformations of our outcome might be helpful, within our training sample.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>m_temp <span class="ot">&lt;-</span> <span class="fu">lm</span>(HSCRP <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL, <span class="at">data =</span> dat2_train)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">boxCox</span>(m_temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>m_temp <span class="ot">&lt;-</span> <span class="fu">lm</span>(HSCRP <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL, <span class="at">data =</span> dat2_train)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">boxCox</span>(m_temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The estimated <span class="math inline">\(\lambda\)</span> value is very close to 0, which according to the ladder of power transformations, suggests we take the logarithm of our outcome, so as to improve the residual plots for the model. This will also, as it turns out, lead to a much less right-skewed outcome variable.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dat2_train, <span class="fu">aes</span>(<span class="at">sample =</span> HSCRP)) <span class="sc">+</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq</span>() <span class="sc">+</span> <span class="fu">geom_qq_line</span>(<span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q: untransformed HSCRP"</span>)</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dat2_train, <span class="fu">aes</span>(<span class="at">sample =</span> <span class="fu">log</span>(HSCRP))) <span class="sc">+</span></span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq</span>() <span class="sc">+</span> <span class="fu">geom_qq_line</span>(<span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q: Natural Log of HSCRP"</span>)</span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dat2_train, <span class="fu">aes</span>(<span class="at">sample =</span> HSCRP)) <span class="sc">+</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq</span>() <span class="sc">+</span> <span class="fu">geom_qq_line</span>(<span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q: untransformed HSCRP"</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dat2_train, <span class="fu">aes</span>(<span class="at">sample =</span> <span class="fu">log</span>(HSCRP))) <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq</span>() <span class="sc">+</span> <span class="fu">geom_qq_line</span>(<span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q: Natural Log of HSCRP"</span>)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Clearly, one benefit of the transformation is some improvement in the Normality of our outcome’s distribution.</p>
@@ -1090,26 +1093,26 @@ $ MEANPULSE &lt;dbl&gt; 72.0, 70.5, 76.5, 92.0, 63.0, 93.0, 74.0, 58.5, 65.0, 85
 <h3 data-number="5.3.3" class="anchored" data-anchor-id="scatterplot-matrix-and-collinearity"><span class="header-section-number">5.3.3</span> Scatterplot Matrix and Collinearity</h3>
 <p>To build the relevant scatterplot matrix with our transformed outcome, I’ll create a variable containing the result of the transformation within our training sample.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dat2_train <span class="ot">&lt;-</span> dat2_train <span class="sc">|&gt;</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logHSCRP =</span> <span class="fu">log</span>(HSCRP))</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat2_train <span class="ot">&lt;-</span> dat2_train <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logHSCRP =</span> <span class="fu">log</span>(HSCRP))</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "SEQN"      "HSCRP"     "PULSE1"    "PULSE2"    "SROH"      "HOSPITAL" 
 [7] "MEANPULSE" "logHSCRP" </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(dat2_train, <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">7</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="at">switch =</span> <span class="st">"both"</span>,</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower=</span><span class="fu">list</span>(<span class="at">combo=</span><span class="fu">wrap</span>(<span class="st">"facethist"</span>, <span class="at">bins=</span><span class="dv">25</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(dat2_train, <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">7</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="at">switch =</span> <span class="st">"both"</span>,</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower=</span><span class="fu">list</span>(<span class="at">combo=</span><span class="fu">wrap</span>(<span class="st">"facethist"</span>, <span class="at">bins=</span><span class="dv">25</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>As a collinearity check, we’ll run <code>vif()</code> from the <strong>car</strong> package here.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL,</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              GVIF Df GVIF^(1/(2*Df))
 MEANPULSE 1.036382  1        1.018028
@@ -1122,20 +1125,14 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 <section id="fit-model-m3" class="level3" data-number="5.3.4">
 <h3 data-number="5.3.4" class="anchored" data-anchor-id="fit-model-m3"><span class="header-section-number">5.3.4</span> Fit Model <code>m3</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL,</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Again, I’ll show only the code to present the equation, so I can produce a PDF version of these notes.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_eq</span>(m3, <span class="at">use_coefs =</span> <span class="cn">TRUE</span>, <span class="at">coef_digits =</span> <span class="dv">3</span>,</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">terms_per_line =</span> <span class="dv">3</span>, <span class="at">wrap =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">operator_location =</span> <span class="st">"start"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE <span class="sc">+</span> SROH <span class="sc">+</span> HOSPITAL,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 20%">
 <col style="width: 12%">
@@ -1232,12 +1229,12 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 <section id="residual-plots-for-m3" class="level3" data-number="5.3.5">
 <h3 data-number="5.3.5" class="anchored" data-anchor-id="residual-plots-for-m3"><span class="header-section-number">5.3.5</span> Residual Plots for <code>m3</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">## don't forget to use #| fig.height: 8</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the residual plots taller</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m3); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="do">## don't forget to use #| fig.height: 8</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="do">## to make the residual plots taller</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m3); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>I see no serious concerns with regression assumptions here. The residuals vs.&nbsp;fitted plot shows no signs of meaningful non-linearity or heteroscedasticity. The standardized residuals in the Normal Q-Q plot follow the reference line closely. There is no clear trend in the scale-location plot, and the residuals vs.&nbsp;leverage plot reveals no particularly influential points.</p>
@@ -1246,20 +1243,15 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 <h3 data-number="5.3.6" class="anchored" data-anchor-id="fit-model-m4"><span class="header-section-number">5.3.6</span> Fit Model <code>m4</code></h3>
 <p>Let’s now fit the simple regression model, <code>m4</code>, with only MEANPULSE as a predictor of the log of HSCRP.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE,</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Again, I’ll show only the code to present the equation, so I can produce a PDF version of these notes.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_eq</span>(m4, <span class="at">use_coefs =</span> <span class="cn">TRUE</span>, <span class="at">coef_digits =</span> <span class="dv">3</span>,</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">wrap =</span> <span class="cn">TRUE</span>, <span class="at">operator_location =</span> <span class="st">"start"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(HSCRP) <span class="sc">~</span> MEANPULSE,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat2_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, let’s look at the tidied coefficients.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m4, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m4, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 17%">
 <col style="width: 13%">
@@ -1311,30 +1303,30 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 <section id="residual-plots-for-m4" class="level3" data-number="5.3.7">
 <h3 data-number="5.3.7" class="anchored" data-anchor-id="residual-plots-for-m4"><span class="header-section-number">5.3.7</span> Residual Plots for <code>m4</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m4); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>)); <span class="fu">plot</span>(m4); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="431review3_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+<p><img src="431review3_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="in-sample-fit-quality-comparison-m3-vs.-m4" class="level3" data-number="5.3.8">
 <h3 data-number="5.3.8" class="anchored" data-anchor-id="in-sample-fit-quality-comparison-m3-vs.-m4"><span class="header-section-number">5.3.8</span> In-Sample Fit Quality Comparison (<code>m3</code> vs.&nbsp;<code>m4</code>)</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>g3 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m3) <span class="sc">|&gt;</span> </span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m3"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>g4 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m4) <span class="sc">|&gt;</span> </span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m4"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(g3, g4) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>g3 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m3) <span class="sc">|&gt;</span> </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m3"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>g4 <span class="ot">&lt;-</span> <span class="fu">glance</span>(m4) <span class="sc">|&gt;</span> </span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">r2 =</span> r.squared, <span class="at">adjr2 =</span> adj.r.squared, </span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>         AIC, BIC, sigma, nobs, df, <span class="at">df.res =</span> df.residual) <span class="sc">|&gt;</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"m4"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model)</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(g3, g4) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 8%">
 <col style="width: 14%">
@@ -1399,8 +1391,8 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 </ul>
 <p>To obtain observed, predicted, and error (observed - predicted) values for each new data point when we apply model <code>m3</code>, we first use the <code>augment()</code> function from the <strong>broom</strong> package to obtain our <code>.fitted</code> values.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>m3_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m3, <span class="at">newdata =</span> dat2_test)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m3_test_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>m3_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m3, <span class="at">newdata =</span> dat2_test)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m3_test_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 9
   SEQN   HSCRP PULSE1 PULSE2 SROH      HOSPITAL MEANPULSE .fitted .resid
@@ -1415,12 +1407,12 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 </div>
 <p>Remember, however, that our models <code>m3</code> and <code>m4</code> do not predict HSCRP, but rather the logarithm of HSCRP, so we need to exponentiate the .fitted values to get what we want.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>m3_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m3, <span class="at">newdata =</span> dat2_test) <span class="sc">|&gt;</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fits =</span> <span class="fu">exp</span>(.fitted),</span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">resid =</span> HSCRP <span class="sc">-</span> fits) <span class="sc">|&gt;</span></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, fits, resid, <span class="fu">everything</span>())</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m3_test_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>m3_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m3, <span class="at">newdata =</span> dat2_test) <span class="sc">|&gt;</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fits =</span> <span class="fu">exp</span>(.fitted),</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">resid =</span> HSCRP <span class="sc">-</span> fits) <span class="sc">|&gt;</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, fits, resid, <span class="fu">everything</span>())</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m3_test_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 11
   SEQN   HSCRP  fits resid PULSE1 PULSE2 SROH  HOSPITAL MEANPULSE .fitted .resid
@@ -1435,13 +1427,13 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 </div>
 <p>Now, we can obtain our summaries, as follows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>m3_test_results <span class="ot">&lt;-</span> m3_test_aug <span class="sc">|&gt;</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">validated_R_sq =</span> <span class="fu">cor</span>(HSCRP, fits)<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">MAPE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(resid)),</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">RMSPE =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(resid<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_Error =</span> <span class="fu">max</span>(<span class="fu">abs</span>(resid)))</span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>m3_test_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>m3_test_results <span class="ot">&lt;-</span> m3_test_aug <span class="sc">|&gt;</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">validated_R_sq =</span> <span class="fu">cor</span>(HSCRP, fits)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">MAPE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(resid)),</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">RMSPE =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(resid<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_Error =</span> <span class="fu">max</span>(<span class="fu">abs</span>(resid)))</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>m3_test_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
   validated_R_sq  MAPE RMSPE max_Error
@@ -1451,18 +1443,18 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 </div>
 <p>For model <code>m4</code>, we have:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>m4_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m4, <span class="at">newdata =</span> dat2_test) <span class="sc">|&gt;</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fits =</span> <span class="fu">exp</span>(.fitted),</span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">resid =</span> HSCRP <span class="sc">-</span> fits) <span class="sc">|&gt;</span></span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, fits, resid, <span class="fu">everything</span>())</span>
-<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>m4_test_results <span class="ot">&lt;-</span> m4_test_aug <span class="sc">|&gt;</span></span>
-<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">validated_R_sq =</span> <span class="fu">cor</span>(HSCRP, fits)<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">MAPE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(resid)),</span>
-<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">RMSPE =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(resid<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_Error =</span> <span class="fu">max</span>(<span class="fu">abs</span>(resid)))</span>
-<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>m4_test_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>m4_test_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m4, <span class="at">newdata =</span> dat2_test) <span class="sc">|&gt;</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fits =</span> <span class="fu">exp</span>(.fitted),</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">resid =</span> HSCRP <span class="sc">-</span> fits) <span class="sc">|&gt;</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SEQN, HSCRP, fits, resid, <span class="fu">everything</span>())</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>m4_test_results <span class="ot">&lt;-</span> m4_test_aug <span class="sc">|&gt;</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">validated_R_sq =</span> <span class="fu">cor</span>(HSCRP, fits)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">MAPE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(resid)),</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">RMSPE =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(resid<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_Error =</span> <span class="fu">max</span>(<span class="fu">abs</span>(resid)))</span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>m4_test_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
   validated_R_sq  MAPE RMSPE max_Error
@@ -1472,12 +1464,12 @@ HOSPITAL  1.027860  1        1.013834</code></pre>
 </div>
 <p>And we can put the two sets of results together into a nice table.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(m3_test_results, m4_test_results) <span class="sc">|&gt;</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"m3"</span>, <span class="st">"m4"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model) <span class="sc">|&gt;</span></span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(m3_test_results, m4_test_results) <span class="sc">|&gt;</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"m3"</span>, <span class="st">"m4"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(model) <span class="sc">|&gt;</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;">model</th>
@@ -1551,9 +1543,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1618,6 +1624,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

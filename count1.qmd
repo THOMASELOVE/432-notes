@@ -19,6 +19,7 @@ knitr::opts_chunk$set(comment = NA)
 library(broom)
 library(boot)
 library(countreg)
+library(topmodels)
 library(GGally)
 library(lmtest)
 library(rms)
@@ -521,7 +522,7 @@ sm_poiss1 |>
 
 ### Rootogram: see the fit of a count regression model
 
-A **rootogram** is a very useful way to visualize the fit of a count regression model^[See http://data.library.virginia.edu/getting-started-with-negative-binomial-regression-modeling/]. The `rootogram` function in the `countreg` package makes this pretty straightforward. By default, this fits a hanging rootogram on the square root of the frequencies.
+A **rootogram** is a very useful way to visualize the fit of a count regression model^[See http://data.library.virginia.edu/getting-started-with-negative-binomial-regression-modeling/]. The `rootogram` function in the `topmodels` package makes this pretty straightforward. By default, this fits a hanging rootogram on the square root of the frequencies.
 
 ```{r}
 rootogram(mod_poiss1, max = 30)

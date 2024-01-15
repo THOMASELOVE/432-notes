@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -120,10 +91,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -133,11 +106,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./count3.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -145,286 +123,322 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Setup</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  <a href="./smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  <a href="./count1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  <a href="./count2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  <a href="./count3.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">26.1</span>  R Setup Used Here</a></li>
-  <li><a href="#data-load-and-subset-creation" id="toc-data-load-and-subset-creation" class="nav-link" data-scroll-target="#data-load-and-subset-creation"><span class="toc-section-number">26.2</span>  Data Load and Subset Creation</a></li>
-  <li><a href="#setup-for-this-chapter" id="toc-setup-for-this-chapter" class="nav-link" data-scroll-target="#setup-for-this-chapter"><span class="toc-section-number">26.3</span>  Setup for this Chapter</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="header-section-number">26.1</span> R Setup Used Here</a></li>
+  <li><a href="#data-load-and-subset-creation" id="toc-data-load-and-subset-creation" class="nav-link" data-scroll-target="#data-load-and-subset-creation"><span class="header-section-number">26.2</span> Data Load and Subset Creation</a></li>
+  <li><a href="#setup-for-this-chapter" id="toc-setup-for-this-chapter" class="nav-link" data-scroll-target="#setup-for-this-chapter"><span class="header-section-number">26.3</span> Setup for this Chapter</a>
   <ul class="collapse">
-  <li><a href="#what-will-we-demonstrate" id="toc-what-will-we-demonstrate" class="nav-link" data-scroll-target="#what-will-we-demonstrate"><span class="toc-section-number">26.3.1</span>  What Will We Demonstrate?</a></li>
-  <li><a href="#extra-data-file-for-harry-and-sally" id="toc-extra-data-file-for-harry-and-sally" class="nav-link" data-scroll-target="#extra-data-file-for-harry-and-sally"><span class="toc-section-number">26.3.2</span>  Extra Data File for Harry and Sally</a></li>
-  <li><a href="#previous-models-for-comparison" id="toc-previous-models-for-comparison" class="nav-link" data-scroll-target="#previous-models-for-comparison"><span class="toc-section-number">26.3.3</span>  Previous Models (for comparison)</a></li>
+  <li><a href="#what-will-we-demonstrate" id="toc-what-will-we-demonstrate" class="nav-link" data-scroll-target="#what-will-we-demonstrate"><span class="header-section-number">26.3.1</span> What Will We Demonstrate?</a></li>
+  <li><a href="#extra-data-file-for-harry-and-sally" id="toc-extra-data-file-for-harry-and-sally" class="nav-link" data-scroll-target="#extra-data-file-for-harry-and-sally"><span class="header-section-number">26.3.2</span> Extra Data File for Harry and Sally</a></li>
+  <li><a href="#previous-models-for-comparison" id="toc-previous-models-for-comparison" class="nav-link" data-scroll-target="#previous-models-for-comparison"><span class="header-section-number">26.3.3</span> Previous Models (for comparison)</a></li>
   </ul></li>
-  <li><a href="#the-zero-inflated-poisson-regression-model" id="toc-the-zero-inflated-poisson-regression-model" class="nav-link" data-scroll-target="#the-zero-inflated-poisson-regression-model"><span class="toc-section-number">26.4</span>  The Zero-Inflated Poisson Regression Model</a>
+  <li><a href="#the-zero-inflated-poisson-regression-model" id="toc-the-zero-inflated-poisson-regression-model" class="nav-link" data-scroll-target="#the-zero-inflated-poisson-regression-model"><span class="header-section-number">26.4</span> The Zero-Inflated Poisson Regression Model</a>
   <ul class="collapse">
-  <li><a href="#comparison-to-a-null-model" id="toc-comparison-to-a-null-model" class="nav-link" data-scroll-target="#comparison-to-a-null-model"><span class="toc-section-number">26.4.1</span>  Comparison to a null model</a></li>
-  <li><a href="#comparison-to-a-poisson-model-with-the-vuong-test" id="toc-comparison-to-a-poisson-model-with-the-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-poisson-model-with-the-vuong-test"><span class="toc-section-number">26.4.2</span>  Comparison to a Poisson Model with the Vuong test</a></li>
-  <li><a href="#the-fitted-equation" id="toc-the-fitted-equation" class="nav-link" data-scroll-target="#the-fitted-equation"><span class="toc-section-number">26.4.3</span>  The Fitted Equation</a></li>
-  <li><a href="#interpreting-the-coefficients" id="toc-interpreting-the-coefficients" class="nav-link" data-scroll-target="#interpreting-the-coefficients"><span class="toc-section-number">26.4.4</span>  Interpreting the Coefficients</a></li>
-  <li><a href="#testing-the-predictors" id="toc-testing-the-predictors" class="nav-link" data-scroll-target="#testing-the-predictors"><span class="toc-section-number">26.4.5</span>  Testing the Predictors</a></li>
-  <li><a href="#store-fitted-values-and-residuals" id="toc-store-fitted-values-and-residuals" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals"><span class="toc-section-number">26.4.6</span>  Store fitted values and residuals</a></li>
-  <li><a href="#modeled-number-of-zero-counts" id="toc-modeled-number-of-zero-counts" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts"><span class="toc-section-number">26.4.7</span>  Modeled Number of Zero Counts</a></li>
-  <li><a href="#rootogram-for-zip-model" id="toc-rootogram-for-zip-model" class="nav-link" data-scroll-target="#rootogram-for-zip-model"><span class="toc-section-number">26.4.8</span>  Rootogram for ZIP model</a></li>
-  <li><a href="#specify-the-r2-and-log-likelihood-values" id="toc-specify-the-r2-and-log-likelihood-values" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values"><span class="toc-section-number">26.4.9</span>  Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
-  <li><a href="#check-model-assumptions" id="toc-check-model-assumptions" class="nav-link" data-scroll-target="#check-model-assumptions"><span class="toc-section-number">26.4.10</span>  Check model assumptions</a></li>
-  <li><a href="#predictions-for-harry-and-sally" id="toc-predictions-for-harry-and-sally" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally"><span class="toc-section-number">26.4.11</span>  Predictions for Harry and Sally</a></li>
+  <li><a href="#comparison-to-a-null-model" id="toc-comparison-to-a-null-model" class="nav-link" data-scroll-target="#comparison-to-a-null-model"><span class="header-section-number">26.4.1</span> Comparison to a null model</a></li>
+  <li><a href="#comparison-to-a-poisson-model-with-the-vuong-test" id="toc-comparison-to-a-poisson-model-with-the-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-poisson-model-with-the-vuong-test"><span class="header-section-number">26.4.2</span> Comparison to a Poisson Model with the Vuong test</a></li>
+  <li><a href="#the-fitted-equation" id="toc-the-fitted-equation" class="nav-link" data-scroll-target="#the-fitted-equation"><span class="header-section-number">26.4.3</span> The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients" id="toc-interpreting-the-coefficients" class="nav-link" data-scroll-target="#interpreting-the-coefficients"><span class="header-section-number">26.4.4</span> Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors" id="toc-testing-the-predictors" class="nav-link" data-scroll-target="#testing-the-predictors"><span class="header-section-number">26.4.5</span> Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals" id="toc-store-fitted-values-and-residuals" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals"><span class="header-section-number">26.4.6</span> Store fitted values and residuals</a></li>
+  <li><a href="#modeled-number-of-zero-counts" id="toc-modeled-number-of-zero-counts" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts"><span class="header-section-number">26.4.7</span> Modeled Number of Zero Counts</a></li>
+  <li><a href="#rootogram-for-zip-model" id="toc-rootogram-for-zip-model" class="nav-link" data-scroll-target="#rootogram-for-zip-model"><span class="header-section-number">26.4.8</span> Rootogram for ZIP model</a></li>
+  <li><a href="#specify-the-r2-and-log-likelihood-values" id="toc-specify-the-r2-and-log-likelihood-values" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values"><span class="header-section-number">26.4.9</span> Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
+  <li><a href="#check-model-assumptions" id="toc-check-model-assumptions" class="nav-link" data-scroll-target="#check-model-assumptions"><span class="header-section-number">26.4.10</span> Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally" id="toc-predictions-for-harry-and-sally" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally"><span class="header-section-number">26.4.11</span> Predictions for Harry and Sally</a></li>
   </ul></li>
-  <li><a href="#the-zero-inflated-negative-binomial-regression-model" id="toc-the-zero-inflated-negative-binomial-regression-model" class="nav-link" data-scroll-target="#the-zero-inflated-negative-binomial-regression-model"><span class="toc-section-number">26.5</span>  The Zero-Inflated Negative Binomial Regression Model</a>
+  <li><a href="#the-zero-inflated-negative-binomial-regression-model" id="toc-the-zero-inflated-negative-binomial-regression-model" class="nav-link" data-scroll-target="#the-zero-inflated-negative-binomial-regression-model"><span class="header-section-number">26.5</span> The Zero-Inflated Negative Binomial Regression Model</a>
   <ul class="collapse">
-  <li><a href="#comparison-to-a-null-model-1" id="toc-comparison-to-a-null-model-1" class="nav-link" data-scroll-target="#comparison-to-a-null-model-1"><span class="toc-section-number">26.5.1</span>  Comparison to a null model</a></li>
-  <li><a href="#comparison-to-a-negative-binomial-model-vuong-test" id="toc-comparison-to-a-negative-binomial-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-negative-binomial-model-vuong-test"><span class="toc-section-number">26.5.2</span>  Comparison to a Negative Binomial Model: Vuong test</a></li>
-  <li><a href="#the-fitted-equation-1" id="toc-the-fitted-equation-1" class="nav-link" data-scroll-target="#the-fitted-equation-1"><span class="toc-section-number">26.5.3</span>  The Fitted Equation</a></li>
-  <li><a href="#interpreting-the-coefficients-1" id="toc-interpreting-the-coefficients-1" class="nav-link" data-scroll-target="#interpreting-the-coefficients-1"><span class="toc-section-number">26.5.4</span>  Interpreting the Coefficients</a></li>
-  <li><a href="#testing-the-predictors-1" id="toc-testing-the-predictors-1" class="nav-link" data-scroll-target="#testing-the-predictors-1"><span class="toc-section-number">26.5.5</span>  Testing the Predictors</a></li>
-  <li><a href="#store-fitted-values-and-residuals-1" id="toc-store-fitted-values-and-residuals-1" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-1"><span class="toc-section-number">26.5.6</span>  Store fitted values and residuals</a></li>
-  <li><a href="#modeled-number-of-zero-counts-1" id="toc-modeled-number-of-zero-counts-1" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts-1"><span class="toc-section-number">26.5.7</span>  Modeled Number of Zero Counts</a></li>
-  <li><a href="#rootogram-for-zero-inflated-negative-binomial-model" id="toc-rootogram-for-zero-inflated-negative-binomial-model" class="nav-link" data-scroll-target="#rootogram-for-zero-inflated-negative-binomial-model"><span class="toc-section-number">26.5.8</span>  Rootogram for Zero-Inflated Negative Binomial model</a></li>
-  <li><a href="#specify-the-r2-and-log-likelihood-values-1" id="toc-specify-the-r2-and-log-likelihood-values-1" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-1"><span class="toc-section-number">26.5.9</span>  Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
-  <li><a href="#check-model-assumptions-1" id="toc-check-model-assumptions-1" class="nav-link" data-scroll-target="#check-model-assumptions-1"><span class="toc-section-number">26.5.10</span>  Check model assumptions</a></li>
-  <li><a href="#predictions-for-harry-and-sally-1" id="toc-predictions-for-harry-and-sally-1" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-1"><span class="toc-section-number">26.5.11</span>  Predictions for Harry and Sally</a></li>
+  <li><a href="#comparison-to-a-null-model-1" id="toc-comparison-to-a-null-model-1" class="nav-link" data-scroll-target="#comparison-to-a-null-model-1"><span class="header-section-number">26.5.1</span> Comparison to a null model</a></li>
+  <li><a href="#comparison-to-a-negative-binomial-model-vuong-test" id="toc-comparison-to-a-negative-binomial-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-negative-binomial-model-vuong-test"><span class="header-section-number">26.5.2</span> Comparison to a Negative Binomial Model: Vuong test</a></li>
+  <li><a href="#the-fitted-equation-1" id="toc-the-fitted-equation-1" class="nav-link" data-scroll-target="#the-fitted-equation-1"><span class="header-section-number">26.5.3</span> The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-1" id="toc-interpreting-the-coefficients-1" class="nav-link" data-scroll-target="#interpreting-the-coefficients-1"><span class="header-section-number">26.5.4</span> Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors-1" id="toc-testing-the-predictors-1" class="nav-link" data-scroll-target="#testing-the-predictors-1"><span class="header-section-number">26.5.5</span> Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals-1" id="toc-store-fitted-values-and-residuals-1" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-1"><span class="header-section-number">26.5.6</span> Store fitted values and residuals</a></li>
+  <li><a href="#modeled-number-of-zero-counts-1" id="toc-modeled-number-of-zero-counts-1" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts-1"><span class="header-section-number">26.5.7</span> Modeled Number of Zero Counts</a></li>
+  <li><a href="#rootogram-for-zero-inflated-negative-binomial-model" id="toc-rootogram-for-zero-inflated-negative-binomial-model" class="nav-link" data-scroll-target="#rootogram-for-zero-inflated-negative-binomial-model"><span class="header-section-number">26.5.8</span> Rootogram for Zero-Inflated Negative Binomial model</a></li>
+  <li><a href="#specify-the-r2-and-log-likelihood-values-1" id="toc-specify-the-r2-and-log-likelihood-values-1" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-1"><span class="header-section-number">26.5.9</span> Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-1" id="toc-check-model-assumptions-1" class="nav-link" data-scroll-target="#check-model-assumptions-1"><span class="header-section-number">26.5.10</span> Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-1" id="toc-predictions-for-harry-and-sally-1" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-1"><span class="header-section-number">26.5.11</span> Predictions for Harry and Sally</a></li>
   </ul></li>
-  <li><a href="#a-hurdle-model-with-poisson" id="toc-a-hurdle-model-with-poisson" class="nav-link" data-scroll-target="#a-hurdle-model-with-poisson"><span class="toc-section-number">26.6</span>  A “hurdle” model (with Poisson)</a>
+  <li><a href="#a-hurdle-model-with-poisson" id="toc-a-hurdle-model-with-poisson" class="nav-link" data-scroll-target="#a-hurdle-model-with-poisson"><span class="header-section-number">26.6</span> A “hurdle” model (with Poisson)</a>
   <ul class="collapse">
-  <li><a href="#comparison-to-a-null-model-2" id="toc-comparison-to-a-null-model-2" class="nav-link" data-scroll-target="#comparison-to-a-null-model-2"><span class="toc-section-number">26.6.1</span>  Comparison to a null model</a></li>
-  <li><a href="#comparison-to-a-poisson-model-vuong-test" id="toc-comparison-to-a-poisson-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-poisson-model-vuong-test"><span class="toc-section-number">26.6.2</span>  Comparison to a Poisson Model: Vuong test</a></li>
-  <li><a href="#comparison-to-a-zero-inflated-poisson-model-vuong-test" id="toc-comparison-to-a-zero-inflated-poisson-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-zero-inflated-poisson-model-vuong-test"><span class="toc-section-number">26.6.3</span>  Comparison to a Zero-Inflated Poisson Model: Vuong test</a></li>
-  <li><a href="#the-fitted-equation-2" id="toc-the-fitted-equation-2" class="nav-link" data-scroll-target="#the-fitted-equation-2"><span class="toc-section-number">26.6.4</span>  The Fitted Equation</a></li>
-  <li><a href="#interpreting-the-coefficients-2" id="toc-interpreting-the-coefficients-2" class="nav-link" data-scroll-target="#interpreting-the-coefficients-2"><span class="toc-section-number">26.6.5</span>  Interpreting the Coefficients</a></li>
-  <li><a href="#testing-the-predictors-2" id="toc-testing-the-predictors-2" class="nav-link" data-scroll-target="#testing-the-predictors-2"><span class="toc-section-number">26.6.6</span>  Testing the Predictors</a></li>
-  <li><a href="#store-fitted-values-and-residuals-2" id="toc-store-fitted-values-and-residuals-2" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-2"><span class="toc-section-number">26.6.7</span>  Store fitted values and residuals</a></li>
-  <li><a href="#modeled-number-of-zero-counts-2" id="toc-modeled-number-of-zero-counts-2" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts-2"><span class="toc-section-number">26.6.8</span>  Modeled Number of Zero Counts</a></li>
-  <li><a href="#rootogram-for-hurdle-model" id="toc-rootogram-for-hurdle-model" class="nav-link" data-scroll-target="#rootogram-for-hurdle-model"><span class="toc-section-number">26.6.9</span>  Rootogram for Hurdle Model</a></li>
-  <li><a href="#understanding-the-modeled-counts-in-detail" id="toc-understanding-the-modeled-counts-in-detail" class="nav-link" data-scroll-target="#understanding-the-modeled-counts-in-detail"><span class="toc-section-number">26.6.10</span>  Understanding the Modeled Counts in Detail</a></li>
-  <li><a href="#specify-the-r2-and-log-likelihood-values-2" id="toc-specify-the-r2-and-log-likelihood-values-2" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-2"><span class="toc-section-number">26.6.11</span>  Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
-  <li><a href="#check-model-assumptions-2" id="toc-check-model-assumptions-2" class="nav-link" data-scroll-target="#check-model-assumptions-2"><span class="toc-section-number">26.6.12</span>  Check model assumptions</a></li>
-  <li><a href="#predictions-for-harry-and-sally-2" id="toc-predictions-for-harry-and-sally-2" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-2"><span class="toc-section-number">26.6.13</span>  Predictions for Harry and Sally</a></li>
+  <li><a href="#comparison-to-a-null-model-2" id="toc-comparison-to-a-null-model-2" class="nav-link" data-scroll-target="#comparison-to-a-null-model-2"><span class="header-section-number">26.6.1</span> Comparison to a null model</a></li>
+  <li><a href="#comparison-to-a-poisson-model-vuong-test" id="toc-comparison-to-a-poisson-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-poisson-model-vuong-test"><span class="header-section-number">26.6.2</span> Comparison to a Poisson Model: Vuong test</a></li>
+  <li><a href="#comparison-to-a-zero-inflated-poisson-model-vuong-test" id="toc-comparison-to-a-zero-inflated-poisson-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-zero-inflated-poisson-model-vuong-test"><span class="header-section-number">26.6.3</span> Comparison to a Zero-Inflated Poisson Model: Vuong test</a></li>
+  <li><a href="#the-fitted-equation-2" id="toc-the-fitted-equation-2" class="nav-link" data-scroll-target="#the-fitted-equation-2"><span class="header-section-number">26.6.4</span> The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-2" id="toc-interpreting-the-coefficients-2" class="nav-link" data-scroll-target="#interpreting-the-coefficients-2"><span class="header-section-number">26.6.5</span> Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors-2" id="toc-testing-the-predictors-2" class="nav-link" data-scroll-target="#testing-the-predictors-2"><span class="header-section-number">26.6.6</span> Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals-2" id="toc-store-fitted-values-and-residuals-2" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-2"><span class="header-section-number">26.6.7</span> Store fitted values and residuals</a></li>
+  <li><a href="#modeled-number-of-zero-counts-2" id="toc-modeled-number-of-zero-counts-2" class="nav-link" data-scroll-target="#modeled-number-of-zero-counts-2"><span class="header-section-number">26.6.8</span> Modeled Number of Zero Counts</a></li>
+  <li><a href="#rootogram-for-hurdle-model" id="toc-rootogram-for-hurdle-model" class="nav-link" data-scroll-target="#rootogram-for-hurdle-model"><span class="header-section-number">26.6.9</span> Rootogram for Hurdle Model</a></li>
+  <li><a href="#understanding-the-modeled-counts-in-detail" id="toc-understanding-the-modeled-counts-in-detail" class="nav-link" data-scroll-target="#understanding-the-modeled-counts-in-detail"><span class="header-section-number">26.6.10</span> Understanding the Modeled Counts in Detail</a></li>
+  <li><a href="#specify-the-r2-and-log-likelihood-values-2" id="toc-specify-the-r2-and-log-likelihood-values-2" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-2"><span class="header-section-number">26.6.11</span> Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-2" id="toc-check-model-assumptions-2" class="nav-link" data-scroll-target="#check-model-assumptions-2"><span class="header-section-number">26.6.12</span> Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-2" id="toc-predictions-for-harry-and-sally-2" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-2"><span class="header-section-number">26.6.13</span> Predictions for Harry and Sally</a></li>
   </ul></li>
-  <li><a href="#a-hurdle-model-with-negative-binomial-for-overdispersion" id="toc-a-hurdle-model-with-negative-binomial-for-overdispersion" class="nav-link" data-scroll-target="#a-hurdle-model-with-negative-binomial-for-overdispersion"><span class="toc-section-number">26.7</span>  A “hurdle” model (with negative binomial for overdispersion)</a>
+  <li><a href="#a-hurdle-model-with-negative-binomial-for-overdispersion" id="toc-a-hurdle-model-with-negative-binomial-for-overdispersion" class="nav-link" data-scroll-target="#a-hurdle-model-with-negative-binomial-for-overdispersion"><span class="header-section-number">26.7</span> A “hurdle” model (with negative binomial for overdispersion)</a>
   <ul class="collapse">
-  <li><a href="#comparison-to-a-null-model-3" id="toc-comparison-to-a-null-model-3" class="nav-link" data-scroll-target="#comparison-to-a-null-model-3"><span class="toc-section-number">26.7.1</span>  Comparison to a null model</a></li>
-  <li><a href="#comparison-to-a-negative-binomial-model-vuong-test-1" id="toc-comparison-to-a-negative-binomial-model-vuong-test-1" class="nav-link" data-scroll-target="#comparison-to-a-negative-binomial-model-vuong-test-1"><span class="toc-section-number">26.7.2</span>  Comparison to a Negative Binomial Model: Vuong test</a></li>
-  <li><a href="#comparison-to-a-zero-inflated-nb-model-vuong-test" id="toc-comparison-to-a-zero-inflated-nb-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-zero-inflated-nb-model-vuong-test"><span class="toc-section-number">26.7.3</span>  Comparison to a Zero-Inflated NB Model: Vuong test</a></li>
-  <li><a href="#comparing-the-hurdle-models-with-aic-and-bic" id="toc-comparing-the-hurdle-models-with-aic-and-bic" class="nav-link" data-scroll-target="#comparing-the-hurdle-models-with-aic-and-bic"><span class="toc-section-number">26.7.4</span>  Comparing the Hurdle Models with AIC and BIC</a></li>
-  <li><a href="#the-fitted-equation-3" id="toc-the-fitted-equation-3" class="nav-link" data-scroll-target="#the-fitted-equation-3"><span class="toc-section-number">26.7.5</span>  The Fitted Equation</a></li>
-  <li><a href="#interpreting-the-coefficients-3" id="toc-interpreting-the-coefficients-3" class="nav-link" data-scroll-target="#interpreting-the-coefficients-3"><span class="toc-section-number">26.7.6</span>  Interpreting the Coefficients</a></li>
-  <li><a href="#testing-the-predictors-3" id="toc-testing-the-predictors-3" class="nav-link" data-scroll-target="#testing-the-predictors-3"><span class="toc-section-number">26.7.7</span>  Testing the Predictors</a></li>
-  <li><a href="#store-fitted-values-and-residuals-3" id="toc-store-fitted-values-and-residuals-3" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-3"><span class="toc-section-number">26.7.8</span>  Store fitted values and residuals</a></li>
-  <li><a href="#rootogram-for-nb-hurdle-model" id="toc-rootogram-for-nb-hurdle-model" class="nav-link" data-scroll-target="#rootogram-for-nb-hurdle-model"><span class="toc-section-number">26.7.9</span>  Rootogram for NB Hurdle Model</a></li>
-  <li><a href="#specify-the-r2-and-log-likelihood-values-3" id="toc-specify-the-r2-and-log-likelihood-values-3" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-3"><span class="toc-section-number">26.7.10</span>  Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
-  <li><a href="#check-model-assumptions-3" id="toc-check-model-assumptions-3" class="nav-link" data-scroll-target="#check-model-assumptions-3"><span class="toc-section-number">26.7.11</span>  Check model assumptions</a></li>
-  <li><a href="#predictions-for-harry-and-sally-3" id="toc-predictions-for-harry-and-sally-3" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-3"><span class="toc-section-number">26.7.12</span>  Predictions for Harry and Sally</a></li>
-  <li><a href="#note-fitting-a-different-hurdle-model-for-counts-and-przero" id="toc-note-fitting-a-different-hurdle-model-for-counts-and-przero" class="nav-link" data-scroll-target="#note-fitting-a-different-hurdle-model-for-counts-and-przero"><span class="toc-section-number">26.7.13</span>  Note: Fitting a Different Hurdle Model for Counts and Pr(zero)</a></li>
-  <li><a href="#hanging-rootogram-for-this-new-hurdle-model" id="toc-hanging-rootogram-for-this-new-hurdle-model" class="nav-link" data-scroll-target="#hanging-rootogram-for-this-new-hurdle-model"><span class="toc-section-number">26.7.14</span>  Hanging Rootogram for this new Hurdle Model</a></li>
+  <li><a href="#comparison-to-a-null-model-3" id="toc-comparison-to-a-null-model-3" class="nav-link" data-scroll-target="#comparison-to-a-null-model-3"><span class="header-section-number">26.7.1</span> Comparison to a null model</a></li>
+  <li><a href="#comparison-to-a-negative-binomial-model-vuong-test-1" id="toc-comparison-to-a-negative-binomial-model-vuong-test-1" class="nav-link" data-scroll-target="#comparison-to-a-negative-binomial-model-vuong-test-1"><span class="header-section-number">26.7.2</span> Comparison to a Negative Binomial Model: Vuong test</a></li>
+  <li><a href="#comparison-to-a-zero-inflated-nb-model-vuong-test" id="toc-comparison-to-a-zero-inflated-nb-model-vuong-test" class="nav-link" data-scroll-target="#comparison-to-a-zero-inflated-nb-model-vuong-test"><span class="header-section-number">26.7.3</span> Comparison to a Zero-Inflated NB Model: Vuong test</a></li>
+  <li><a href="#comparing-the-hurdle-models-with-aic-and-bic" id="toc-comparing-the-hurdle-models-with-aic-and-bic" class="nav-link" data-scroll-target="#comparing-the-hurdle-models-with-aic-and-bic"><span class="header-section-number">26.7.4</span> Comparing the Hurdle Models with AIC and BIC</a></li>
+  <li><a href="#the-fitted-equation-3" id="toc-the-fitted-equation-3" class="nav-link" data-scroll-target="#the-fitted-equation-3"><span class="header-section-number">26.7.5</span> The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-3" id="toc-interpreting-the-coefficients-3" class="nav-link" data-scroll-target="#interpreting-the-coefficients-3"><span class="header-section-number">26.7.6</span> Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors-3" id="toc-testing-the-predictors-3" class="nav-link" data-scroll-target="#testing-the-predictors-3"><span class="header-section-number">26.7.7</span> Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals-3" id="toc-store-fitted-values-and-residuals-3" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-3"><span class="header-section-number">26.7.8</span> Store fitted values and residuals</a></li>
+  <li><a href="#rootogram-for-nb-hurdle-model" id="toc-rootogram-for-nb-hurdle-model" class="nav-link" data-scroll-target="#rootogram-for-nb-hurdle-model"><span class="header-section-number">26.7.9</span> Rootogram for NB Hurdle Model</a></li>
+  <li><a href="#specify-the-r2-and-log-likelihood-values-3" id="toc-specify-the-r2-and-log-likelihood-values-3" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-3"><span class="header-section-number">26.7.10</span> Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-3" id="toc-check-model-assumptions-3" class="nav-link" data-scroll-target="#check-model-assumptions-3"><span class="header-section-number">26.7.11</span> Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-3" id="toc-predictions-for-harry-and-sally-3" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-3"><span class="header-section-number">26.7.12</span> Predictions for Harry and Sally</a></li>
+  <li><a href="#note-fitting-a-different-hurdle-model-for-counts-and-przero" id="toc-note-fitting-a-different-hurdle-model-for-counts-and-przero" class="nav-link" data-scroll-target="#note-fitting-a-different-hurdle-model-for-counts-and-przero"><span class="header-section-number">26.7.13</span> Note: Fitting a Different Hurdle Model for Counts and Pr(zero)</a></li>
+  <li><a href="#hanging-rootogram-for-this-new-hurdle-model" id="toc-hanging-rootogram-for-this-new-hurdle-model" class="nav-link" data-scroll-target="#hanging-rootogram-for-this-new-hurdle-model"><span class="header-section-number">26.7.14</span> Hanging Rootogram for this new Hurdle Model</a></li>
   </ul></li>
-  <li><a href="#a-tobit-censored-regression-model" id="toc-a-tobit-censored-regression-model" class="nav-link" data-scroll-target="#a-tobit-censored-regression-model"><span class="toc-section-number">26.8</span>  A Tobit (Censored) Regression Model</a>
+  <li><a href="#a-tobit-censored-regression-model" id="toc-a-tobit-censored-regression-model" class="nav-link" data-scroll-target="#a-tobit-censored-regression-model"><span class="header-section-number">26.8</span> A Tobit (Censored) Regression Model</a>
   <ul class="collapse">
-  <li><a href="#the-fitted-equation-4" id="toc-the-fitted-equation-4" class="nav-link" data-scroll-target="#the-fitted-equation-4"><span class="toc-section-number">26.8.1</span>  The Fitted Equation</a></li>
-  <li><a href="#interpreting-the-coefficients-4" id="toc-interpreting-the-coefficients-4" class="nav-link" data-scroll-target="#interpreting-the-coefficients-4"><span class="toc-section-number">26.8.2</span>  Interpreting the Coefficients</a></li>
-  <li><a href="#testing-the-predictors-4" id="toc-testing-the-predictors-4" class="nav-link" data-scroll-target="#testing-the-predictors-4"><span class="toc-section-number">26.8.3</span>  Testing the Predictors</a></li>
-  <li><a href="#store-fitted-values-and-residuals-4" id="toc-store-fitted-values-and-residuals-4" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-4"><span class="toc-section-number">26.8.4</span>  Store fitted values and residuals</a></li>
-  <li><a href="#building-something-like-a-rootogram" id="toc-building-something-like-a-rootogram" class="nav-link" data-scroll-target="#building-something-like-a-rootogram"><span class="toc-section-number">26.8.5</span>  Building Something Like a Rootogram</a></li>
-  <li><a href="#tables-of-the-observed-and-fitted-physhealth-from-tobit" id="toc-tables-of-the-observed-and-fitted-physhealth-from-tobit" class="nav-link" data-scroll-target="#tables-of-the-observed-and-fitted-physhealth-from-tobit"><span class="toc-section-number">26.8.6</span>  Tables of the Observed and Fitted <code>physhealth</code> from Tobit</a></li>
-  <li><a href="#specify-the-r2-and-log-likelihood-values-4" id="toc-specify-the-r2-and-log-likelihood-values-4" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-4"><span class="toc-section-number">26.8.7</span>  Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
-  <li><a href="#check-model-assumptions-4" id="toc-check-model-assumptions-4" class="nav-link" data-scroll-target="#check-model-assumptions-4"><span class="toc-section-number">26.8.8</span>  Check model assumptions</a></li>
-  <li><a href="#predictions-for-harry-and-sally-4" id="toc-predictions-for-harry-and-sally-4" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-4"><span class="toc-section-number">26.8.9</span>  Predictions for Harry and Sally</a></li>
+  <li><a href="#the-fitted-equation-4" id="toc-the-fitted-equation-4" class="nav-link" data-scroll-target="#the-fitted-equation-4"><span class="header-section-number">26.8.1</span> The Fitted Equation</a></li>
+  <li><a href="#interpreting-the-coefficients-4" id="toc-interpreting-the-coefficients-4" class="nav-link" data-scroll-target="#interpreting-the-coefficients-4"><span class="header-section-number">26.8.2</span> Interpreting the Coefficients</a></li>
+  <li><a href="#testing-the-predictors-4" id="toc-testing-the-predictors-4" class="nav-link" data-scroll-target="#testing-the-predictors-4"><span class="header-section-number">26.8.3</span> Testing the Predictors</a></li>
+  <li><a href="#store-fitted-values-and-residuals-4" id="toc-store-fitted-values-and-residuals-4" class="nav-link" data-scroll-target="#store-fitted-values-and-residuals-4"><span class="header-section-number">26.8.4</span> Store fitted values and residuals</a></li>
+  <li><a href="#building-something-like-a-rootogram" id="toc-building-something-like-a-rootogram" class="nav-link" data-scroll-target="#building-something-like-a-rootogram"><span class="header-section-number">26.8.5</span> Building Something Like a Rootogram</a></li>
+  <li><a href="#tables-of-the-observed-and-fitted-physhealth-from-tobit" id="toc-tables-of-the-observed-and-fitted-physhealth-from-tobit" class="nav-link" data-scroll-target="#tables-of-the-observed-and-fitted-physhealth-from-tobit"><span class="header-section-number">26.8.6</span> Tables of the Observed and Fitted <code>physhealth</code> from Tobit</a></li>
+  <li><a href="#specify-the-r2-and-log-likelihood-values-4" id="toc-specify-the-r2-and-log-likelihood-values-4" class="nav-link" data-scroll-target="#specify-the-r2-and-log-likelihood-values-4"><span class="header-section-number">26.8.7</span> Specify the <span class="math inline">\(R^2\)</span> and log (likelihood) values</a></li>
+  <li><a href="#check-model-assumptions-4" id="toc-check-model-assumptions-4" class="nav-link" data-scroll-target="#check-model-assumptions-4"><span class="header-section-number">26.8.8</span> Check model assumptions</a></li>
+  <li><a href="#predictions-for-harry-and-sally-4" id="toc-predictions-for-harry-and-sally-4" class="nav-link" data-scroll-target="#predictions-for-harry-and-sally-4"><span class="header-section-number">26.8.9</span> Predictions for Harry and Sally</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -434,7 +448,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-count3" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></h1>
+<h1 class="title"><span id="sec-count3" class="quarto-section-identifier"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></h1>
 </div>
 
 
@@ -567,7 +581,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>a logit model is used to predict excess zeros</li>
 <li>while a Poisson model is used to predict the counts, generally</li>
 </ul>
-<p>The <code>pscl</code> package is used here, which can conflict with the <code>countreg</code> package we used to fit rootograms.</p>
+<p>The <code>pscl</code> package is used here, which can conflict with the <code>topmodels</code> package we used to fit rootograms.</p>
 <p>To run the zero-inflated Poisson model, we use the following:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mod_zip1 <span class="ot">&lt;-</span> <span class="fu">zeroinfl</span>(physhealth <span class="sc">~</span> bmi_c <span class="sc">+</span> smoke100, </span>
@@ -766,7 +780,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="26.4.8" class="anchored" data-anchor-id="rootogram-for-zip-model"><span class="header-section-number">26.4.8</span> Rootogram for ZIP model</h3>
 <p>Here’s the rootogram for the zero-inflated Poisson model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>countreg<span class="sc">::</span><span class="fu">rootogram</span>(mod_zip1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>topmodels<span class="sc">::</span><span class="fu">rootogram</span>(mod_zip1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="count3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1046,7 +1060,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="26.5.8" class="anchored" data-anchor-id="rootogram-for-zero-inflated-negative-binomial-model"><span class="header-section-number">26.5.8</span> Rootogram for Zero-Inflated Negative Binomial model</h3>
 <p>Here’s the rootogram for the zero-inflated negative binomial model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>countreg<span class="sc">::</span><span class="fu">rootogram</span>(mod_zinb1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>topmodels<span class="sc">::</span><span class="fu">rootogram</span>(mod_zinb1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="count3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1360,7 +1374,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="rootogram-for-hurdle-model" class="level3" data-number="26.6.9">
 <h3 data-number="26.6.9" class="anchored" data-anchor-id="rootogram-for-hurdle-model"><span class="header-section-number">26.6.9</span> Rootogram for Hurdle Model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>countreg<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>topmodels<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="count3_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1524,7 +1538,7 @@ Log-likelihood: -3469 on 7 Df</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>                        2.5 %      97.5 %
 count_(Intercept)  1.34373051  1.73966938
-count_bmi_c        0.01107002  0.03760871
+count_bmi_c        0.01107002  0.03760872
 count_smoke100     0.30035006  0.73549531
 zero_(Intercept)  -0.80664805 -0.56037031
 zero_bmi_c         0.01502124  0.04053230
@@ -1598,9 +1612,9 @@ BIC-corrected         0.7750288 model1 &gt; model2 0.21916133</code></pre>
  null that the models are indistinguishible)
 -------------------------------------------------------------
               Vuong z-statistic             H_A p-value
-Raw                     0.91178 model1 &gt; model2 0.18094
-AIC-corrected           0.91178 model1 &gt; model2 0.18094
-BIC-corrected           0.91178 model1 &gt; model2 0.18094</code></pre>
+Raw                   0.9117803 model1 &gt; model2 0.18094
+AIC-corrected         0.9117803 model1 &gt; model2 0.18094
+BIC-corrected         0.9117803 model1 &gt; model2 0.18094</code></pre>
 </div>
 </div>
 <p>The hurdle model is just barely a significant improvement over the zero-inflated Negative Binomial model.</p>
@@ -1712,7 +1726,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="rootogram-for-nb-hurdle-model" class="level3" data-number="26.7.9">
 <h3 data-number="26.7.9" class="anchored" data-anchor-id="rootogram-for-nb-hurdle-model"><span class="header-section-number">26.7.9</span> Rootogram for NB Hurdle Model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>countreg<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur_nb1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>topmodels<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur_nb1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="count3_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1786,7 +1800,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_hur_nb1, <span class="at">newdata =</span> hs_data, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2 
-6.222041 2.007095 </code></pre>
+6.222041 2.007094 </code></pre>
 </div>
 </div>
 <p>The prediction for Harry is 6.22 days, and for Sally is 2.01 days.</p>
@@ -1833,7 +1847,7 @@ Log-likelihood: -3472 on 6 Df</code></pre>
 <section id="hanging-rootogram-for-this-new-hurdle-model" class="level3" data-number="26.7.14">
 <h3 data-number="26.7.14" class="anchored" data-anchor-id="hanging-rootogram-for-this-new-hurdle-model"><span class="header-section-number">26.7.14</span> Hanging Rootogram for this new Hurdle Model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>countreg<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur_new1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>topmodels<span class="sc">::</span><span class="fu">rootogram</span>(mod_hur_new1, <span class="at">max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="count3_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -2109,9 +2123,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -2176,6 +2204,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

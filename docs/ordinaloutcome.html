@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -120,10 +91,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -133,11 +106,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ordinaloutcome.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -145,269 +123,305 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Setup</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  <a href="./smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  <a href="./count1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  <a href="./count2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  <a href="./count3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="toc-section-number">27.1</span>  R Setup Used Here</a>
+  <li><a href="#r-setup-used-here" id="toc-r-setup-used-here" class="nav-link active" data-scroll-target="#r-setup-used-here"><span class="header-section-number">27.1</span> R Setup Used Here</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">27.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="header-section-number">27.1.1</span> Data Load</a></li>
   </ul></li>
-  <li><a href="#a-subset-of-the-ohio-smart-data" id="toc-a-subset-of-the-ohio-smart-data" class="nav-link" data-scroll-target="#a-subset-of-the-ohio-smart-data"><span class="toc-section-number">27.2</span>  A subset of the Ohio SMART data</a>
+  <li><a href="#a-subset-of-the-ohio-smart-data" id="toc-a-subset-of-the-ohio-smart-data" class="nav-link" data-scroll-target="#a-subset-of-the-ohio-smart-data"><span class="header-section-number">27.2</span> A subset of the Ohio SMART data</a>
   <ul class="collapse">
-  <li><a href="#several-ways-of-storing-multi-categorical-data" id="toc-several-ways-of-storing-multi-categorical-data" class="nav-link" data-scroll-target="#several-ways-of-storing-multi-categorical-data"><span class="toc-section-number">27.2.1</span>  Several Ways of Storing Multi-Categorical data</a></li>
+  <li><a href="#several-ways-of-storing-multi-categorical-data" id="toc-several-ways-of-storing-multi-categorical-data" class="nav-link" data-scroll-target="#several-ways-of-storing-multi-categorical-data"><span class="header-section-number">27.2.1</span> Several Ways of Storing Multi-Categorical data</a></li>
   </ul></li>
-  <li><a href="#building-cross-tabulations" id="toc-building-cross-tabulations" class="nav-link" data-scroll-target="#building-cross-tabulations"><span class="toc-section-number">27.3</span>  Building Cross-Tabulations</a>
+  <li><a href="#building-cross-tabulations" id="toc-building-cross-tabulations" class="nav-link" data-scroll-target="#building-cross-tabulations"><span class="header-section-number">27.3</span> Building Cross-Tabulations</a>
   <ul class="collapse">
-  <li><a href="#using-base-table-functions" id="toc-using-base-table-functions" class="nav-link" data-scroll-target="#using-base-table-functions"><span class="toc-section-number">27.3.1</span>  Using base <code>table</code> functions</a></li>
-  <li><a href="#using-xtabs" id="toc-using-xtabs" class="nav-link" data-scroll-target="#using-xtabs"><span class="toc-section-number">27.3.2</span>  Using <code>xtabs</code></a></li>
-  <li><a href="#storing-a-table-in-a-tibble" id="toc-storing-a-table-in-a-tibble" class="nav-link" data-scroll-target="#storing-a-table-in-a-tibble"><span class="toc-section-number">27.3.3</span>  Storing a table in a tibble</a></li>
-  <li><a href="#using-crosstable-from-the-gmodels-package" id="toc-using-crosstable-from-the-gmodels-package" class="nav-link" data-scroll-target="#using-crosstable-from-the-gmodels-package"><span class="toc-section-number">27.3.4</span>  Using <code>CrossTable</code> from the <code>gmodels</code> package</a></li>
+  <li><a href="#using-base-table-functions" id="toc-using-base-table-functions" class="nav-link" data-scroll-target="#using-base-table-functions"><span class="header-section-number">27.3.1</span> Using base <code>table</code> functions</a></li>
+  <li><a href="#using-xtabs" id="toc-using-xtabs" class="nav-link" data-scroll-target="#using-xtabs"><span class="header-section-number">27.3.2</span> Using <code>xtabs</code></a></li>
+  <li><a href="#storing-a-table-in-a-tibble" id="toc-storing-a-table-in-a-tibble" class="nav-link" data-scroll-target="#storing-a-table-in-a-tibble"><span class="header-section-number">27.3.3</span> Storing a table in a tibble</a></li>
+  <li><a href="#using-crosstable-from-the-gmodels-package" id="toc-using-crosstable-from-the-gmodels-package" class="nav-link" data-scroll-target="#using-crosstable-from-the-gmodels-package"><span class="header-section-number">27.3.4</span> Using <code>CrossTable</code> from the <code>gmodels</code> package</a></li>
   </ul></li>
-  <li><a href="#graphing-categorical-data" id="toc-graphing-categorical-data" class="nav-link" data-scroll-target="#graphing-categorical-data"><span class="toc-section-number">27.4</span>  Graphing Categorical Data</a>
+  <li><a href="#graphing-categorical-data" id="toc-graphing-categorical-data" class="nav-link" data-scroll-target="#graphing-categorical-data"><span class="header-section-number">27.4</span> Graphing Categorical Data</a>
   <ul class="collapse">
-  <li><a href="#a-bar-chart-for-a-single-variable" id="toc-a-bar-chart-for-a-single-variable" class="nav-link" data-scroll-target="#a-bar-chart-for-a-single-variable"><span class="toc-section-number">27.4.1</span>  A Bar Chart for a Single Variable</a></li>
-  <li><a href="#a-counts-chart-for-a-2-way-cross-tabulation" id="toc-a-counts-chart-for-a-2-way-cross-tabulation" class="nav-link" data-scroll-target="#a-counts-chart-for-a-2-way-cross-tabulation"><span class="toc-section-number">27.4.2</span>  A Counts Chart for a 2-Way Cross-Tabulation</a></li>
+  <li><a href="#a-bar-chart-for-a-single-variable" id="toc-a-bar-chart-for-a-single-variable" class="nav-link" data-scroll-target="#a-bar-chart-for-a-single-variable"><span class="header-section-number">27.4.1</span> A Bar Chart for a Single Variable</a></li>
+  <li><a href="#a-counts-chart-for-a-2-way-cross-tabulation" id="toc-a-counts-chart-for-a-2-way-cross-tabulation" class="nav-link" data-scroll-target="#a-counts-chart-for-a-2-way-cross-tabulation"><span class="header-section-number">27.4.2</span> A Counts Chart for a 2-Way Cross-Tabulation</a></li>
   </ul></li>
-  <li><a href="#building-a-model-for-genh-using-veg_day" id="toc-building-a-model-for-genh-using-veg_day" class="nav-link" data-scroll-target="#building-a-model-for-genh-using-veg_day"><span class="toc-section-number">27.5</span>  Building a Model for <code>genh</code> using <code>veg_day</code></a>
+  <li><a href="#building-a-model-for-genh-using-veg_day" id="toc-building-a-model-for-genh-using-veg_day" class="nav-link" data-scroll-target="#building-a-model-for-genh-using-veg_day"><span class="header-section-number">27.5</span> Building a Model for <code>genh</code> using <code>veg_day</code></a>
   <ul class="collapse">
-  <li><a href="#a-little-eda" id="toc-a-little-eda" class="nav-link" data-scroll-target="#a-little-eda"><span class="toc-section-number">27.5.1</span>  A little EDA</a></li>
-  <li><a href="#describing-the-proportional-odds-cumulative-logit-model" id="toc-describing-the-proportional-odds-cumulative-logit-model" class="nav-link" data-scroll-target="#describing-the-proportional-odds-cumulative-logit-model"><span class="toc-section-number">27.5.2</span>  Describing the Proportional-Odds Cumulative Logit Model</a></li>
-  <li><a href="#fitting-a-proportional-odds-logistic-regression-with-polr" id="toc-fitting-a-proportional-odds-logistic-regression-with-polr" class="nav-link" data-scroll-target="#fitting-a-proportional-odds-logistic-regression-with-polr"><span class="toc-section-number">27.5.3</span>  Fitting a Proportional Odds Logistic Regression with <code>polr</code></a></li>
+  <li><a href="#a-little-eda" id="toc-a-little-eda" class="nav-link" data-scroll-target="#a-little-eda"><span class="header-section-number">27.5.1</span> A little EDA</a></li>
+  <li><a href="#describing-the-proportional-odds-cumulative-logit-model" id="toc-describing-the-proportional-odds-cumulative-logit-model" class="nav-link" data-scroll-target="#describing-the-proportional-odds-cumulative-logit-model"><span class="header-section-number">27.5.2</span> Describing the Proportional-Odds Cumulative Logit Model</a></li>
+  <li><a href="#fitting-a-proportional-odds-logistic-regression-with-polr" id="toc-fitting-a-proportional-odds-logistic-regression-with-polr" class="nav-link" data-scroll-target="#fitting-a-proportional-odds-logistic-regression-with-polr"><span class="header-section-number">27.5.3</span> Fitting a Proportional Odds Logistic Regression with <code>polr</code></a></li>
   </ul></li>
-  <li><a href="#interpreting-model-m1" id="toc-interpreting-model-m1" class="nav-link" data-scroll-target="#interpreting-model-m1"><span class="toc-section-number">27.6</span>  Interpreting Model <code>m1</code></a>
+  <li><a href="#interpreting-model-m1" id="toc-interpreting-model-m1" class="nav-link" data-scroll-target="#interpreting-model-m1"><span class="header-section-number">27.6</span> Interpreting Model <code>m1</code></a>
   <ul class="collapse">
-  <li><a href="#looking-at-predictions" id="toc-looking-at-predictions" class="nav-link" data-scroll-target="#looking-at-predictions"><span class="toc-section-number">27.6.1</span>  Looking at Predictions</a></li>
-  <li><a href="#making-predictions-for-harry-and-sally-with-predict" id="toc-making-predictions-for-harry-and-sally-with-predict" class="nav-link" data-scroll-target="#making-predictions-for-harry-and-sally-with-predict"><span class="toc-section-number">27.6.2</span>  Making Predictions for Harry (and Sally) with <code>predict</code></a></li>
-  <li><a href="#predicting-the-actual-classification-of-genh" id="toc-predicting-the-actual-classification-of-genh" class="nav-link" data-scroll-target="#predicting-the-actual-classification-of-genh"><span class="toc-section-number">27.6.3</span>  Predicting the actual classification of <code>genh</code></a></li>
-  <li><a href="#a-cross-tabulation-of-predictions" id="toc-a-cross-tabulation-of-predictions" class="nav-link" data-scroll-target="#a-cross-tabulation-of-predictions"><span class="toc-section-number">27.6.4</span>  A Cross-Tabulation of Predictions?</a></li>
-  <li><a href="#the-fitted-model-equations" id="toc-the-fitted-model-equations" class="nav-link" data-scroll-target="#the-fitted-model-equations"><span class="toc-section-number">27.6.5</span>  The Fitted Model Equations</a></li>
-  <li><a href="#interpreting-the-veg_day-coefficient" id="toc-interpreting-the-veg_day-coefficient" class="nav-link" data-scroll-target="#interpreting-the-veg_day-coefficient"><span class="toc-section-number">27.6.6</span>  Interpreting the <code>veg_day</code> coefficient</a></li>
-  <li><a href="#exponentiating-the-slope-coefficient-to-facilitate-interpretation" id="toc-exponentiating-the-slope-coefficient-to-facilitate-interpretation" class="nav-link" data-scroll-target="#exponentiating-the-slope-coefficient-to-facilitate-interpretation"><span class="toc-section-number">27.6.7</span>  Exponentiating the Slope Coefficient to facilitate Interpretation</a></li>
-  <li><a href="#comparison-to-a-null-model" id="toc-comparison-to-a-null-model" class="nav-link" data-scroll-target="#comparison-to-a-null-model"><span class="toc-section-number">27.6.8</span>  Comparison to a Null Model</a></li>
+  <li><a href="#looking-at-predictions" id="toc-looking-at-predictions" class="nav-link" data-scroll-target="#looking-at-predictions"><span class="header-section-number">27.6.1</span> Looking at Predictions</a></li>
+  <li><a href="#making-predictions-for-harry-and-sally-with-predict" id="toc-making-predictions-for-harry-and-sally-with-predict" class="nav-link" data-scroll-target="#making-predictions-for-harry-and-sally-with-predict"><span class="header-section-number">27.6.2</span> Making Predictions for Harry (and Sally) with <code>predict</code></a></li>
+  <li><a href="#predicting-the-actual-classification-of-genh" id="toc-predicting-the-actual-classification-of-genh" class="nav-link" data-scroll-target="#predicting-the-actual-classification-of-genh"><span class="header-section-number">27.6.3</span> Predicting the actual classification of <code>genh</code></a></li>
+  <li><a href="#a-cross-tabulation-of-predictions" id="toc-a-cross-tabulation-of-predictions" class="nav-link" data-scroll-target="#a-cross-tabulation-of-predictions"><span class="header-section-number">27.6.4</span> A Cross-Tabulation of Predictions?</a></li>
+  <li><a href="#the-fitted-model-equations" id="toc-the-fitted-model-equations" class="nav-link" data-scroll-target="#the-fitted-model-equations"><span class="header-section-number">27.6.5</span> The Fitted Model Equations</a></li>
+  <li><a href="#interpreting-the-veg_day-coefficient" id="toc-interpreting-the-veg_day-coefficient" class="nav-link" data-scroll-target="#interpreting-the-veg_day-coefficient"><span class="header-section-number">27.6.6</span> Interpreting the <code>veg_day</code> coefficient</a></li>
+  <li><a href="#exponentiating-the-slope-coefficient-to-facilitate-interpretation" id="toc-exponentiating-the-slope-coefficient-to-facilitate-interpretation" class="nav-link" data-scroll-target="#exponentiating-the-slope-coefficient-to-facilitate-interpretation"><span class="header-section-number">27.6.7</span> Exponentiating the Slope Coefficient to facilitate Interpretation</a></li>
+  <li><a href="#comparison-to-a-null-model" id="toc-comparison-to-a-null-model" class="nav-link" data-scroll-target="#comparison-to-a-null-model"><span class="header-section-number">27.6.8</span> Comparison to a Null Model</a></li>
   </ul></li>
-  <li><a href="#the-assumption-of-proportional-odds" id="toc-the-assumption-of-proportional-odds" class="nav-link" data-scroll-target="#the-assumption-of-proportional-odds"><span class="toc-section-number">27.7</span>  The Assumption of Proportional Odds</a>
+  <li><a href="#the-assumption-of-proportional-odds" id="toc-the-assumption-of-proportional-odds" class="nav-link" data-scroll-target="#the-assumption-of-proportional-odds"><span class="header-section-number">27.7</span> The Assumption of Proportional Odds</a>
   <ul class="collapse">
-  <li><a href="#testing-the-proportional-odds-assumption" id="toc-testing-the-proportional-odds-assumption" class="nav-link" data-scroll-target="#testing-the-proportional-odds-assumption"><span class="toc-section-number">27.7.1</span>  Testing the Proportional Odds Assumption</a></li>
+  <li><a href="#testing-the-proportional-odds-assumption" id="toc-testing-the-proportional-odds-assumption" class="nav-link" data-scroll-target="#testing-the-proportional-odds-assumption"><span class="header-section-number">27.7.1</span> Testing the Proportional Odds Assumption</a></li>
   </ul></li>
-  <li><a href="#can-model-m1-be-fit-using-rms-tools" id="toc-can-model-m1-be-fit-using-rms-tools" class="nav-link" data-scroll-target="#can-model-m1-be-fit-using-rms-tools"><span class="toc-section-number">27.8</span>  Can model <code>m1</code> be fit using <code>rms</code> tools?</a></li>
-  <li><a href="#building-a-three-predictor-model" id="toc-building-a-three-predictor-model" class="nav-link" data-scroll-target="#building-a-three-predictor-model"><span class="toc-section-number">27.9</span>  Building a Three-Predictor Model</a>
+  <li><a href="#can-model-m1-be-fit-using-rms-tools" id="toc-can-model-m1-be-fit-using-rms-tools" class="nav-link" data-scroll-target="#can-model-m1-be-fit-using-rms-tools"><span class="header-section-number">27.8</span> Can model <code>m1</code> be fit using <code>rms</code> tools?</a></li>
+  <li><a href="#building-a-three-predictor-model" id="toc-building-a-three-predictor-model" class="nav-link" data-scroll-target="#building-a-three-predictor-model"><span class="header-section-number">27.9</span> Building a Three-Predictor Model</a>
   <ul class="collapse">
-  <li><a href="#scatterplot-matrix" id="toc-scatterplot-matrix" class="nav-link" data-scroll-target="#scatterplot-matrix"><span class="toc-section-number">27.9.1</span>  Scatterplot Matrix</a></li>
-  <li><a href="#our-three-predictor-model-m2" id="toc-our-three-predictor-model-m2" class="nav-link" data-scroll-target="#our-three-predictor-model-m2"><span class="toc-section-number">27.9.2</span>  Our Three-Predictor Model, <code>m2</code></a></li>
-  <li><a href="#does-the-three-predictor-model-outperform-m1" id="toc-does-the-three-predictor-model-outperform-m1" class="nav-link" data-scroll-target="#does-the-three-predictor-model-outperform-m1"><span class="toc-section-number">27.9.3</span>  Does the three-predictor model outperform <code>m1</code>?</a></li>
-  <li><a href="#wald-tests-for-individual-predictors" id="toc-wald-tests-for-individual-predictors" class="nav-link" data-scroll-target="#wald-tests-for-individual-predictors"><span class="toc-section-number">27.9.4</span>  Wald tests for individual predictors</a></li>
-  <li><a href="#a-cross-tabulation-of-predictions-1" id="toc-a-cross-tabulation-of-predictions-1" class="nav-link" data-scroll-target="#a-cross-tabulation-of-predictions-1"><span class="toc-section-number">27.9.5</span>  A Cross-Tabulation of Predictions?</a></li>
-  <li><a href="#interpreting-the-effect-sizes" id="toc-interpreting-the-effect-sizes" class="nav-link" data-scroll-target="#interpreting-the-effect-sizes"><span class="toc-section-number">27.9.6</span>  Interpreting the Effect Sizes</a></li>
-  <li><a href="#quality-of-the-model-fit" id="toc-quality-of-the-model-fit" class="nav-link" data-scroll-target="#quality-of-the-model-fit"><span class="toc-section-number">27.9.7</span>  Quality of the Model Fit</a></li>
-  <li><a href="#validating-the-summary-statistics-in-m2_lrm" id="toc-validating-the-summary-statistics-in-m2_lrm" class="nav-link" data-scroll-target="#validating-the-summary-statistics-in-m2_lrm"><span class="toc-section-number">27.9.8</span>  Validating the Summary Statistics in <code>m2_lrm</code></a></li>
-  <li><a href="#testing-the-proportional-odds-assumption-1" id="toc-testing-the-proportional-odds-assumption-1" class="nav-link" data-scroll-target="#testing-the-proportional-odds-assumption-1"><span class="toc-section-number">27.9.9</span>  Testing the Proportional Odds Assumption</a></li>
-  <li><a href="#plotting-the-fitted-model" id="toc-plotting-the-fitted-model" class="nav-link" data-scroll-target="#plotting-the-fitted-model"><span class="toc-section-number">27.9.10</span>  Plotting the Fitted Model</a></li>
+  <li><a href="#scatterplot-matrix" id="toc-scatterplot-matrix" class="nav-link" data-scroll-target="#scatterplot-matrix"><span class="header-section-number">27.9.1</span> Scatterplot Matrix</a></li>
+  <li><a href="#our-three-predictor-model-m2" id="toc-our-three-predictor-model-m2" class="nav-link" data-scroll-target="#our-three-predictor-model-m2"><span class="header-section-number">27.9.2</span> Our Three-Predictor Model, <code>m2</code></a></li>
+  <li><a href="#does-the-three-predictor-model-outperform-m1" id="toc-does-the-three-predictor-model-outperform-m1" class="nav-link" data-scroll-target="#does-the-three-predictor-model-outperform-m1"><span class="header-section-number">27.9.3</span> Does the three-predictor model outperform <code>m1</code>?</a></li>
+  <li><a href="#wald-tests-for-individual-predictors" id="toc-wald-tests-for-individual-predictors" class="nav-link" data-scroll-target="#wald-tests-for-individual-predictors"><span class="header-section-number">27.9.4</span> Wald tests for individual predictors</a></li>
+  <li><a href="#a-cross-tabulation-of-predictions-1" id="toc-a-cross-tabulation-of-predictions-1" class="nav-link" data-scroll-target="#a-cross-tabulation-of-predictions-1"><span class="header-section-number">27.9.5</span> A Cross-Tabulation of Predictions?</a></li>
+  <li><a href="#interpreting-the-effect-sizes" id="toc-interpreting-the-effect-sizes" class="nav-link" data-scroll-target="#interpreting-the-effect-sizes"><span class="header-section-number">27.9.6</span> Interpreting the Effect Sizes</a></li>
+  <li><a href="#quality-of-the-model-fit" id="toc-quality-of-the-model-fit" class="nav-link" data-scroll-target="#quality-of-the-model-fit"><span class="header-section-number">27.9.7</span> Quality of the Model Fit</a></li>
+  <li><a href="#validating-the-summary-statistics-in-m2_lrm" id="toc-validating-the-summary-statistics-in-m2_lrm" class="nav-link" data-scroll-target="#validating-the-summary-statistics-in-m2_lrm"><span class="header-section-number">27.9.8</span> Validating the Summary Statistics in <code>m2_lrm</code></a></li>
+  <li><a href="#testing-the-proportional-odds-assumption-1" id="toc-testing-the-proportional-odds-assumption-1" class="nav-link" data-scroll-target="#testing-the-proportional-odds-assumption-1"><span class="header-section-number">27.9.9</span> Testing the Proportional Odds Assumption</a></li>
+  <li><a href="#plotting-the-fitted-model" id="toc-plotting-the-fitted-model" class="nav-link" data-scroll-target="#plotting-the-fitted-model"><span class="header-section-number">27.9.10</span> Plotting the Fitted Model</a></li>
   </ul></li>
-  <li><a href="#a-larger-model-including-income-group" id="toc-a-larger-model-including-income-group" class="nav-link" data-scroll-target="#a-larger-model-including-income-group"><span class="toc-section-number">27.10</span>  A Larger Model, including income group</a>
+  <li><a href="#a-larger-model-including-income-group" id="toc-a-larger-model-including-income-group" class="nav-link" data-scroll-target="#a-larger-model-including-income-group"><span class="header-section-number">27.10</span> A Larger Model, including income group</a>
   <ul class="collapse">
-  <li><a href="#cross-tabulation-of-predictedobserved-classifications" id="toc-cross-tabulation-of-predictedobserved-classifications" class="nav-link" data-scroll-target="#cross-tabulation-of-predictedobserved-classifications"><span class="toc-section-number">27.10.1</span>  Cross-Tabulation of Predicted/Observed Classifications</a></li>
-  <li><a href="#nomogram-1" id="toc-nomogram-1" class="nav-link" data-scroll-target="#nomogram-1"><span class="toc-section-number">27.10.2</span>  Nomogram</a></li>
-  <li><a href="#using-predict-and-showing-mean-prediction-on-1-5-scale-1" id="toc-using-predict-and-showing-mean-prediction-on-1-5-scale-1" class="nav-link" data-scroll-target="#using-predict-and-showing-mean-prediction-on-1-5-scale-1"><span class="toc-section-number">27.10.3</span>  Using Predict and showing mean prediction on 1-5 scale</a></li>
-  <li><a href="#validating-the-summary-statistics-in-m3_lrm" id="toc-validating-the-summary-statistics-in-m3_lrm" class="nav-link" data-scroll-target="#validating-the-summary-statistics-in-m3_lrm"><span class="toc-section-number">27.10.4</span>  Validating the Summary Statistics in <code>m3_lrm</code></a></li>
+  <li><a href="#cross-tabulation-of-predictedobserved-classifications" id="toc-cross-tabulation-of-predictedobserved-classifications" class="nav-link" data-scroll-target="#cross-tabulation-of-predictedobserved-classifications"><span class="header-section-number">27.10.1</span> Cross-Tabulation of Predicted/Observed Classifications</a></li>
+  <li><a href="#nomogram-1" id="toc-nomogram-1" class="nav-link" data-scroll-target="#nomogram-1"><span class="header-section-number">27.10.2</span> Nomogram</a></li>
+  <li><a href="#using-predict-and-showing-mean-prediction-on-1-5-scale-1" id="toc-using-predict-and-showing-mean-prediction-on-1-5-scale-1" class="nav-link" data-scroll-target="#using-predict-and-showing-mean-prediction-on-1-5-scale-1"><span class="header-section-number">27.10.3</span> Using Predict and showing mean prediction on 1-5 scale</a></li>
+  <li><a href="#validating-the-summary-statistics-in-m3_lrm" id="toc-validating-the-summary-statistics-in-m3_lrm" class="nav-link" data-scroll-target="#validating-the-summary-statistics-in-m3_lrm"><span class="header-section-number">27.10.4</span> Validating the Summary Statistics in <code>m3_lrm</code></a></li>
   </ul></li>
-  <li><a href="#references-for-this-chapter" id="toc-references-for-this-chapter" class="nav-link" data-scroll-target="#references-for-this-chapter"><span class="toc-section-number">27.11</span>  References for this Chapter</a></li>
+  <li><a href="#references-for-this-chapter" id="toc-references-for-this-chapter" class="nav-link" data-scroll-target="#references-for-this-chapter"><span class="header-section-number">27.11</span> References for this Chapter</a></li>
   </ul>
 </nav>
     </div>
@@ -416,7 +430,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></h1>
+<h1 class="title"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></h1>
 </div>
 
 
@@ -1294,7 +1308,7 @@ Frequencies of Responses
                        Model Likelihood     Discrimination    Rank Discrim.    
                              Ratio Test            Indexes          Indexes    
 Obs          5394    LR chi2      75.04     R2       0.015    C       0.555    
-max |deriv| 3e-13    d.f.             1    R2(1,5394)0.014    Dxy     0.111    
+max |deriv| 2e-13    d.f.             1    R2(1,5394)0.014    Dxy     0.111    
                      Pr(&gt; chi2) &lt;0.0001    R2(1,4995)0.015    gamma   0.111    
                                             Brier    0.247    tau-a   0.082    
 
@@ -1639,7 +1653,7 @@ Frequencies of Responses
                        Model Likelihood      Discrimination    Rank Discrim.    
                              Ratio Test             Indexes          Indexes    
 Obs          5394    LR chi2    1190.35      R2       0.209    C       0.696    
-max |deriv| 7e-12    d.f.            14    R2(14,5394)0.196    Dxy     0.391    
+max |deriv| 1e-11    d.f.            14    R2(14,5394)0.196    Dxy     0.391    
                      Pr(&gt; chi2) &lt;0.0001    R2(14,4995)0.210    gamma   0.392    
                                              Brier    0.214    tau-a   0.291    
 
@@ -1776,9 +1790,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1843,6 +1871,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

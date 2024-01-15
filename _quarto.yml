@@ -4,7 +4,7 @@ project:
 
 book:
   title: "Data Science for Biological, Medical and Health Research"
-  subtitle: "Spring 2023 Notes for 432"  
+  subtitle: "Notes for PQHS/CRSP/MPHP 432 at CWRU"  
   author: "Thomas E. Love"
   date: last-modified
   date-format: iso

@@ -2,7 +2,7 @@
 
 In this Chapter, we will review some key issues about comparing means, mostly drawn from the 431 course. This and the other Chapters labeled "431 Review" show elements of the two studies involved in a "[431 Project B](https://thomaselove.github.io/431-projectB-2022/)" using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called **nh432** that we developed in @sec-nh432-build and then summarized in @sec-nh432-book. Note that we'll ignore the issue of sampling weights and assume a "missing completely at random" (MCAR) mechanism in these "431 Review" chapters, so that we can work with complete cases.
 
-The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until 2023-06-01.
+The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until June 1.
 
 ## R Setup
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -120,10 +91,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -133,11 +106,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./431review2.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -145,233 +123,269 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">This is work in progress</a>
+  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">R Setup</a>
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Setup</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nhanes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></a>
+  <a href="./nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Building the <code>nh432</code> example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></a>
+  <a href="./nh432cb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Codebook for <code>nh432</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></a>
+  <a href="./431review1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">431 Review: Comparing Means</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review2.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></a>
+  <a href="./431review2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./431review3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></a>
+  <a href="./431review3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">431 Review: Fitting Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></a>
+  <a href="./smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">BRFSS SMART Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></a>
+  <a href="./singleimputation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dealing with Missingness: Single Imputation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></a>
+  <a href="./datasummaries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a>
+  <a href="./anovasmart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></a>
+  <a href="./anovaexamples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></a>
+  <a href="./ancova_emphysema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Analysis of Covariance</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></a>
+  <a href="./ancova_smart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysis of Covariance with the SMART data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></a>
+  <a href="./nonlinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Adding Non-linear Terms to a Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></a>
+  <a href="./olsfitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Using <code>ols</code> to fit linear models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></a>
+  <a href="./prostate1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">A Model for Prostate Cancer</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./prostate2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></a>
+  <a href="./prostate2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Validating our Prostate Cancer Model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></a>
+  <a href="./multiple_imp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multiple Imputation and Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tableone.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></a>
+  <a href="./tableone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Building Table 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></a>
+  <a href="./logistic1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Logistic Regression: The Foundations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></a>
+  <a href="./logistic2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>glm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./logistic3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></a>
+  <a href="./logistic3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Logistic Regression with <code>lrm</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effectsize.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></a>
+  <a href="./effectsize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Estimating and Interpreting Effect Sizes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></a>
+  <a href="./binaryregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Colorectal Cancer Screening and Some Special Cases</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></a>
+  <a href="./count1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Modeling a Count Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></a>
+  <a href="./count2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Negative Binomial Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./count3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></a>
+  <a href="./count3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Zero-Inflated Models for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></a>
+  <a href="./ordinaloutcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modeling an Ordinal Categorical Outcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multinomial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></a>
+  <a href="./multinomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Multinomial Logistic Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survival_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></a>
+  <a href="./survival_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Time To Event / Survival Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></a>
+  <a href="./cox1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cox2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></a>
+  <a href="./cox2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#r-setup" id="toc-r-setup" class="nav-link active" data-scroll-target="#r-setup"><span class="toc-section-number">4.1</span>  R Setup</a>
+  <li><a href="#r-setup" id="toc-r-setup" class="nav-link active" data-scroll-target="#r-setup"><span class="header-section-number">4.1</span> R Setup</a>
   <ul class="collapse">
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="toc-section-number">4.1.1</span>  Data Load</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load"><span class="header-section-number">4.1.1</span> Data Load</a></li>
   </ul></li>
-  <li><a href="#x2-contingency-table-dr_lose-and-nowlose" id="toc-x2-contingency-table-dr_lose-and-nowlose" class="nav-link" data-scroll-target="#x2-contingency-table-dr_lose-and-nowlose"><span class="toc-section-number">4.2</span>  2x2 Contingency Table: DR_LOSE and NOWLOSE</a>
+  <li><a href="#x2-contingency-table-dr_lose-and-nowlose" id="toc-x2-contingency-table-dr_lose-and-nowlose" class="nav-link" data-scroll-target="#x2-contingency-table-dr_lose-and-nowlose"><span class="header-section-number">4.2</span> 2x2 Contingency Table: DR_LOSE and NOWLOSE</a>
   <ul class="collapse">
-  <li><a href="#standard-epidemiological-format" id="toc-standard-epidemiological-format" class="nav-link" data-scroll-target="#standard-epidemiological-format"><span class="toc-section-number">4.2.1</span>  Standard Epidemiological Format</a></li>
-  <li><a href="#obtaining-key-summaries-with-twoby2" id="toc-obtaining-key-summaries-with-twoby2" class="nav-link" data-scroll-target="#obtaining-key-summaries-with-twoby2"><span class="toc-section-number">4.2.2</span>  Obtaining Key Summaries with <code>twoby2()</code></a></li>
+  <li><a href="#standard-epidemiological-format" id="toc-standard-epidemiological-format" class="nav-link" data-scroll-target="#standard-epidemiological-format"><span class="header-section-number">4.2.1</span> Standard Epidemiological Format</a></li>
+  <li><a href="#obtaining-key-summaries-with-twoby2" id="toc-obtaining-key-summaries-with-twoby2" class="nav-link" data-scroll-target="#obtaining-key-summaries-with-twoby2"><span class="header-section-number">4.2.2</span> Obtaining Key Summaries with <code>twoby2()</code></a></li>
   </ul></li>
-  <li><a href="#x2-table-sedate-category-and-now_exer" id="toc-x2-table-sedate-category-and-now_exer" class="nav-link" data-scroll-target="#x2-table-sedate-category-and-now_exer"><span class="toc-section-number">4.3</span>  2x2 Table: SEDATE category and NOW_EXER</a>
+  <li><a href="#x2-table-sedate-category-and-now_exer" id="toc-x2-table-sedate-category-and-now_exer" class="nav-link" data-scroll-target="#x2-table-sedate-category-and-now_exer"><span class="header-section-number">4.3</span> 2x2 Table: SEDATE category and NOW_EXER</a>
   <ul class="collapse">
-  <li><a href="#creating-a-low-and-high-group-on-sedate" id="toc-creating-a-low-and-high-group-on-sedate" class="nav-link" data-scroll-target="#creating-a-low-and-high-group-on-sedate"><span class="toc-section-number">4.3.1</span>  Creating a Low and High Group on SEDATE</a></li>
-  <li><a href="#two-by-two-table-summaries" id="toc-two-by-two-table-summaries" class="nav-link" data-scroll-target="#two-by-two-table-summaries"><span class="toc-section-number">4.3.2</span>  Two-by-Two Table Summaries</a></li>
-  <li><a href="#flipping-levels" id="toc-flipping-levels" class="nav-link" data-scroll-target="#flipping-levels"><span class="toc-section-number">4.3.3</span>  Flipping Levels</a></li>
+  <li><a href="#creating-a-low-and-high-group-on-sedate" id="toc-creating-a-low-and-high-group-on-sedate" class="nav-link" data-scroll-target="#creating-a-low-and-high-group-on-sedate"><span class="header-section-number">4.3.1</span> Creating a Low and High Group on SEDATE</a></li>
+  <li><a href="#two-by-two-table-summaries" id="toc-two-by-two-table-summaries" class="nav-link" data-scroll-target="#two-by-two-table-summaries"><span class="header-section-number">4.3.2</span> Two-by-Two Table Summaries</a></li>
+  <li><a href="#flipping-levels" id="toc-flipping-levels" class="nav-link" data-scroll-target="#flipping-levels"><span class="header-section-number">4.3.3</span> Flipping Levels</a></li>
   </ul></li>
-  <li><a href="#a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men" id="toc-a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men" class="nav-link" data-scroll-target="#a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men"><span class="toc-section-number">4.4</span>  A Larger (5x3) 2-Way Table: DIETQUAL and WTGOAL in Lighter Men</a>
+  <li><a href="#a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men" id="toc-a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men" class="nav-link" data-scroll-target="#a-larger-5x3-2-way-table-dietqual-and-wtgoal-in-lighter-men"><span class="header-section-number">4.4</span> A Larger (5x3) 2-Way Table: DIETQUAL and WTGOAL in Lighter Men</a>
   <ul class="collapse">
-  <li><a href="#what-would-independence-look-like" id="toc-what-would-independence-look-like" class="nav-link" data-scroll-target="#what-would-independence-look-like"><span class="toc-section-number">4.4.1</span>  What would independence look like?</a></li>
-  <li><a href="#back-to-the-dietqual-and-wtgoal-table" id="toc-back-to-the-dietqual-and-wtgoal-table" class="nav-link" data-scroll-target="#back-to-the-dietqual-and-wtgoal-table"><span class="toc-section-number">4.4.2</span>  Back to the DIETQUAL and WTGOAL table</a></li>
+  <li><a href="#what-would-independence-look-like" id="toc-what-would-independence-look-like" class="nav-link" data-scroll-target="#what-would-independence-look-like"><span class="header-section-number">4.4.1</span> What would independence look like?</a></li>
+  <li><a href="#back-to-the-dietqual-and-wtgoal-table" id="toc-back-to-the-dietqual-and-wtgoal-table" class="nav-link" data-scroll-target="#back-to-the-dietqual-and-wtgoal-table"><span class="header-section-number">4.4.2</span> Back to the DIETQUAL and WTGOAL table</a></li>
   </ul></li>
-  <li><a href="#phq9-category-and-raceethnicity" id="toc-phq9-category-and-raceethnicity" class="nav-link" data-scroll-target="#phq9-category-and-raceethnicity"><span class="toc-section-number">4.5</span>  PHQ9 Category and Race/Ethnicity</a>
+  <li><a href="#phq9-category-and-raceethnicity" id="toc-phq9-category-and-raceethnicity" class="nav-link" data-scroll-target="#phq9-category-and-raceethnicity"><span class="header-section-number">4.5</span> PHQ9 Category and Race/Ethnicity</a>
   <ul class="collapse">
-  <li><a href="#the-cochran-conditions" id="toc-the-cochran-conditions" class="nav-link" data-scroll-target="#the-cochran-conditions"><span class="toc-section-number">4.5.1</span>  The Cochran conditions</a></li>
-  <li><a href="#collapsing-categories" id="toc-collapsing-categories" class="nav-link" data-scroll-target="#collapsing-categories"><span class="toc-section-number">4.5.2</span>  Collapsing Categories</a></li>
-  <li><a href="#pearson-chi2-analysis" id="toc-pearson-chi2-analysis" class="nav-link" data-scroll-target="#pearson-chi2-analysis"><span class="toc-section-number">4.5.3</span>  Pearson <span class="math inline">\(\chi^2\)</span> Analysis</a></li>
-  <li><a href="#mosaic-plot" id="toc-mosaic-plot" class="nav-link" data-scroll-target="#mosaic-plot"><span class="toc-section-number">4.5.4</span>  Mosaic Plot</a></li>
-  <li><a href="#examining-the-fit" id="toc-examining-the-fit" class="nav-link" data-scroll-target="#examining-the-fit"><span class="toc-section-number">4.5.5</span>  Examining the Fit</a></li>
+  <li><a href="#the-cochran-conditions" id="toc-the-cochran-conditions" class="nav-link" data-scroll-target="#the-cochran-conditions"><span class="header-section-number">4.5.1</span> The Cochran conditions</a></li>
+  <li><a href="#collapsing-categories" id="toc-collapsing-categories" class="nav-link" data-scroll-target="#collapsing-categories"><span class="header-section-number">4.5.2</span> Collapsing Categories</a></li>
+  <li><a href="#pearson-chi2-analysis" id="toc-pearson-chi2-analysis" class="nav-link" data-scroll-target="#pearson-chi2-analysis"><span class="header-section-number">4.5.3</span> Pearson <span class="math inline">\(\chi^2\)</span> Analysis</a></li>
+  <li><a href="#mosaic-plot" id="toc-mosaic-plot" class="nav-link" data-scroll-target="#mosaic-plot"><span class="header-section-number">4.5.4</span> Mosaic Plot</a></li>
+  <li><a href="#examining-the-fit" id="toc-examining-the-fit" class="nav-link" data-scroll-target="#examining-the-fit"><span class="header-section-number">4.5.5</span> Examining the Fit</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -381,7 +395,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-431-rates" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></h1>
+<h1 class="title"><span id="sec-431-rates" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">431 Review: Comparing Rates</span></span></h1>
 </div>
 
 
@@ -397,7 +411,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled “431 Review” show elements of the two studies involved in a “<a href="https://thomaselove.github.io/431-projectB-2022/">431 Project B</a>” using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called <strong>nh432</strong> that we developed in <a href="nhanes.html"><span>Chapter&nbsp;1</span></a> and then summarized in <a href="nh432cb.html"><span>Chapter&nbsp;2</span></a>. Note that we’ll ignore the issue of sampling weights and assume a “missing completely at random” (MCAR) mechanism in these “431 Review” chapters, so that we can work with complete cases.</p>
-<p>The 431 course notes are at <a href="https://thomaselove.github.io/431-notes/" class="uri">https://thomaselove.github.io/431-notes/</a> and will remain there until 2023-06-01.</p>
+<p>The 431 course notes are at <a href="https://thomaselove.github.io/431-notes/" class="uri">https://thomaselove.github.io/431-notes/</a> and will remain there until June 1.</p>
 <section id="r-setup" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="r-setup"><span class="header-section-number">4.1</span> R Setup</h2>
 <div class="cell">
@@ -517,14 +531,26 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">columns =</span> <span class="fu">c</span>(Now_losing_Wt, No))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="cobstmjnub" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<div id="jebplipawd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jebplipawd table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-:where(#cobstmjnub) .gt_table {
+#jebplipawd thead, #jebplipawd tbody, #jebplipawd tfoot, #jebplipawd tr, #jebplipawd td, #jebplipawd th {
+  border-style: none;
+}
+
+#jebplipawd p {
+  margin: 0;
+  padding: 0;
+}
+
+#jebplipawd .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -547,24 +573,12 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-left-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-:where(#cobstmjnub) .gt_caption {
+#jebplipawd .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#cobstmjnub) .gt_title {
+#jebplipawd .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -576,25 +590,37 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-width: 0;
 }
 
-:where(#cobstmjnub) .gt_subtitle {
+#jebplipawd .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-:where(#cobstmjnub) .gt_bottom_border {
+#jebplipawd .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jebplipawd .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_col_headings {
+#jebplipawd .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -609,7 +635,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_col_heading {
+#jebplipawd .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -629,7 +655,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   overflow-x: hidden;
 }
 
-:where(#cobstmjnub) .gt_column_spanner_outer {
+#jebplipawd .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -641,15 +667,15 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 4px;
 }
 
-:where(#cobstmjnub) .gt_column_spanner_outer:first-child {
+#jebplipawd .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#cobstmjnub) .gt_column_spanner_outer:last-child {
+#jebplipawd .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#cobstmjnub) .gt_column_spanner {
+#jebplipawd .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -661,7 +687,11 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   width: 100%;
 }
 
-:where(#cobstmjnub) .gt_group_heading {
+#jebplipawd .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#jebplipawd .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -687,7 +717,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   text-align: left;
 }
 
-:where(#cobstmjnub) .gt_empty_group_heading {
+#jebplipawd .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -702,15 +732,15 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   vertical-align: middle;
 }
 
-:where(#cobstmjnub) .gt_from_md > :first-child {
+#jebplipawd .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#cobstmjnub) .gt_from_md > :last-child {
+#jebplipawd .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#cobstmjnub) .gt_row {
+#jebplipawd .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -729,7 +759,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   overflow-x: hidden;
 }
 
-:where(#cobstmjnub) .gt_stub {
+#jebplipawd .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -742,7 +772,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#cobstmjnub) .gt_stub_row_group {
+#jebplipawd .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -756,11 +786,15 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   vertical-align: top;
 }
 
-:where(#cobstmjnub) .gt_row_group_first td {
+#jebplipawd .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#cobstmjnub) .gt_summary_row {
+#jebplipawd .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#jebplipawd .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -770,16 +804,16 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#cobstmjnub) .gt_first_summary_row {
+#jebplipawd .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_first_summary_row.thick {
+#jebplipawd .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#cobstmjnub) .gt_last_summary_row {
+#jebplipawd .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -789,7 +823,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_grand_summary_row {
+#jebplipawd .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -799,7 +833,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#cobstmjnub) .gt_first_grand_summary_row {
+#jebplipawd .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -809,11 +843,21 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-top-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_striped {
+#jebplipawd .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jebplipawd .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#cobstmjnub) .gt_table_body {
+#jebplipawd .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -822,7 +866,7 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-bottom-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_footnotes {
+#jebplipawd .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -836,30 +880,8 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   border-right-color: #D3D3D3;
 }
 
-:where(#cobstmjnub) .gt_footnote {
+#jebplipawd .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-:where(#cobstmjnub) .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-:where(#cobstmjnub) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -867,85 +889,104 @@ Conditional MLE Odds Ratio: 2.9793    2.5350   3.5096
   padding-right: 5px;
 }
 
-:where(#cobstmjnub) .gt_left {
+#jebplipawd .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jebplipawd .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jebplipawd .gt_left {
   text-align: left;
 }
 
-:where(#cobstmjnub) .gt_center {
+#jebplipawd .gt_center {
   text-align: center;
 }
 
-:where(#cobstmjnub) .gt_right {
+#jebplipawd .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#cobstmjnub) .gt_font_normal {
+#jebplipawd .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#cobstmjnub) .gt_font_bold {
+#jebplipawd .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#cobstmjnub) .gt_font_italic {
+#jebplipawd .gt_font_italic {
   font-style: italic;
 }
 
-:where(#cobstmjnub) .gt_super {
+#jebplipawd .gt_super {
   font-size: 65%;
 }
 
-:where(#cobstmjnub) .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#jebplipawd .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-:where(#cobstmjnub) .gt_asterisk {
+#jebplipawd .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#cobstmjnub) .gt_indent_1 {
+#jebplipawd .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#cobstmjnub) .gt_indent_2 {
+#jebplipawd .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#cobstmjnub) .gt_indent_3 {
+#jebplipawd .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#cobstmjnub) .gt_indent_4 {
+#jebplipawd .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#cobstmjnub) .gt_indent_5 {
+#jebplipawd .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table">
-  <thead class="gt_header">
-    <tr>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
       <td colspan="4" class="gt_heading gt_title gt_font_normal" style="">DR_LOSE vs. NOW_LOSE</td>
     </tr>
-    <tr>
+    <tr class="gt_heading">
       <td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="">Standard Epidemiological Format</td>
     </tr>
-  </thead>
-  <thead class="gt_col_headings">
-    <tr>
+    <tr class="gt_col_headings gt_spanner_row">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id="Dr said Lose Weight?">Dr said Lose Weight?</th>
       <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Currently Losing Weight?">
         <span class="gt_column_spanner">Currently Losing Weight?</span>
       </th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Total">Total</th>
     </tr>
-    <tr>
+    <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Now_losing_Wt">Now_losing_Wt</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="No">No</th>
     </tr>
@@ -1524,9 +1565,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1591,6 +1646,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

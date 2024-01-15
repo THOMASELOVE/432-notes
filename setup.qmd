@@ -1,6 +1,6 @@
 # R Setup {.unnumbered}
 
-Here, we'll show all of the R packages used in these notes. The list of R Packages we will use in 432 is even more extensive, and is [available on our course website](https://thomaselove.github.io/432-2023/software.html#r-packages-to-install).
+Here, we'll show all of the R packages used in these notes. The list of R Packages we will use in 432 is even more extensive, and is [available on our course website](https://thomaselove.github.io/432-2024/software.html#r-packages-to-install).
 
 ```{r}
 #| eval: false
