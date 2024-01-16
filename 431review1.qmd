@@ -70,7 +70,7 @@ dat1 <- nh432 |> select(SEQN, PULSE1, PULSE2) |>
 summary(dat1 |> select(-SEQN))
 
 df_stats(~ PULSE1 + PULSE2 + PULSEDIFF, data = dat1) |> 
-  mutate(across(.cols = -c(response, n, missing), num, digits = 2)) |>
+  mutate(across(.cols = c(mean, sd), \(x) num(x, digits = 2))) |>
   gt()
 ```
 
@@ -116,7 +116,7 @@ tt1
 tidy(tt1, conf.int = TRUE, conf = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Paired t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Pulse 2 - Pulse 1 Difference Estimate with 90% T-based CI",
              subtitle = glue(nrow(dat1), " NHANES Participants ages 30-59 in nh432 data"))
@@ -135,7 +135,7 @@ tidy(lm1, conf.int = TRUE, conf = 0.90) |>
   mutate(method = c("Linear Model")) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Paired t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Pulse 2 - Pulse 1 Difference Estimate with 90% T-based CI",
              subtitle = glue(nrow(dat1), " NHANES Participants ages 30-59 in nh432 data"))
@@ -155,7 +155,7 @@ bs1
 tidy(bs1, conf.int = TRUE, conf = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Bootstrap t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Pulse 2 - Pulse 1 Difference Estimate with 90% Bootstrap CI",
              subtitle = glue(nrow(dat1), " NHANES Participants ages 30-59 in nh432 data"))
@@ -192,7 +192,7 @@ dat2 <- nh432 |> select(SEQN, AGE, SROH, WEIGHT, ESTWT) |>
 glimpse(dat2)
 
 df_stats(~ WEIGHT + ESTWTKG + WTDIFF, data = dat2) |> 
-  mutate(across(.cols = -c(response, n, missing), num, digits = 3)) |>
+  mutate(across(.cols = -c(response, n, missing), \(x) num(x , digits = 3))) |>
   gt()
 ```
 
@@ -234,7 +234,7 @@ tt2 <- t.test(dat2$WTDIFF, conf.level = 0.90)
 tidy(tt2, conf.int = TRUE, conf = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Paired t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Measured - Self-reported Weight with 90% T-based CI",
              subtitle = glue(nrow(dat2), " NHANES Participants aged 43 in Good or Fair Health in nh432 data"))
@@ -249,7 +249,7 @@ tidy(lm2, conf.int = TRUE, conf = 0.90) |>
   mutate(method = c("Linear Model")) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Paired t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Measured - Self-reported Weight with 90% T-based CI",
              subtitle = glue(nrow(dat2), " NHANES Participants aged 43 in Good or Fair Health in nh432 data"))
@@ -265,7 +265,7 @@ bs2 <- boot.t.test(dat2$WTDIFF, conf.level = 0.90,
 tidy(bs2, conf.int = TRUE, conf = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Bootstrap t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Measured - Self-reported Weight",
              subtitle = "with 90% Bootstrap CI") |>
@@ -340,7 +340,7 @@ It seems unreasonable to assume that each of these samples comes from a distribu
 
 ```{r}
 favstats(WBC ~ HOSPITAL, data = dat3) |>
-  mutate(across(.cols = c(mean, sd), num, digits = 3)) |>
+  mutate(across(.cols = c(mean, sd), \(x) num(x, digits = 3))) |>
   gt()
 ```
 
@@ -369,7 +369,7 @@ tidy(lm3, conf.int = TRUE, conf.level = 0.90) |>
   mutate(method = "Pooled t") |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Pooled t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "White Blood Cell Count (Hospitalized - Non-Hospitalized)",
              subtitle = "with 90% Pooled t-based CI via Linear Model") |>
@@ -388,7 +388,7 @@ tt3p
 tidy(tt3p, conf.int = TRUE, conf.level = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Pooled t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "White Blood Cell Count (Non-Hospitalized minus Hospitalized)",
              subtitle = "with 90% Pooled t-based Confidence Interval") |>
@@ -409,7 +409,7 @@ tt3w
 tidy(tt3w, conf.int = TRUE, conf.level = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Welch t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "White Blood Cell Count (Non-Hospitalized minus Hospitalized)",
              subtitle = "with 90% Welch t-based Confidence Interval") |>
@@ -433,7 +433,7 @@ tidy(bs3, conf.int = TRUE, conf.level = 0.90) |>
   select(est1 = estimate1, est2 = estimate2, diff, 
          low.90 = conf.low, hi.90 = conf.high, 
          p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 3)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "White Blood Cell Count (Non-Hospitalized minus Hospitalized)",
              subtitle = "with 90% Bootstrap Confidence Interval") |>
@@ -489,7 +489,7 @@ The assumption of Normality now looks much more plausible for each of our sample
 
 ```{r}
 favstats(log(WBC) ~ HOSPITAL, data = dat3) |>
-  mutate(across(.cols = -c(HOSPITAL, n, missing), num, digits = 3)) |>
+  mutate(across(.cols = -c(HOSPITAL, n, missing), \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "log(WBC) by Hospitalization Status",
              subtitle = "NHANES participants in nh432")
@@ -549,7 +549,7 @@ Here's a situation where we might be willing to consider a t test, since a Norma
 
 ```{r}
 favstats(WAIST ~ SLPTROUB, data = dat4) |>
-  mutate(across(.cols = c(mean, sd), num, digits = 2)) |>
+  mutate(across(.cols = c(mean, sd), \(x) num(x, digits = 2))) |>
   gt()
 ```
 
@@ -568,7 +568,7 @@ tidy(lm4, conf.int = TRUE, conf.level = 0.90) |>
   mutate(method = "Pooled t") |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Pooled t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 2)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 2))) |>
   gt() |>
   tab_header(title = "Waist Circumference by Sleep Trouble",
              subtitle = "with 90% Pooled t-based CI via Linear Model") |>
@@ -585,7 +585,7 @@ tt4p
 tidy(tt4p, conf.int = TRUE, conf.level = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Pooled t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 2)) |>
+  mutate(across(.cols = -method, \(x) num(x , digits = 2))) |>
   gt() |>
   tab_header(title = "Waist Circumference by Sleep Trouble",
              subtitle = "with 90% Pooled t-based Confidence Interval") |>
@@ -602,7 +602,7 @@ tt4w
 tidy(tt4w, conf.int = TRUE, conf.level = 0.90) |>
   select(estimate, low.90 = conf.low, hi.90 = conf.high, 
          "Welch t" = statistic, p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 2)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 2))) |>
   gt() |>
   tab_header(title = "Waist Circumference by Sleep Trouble",
              subtitle = "with 90% Welch t-based Confidence Interval") |>
@@ -624,7 +624,7 @@ tidy(bs4, conf.int = TRUE, conf.level = 0.90) |>
   select(est1 = estimate1, est2 = estimate2, diff, 
          low.90 = conf.low, hi.90 = conf.high, 
          p.value, method) |>
-  mutate(across(.cols = -method, num, digits = 2)) |>
+  mutate(across(.cols = -method, \(x) num(x, digits = 2))) |>
   gt() |>
   tab_header(title = "Waist Circumference by Sleep Trouble",
              subtitle = "with 90% Bootstrap Confidence Interval") |>
@@ -677,7 +677,7 @@ ggplot(dat5, aes(x = SBP, y = WTGOAL)) +
 ```{r}
 favstats(SBP ~ WTGOAL, data = dat5) |> 
   as_tibble() |>
-  mutate(across(.cols = c("mean", "sd"), num, digits = 2)) |>
+  mutate(across(.cols = c("mean", "sd"), \(x) num(x, digits = 2))) |>
   gt()
 ```
 
@@ -753,7 +753,7 @@ th5 <- TukeyHSD(aov(SBP ~ WTGOAL, data = dat5),
 
 tidy(th5) |> 
   select(-c(term, null.value)) |>
-  mutate(across(.cols = -contrast, num, digits = 3)) |>
+  mutate(across(.cols = -contrast, \(x) num(x, digits = 3))) |>
   arrange(desc(estimate)) |>
   gt() |>
   tab_header(title = "Comparing Mean Systolic BP across pairs of WTGOAL groups",
@@ -823,7 +823,7 @@ ggplot(dat6, aes(x = FOODSEC, y = WEIGHT)) +
 ```{r}
 favstats(WEIGHT ~ FOODSEC, data = dat6) |> 
   as_tibble() |>
-  mutate(across(.cols = -c("FOODSEC", "n", "missing"), num, digits = 1)) |>
+  mutate(across(.cols = -c("FOODSEC", "n", "missing"), \(x) num(x, digits = 1))) |>
   gt()
 ```
 
@@ -850,7 +850,7 @@ th6 <- TukeyHSD(aov(WEIGHT ~ FOODSEC, data = dat6),
 
 tidy(th6) |> 
   select(-c(term, null.value)) |>
-  mutate(across(.cols = -contrast, num, digits = 3)) |>
+  mutate(across(.cols = -contrast, \(x) num(x, digits = 3))) |>
   arrange(desc(estimate)) |>
   gt() |>
   tab_header(title = "Comparing Mean Weight across pairs of Food Security groups",
@@ -887,7 +887,7 @@ Should you develop a Kruskal-Wallis test result which implies that running a set
 dunn_test(data = dat6, WEIGHT ~ FOODSEC, 
                    p.adjust.method = "holm", detailed = TRUE) |>
   select(group1, group2, p.adj, n1, n2, estimate1, estimate2, estimate) |>
-  mutate(across(.cols = -c(group1, group2, n1, n2), num, digits = 3)) |>
+  mutate(across(.cols = -c(group1, group2, n1, n2), \(x) num(x, digits = 3))) |>
   gt() |>
   tab_header(title = "Dunn Tests comparing WEIGHT by FOODSEC",
              subtitle = "Pairwise Comparisons after Kruskal-Wallis test") |>

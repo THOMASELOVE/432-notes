@@ -53,7 +53,7 @@ WTMECPRP | Full sample MEC examination weight | Sampling weight
 Here's my code to select these variables from the P_DEMO data.
 
 ```{r}
-p_demo <- nhanes('P_DEMO') |>
+p_demo <- nhanes('P_DEMO', translate = FALSE) |>
   select(SEQN, RIDSTATR, RIDAGEYR, RIDRETH3, DMDEDUC2, RIAGENDR,
          WTINTPRP, WTMECPRP) 
 
@@ -83,7 +83,7 @@ OHAREC | Overall Recommendation for Dental Care | 1 = See a dentist immediately 
 Here's my code to select these variables from the P_OHXREF data.
 
 ```{r}
-p_ohxref <- nhanes('P_OHXREF') |>
+p_ohxref <- nhanes('P_OHXREF', translate = FALSE) |>
   select(SEQN, OHDEXSTS, OHAREC)
 
 dim(p_ohxref)
@@ -105,7 +105,7 @@ HUQ090 | Seen mental health professional in past 12 months | 1 = Yes, 2 = No <br
 Here's my code to select these variables from the P_HUQ data.
 
 ```{r}
-p_huq <- nhanes('P_HUQ') |>
+p_huq <- nhanes('P_HUQ', translate = FALSE) |>
   select(SEQN, HUQ010, HUQ071, HUQ090)
 
 dim(p_huq)
@@ -125,7 +125,7 @@ BMXWAIST | Waist Circumference (cm) | Measured in examination
 Here's my code to select these variables from the P_BMX data.
 
 ```{r}
-p_bmx <- nhanes('P_BMX') |>
+p_bmx <- nhanes('P_BMX', translate = FALSE) |>
   select(SEQN, BMXWT, BMXHT, BMXWAIST)
 
 dim(p_bmx)
@@ -149,7 +149,7 @@ BPXOPLS2 | Pulse <br /> (2nd reading, beats/minute) | Measured in examination
 Here's my code to select these variables from the P_BPXO data.
 
 ```{r}
-p_bpxo <- nhanes('P_BPXO') |>
+p_bpxo <- nhanes('P_BPXO', translate = FALSE) |>
   select(SEQN, BPXOSY2, BPXODI2, BPXOPLS1, BPXOPLS2)
 
 dim(p_bpxo)
@@ -168,7 +168,7 @@ LBXPLTSI | Platelet count <br /> in 1000 cells/uL | normal range: 150-450
 Here's my code to select these variables from the P_CBC data.
 
 ```{r}
-p_cbc <- nhanes('P_CBC') |>
+p_cbc <- nhanes('P_CBC', translate = FALSE) |>
   select(SEQN, LBXWBCSI, LBXPLTSI)
 
 dim(p_cbc)
@@ -186,7 +186,7 @@ LBXHSCRP | High-Sensitivity <br /> C-Reactive Protein (mg/L) | normal range: 1.0
 Here's my code to select these variables from the P_HSCRP data.
 
 ```{r}
-p_hscrp <- nhanes('P_HSCRP') |>
+p_hscrp <- nhanes('P_HSCRP', translate = FALSE) |>
   select(SEQN, LBXHSCRP)
 
 dim(p_hscrp)
@@ -206,7 +206,7 @@ ALQ130 | Average drinks per day <br /> in past 12 months <br /> (Top coded at 15
 Here's my code to select these variables from the P_ALQ data.
 
 ```{r}
-p_alq <- nhanes('P_ALQ') |>
+p_alq <- nhanes('P_ALQ', translate = FALSE) |>
   select(SEQN, ALQ111, ALQ130)
 
 dim(p_alq)
@@ -233,7 +233,7 @@ DEQ034D | Use sunscreen if outside on very sunny day? | 1 = Always <br /> 2 = Mo
 Here's my code to select these variables from the P_DEQ data.
 
 ```{r}
-p_deq <- nhanes('P_DEQ') |>
+p_deq <- nhanes('P_DEQ', translate = FALSE) |>
   select(SEQN, DEQ034D)
 
 dim(p_deq)
@@ -265,7 +265,8 @@ DPQ100 | Difficulty these problems have caused | 0-3: codes below
 Here's my code to select these variables from the P_DPQ data.
 
 ```{r}
-p_dpq <- nhanes('P_DPQ') # we're actually pulling all available variables
+p_dpq <- nhanes('P_DPQ', translate = FALSE) 
+    # we're actually pulling all available variables
 
 dim(p_dpq)
 ```
@@ -282,7 +283,7 @@ DBQ700 | How healthy is your diet? | 1 = Excellent <br /> 2 = Very Good <br /> 3
 Here's my code to select these variables from the P_DBQ data.
 
 ```{r}
-p_dbq <- nhanes('P_DBQ') |>
+p_dbq <- nhanes('P_DBQ', translate = FALSE) |>
   select(SEQN, DBQ700)
 
 dim(p_dbq)
@@ -300,7 +301,7 @@ FSDAD | Adult food security category for last 12m | 1 = Full food security <br /
 Here's my code to select these variables from the P_FSQ data.
 
 ```{r}
-p_fsq <- nhanes('P_FSQ') |>
+p_fsq <- nhanes('P_FSQ', translate = FALSE) |>
   select(SEQN, FSDAD)
 
 dim(p_fsq)
@@ -319,7 +320,7 @@ HIQ210 | Time when no insurance in past year? | 1 = Yes, 2 = No <br /> 7 = Refus
 Here's my code to select these variables from the P_HIQ data.
 
 ```{r}
-p_hiq <- nhanes('P_HIQ') |>
+p_hiq <- nhanes('P_HIQ', translate = FALSE) |>
   select(SEQN, HIQ011, HIQ210)
 
 dim(p_hiq)
@@ -349,7 +350,7 @@ MCQ371B | Are you now increasing exercise? | 1 = Yes, 2 = No <br /> 7 = Refused 
 Here's my code to select these variables from the P_MCQ data.
 
 ```{r}
-p_mcq <- nhanes('P_MCQ') |>
+p_mcq <- nhanes('P_MCQ', translate = FALSE) |>
   select(SEQN, MCQ366A, MCQ366B, MCQ371A, MCQ371B)
 
 dim(p_mcq)
@@ -367,7 +368,7 @@ OHQ870 | Days using dental floss <br /> (in the last week) | count (0-7) <br /> 
 Here's my code to select these variables from the P_OHQ data.
 
 ```{r}
-p_ohq <- nhanes('P_OHQ') |>
+p_ohq <- nhanes('P_OHQ', translate = FALSE) |>
   select(SEQN, OHQ870)
 
 dim(p_ohq)
@@ -389,7 +390,7 @@ PAD680 | Minutes of sedentary activity (min/day) | excludes sleeping <br /> 7777
 Here's my code to select these variables from the P_PAQ data.
 
 ```{r}
-p_paq <- nhanes('P_PAQ') |>
+p_paq <- nhanes('P_PAQ', translate = FALSE) |>
   select(SEQN, PAQ605, PAQ610, PAQ650, PAQ655, PAD680)
 
 dim(p_paq)
@@ -422,7 +423,7 @@ RHQ160 | How many times have you been pregnant? | count (1-11) <br /> 77 = Refus
 Here's my code to select these variables from the P_RHQ data.
 
 ```{r}
-p_rhq <- nhanes('P_RHQ') |>
+p_rhq <- nhanes('P_RHQ', translate = FALSE) |>
   select(SEQN, RHQ131, RHQ160)
 
 dim(p_rhq)
@@ -450,7 +451,7 @@ SLQ050 | Have you ever told a doctor you had trouble sleeping? | 1 = Yes, 2 = No
 Here's my code to select these variables from the P_SLQ data.
 
 ```{r}
-p_slq <- nhanes('P_SLQ') |>
+p_slq <- nhanes('P_SLQ', translate = FALSE) |>
   select(SEQN, SLD012, SLD013, SLQ030, SLQ050)
 
 dim(p_slq)
@@ -469,7 +470,7 @@ SMD641 | Days (in past 30) when you smoked a cigarette? | count (0-30) <br /> 77
 Here's my code to select these variables from the P_SMQ data.
 
 ```{r}
-p_smq <- nhanes('P_SMQ') |>
+p_smq <- nhanes('P_SMQ', translate = FALSE) |>
   select(SEQN, SMQ020, SMD641)
 
 dim(p_smq)
@@ -496,7 +497,7 @@ SMQ866 | Last 7 days spent time in a bar? | 1 = Yes, 2 = No <br /> 7 = Refused (
 Here's my code to select these variables from the P_SMQSHS data.
 
 ```{r}
-p_smqshs <- nhanes('P_SMQSHS') |>
+p_smqshs <- nhanes('P_SMQSHS', translate = FALSE) |>
   select(SEQN, SMQ856, SMQ860, SMQ866)
 
 dim(p_smqshs)
@@ -516,7 +517,7 @@ WHQ040 | Like to weigh more, less, or same | 1 = More <br /> 2 = Less <br /> 3 =
 Here's my code to select these variables from the P_WHQ data.
 
 ```{r}
-p_whq <- nhanes('P_WHQ') |>
+p_whq <- nhanes('P_WHQ', translate = FALSE) |>
   select(SEQN, WHD010, WHD020, WHQ040)
 
 dim(p_whq)
