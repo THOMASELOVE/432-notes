@@ -135,7 +135,7 @@ Simonoff has an interesting note: Consider the lifetimes of these four authors:
 - Jane Austen was born in 1775 (211 years after Shakespeare) and died in 1817
 - Jack London was born in 1876 (312 years after Shakespeare) and died in 1916
 
-How many significant coefficients does each author display relative to Shakespeare?
+How many large coefficients does each author display relative to Shakespeare?
 
 ## Classification Table
 

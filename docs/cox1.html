@@ -535,7 +535,7 @@ Score (logrank) test = 6.28  on 1 df,   p=0.01</code></pre>
 <ul>
 <li>The <em>concordance</em> measure is only appropriate when we have at least one continuous predictor in our Cox model.</li>
 <li>The Cox &amp; Snell pseudo-<span class="math inline">\(R^2\)</span> reflects the improvement of the model we’ve fit over the model with an intercept alone, but isn’t a proportion of anything (hence the listing of the maximum possible value).</li>
-<li>The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall significance of the model.</li>
+<li>The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall predictive value for the model.</li>
 </ul>
 <p>We can obtain a more detailed description of the likelihood-ratio test of the model with <code>anova</code>.</p>
 <div class="cell">
@@ -636,7 +636,7 @@ genotype  2.09  1 0.15
 GLOBAL    2.09  1 0.15</code></pre>
 </div>
 </div>
-<p>Since the <em>p</em> value here is not significant, we may be all right. But it’s sensible to focus further on plots derived from the model fit, rather than relying solely on this test.</p>
+<p>Since the <em>p</em> value here is quite large, we may be all right. But it’s sensible to focus further on plots derived from the model fit, rather than relying solely on this test.</p>
 </section>
 <section id="plotting-the-cox.zph-results-for-the-cfit-model" class="level3" data-number="30.3.6">
 <h3 data-number="30.3.6" class="anchored" data-anchor-id="plotting-the-cox.zph-results-for-the-cfit-model"><span class="header-section-number">30.3.6</span> Plotting the <code>cox.zph</code> results for the <code>cfit</code> model</h3>

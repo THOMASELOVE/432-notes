@@ -595,38 +595,38 @@ zeroinfl(formula = physhealth ~ bmi_c + smoke100, data = ohioA_young)
 
 Pearson residuals:
     Min      1Q  Median      3Q     Max 
--1.4389 -0.6987 -0.6138 -0.1947  9.3036 
+-1.4387 -0.6987 -0.6138 -0.1947  9.3029 
 
 Count model coefficients (poisson with log link):
             Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept) 1.997594   0.018797   106.3   &lt;2e-16 ***
-bmi_c       0.018176   0.001398    13.0   &lt;2e-16 ***
-smoke100    0.393383   0.024889    15.8   &lt;2e-16 ***
+(Intercept) 1.997619   0.018797   106.3   &lt;2e-16 ***
+bmi_c       0.018177   0.001398    13.0   &lt;2e-16 ***
+smoke100    0.393355   0.024889    15.8   &lt;2e-16 ***
 
 Zero-inflation model coefficients (binomial with logit link):
              Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  0.682427   0.062853  10.857  &lt; 2e-16 ***
-bmi_c       -0.027731   0.006509  -4.260 2.04e-05 ***
-smoke100    -0.237224   0.095318  -2.489   0.0128 *  
+(Intercept)  0.682306   0.062852  10.856  &lt; 2e-16 ***
+bmi_c       -0.027725   0.006509  -4.260 2.05e-05 ***
+smoke100    -0.237181   0.095316  -2.488   0.0128 *  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
-Number of iterations in BFGS optimization: 8 
+Number of iterations in BFGS optimization: 14 
 Log-likelihood: -5680 on 6 Df</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_zip1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                        2.5 %      97.5 %
-count_(Intercept)  1.96075280  2.03443546
-count_bmi_c        0.01543576  0.02091718
-count_smoke100     0.34460096  0.44216461
-zero_(Intercept)   0.55923725  0.80561744
-zero_bmi_c        -0.04048828 -0.01497359
-zero_smoke100     -0.42404310 -0.05040515</code></pre>
+count_(Intercept)  1.96077775  2.03445952
+count_bmi_c        0.01543587  0.02091727
+count_smoke100     0.34457348  0.44213651
+zero_(Intercept)   0.55911859  0.80549344
+zero_bmi_c        -0.04048184 -0.01496748
+zero_smoke100     -0.42399711 -0.05036477</code></pre>
 </div>
 </div>
 <p>The output describes two separate regression models. Below the model call, we see information on a Poisson regression model. Then we see another block describing the inflation model.</p>
-<p>Each predictor (<code>bmi_c</code> and <code>smoke100</code>) appears to be statistically significant in each part of the model.</p>
+<p>Each predictor (<code>bmi_c</code> and <code>smoke100</code>) yields a small <em>p</em> value in each part of the model.</p>
 <section id="comparison-to-a-null-model" class="level3" data-number="26.4.1">
 <h3 data-number="26.4.1" class="anchored" data-anchor-id="comparison-to-a-null-model"><span class="header-section-number">26.4.1</span> Comparison to a null model</h3>
 <p>To show that this model fits better than the null model (the model with intercept only), we can compare them directly with a chi-squared test. Since we have two predictors in the full model, the degrees of freedom for this test is 2.</p>
@@ -642,24 +642,24 @@ pscl::zeroinfl(formula = physhealth ~ 1, data = ohioA_young)
 
 Pearson residuals:
     Min      1Q  Median      3Q     Max 
--0.6934 -0.6934 -0.6934 -0.2779  5.5400 
+-0.6934 -0.6934 -0.6934 -0.2779  5.5399 
 
 Count model coefficients (poisson with log link):
             Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  2.22764    0.01233   180.7   &lt;2e-16 ***
+(Intercept)  2.22765    0.01233   180.7   &lt;2e-16 ***
 
 Zero-inflation model coefficients (binomial with logit link):
             Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)   0.5767     0.0469   12.29   &lt;2e-16 ***
+(Intercept)   0.5766     0.0469   12.29   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
-Number of iterations in BFGS optimization: 2 
+Number of iterations in BFGS optimization: 9 
 Log-likelihood: -5908 on 2 Df</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="fu">logLik</span>(mod_zip1) <span class="sc">-</span> <span class="fu">logLik</span>(mod_zipnull)), <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>'log Lik.' 8.59676e-100 (df=6)</code></pre>
+<pre><code>'log Lik.' 8.596735e-100 (df=6)</code></pre>
 </div>
 </div>
 </section>
@@ -673,12 +673,12 @@ Log-likelihood: -5908 on 2 Df</code></pre>
  null that the models are indistinguishible)
 -------------------------------------------------------------
               Vuong z-statistic             H_A    p-value
-Raw                    19.90843 model1 &gt; model2 &lt; 2.22e-16
-AIC-corrected          19.89681 model1 &gt; model2 &lt; 2.22e-16
-BIC-corrected          19.86434 model1 &gt; model2 &lt; 2.22e-16</code></pre>
+Raw                    19.90824 model1 &gt; model2 &lt; 2.22e-16
+AIC-corrected          19.89662 model1 &gt; model2 &lt; 2.22e-16
+BIC-corrected          19.86415 model1 &gt; model2 &lt; 2.22e-16</code></pre>
 </div>
 </div>
-<p>Certainly, the ZIP model is a significant improvement over the standard Poisson model, as the Vuong test reveals.</p>
+<p>Certainly, the ZIP model seems to improve the standard Poisson model, according to the Vuong test.</p>
 </section>
 <section id="the-fitted-equation" class="level3" data-number="26.4.3">
 <h3 data-number="26.4.3" class="anchored" data-anchor-id="the-fitted-equation"><span class="header-section-number">26.4.3</span> The Fitted Equation</h3>
@@ -692,9 +692,9 @@ BIC-corrected          19.86434 model1 &gt; model2 &lt; 2.22e-16</code></pre>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(mod_zip1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>count_(Intercept)       count_bmi_c    count_smoke100  zero_(Intercept) 
-        7.3713003         1.0183427         1.4819856         1.9786748 
+        7.3714810         1.0183428         1.4819444         1.9784348 
        zero_bmi_c     zero_smoke100 
-        0.9726500         0.7888145 </code></pre>
+        0.9726561         0.7888485 </code></pre>
 </div>
 </div>
 <p>For example,</p>
@@ -794,12 +794,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The correlation of observed and fitted values</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>(zip_r <span class="ot">&lt;-</span> <span class="fu">with</span>(sm_zip1, <span class="fu">cor</span>(physhealth, fitted)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.187328</code></pre>
+<pre><code>[1] 0.1873284</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-square</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>zip_r<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.03509178</code></pre>
+<pre><code>[1] 0.03509194</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -848,7 +848,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_zip1, <span class="at">newdata =</span> hs_data, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2 
-6.002212 2.056525 </code></pre>
+6.002249 2.056792 </code></pre>
 </div>
 </div>
 <p>As we’ve seen in the past, when we use <code>response</code> as the type, the predictions fall on the original <code>physhealth</code> scale. The prediction for Harry is 6.0 days, and for Sally is 2.1 days.</p>
@@ -871,36 +871,36 @@ pscl::zeroinfl(formula = physhealth ~ bmi_c + smoke100, data = ohioA_young,
 
 Pearson residuals:
     Min      1Q  Median      3Q     Max 
--0.5579 -0.4192 -0.3957 -0.1166  6.4358 
+-0.5579 -0.4192 -0.3957 -0.1166  6.4355 
 
 Count model coefficients (negbin with log link):
              Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  1.545599   0.099781  15.490  &lt; 2e-16 ***
-bmi_c        0.024614   0.006641   3.707  0.00021 ***
-smoke100     0.517559   0.110772   4.672 2.98e-06 ***
-Log(theta)  -0.874034   0.143876  -6.075 1.24e-09 ***
+(Intercept)  1.545639   0.099787  15.489  &lt; 2e-16 ***
+bmi_c        0.024617   0.006641   3.707  0.00021 ***
+smoke100     0.517302   0.110770   4.670 3.01e-06 ***
+Log(theta)  -0.874127   0.143900  -6.075 1.24e-09 ***
 
 Zero-inflation model coefficients (binomial with logit link):
              Estimate Std. Error z value Pr(&gt;|z|)   
-(Intercept) -0.071629   0.164039  -0.437  0.66236   
-bmi_c       -0.027607   0.009313  -2.964  0.00303 **
-smoke100    -0.127004   0.137171  -0.926  0.35451   
+(Intercept) -0.071616   0.164055  -0.437  0.66245   
+bmi_c       -0.027609   0.009314  -2.964  0.00303 **
+smoke100    -0.127260   0.137180  -0.928  0.35357   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
-Theta = 0.4173 
-Number of iterations in BFGS optimization: 14 
+Theta = 0.4172 
+Number of iterations in BFGS optimization: 16 
 Log-likelihood: -3469 on 7 Df</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_zinb1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                        2.5 %       97.5 %
-count_(Intercept)  1.35003234  1.741165036
-count_bmi_c        0.01159892  0.037629890
-count_smoke100     0.30045008  0.734668671
-zero_(Intercept)  -0.39313901  0.249880357
-zero_bmi_c        -0.04585974 -0.009354261
-zero_smoke100     -0.39585468  0.141845790</code></pre>
+count_(Intercept)  1.35005972  1.741217558
+count_bmi_c        0.01160172  0.037633119
+count_smoke100     0.30019616  0.734408526
+zero_(Intercept)  -0.39315782  0.249925968
+zero_bmi_c        -0.04586350 -0.009355106
+zero_smoke100     -0.39612706  0.141607082</code></pre>
 </div>
 </div>
 <section id="comparison-to-a-null-model-1" class="level3" data-number="26.5.1">
@@ -932,7 +932,7 @@ Zero-inflation model coefficients (binomial with logit link):
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
 Theta = 0.3519 
-Number of iterations in BFGS optimization: 12 
+Number of iterations in BFGS optimization: 13 
 Log-likelihood: -3498 on 3 Df</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="fu">logLik</span>(mod_nb1) <span class="sc">-</span> <span class="fu">logLik</span>(mod_zinbnull)), <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -951,12 +951,12 @@ Log-likelihood: -3498 on 3 Df</code></pre>
  null that the models are indistinguishible)
 -------------------------------------------------------------
               Vuong z-statistic             H_A   p-value
-Raw                   3.0753499 model1 &gt; model2 0.0010513
-AIC-corrected         2.4597116 model1 &gt; model2 0.0069524
-BIC-corrected         0.7396743 model1 &gt; model2 0.2297488</code></pre>
+Raw                   3.0756577 model1 &gt; model2 0.0010502
+AIC-corrected         2.4599576 model1 &gt; model2 0.0069477
+BIC-corrected         0.7397477 model1 &gt; model2 0.2297265</code></pre>
 </div>
 </div>
-<p>The zero-inflated negative binomial model is a significant improvement over the standard negative binomial model according to the the raw or AIC-corrected Vuong tests, but not according to the BIC-corrected test.</p>
+<p>The zero-inflated negative binomial model appears to be an improvement over the standard negative binomial model according to the the raw or AIC-corrected Vuong tests, but not according to the BIC-corrected test.</p>
 </section>
 <section id="the-fitted-equation-1" class="level3" data-number="26.5.3">
 <h3 data-number="26.5.3" class="anchored" data-anchor-id="the-fitted-equation-1"><span class="header-section-number">26.5.3</span> The Fitted Equation</h3>
@@ -969,9 +969,9 @@ BIC-corrected         0.7396743 model1 &gt; model2 0.2297488</code></pre>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(mod_zinb1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>count_(Intercept)       count_bmi_c    count_smoke100  zero_(Intercept) 
-        4.6907791         1.0249198         1.6779275         0.9308759 
+        4.6909665         1.0249229         1.6774962         0.9308884 
        zero_bmi_c     zero_smoke100 
-        0.9727706         0.8807298 </code></pre>
+        0.9727684         0.8805047 </code></pre>
 </div>
 </div>
 <p>For example,</p>
@@ -996,7 +996,7 @@ Model 1: physhealth ~ bmi_c + smoke100
 Model 2: physhealth ~ smoke100
   Res.Df Df  Chisq Pr(&gt;Chisq)    
 1   1967                         
-2   1969 -2 29.589  3.757e-07 ***
+2   1969 -2 29.593   3.75e-07 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1074,12 +1074,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The correlation of observed and fitted values</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>(zinb_r <span class="ot">&lt;-</span> <span class="fu">with</span>(sm_zinb1, <span class="fu">cor</span>(physhealth, fitted)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1858969</code></pre>
+<pre><code>[1] 0.1858996</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-square</span></span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>zinb_r<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.03455767</code></pre>
+<pre><code>[1] 0.03455865</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1134,7 +1134,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(mod_zinb1, <span class="at">newdata =</span> hs_data, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2 
-6.206514 2.004963 </code></pre>
+6.205985 2.004987 </code></pre>
 </div>
 </div>
 <p>As we’ve seen in the past, when we use <code>response</code> as the type, the predictions fall on the original <code>physhealth</code> scale. The prediction for Harry is 6.2 days, and for Sally is 2.0 days.</p>
@@ -1263,9 +1263,9 @@ BIC-corrected          19.86438 model1 &gt; model2 &lt; 2.22e-16</code></pre>
  null that the models are indistinguishible)
 -------------------------------------------------------------
               Vuong z-statistic             H_A p-value
-Raw                   0.2046181 model1 &gt; model2 0.41894
-AIC-corrected         0.2046181 model1 &gt; model2 0.41894
-BIC-corrected         0.2046181 model1 &gt; model2 0.41894</code></pre>
+Raw                   0.2269041 model1 &gt; model2 0.41025
+AIC-corrected         0.2269041 model1 &gt; model2 0.41025
+BIC-corrected         0.2269041 model1 &gt; model2 0.41025</code></pre>
 </div>
 </div>
 <p>The hurdle model doesn’t show a substantial improvement over the zero-inflated Poisson model according to this test.</p>
@@ -1599,7 +1599,7 @@ AIC-corrected         2.4837306 model1 &gt; model2 0.00650071
 BIC-corrected         0.7750288 model1 &gt; model2 0.21916133</code></pre>
 </div>
 </div>
-<p>The hurdle model is a significant improvement over the standard negative binomial model according to the raw and AIC-corrected versions of this test, but not the BIC-corrected version.</p>
+<p>The hurdle model improves the standard negative binomial model according to the raw and AIC-corrected versions of this test, but not the BIC-corrected version.</p>
 </section>
 <section id="comparison-to-a-zero-inflated-nb-model-vuong-test" class="level3" data-number="26.7.3">
 <h3 data-number="26.7.3" class="anchored" data-anchor-id="comparison-to-a-zero-inflated-nb-model-vuong-test"><span class="header-section-number">26.7.3</span> Comparison to a Zero-Inflated NB Model: Vuong test</h3>
@@ -1612,12 +1612,12 @@ BIC-corrected         0.7750288 model1 &gt; model2 0.21916133</code></pre>
  null that the models are indistinguishible)
 -------------------------------------------------------------
               Vuong z-statistic             H_A p-value
-Raw                   0.9117803 model1 &gt; model2 0.18094
-AIC-corrected         0.9117803 model1 &gt; model2 0.18094
-BIC-corrected         0.9117803 model1 &gt; model2 0.18094</code></pre>
+Raw                   0.9126037 model1 &gt; model2 0.18073
+AIC-corrected         0.9126037 model1 &gt; model2 0.18073
+BIC-corrected         0.9126037 model1 &gt; model2 0.18073</code></pre>
 </div>
 </div>
-<p>The hurdle model is just barely a significant improvement over the zero-inflated Negative Binomial model.</p>
+<p>The hurdle model appears just barely improved over the zero-inflated Negative Binomial model.</p>
 </section>
 <section id="comparing-the-hurdle-models-with-aic-and-bic" class="level3" data-number="26.7.4">
 <h3 data-number="26.7.4" class="anchored" data-anchor-id="comparing-the-hurdle-models-with-aic-and-bic"><span class="header-section-number">26.7.4</span> Comparing the Hurdle Models with AIC and BIC</h3>

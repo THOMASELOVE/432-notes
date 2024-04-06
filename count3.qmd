@@ -129,7 +129,7 @@ confint(mod_zip1)
 
 The output describes two separate regression models. Below the model call, we see information on a Poisson regression model. Then we see another block describing the inflation model.
 
-Each predictor (`bmi_c` and `smoke100`) appears to be statistically significant in each part of the model.
+Each predictor (`bmi_c` and `smoke100`) yields a small *p* value in each part of the model.
 
 ### Comparison to a null model
 
@@ -150,7 +150,7 @@ pchisq(2 * (logLik(mod_zip1) - logLik(mod_zipnull)), df = 2, lower.tail = FALSE)
 vuong(mod_zip1, mod_poiss1)
 ```
 
-Certainly, the ZIP model is a significant improvement over the standard Poisson model, as the Vuong test reveals.
+Certainly, the ZIP model seems to improve the standard Poisson model, according to the Vuong test.
 
 ### The Fitted Equation
 
@@ -299,7 +299,7 @@ pchisq(2 * (logLik(mod_nb1) - logLik(mod_zinbnull)), df = 2, lower.tail = FALSE)
 vuong(mod_zinb1, mod_nb1)
 ```
 
-The zero-inflated negative binomial model is a significant improvement over the standard negative binomial model according to the the raw or AIC-corrected Vuong tests, but not according to the BIC-corrected test.
+The zero-inflated negative binomial model appears to be an improvement over the standard negative binomial model according to the the raw or AIC-corrected Vuong tests, but not according to the BIC-corrected test.
 
 ### The Fitted Equation
 
@@ -663,7 +663,7 @@ pchisq(2 * (logLik(mod_hur_nb1) - logLik(mod_hur_nb_null)), df = 2, lower.tail =
 vuong(mod_hur_nb1, mod_nb1)
 ```
 
-The hurdle model is a significant improvement over the standard negative binomial model according to the raw and AIC-corrected versions of this test, but not the BIC-corrected version.
+The hurdle model improves the standard negative binomial model according to the raw and AIC-corrected versions of this test, but not the BIC-corrected version.
 
 ### Comparison to a Zero-Inflated NB Model: Vuong test
 
@@ -673,7 +673,7 @@ Is the hurdle model comparable to the zero-inflated Poisson?
 vuong(mod_hur_nb1, mod_zinb1)
 ```
 
-The hurdle model is just barely a significant improvement over the zero-inflated Negative Binomial model.
+The hurdle model appears just barely improved over the zero-inflated Negative Binomial model.
 
 ### Comparing the Hurdle Models with AIC and BIC
 

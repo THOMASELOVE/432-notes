@@ -432,7 +432,7 @@ exp(confint(m1))
 
 ### Comparison to a Null Model
 
-We can fit a model with intercepts only to test the significance of `veg_day` in our model `m1`, using the `anova` function.
+We can fit a model with intercepts only to assess the predictive value of `veg_day` in our model `m1`, using the `anova` function.
 
 ```{r}
 m0 <- polr(genh ~ 1, data = sm1)
@@ -449,6 +449,8 @@ AIC(m1, m0)
 ```{r}
 BIC(m1,m0)
 ```
+
+Model `m1` looks like the better choice so far.
 
 ## The Assumption of Proportional Odds
 
@@ -509,7 +511,7 @@ LL_1m <- logLik(m1_multi)
 pchisq(G, 3, lower.tail = FALSE)
 ```
 
-The *p* value is very large, so it indicates that the proportional odds model fits about as well as the more complex multinomial logit. A non-significant *p* value here isn't always the best way to assess the proportional odds assumption, but it does provide some evidence of model adequacy.
+The *p* value is very large, so it indicates that the proportional odds model fits about as well as the more complex multinomial logit. A large *p* value here isn't always the best way to assess the proportional odds assumption, but it does provide some evidence of model adequacy.
 
 ## Can model `m1` be fit using `rms` tools?
 
@@ -523,7 +525,7 @@ m1_lrm <- lrm(genh ~ veg_day, data = sm1, x = T, y = T)
 m1_lrm
 ```
 
-The model is highly significant (remember the large sample size) but very weak, with a Nagelkerke $R^2$ of 0.015, and a C statistic of 0.555.
+The model has a small *p* value (remember the large sample size) but nonetheless appears very weak, with a Nagelkerke $R^2$ of 0.015, and a C statistic of 0.555.
 
 ```{r}
 summary(m1_lrm)
@@ -562,7 +564,7 @@ This model contains four intercepts (to cover the five `genh` categories) and th
 anova(m1, m2)
 ```
 
-There is a statistically significant improvement in fit from model 1 to model 2. The AIC and BIC are also better for the three-predictor model than they were for the model with `veg_day` alone.
+It looks like the fit improves as we move from model 1 to model 2. The AIC and BIC are also better for the three-predictor model than they were for the model with `veg_day` alone.
 
 ```{r}
 AIC(m1, m2)
@@ -643,7 +645,7 @@ LL_2m <- logLik(m2_multi)
 pchisq(G, 9, lower.tail = FALSE)
 ```
 
-The result is highly significant, suggesting that we have a problem somewhere with the proportional odds assumption. When this happens, I suggest you build the following plot of score residuals:
+The resulting small *p* value suggests a problem with proportional odds assumption. When this happens, I suggest you build the following plot of score residuals:
 
 ```{r}
 par(mfrow = c(2,2))

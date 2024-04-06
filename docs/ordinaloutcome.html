@@ -1158,7 +1158,7 @@ logit[Pr(genh \leq 4)] =  2.5002 - (-0.1847) veg_day
 </section>
 <section id="comparison-to-a-null-model" class="level3" data-number="27.6.8">
 <h3 data-number="27.6.8" class="anchored" data-anchor-id="comparison-to-a-null-model"><span class="header-section-number">27.6.8</span> Comparison to a Null Model</h3>
-<p>We can fit a model with intercepts only to test the significance of <code>veg_day</code> in our model <code>m1</code>, using the <code>anova</code> function.</p>
+<p>We can fit a model with intercepts only to assess the predictive value of <code>veg_day</code> in our model <code>m1</code>, using the <code>anova</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">polr</span>(genh <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> sm1)</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1189,6 +1189,7 @@ m1  5 15712.81
 m0  4 15779.26</code></pre>
 </div>
 </div>
+<p>Model <code>m1</code> looks like the better choice so far.</p>
 </section>
 </section>
 <section id="the-assumption-of-proportional-odds" class="level2" data-number="27.7">
@@ -1282,7 +1283,7 @@ AIC: 15686.5 </code></pre>
 <pre><code>[1] 1</code></pre>
 </div>
 </div>
-<p>The <em>p</em> value is very large, so it indicates that the proportional odds model fits about as well as the more complex multinomial logit. A non-significant <em>p</em> value here isn’t always the best way to assess the proportional odds assumption, but it does provide some evidence of model adequacy.</p>
+<p>The <em>p</em> value is very large, so it indicates that the proportional odds model fits about as well as the more complex multinomial logit. A large <em>p</em> value here isn’t always the best way to assess the proportional odds assumption, but it does provide some evidence of model adequacy.</p>
 </section>
 </section>
 <section id="can-model-m1-be-fit-using-rms-tools" class="level2" data-number="27.8">
@@ -1320,7 +1321,7 @@ y&gt;=5_P  -2.5002 0.0710 -35.22 &lt;0.0001
 veg_day -0.1847 0.0218  -8.48 &lt;0.0001 </code></pre>
 </div>
 </div>
-<p>The model is highly significant (remember the large sample size) but very weak, with a Nagelkerke <span class="math inline">\(R^2\)</span> of 0.015, and a C statistic of 0.555.</p>
+<p>The model has a small <em>p</em> value (remember the large sample size) but nonetheless appears very weak, with a Nagelkerke <span class="math inline">\(R^2\)</span> of 0.015, and a C statistic of 0.555.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_lrm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1394,7 +1395,7 @@ Response: genh
 2 veg_day + bmi + costprob      5387   15229.24 1 vs 2     2 440.6041       0</code></pre>
 </div>
 </div>
-<p>There is a statistically significant improvement in fit from model 1 to model 2. The AIC and BIC are also better for the three-predictor model than they were for the model with <code>veg_day</code> alone.</p>
+<p>It looks like the fit improves as we move from model 1 to model 2. The AIC and BIC are also better for the three-predictor model than they were for the model with <code>veg_day</code> alone.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1588,7 +1589,7 @@ AIC: 15223.53 </code></pre>
 <pre><code>[1] 1.965186e-05</code></pre>
 </div>
 </div>
-<p>The result is highly significant, suggesting that we have a problem somewhere with the proportional odds assumption. When this happens, I suggest you build the following plot of score residuals:</p>
+<p>The resulting small <em>p</em> value suggests a problem with proportional odds assumption. When this happens, I suggest you build the following plot of score residuals:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">resid</span>(m2_lrm, <span class="st">'score.binary'</span>, <span class="at">pl=</span><span class="cn">TRUE</span>)</span>

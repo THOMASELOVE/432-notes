@@ -1198,7 +1198,7 @@ y_i \sim \mbox{Poisson}(exp(0.91 + 0.035 bmi_c + 0.53 smoke100))
 <h3 data-number="24.8.3" class="anchored" data-anchor-id="testing-the-predictors"><span class="header-section-number">24.8.3</span> Testing the Predictors</h3>
 <p>We can use the Wald tests (z tests) provided with the Poisson regression output, or we can fit the model and then run an ANOVA to obtain a test based on the deviance (a simple transformation of the log likelihood ratio.)</p>
 <ul>
-<li>By the Wald tests shown above, each predictor clearly adds significant predictive value to the model given the other predictor, and we note that the <em>p</em> values are as small as R will support.</li>
+<li>By the small <em>p</em> values in the Wald tests above, it seems that each predictor adds some predictive value to the model given the other predictor.</li>
 <li>The ANOVA approach for this model lets us check the impact of adding <code>smoke100</code> to a model already containing <code>bmi_c</code>.</li>
 </ul>
 <div class="cell">
@@ -1266,7 +1266,7 @@ bmi_c       0.02306016 0.04704145
 smoke100    0.33566606 0.72934460</code></pre>
 </div>
 </div>
-<p>Both predictors are still significant, but the standard errors are more appropriate. Later, we’ll fit this approach by changing the estimation method to a quasi-likelihood approach.</p>
+<p>Both predictors still display small <em>p</em> values, but the standard errors are more appropriate. Later, we’ll fit this approach by changing the estimation method to a quasi-likelihood approach.</p>
 </section>
 <section id="store-fitted-values-and-residuals-2" class="level3" data-number="24.8.5">
 <h3 data-number="24.8.5" class="anchored" data-anchor-id="store-fitted-values-and-residuals-2"><span class="header-section-number">24.8.5</span> Store fitted values and residuals</h3>
@@ -1448,8 +1448,8 @@ smoke100    0.53     0.02
 <pre><code>p value of overdispersion test is  0 </code></pre>
 </div>
 </div>
-<p>The p value here is 0, indicating that the probability is essentially zero that a random variable from a <span class="math inline">\(\chi^2\)</span> distribution with (n - k) = 1971 degrees of freedom would be as large as what we observed in this case. So there is significant overdispersion.</p>
-<p>In summary, the <code>physhealth</code> counts are overdispersed by a factor of 15.581, which is enormous (even a factor of 2 would be considered large) and also highly statistically significant. The basic correction for overdisperson is to multiply all regression standard errors by <span class="math inline">\(\sqrt{15.581}\)</span> = 3.95.</p>
+<p>The p value is very small, indicating that the probability is essentially zero that a random variable from a <span class="math inline">\(\chi^2\)</span> distribution with (n - k) = 1971 degrees of freedom would be as large as what we observed in this case. So there is almost surely some overdispersion.</p>
+<p>In summary, the <code>physhealth</code> counts are overdispersed by a factor of 15.581, which is enormous (even a factor of 2 would be considered large.) The basic correction for overdisperson is to multiply all regression standard errors by <span class="math inline">\(\sqrt{15.581}\)</span> = 3.95.</p>
 <p>The <code>quasipoisson</code> model and the negative binomial model that we’ll fit below are very similar. We write the overdispersed “quasiPoisson” model as:</p>
 <p><span class="math display">\[
 y_i \sim \mbox{overdispersed Poisson} (\mu_i exp(X_i \beta), \omega)
@@ -1502,7 +1502,7 @@ smoke100    0.34039368 0.72606948</code></pre>
 <p>This “quasi-Poisson regression” model uses the same mean function as Poisson regression, but now estimated by quasi-maximum likelihood estimation or, equivalently, through the method of generalized estimating equations, where the inference is adjusted by an estimated dispersion parameter. Sometimes, though I won’t demonstrate this here, people fit an “adjusted” Poisson regression model, where this estimation by quasi-ML is augmented to adjust the inference via sandwich estimates of the covariances<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <section id="the-fitted-equation-1" class="level3" data-number="24.10.1">
 <h3 data-number="24.10.1" class="anchored" data-anchor-id="the-fitted-equation-1"><span class="header-section-number">24.10.1</span> The Fitted Equation</h3>
-<p>The model equation is still <code>log(physhealth) = 0.91 + 0.035 bmi_c + 0.53 smoke100</code>. The estimated coefficients are still statistically significant, but the standard errors for each coefficient are considerably larger when we account for overdispersion.</p>
+<p>The model equation is still <code>log(physhealth) = 0.91 + 0.035 bmi_c + 0.53 smoke100</code>. The estimated coefficients still have small <em>p</em> values, but the standard errors for each coefficient are considerably larger when we account for overdispersion.</p>
 <p>The dispersion parameter for the quasi-Poisson family is now taken to be a bit less than the square root of the ratio of the residual deviance and its degrees of freedom. This is a much more believable model, as a result.</p>
 </section>
 <section id="interpreting-the-coefficients-3" class="level3" data-number="24.10.2">
@@ -1513,7 +1513,7 @@ smoke100    0.34039368 0.72606948</code></pre>
 <h3 data-number="24.10.3" class="anchored" data-anchor-id="testing-the-predictors-1"><span class="header-section-number">24.10.3</span> Testing the Predictors</h3>
 <p>Again, we can use the Wald tests (z tests) provided with the Poisson regression output, or we can fit the model and then run an ANOVA to obtain a test based on the deviance (a simple transformation of the log likelihood ratio.)</p>
 <ul>
-<li>By the Wald tests shown above, each predictor clearly adds significant predictive value to the model given the other predictor, and we note that the <em>p</em> values are as small as R will support.</li>
+<li>By the Wald tests shown above, each predictor appears to add some predictive value to the model given the other predictor.</li>
 <li>The ANOVA approach for this model lets us check the impact of adding <code>smoke100</code> to a model already containing <code>bmi_c</code>.</li>
 </ul>
 <div class="cell">
@@ -1535,7 +1535,7 @@ smoke100  1   461.46      1971      19151 5.282e-08 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<p>The result is unchanged. To obtain a <em>p</em> value for <code>smoke100</code>’s impact after <code>bmi_c</code> is accounted for, we compare the difference in deviance to a chi-square distribution with 1 degree of freedom. The result is incredibly statistically significant.</p>
+<p>The result is unchanged. To obtain a <em>p</em> value for <code>smoke100</code>’s impact after <code>bmi_c</code> is accounted for, we compare the difference in deviance to a chi-square distribution with 1 degree of freedom. The resulting <em>p</em> value is very small.</p>
 <p>To check the effect of <code>bmi_c</code>, we could refit the model with and without <code>bmi_c</code>, and again run an ANOVA. I’ll skip that here.</p>
 </section>
 <section id="store-fitted-values-and-residuals-3" class="level3" data-number="24.10.4">

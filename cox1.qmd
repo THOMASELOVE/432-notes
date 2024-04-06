@@ -97,7 +97,7 @@ In addition, we have several other summaries:
 
 - The *concordance* measure is only appropriate when we have at least one continuous predictor in our Cox model.
 - The Cox & Snell pseudo-$R^2$ reflects the improvement of the model we've fit over the model with an intercept alone, but isn't a proportion of anything (hence the listing of the maximum possible value).
-- The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall significance of the model.
+- The Likelihood ratio, Wald and Score (logrank) tests provide insight into the overall predictive value for the model.
 
 We can obtain a more detailed description of the likelihood-ratio test of the model with `anova`.
 
@@ -168,7 +168,7 @@ The `cox.zph` function in the `survival` package will test the proportionality o
 cox.zph(cfit, transform="km", global=TRUE)
 ```
 
-Since the *p* value here is not significant, we may be all right. But it's sensible to focus further on plots derived from the model fit, rather than relying solely on this test.
+Since the *p* value here is quite large, we may be all right. But it's sensible to focus further on plots derived from the model fit, rather than relying solely on this test.
 
 ### Plotting the `cox.zph` results for the `cfit` model
 

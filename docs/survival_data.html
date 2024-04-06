@@ -712,8 +712,8 @@ hem$genotype=1 38     14   33.9      3.77   37.5    24.9      NA
 </div>
 </div>
 <ul>
-<li>In <code>genotype = 0</code> (the subjects who are Homozygous <span class="math inline">\(\epsilon3/\epsilon3\)</span>,) we had 32 subjects, and observed 4 recurrent hemorrhages. Our estimated restricted mean survival time in those subjects is 44.8 months and we cannot estimate a median survival time because only a small fraction of our subjects were not censored.</li>
-<li>In <code>genotype = 1</code> (subjects who have at least one <span class="math inline">\(\epsilon2\)</span> or <span class="math inline">\(\epsilon4\)</span> allele,) we had 38 subjects and observed 14 recurrences. The estimated restricted mean survival time is 32.7 months in these subjects, and we can (it seems) estimate a median survival time in this group of 37.5 months. Note that we don’t actually need to observe the event in half of the subjects to estimate a median survival time.</li>
+<li>In <code>genotype = 0</code> (the subjects who are Homozygous <span class="math inline">\(\epsilon3/\epsilon3\)</span>,) we had 32 subjects, and observed 4 recurrent hemorrhages. Our estimated restricted mean survival time in those subjects is 47.8 months and we cannot estimate a median survival time because only a small fraction of our subjects were not censored.</li>
+<li>In <code>genotype = 1</code> (subjects who have at least one <span class="math inline">\(\epsilon2\)</span> or <span class="math inline">\(\epsilon4\)</span> allele,) we had 38 subjects and observed 14 recurrences. The estimated restricted mean survival time is 33.9 months in these subjects, and we can (it seems) estimate a median survival time in this group of 37.5 months. Note that we don’t actually need to observe the event in half of the subjects to estimate a median survival time.</li>
 </ul>
 <section id="kaplan-meier-survival-function-estimates-by-genotype" class="level3" data-number="29.7.1">
 <h3 data-number="29.7.1" class="anchored" data-anchor-id="kaplan-meier-survival-function-estimates-by-genotype"><span class="header-section-number">29.7.1</span> Kaplan-Meier Survival Function Estimates, by Genotype</h3>
@@ -750,7 +750,7 @@ hem$genotype=1 38       14     8.72      3.19      6.28
  Chisq= 6.3  on 1 degrees of freedom, p= 0.01 </code></pre>
 </div>
 </div>
-<p>Based on the log rank test, we conclude that there is a statistically significant difference (<span class="math inline">\(p\)</span> = .0122) between the hemorrhage-free survival curves for the two genotypes, as shown in the Kaplan-Meier plot.</p>
+<p>Based on the log rank test, we see a pretty small <em>p</em> value (<em>p</em> = .0122) for the comparison of the hemorrhage-free survival curves for the two genotypes, as shown in the Kaplan-Meier plot.</p>
 <ul>
 <li>The log rank test generalizes to permit survival comparisons across more than two groups, with the test statistic having an asymptotic chi-squared distribution with one degree of freedom less than the number of patient groups being compared.</li>
 </ul>

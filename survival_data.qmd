@@ -242,8 +242,8 @@ hemfit2 <- survfit(hemsurv ~ hem$genotype)
 print(hemfit2, print.rmean=TRUE)
 ```
 
-- In `genotype = 0` (the subjects who are Homozygous $\epsilon3/\epsilon3$,) we had 32 subjects, and observed 4 recurrent hemorrhages. Our estimated restricted mean survival time in those subjects is 44.8 months and we cannot estimate a median survival time because only a small fraction of our subjects were not censored.
-- In `genotype = 1` (subjects who have at least one $\epsilon2$ or $\epsilon4$ allele,) we had 38 subjects and observed 14 recurrences. The estimated restricted mean survival time is 32.7 months in these subjects, and we can (it seems) estimate a median survival time in this group of 37.5 months. Note that we don't actually need to observe the event in half of the subjects to estimate a median survival time.
+- In `genotype = 0` (the subjects who are Homozygous $\epsilon3/\epsilon3$,) we had 32 subjects, and observed 4 recurrent hemorrhages. Our estimated restricted mean survival time in those subjects is 47.8 months and we cannot estimate a median survival time because only a small fraction of our subjects were not censored.
+- In `genotype = 1` (subjects who have at least one $\epsilon2$ or $\epsilon4$ allele,) we had 38 subjects and observed 14 recurrences. The estimated restricted mean survival time is 33.9 months in these subjects, and we can (it seems) estimate a median survival time in this group of 37.5 months. Note that we don't actually need to observe the event in half of the subjects to estimate a median survival time.
 
 ### Kaplan-Meier Survival Function Estimates, by Genotype
 
@@ -272,7 +272,7 @@ To obtain a significance test comparing these two survival curves, we turn to a 
 survdiff(hemsurv ~ hem$genotype)
 ```
 
-Based on the log rank test, we conclude that there is a statistically significant difference ($p$ = .0122) between the hemorrhage-free survival curves for the two genotypes, as shown in the Kaplan-Meier plot. 
+Based on the log rank test, we see a pretty small *p* value (*p* = .0122) for the comparison of the hemorrhage-free survival curves for the two genotypes, as shown in the Kaplan-Meier plot. 
 
 - The log rank test generalizes to permit survival comparisons across more than two groups, with the test statistic having an asymptotic chi-squared distribution with one degree of freedom less than the number of patient groups being compared.
 
