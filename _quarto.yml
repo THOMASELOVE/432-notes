@@ -45,6 +45,8 @@ book:
     - survival_data.qmd
     - cox1.qmd
     - cox2.qmd
+    - lasso.qmd
+    - bayes.qmd
     - references.qmd
 
 format:

@@ -1,0 +1,260 @@
+# NEW!! A Few LASSO Ideas
+
+## R Setup Used Here
+
+```{r}
+#| warning: false
+#| message: false
+
+knitr::opts_chunk$set(comment = NA)
+
+library(janitor)
+library(broom)
+library(car)
+library(gt)
+library(Hmisc)
+library(MASS)
+library(mosaic)
+library(glmnet)
+library(conflicted)
+library(patchwork)
+library(tidyverse) 
+
+conflicts_prefer(dplyr::select)
+
+theme_set(theme_bw())
+```
+
+### Data Load
+
+```{r}
+pollution <- read_csv("data/pollution.csv", show_col_types = FALSE) 
+```
+
+## The `pollution` data
+
+Consider again the `pollution` data set we developed in @sec-non-lin which contains 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961. 
+
+```{r}
+pollution
+```
+
+Here's a codebook:
+
+Variable | Description
+----: | --------------------------------------------------
+`y`  | Total Age Adjusted Mortality Rate
+`x1` | Mean annual precipitation in inches
+`x2` | Mean January temperature in degrees Fahrenheit
+`x3` | Mean July temperature in degrees Fahrenheit
+`x4` | Percent of 1960 SMSA population that is 65 years of age or over
+`x5` | Population per household, 1960 SMSA
+`x6` | Median school years completed for those over 25 in 1960 SMSA
+`x7` | Percent of housing units that are found with facilities
+`x8` | Population per square mile in urbanized area in 1960
+`x9` | Percent of 1960 urbanized area population that is non-white
+`x10` | Percent employment in white-collar occupations in 1960 urbanized area
+`x11` | Percent of families with income under $30,000 in 1960 urbanized area
+`x12` | Relative population potential of hydrocarbons, HC
+`x13` | Relative pollution potential of oxides of nitrogen, NOx
+`x14` | Relative pollution potential of sulfur dioxide, SO2
+`x15` | Percent relative humidity, annual average at 1 p.m.
+
+## Should We Rescale any Predictors?
+
+Let's get some basic summary statistics for our candidate predictors. When we do, we see that variable `x8` is roughy 100 times larger than all of our other predictors.
+
+```{r}
+#| warning: false
+df_stats(~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + 
+           x10 + x11 + x12 + x13 + x14 + x15, data = pollution)
+```
+
+Let's dampen the size of that `x8` variable down a little to make our coefficient comparisons easier later, by dividing all of the `x8` values by 100.
+
+```{r}
+pollution <- pollution |>
+  mutate(x8 = x8/100)
+```
+
+## A Kitchen Sink Model
+
+We'll begin by fitting the obviously underpowered model with all 15 main effects used to predict our outcome.
+
+```{r}
+mod_sink <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + 
+                 x10 + x11 + x12 + x13 + x14 + x15, 
+               data = pollution)
+```
+
+### Considering an Outcome Transformation
+
+```{r}
+boxcox(mod_sink)
+```
+
+OK. In light of this Box-Cox plot, let's consider taking the inverse of our outcome here. I'll take that inverse and then standardize the result using the `scale()` function to both subtract the mean of the transformed outcome and divide by its standard deviation, so that our new outcome, which I'll call `out_std` has mean 0, standard deviation 1, and a shape similar to that of the inverse of our $y$.
+
+```{r}
+pollution <- pollution |> 
+  mutate(y_inverse = 1/y,
+         out_std = scale(1/y, center = TRUE, scale = TRUE))
+
+p1 <- ggplot(pollution, aes(x = y_inverse)) + geom_density()
+p2 <- ggplot(pollution, aes(x = out_std)) + geom_density()
+
+p1 / p2
+```
+
+OK. So now, I'll build a revised kitchen sink model to use this new outcome.
+
+```{r}
+mod_sink2 <- lm(out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + 
+                 x10 + x11 + x12 + x13 + x14 + x15, data = pollution)
+
+tidy(mod_sink2, conf.int = TRUE, conf.level = 0.9) |> 
+  select(term, estimate, std.error, conf.low, conf.high, p.value) |>
+  gt() |> fmt_number(decimals = 3)
+```
+
+Does this new model show a strong fit to the data?
+
+```{r}
+glance(mod_sink2) |> select(r.squared:p.value, df, df.residual, nobs) |>
+  gt() |> fmt_number(r.squared:p.value, decimals = 3)
+
+glance(mod_sink2) |> select(logLik, AIC, BIC, deviance) |> gt() |> 
+  fmt_number(decimals = 2)
+```
+
+### How much collinearity are we dealing with?
+
+```{r}
+vif(mod_sink2)
+```
+
+Clearly, we have some enormous collinearity to deal with, given that we have many VIFs over 5, some even over 100.
+
+So a reduction in the size of the model seems appealing for multiple reasons.
+
+## Using the LASSO to suggest a smaller model
+
+To begin, we will create a data matrix for our predictors, as follows:
+
+```{r}
+pred_x <- model.matrix(mod_sink2)
+```
+
+Next, we create a matrix of our outcome.
+
+```{r}
+out_y <- pollution |> select(out_std) |> as.matrix()
+```
+
+The LASSO involves both a cross-validation step, and a fitting step. Here's the code we'll use in this case:
+
+```{r}
+set.seed(123456)
+
+cv_poll1 <- cv.glmnet(pred_x, out_y, type.measure = "mse", nfolds = 10)
+
+mod_las1 <- glmnet(pred_x, out_y, alpha = 1, lambda = cv_poll1$lambda.min)
+```
+
+Now, let's look at what the LASSO does. As we can see from the tidied output below, some predictors are dropped from the model, while others have their coefficients shrunk towards zero as compared to what we saw in the "kitchen sink" model.
+
+```{r}
+tidy(mod_las1) |> gt()
+```
+
+This new LASSO model includes only 9 of the original 15 predictors.
+
+## Would the 9-predictor model be a big improvement?
+
+Suppose we fit a new model inspired by this LASSO. It's still just a linear model, with no shrinkage, here.
+
+```{r}
+mod_3 <- lm(out_std ~ x1 + x2 + x3 + x6 + x7 + x8 + x9 + x10 + x14, 
+            data = pollution)
+
+vif(mod_3)
+```
+
+Well, the collinearity is certainly much improved.
+
+```{r}
+tidy(mod_3, conf.int = TRUE, conf.level = 0.9) |> 
+  select(term, estimate, std.error, conf.low, conf.high, p.value) |>
+  gt() |> fmt_number(decimals = 3)
+```
+
+Does this new model show a strong fit to the data?
+
+```{r}
+glance(mod_3) |> select(r.squared:p.value, df, df.residual, nobs) |>
+  gt() |> fmt_number(r.squared:p.value, decimals = 3)
+
+glance(mod_3) |> select(logLik, AIC, BIC, deviance) |> gt() |> 
+  fmt_number(decimals = 2)
+```
+
+Finally, here's a set of plots for regression diagnostics. How do things look?
+
+```{r}
+#| fig-height: 8
+par(mfrow = c(2,2))
+plot(mod_3)
+```
+
+
+## Using Stepwise Regression to suggest a smaller model
+
+```{r}
+mod_4 <- step(mod_sink2)
+```
+
+Here's a summary of the fitted model after stepwise regression, which suggests a different set of 9 predictors.
+
+```{r}
+tidy(mod_4, conf.int = TRUE, conf.level = 0.9) |> 
+  select(term, estimate, std.error, conf.low, conf.high, p.value) |>
+  gt() |> fmt_number(decimals = 3)
+```
+
+```{r}
+glance(mod_4) |> select(r.squared:p.value, df, df.residual, nobs) |>
+  gt() |> fmt_number(r.squared:p.value, decimals = 3)
+
+glance(mod_4) |> select(logLik, AIC, BIC, deviance) |> gt() |> 
+  fmt_number(decimals = 2)
+```
+
+How is the collinearity in this model?
+
+```{r}
+vif(mod_4)
+```
+
+That looks more troubling to me, at least as compared to `mod_3`. How about the residual plots? Do those for `mod_4` below look meaningfully different from the ones we built for our LASSO-inspired model `mod_3`?
+
+```{r}
+#| fig-height: 8
+par(mfrow = c(2,2))
+plot(mod_4)
+```
+
+We now seem to have a point with a pretty substantial Cook's distance, specifically the point from row 8 of the data.
+
+```{r}
+pollution |> slice(8) |> select(x1:x12)
+
+pollution |> slice(8) |> select(x13:x15, y, y_inverse, out_std)
+```
+So what is unusual about Row 8? Well, it has an especially large value of `x12` compared to the rest of the data. 
+
+```{r}
+describe(pollution$x12)
+```
+
+That might be part of the problem, especially since stepwise regression maintains variable `x12` whereas our LASSO-inspired model (`mod_3`) does not.
+

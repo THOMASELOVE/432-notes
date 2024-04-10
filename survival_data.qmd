@@ -445,5 +445,20 @@ ggplot(haz_hem_comp, aes(x = time, y = hazardest)) +
     facet_grid(method ~ .) + theme_bw()
 ```
 
-Next, we will consider the issue of modeling a survival outcome using Cox proportional hazards regression.
+## **NEW!!** Checking Assumptions Using a log (-log) plot
 
+When fitting a log rank test, we may wish to consider whether the proportional hazards assumption required by such a test is satisfied. One common approach to doing this is to fit a log minus log plot, as follows.
+
+```{r}
+plot(hemfit2, fun = "cloglog", 
+     main = "log minus log plot for hemfit2", 
+     xlab = "Months (on log scale)", 
+     ylab = "log(-log(survival)", col = c(1,2))
+llab <- gsub("x = ","", names(hemfit2$strata))
+legend("bottomright", legend=llab, col=1:2, 
+       lty = 1, horiz = FALSE, bty='n', cex = 0.7)
+```
+
+Since the two curves shown in the plot cross during the observation period, this is an indication that the proportional hazard assumption made by the log rank test may be unsatisfied.
+
+Next, we will consider the issue of modeling a survival outcome using Cox proportional hazards regression.
