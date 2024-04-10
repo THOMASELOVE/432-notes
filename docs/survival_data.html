@@ -345,6 +345,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lasso.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">NEW!! A Few LASSO Ideas</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">NEW!! Bayes and a Linear Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -398,6 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#convert-wide-data-to-long" id="toc-convert-wide-data-to-long" class="nav-link" data-scroll-target="#convert-wide-data-to-long"><span class="header-section-number">29.10.4</span> Convert Wide Data to Long</a></li>
   <li><a href="#plot-comparison-of-hazard-estimates" id="toc-plot-comparison-of-hazard-estimates" class="nav-link" data-scroll-target="#plot-comparison-of-hazard-estimates"><span class="header-section-number">29.10.5</span> Plot Comparison of Hazard Estimates</a></li>
   </ul></li>
+  <li><a href="#new-checking-assumptions-using-a-log--log-plot" id="toc-new-checking-assumptions-using-a-log--log-plot" class="nav-link" data-scroll-target="#new-checking-assumptions-using-a-log--log-plot"><span class="header-section-number">29.11</span> <strong>NEW!!</strong> Checking Assumptions Using a log (-log) plot</a></li>
   </ul>
 </nav>
     </div>
@@ -962,10 +975,27 @@ hem$genotype=1 38    11.79     7.54      2.39      5.46
 <p><img src="survival_data_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+</section>
+<section id="new-checking-assumptions-using-a-log--log-plot" class="level2" data-number="29.11">
+<h2 data-number="29.11" class="anchored" data-anchor-id="new-checking-assumptions-using-a-log--log-plot"><span class="header-section-number">29.11</span> <strong>NEW!!</strong> Checking Assumptions Using a log (-log) plot</h2>
+<p>When fitting a log rank test, we may wish to consider whether the proportional hazards assumption required by such a test is satisfied. One common approach to doing this is to fit a log minus log plot, as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hemfit2, <span class="at">fun =</span> <span class="st">"cloglog"</span>, </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"log minus log plot for hemfit2"</span>, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Months (on log scale)"</span>, </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"log(-log(survival)"</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>llab <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"x = "</span>,<span class="st">""</span>, <span class="fu">names</span>(hemfit2<span class="sc">$</span>strata))</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend=</span>llab, <span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">horiz =</span> <span class="cn">FALSE</span>, <span class="at">bty=</span><span class="st">'n'</span>, <span class="at">cex =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="survival_data_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Since the two curves shown in the plot cross during the observation period, this is an indication that the proportional hazard assumption made by the log rank test may be unsatisfied.</p>
 <p>Next, we will consider the issue of modeling a survival outcome using Cox proportional hazards regression.</p>
 
 
-</section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>

@@ -1,4 +1,4 @@
-# Estimating and Interpreting Effect Sizes
+# Estimating and Interpreting Effect Sizes {#sec-effect}
 
 ## R Setup Used Here
 

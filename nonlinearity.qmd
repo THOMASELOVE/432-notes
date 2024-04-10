@@ -49,7 +49,7 @@ Variable | Description
 `x8` | Population per square mile in urbanized area in 1960
 `x9` | Percent of 1960 urbanized area population that is non-white
 `x10` | Percent employment in white-collar occupations in 1960 urbanized area
-`x11` | Percent of families with income under 3; 000 in 1960 urbanized area
+`x11` | Percent of families with income under $30,000 in 1960 urbanized area
 `x12` | Relative population potential of hydrocarbons, HC
 `x13` | Relative pollution potential of oxides of nitrogen, NOx
 `x14` | Relative pollution potential of sulfur dioxide, SO2
