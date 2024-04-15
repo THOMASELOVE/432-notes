@@ -376,6 +376,12 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./bayes2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">NEW!! Bayes and a Logistic Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -596,11 +602,11 @@ x13         -0.1028   0.1443 -0.71 0.4796  </code></pre>
 <pre><code>             Effects              Response : y 
 
  Factor Low   High  Diff. Effect   S.E.    Lower 0.95 Upper 0.95
- x9      4.95 15.65 10.70  40.4060 14.0790   3.11220  77.6990   
- x6     10.40 11.50  1.10 -18.2930  8.1499 -39.88100   3.2943   
- x14    11.00 69.00 58.00  28.3480 10.6480   0.14391  56.5520   
- x1     32.75 43.25 10.50  11.2520  7.6833  -9.09910  31.6040   
- x13     4.00 23.75 19.75  -2.0303  2.8502  -9.57980   5.5192   </code></pre>
+ x9      4.95 15.65 10.70  40.4060 14.0790   3.10310  77.7080   
+ x6     10.40 11.50  1.10 -18.2930  8.1499 -39.88600   3.2995   
+ x14    11.00 69.00 58.00  28.3480 10.6480   0.13706  56.5590   
+ x1     32.75 43.25 10.50  11.2520  7.6833  -9.10410  31.6090   
+ x13     4.00 23.75 19.75  -2.0303  2.8502  -9.58160   5.5211   </code></pre>
 </div>
 </div>
 <p>Remember that if you’re looking for the usual <code>lm</code> summary for an <code>ols</code> object, use <code>summary.lm</code>.</p>
@@ -645,17 +651,17 @@ Limits are 0.95 confidence limits</code></pre>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Predict</span>(newmod, <span class="at">x9 =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>, <span class="at">conf.type =</span> <span class="st">'simult'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x9    x6 x14 x1 x13     yhat    lower    upper
-1   5 11.05  30 38   9 913.7392 882.4838 944.9947
-2   6 11.05  30 38   9 916.3490 884.9883 947.7097
-3   7 11.05  30 38   9 921.3093 892.5217 950.0969
-4   8 11.05  30 38   9 927.6464 901.0913 954.2016
-5   9 11.05  30 38   9 934.3853 907.3169 961.4537
-6  10 11.05  30 38   9 940.5510 911.2864 969.8156
-7  11 11.05  30 38   9 945.2225 915.2988 975.1462
-8  12 11.05  30 38   9 948.2885 920.1615 976.4155
-9  13 11.05  30 38   9 950.2608 924.5436 975.9779
-10 14 11.05  30 38   9 951.6671 926.6333 976.7008
-11 15 11.05  30 38   9 953.0342 926.1478 979.9205
+1   5 11.05  30 38   9 913.7392 882.4317 945.0468
+2   6 11.05  30 38   9 916.3490 884.9360 947.7619
+3   7 11.05  30 38   9 921.3093 892.4738 950.1449
+4   8 11.05  30 38   9 927.6464 901.0470 954.2459
+5   9 11.05  30 38   9 934.3853 907.2718 961.4988
+6  10 11.05  30 38   9 940.5510 911.2376 969.8643
+7  11 11.05  30 38   9 945.2225 915.2490 975.1960
+8  12 11.05  30 38   9 948.2885 920.1147 976.4624
+9  13 11.05  30 38   9 950.2608 924.5008 976.0208
+10 14 11.05  30 38   9 951.6671 926.5916 976.7425
+11 15 11.05  30 38   9 953.0342 926.1030 979.9653
 
 Response variable (y): y 
 

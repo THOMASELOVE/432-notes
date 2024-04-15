@@ -47,6 +47,7 @@ book:
     - cox2.qmd
     - lasso.qmd
     - bayes.qmd
+    - bayes2.qmd
     - references.qmd
 
 format:
