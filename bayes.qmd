@@ -204,14 +204,14 @@ as we've previously discussed.
 
 ### Probability of Direction (`pd`) estimates.
 
-The `pd` estimate helps us understand whether each effect is positive or negative. For instance, regarding `age`, we see the proportion of the posterior that is positive, no matter what the "size" of the effect is, will be as follows. 
+The `pd` estimate helps us understand whether each effect is positive or negative. For instance, regarding `age`, we see the proportion of the posterior that is in the direction of the effect's point estimate, no matter what the "size" of the effect is, will be as follows. 
 
 ```{r}
 n_positive <- posteriors |> filter(age > 0) |> nrow()
 100 * n_positive / nrow(posteriors)
 ```
 
-So we see that the effect of `age` is positive with a probability of 99.5%, and this is called the **probability of direction** and abbreviated **pd**.
+So we see that the effect of `age` is positive with a probability of 99.95%, and this is called the **probability of direction** and abbreviated **pd**.
 
 We can also calculate this with
 
@@ -230,7 +230,7 @@ twosided_p
 
 This implies that the $p$-value for `age` in our `lm()` fit would be 0.001, and that is, in fact, what we got when we fit model `m1`. 
 
-The probability that each effect is positive is summarized in the `pd` column of our `describe_posterior()` results.
+The probability that each effect is in the direction shown by the point estimate is summarized in the `pd` column of our `describe_posterior()` results.
 
 ### The ROPE estimates
 

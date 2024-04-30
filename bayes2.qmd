@@ -80,7 +80,7 @@ tidy(m1, exponentiate = TRUE, conf.int = TRUE, conf.level = 0.95) |>
   gt() |> fmt_number(decimals = 3)
 ```
 
-## Fitting a Bayesian Linear Model
+## Fitting a Bayesian Logistic Regression
 
 Can we fit a model for the same data using a Bayesian approach?
 
