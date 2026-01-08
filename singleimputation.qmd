@@ -182,9 +182,9 @@ In **single imputation** analyses, NA values are estimated/replaced *one time* w
 
 ## Multiple Imputation
 
-**Multiple imputation**, where NA values are repeatedly estimated/replaced with multiple data values, for the purpose of obtaining mode complete samples *and* capturing details of the variation inherent in the fact that the data have missingness, so as to obtain *more* accurate estimates than are possible with single imputation.
+**Multiple imputation**, where NA values are repeatedly estimated/replaced with multiple data values, for the purpose of obtaining more complete samples *and* capturing details of the variation inherent in the fact that the data have missingness, so as to obtain *more* accurate estimates than are possible with single imputation.
 
-- We'll postpone the discussion of multiple imputation for a while.
+- We'll postpone the discussion of multiple imputation in these Notes for a while.
 
 ## Approach 1: Building a Complete Case Analysis: `smart_cle1_cc`
 

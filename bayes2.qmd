@@ -28,7 +28,8 @@ library(rstanarm)
 library(conflicted)
 library(tidyverse) 
 
-conflicts_prefer(dplyr::select, dplyr::filter, base::mean, base::range)
+conflicts_prefer(dplyr::select, dplyr::filter, 
+                 base::mean, base::range, base::max)
 
 theme_set(theme_bw())
 ```

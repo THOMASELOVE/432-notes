@@ -897,7 +897,7 @@ With a little googling I found [an R script online](https://scriptsandstatistics
 - `nvalid_phq9` = Number of Valid Responses (out of 9) to the PHQ-9 items
 - `PHQ9` = PHQ-9 score (0-27 scale, higher values indicate more depression)
 - `PHQ9_CAT` = factor describing PHQ-9 score 
-  - PHQ9 > 20 means `PHQ9_CAT` is"severe",
+  - PHQ9 > 20 means `PHQ9_CAT` is "severe",
   - 15-19 = "moderately severe", 
   - 10-14 = "moderate"
   - 5-9 = "mild"

@@ -12,7 +12,6 @@ book:
   downloads: [pdf]
   chapters:
     - index.qmd
-    - incomplete.qmd
     - setup.qmd
     - nhanes.qmd
     - nh432cb.qmd

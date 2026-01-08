@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 9&nbsp; Analysis of Variance with SMART</title>
+<title>9&nbsp; Analysis of Variance with SMART – Data Science for Biological, Medical and Health Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,7 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -66,22 +67,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <link href="./anovaexamples.html" rel="next">
 <link href="./datasummaries.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-56845be1c3e1e64cc04b6f7b628b8285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,31 +99,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="nav-sidebar floating">
-
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./anovasmart.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./anovasmart.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Analysis of Variance with SMART</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -123,12 +159,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -143,12 +181,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -370,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -422,13 +454,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <p>In this chapter, we’ll work with the <code>smart_cle1_sh</code> data file again.</p>
 <section id="r-setup-used-here" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">9.1</span> R Setup Used Here</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
@@ -436,15 +470,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mosaic)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="data-load" class="level3" data-number="9.1.1">
 <h3 data-number="9.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">9.1.1</span> Data Load</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/smart_cle1_sh.Rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/smart_cle1_sh.Rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The variables we’ll look at in this chapter are as follows.</p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 15%">
 <col style="width: 84%">
@@ -494,7 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="can-activity-be-used-to-predict-bmi" class="level3" data-number="9.2.1">
 <h3 data-number="9.2.1" class="anchored" data-anchor-id="can-activity-be-used-to-predict-bmi"><span class="header-section-number">9.2.1</span> Can <code>activity</code> be used to predict <code>bmi</code>?</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> bmi, </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> bmi, </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fill =</span> activity)) <span class="sc">+</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">notch =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
@@ -502,20 +536,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"BMI as a function of Activity Level"</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Subjects in the SMART CLE data"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Body Mass Index"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Body Mass Index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Here’s a numerical summary of the distributions of <code>bmi</code> within each <code>activity</code> group.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(bmi <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(bmi <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               activity   min      Q1   median     Q3   max     mean       sd
-1         Highly_Active 13.30 23.6275 26.99000 28.930 50.46 27.02253 5.217496
-2                Active 17.07 24.2400 27.06930 29.520 44.67 27.36157 5.151796
-3 Insufficiently_Active 17.49 25.0500 27.93776 32.180 49.98 29.04328 6.051823
-4              Inactive 13.64 25.2150 28.34000 33.775 70.56 30.15978 7.832675
+1         Highly_Active 13.30 23.6275 26.99000 28.930 50.46 27.02533 5.217758
+2                Active 17.07 24.2400 27.07078 29.520 44.67 27.36435 5.151762
+3 Insufficiently_Active 17.49 25.0500 27.90869 32.180 49.98 29.04259 6.051687
+4              Inactive 13.64 25.2150 28.34000 33.775 70.56 30.15498 7.833659
     n missing
 1 428       0
 2 173       0
@@ -528,7 +566,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="9.2.2" class="anchored" data-anchor-id="should-we-transform-bmi"><span class="header-section-number">9.2.2</span> Should we transform <code>bmi</code>?</h3>
 <p>The analysis of variance is something of a misnomer. What we’re doing is using the variance to say something about population means. In light of the apparent right skew of the <code>bmi</code> results in each <code>activity</code> group, might it be a better choice to use a logarithmic transformation? We’ll use the natural logarithm here, which in R, is symbolized by <code>log</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> <span class="fu">log</span>(bmi), </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(smart_cle1_sh, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> <span class="fu">log</span>(bmi), </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fill =</span> activity)) <span class="sc">+</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">notch =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
@@ -536,34 +574,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"log(BMI) as a function of Activity Level"</span>,</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Subjects in the SMART CLE data"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"log(Body Mass Index)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"log(Body Mass Index)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The logarithmic transformation yields distributions that look much more symmetric in each <code>activity</code> group, so we’ll proceed to build our regression model predicting <code>log(bmi)</code> using <code>activity</code>. Here’s the numerical summary of these logged results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               activity      min       Q1   median       Q3      max     mean
-1         Highly_Active 2.587764 3.162411 3.295466 3.364879 3.921181 3.279246
-2                Active 2.837323 3.188004 3.298400 3.385068 3.799302 3.292032
-3 Insufficiently_Active 2.861629 3.220874 3.329979 3.471345 3.911623 3.348383
-4              Inactive 2.613007 3.227439 3.344274 3.519721 4.256463 3.376468
+1         Highly_Active 2.587764 3.162411 3.295466 3.364879 3.921181 3.279348
+2                Active 2.837323 3.188004 3.298455 3.385068 3.799302 3.292134
+3 Insufficiently_Active 2.861629 3.220874 3.328938 3.471345 3.911623 3.348360
+4              Inactive 2.613007 3.227439 3.344274 3.519721 4.256463 3.376299
          sd   n missing
-1 0.1851478 428       0
-2 0.1850568 173       0
-3 0.2007241 201       0
-4 0.2411196 331       0</code></pre>
+1 0.1851673 428       0
+2 0.1850651 173       0
+3 0.2007171 201       0
+4 0.2411383 331       0</code></pre>
 </div>
 </div>
 </section>
 <section id="building-the-anova-model" class="level3" data-number="9.2.3">
 <h3 data-number="9.2.3" class="anchored" data-anchor-id="building-the-anova-model"><span class="header-section-number">9.2.3</span> Building the ANOVA model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model_5a <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model_5a <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity, <span class="at">data =</span> smart_cle1_sh)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model_5a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model_5a</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -571,9 +613,9 @@ lm(formula = log(bmi) ~ activity, data = smart_cle1_sh)
 
 Coefficients:
                   (Intercept)                 activityActive  
-                      3.27925                        0.01279  
+                      3.27935                        0.01279  
 activityInsufficiently_Active               activityInactive  
-                      0.06914                        0.09722  </code></pre>
+                      0.06901                        0.09695  </code></pre>
 </div>
 </div>
 <p>The <code>activity</code> data is categorical and there are four levels. The model equation is:</p>
@@ -581,7 +623,7 @@ activityInsufficiently_Active               activityInactive
                  + 0.069 (activity = Insufficiently Active)
                  + 0.097 (activity = Inactive)</code></pre>
 <p>where, for example, <code>(activity = Active)</code> is 1 if <code>activity</code> is Active, and 0 otherwise. The fourth level (Highly Active) is not shown here and is used as a baseline. Thus the model above can be interpreted as follows.</p>
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: center;"><code>activity</code></th>
@@ -614,8 +656,8 @@ activityInsufficiently_Active               activityInactive
 </table>
 <p>Those predicted <code>log(bmi)</code> values should look familiar. They are just the means of <code>log(bmi)</code> in each group, but I’m sure you’ll also notice that the predicted <code>bmi</code> values are not exact matches for the observed means of <code>bmi</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="sc">|&gt;</span> <span class="fu">group_by</span>(activity) <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">mean</span>(<span class="fu">log</span>(bmi)), <span class="fu">mean</span>(bmi))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>smart_cle1_sh <span class="sc">|&gt;</span> <span class="fu">group_by</span>(activity) <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">mean</span>(<span class="fu">log</span>(bmi)), <span class="fu">mean</span>(bmi))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 3
   activity              `mean(log(bmi))` `mean(bmi)`
@@ -631,14 +673,14 @@ activityInsufficiently_Active               activityInactive
 <h3 data-number="9.2.4" class="anchored" data-anchor-id="the-anova-table"><span class="header-section-number">9.2.4</span> The ANOVA table</h3>
 <p>Now, let’s press on to look at the ANOVA results for this model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: log(bmi)
             Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-activity     3  2.060 0.68652  16.225 2.496e-10 ***
-Residuals 1129 47.772 0.04231                      
+activity     3  2.049 0.68283  16.136 2.831e-10 ***
+Residuals 1129 47.778 0.04232                      
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -654,7 +696,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="9.2.5" class="anchored" data-anchor-id="the-model-coefficients"><span class="header-section-number">9.2.5</span> The Model Coefficients</h3>
 <p>To address the question of effect size for the various levels of <code>activity</code> on <code>log(bmi)</code>, we could look directly at the regression model coefficients. For that, we might look at the model <code>summary</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_5a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_5a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -662,31 +704,31 @@ lm(formula = log(bmi) ~ activity, data = smart_cle1_sh)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--0.76346 -0.12609 -0.00286  0.11055  0.88000 
+-0.76329 -0.12592 -0.00296  0.11045  0.88016 
 
 Coefficients:
                               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)                   3.279246   0.009943 329.806  &lt; 2e-16 ***
-activityActive                0.012785   0.018532   0.690     0.49    
-activityInsufficiently_Active 0.069137   0.017589   3.931 8.99e-05 ***
-activityInactive              0.097221   0.015056   6.457 1.58e-10 ***
+(Intercept)                   3.279348   0.009944 329.795  &lt; 2e-16 ***
+activityActive                0.012786   0.018533   0.690     0.49    
+activityInsufficiently_Active 0.069012   0.017590   3.923 9.26e-05 ***
+activityInactive              0.096951   0.015057   6.439 1.78e-10 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 0.2057 on 1129 degrees of freedom
-Multiple R-squared:  0.04133,   Adjusted R-squared:  0.03878 
-F-statistic: 16.22 on 3 and 1129 DF,  p-value: 2.496e-10</code></pre>
+Multiple R-squared:  0.04111,   Adjusted R-squared:  0.03857 
+F-statistic: 16.14 on 3 and 1129 DF,  p-value: 2.831e-10</code></pre>
 </div>
 </div>
 <p>If we want to see the confidence intervals around these estimates, we could use</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(model_5a, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(model_5a, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                    2.5 %     97.5 %
-(Intercept)                    3.25973769 3.29875522
-activityActive                -0.02357630 0.04914707
-activityInsufficiently_Active  0.03462572 0.10364764
-activityInactive               0.06767944 0.12676300</code></pre>
+(Intercept)                    3.25983814 3.29885812
+activityActive                -0.02357818 0.04914976
+activityInsufficiently_Active  0.03449920 0.10352547
+activityInactive               0.06740762 0.12649490</code></pre>
 </div>
 </div>
 <p>The model suggests, based on these 1133 subjects, that (remember that the baseline category is Highly Active)</p>
@@ -702,10 +744,10 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <h3 data-number="9.2.6" class="anchored" data-anchor-id="using-tidy-to-explore-the-coefficients"><span class="header-section-number">9.2.6</span> Using <code>tidy</code> to explore the coefficients</h3>
 <p>A better strategy for displaying the coefficients in any regression model is to use the <code>tidy</code> function from the <code>broom</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5a, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5a, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 34%">
 <col style="width: 10%">
@@ -731,7 +773,7 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: left;">(Intercept)</td>
 <td style="text-align: right;">3.279</td>
 <td style="text-align: right;">0.010</td>
-<td style="text-align: right;">329.806</td>
+<td style="text-align: right;">329.795</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">3.260</td>
 <td style="text-align: right;">3.299</td>
@@ -749,19 +791,19 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: left;">activityInsufficiently_Active</td>
 <td style="text-align: right;">0.069</td>
 <td style="text-align: right;">0.018</td>
-<td style="text-align: right;">3.931</td>
+<td style="text-align: right;">3.923</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.034</td>
 <td style="text-align: right;">0.104</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">activityInactive</td>
 <td style="text-align: right;">0.097</td>
 <td style="text-align: right;">0.015</td>
-<td style="text-align: right;">6.457</td>
+<td style="text-align: right;">6.439</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">0.068</td>
-<td style="text-align: right;">0.127</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">0.126</td>
 </tr>
 </tbody>
 </table>
@@ -771,10 +813,10 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <section id="using-glance-to-summarize-the-models-fit" class="level3" data-number="9.2.7">
 <h3 data-number="9.2.7" class="anchored" data-anchor-id="using-glance-to-summarize-the-models-fit"><span class="header-section-number">9.2.7</span> Using <code>glance</code> to summarize the model’s fit</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">r.squared</th>
@@ -784,8 +826,8 @@ activityInactive               0.06767944 0.12676300</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.0413</td>
-<td style="text-align: right;">0.0388</td>
+<td style="text-align: right;">0.0411</td>
+<td style="text-align: right;">0.0386</td>
 <td style="text-align: right;">0.206</td>
 </tr>
 </tbody>
@@ -798,10 +840,10 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <li>The <code>sigma</code> or <span class="math inline">\(\sigma\)</span> is the residual standard error. Doubling this value gives us a good idea of the range of errors made by the model (approximately 95% of the time if the normal distribution assumption for the residuals holds perfectly.)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">statistic</th>
@@ -812,10 +854,10 @@ activityInactive               0.06767944 0.12676300</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">16.22</td>
+<td style="text-align: right;">16.14</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">185.99</td>
+<td style="text-align: right;">185.92</td>
 </tr>
 </tbody>
 </table>
@@ -827,10 +869,10 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <li>The <code>logLik</code> is the log likelihood for the model. This is a function of the sample size, but we can compare the fit of multiple models by comparing this value across different models for the same outcome. You want to maximize the log-likelihood.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">9</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_5a) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">9</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">AIC</th>
@@ -839,8 +881,8 @@ activityInactive               0.06767944 0.12676300</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">-361.98</td>
-<td style="text-align: right;">-336.82</td>
+<td style="text-align: right;">-361.84</td>
+<td style="text-align: right;">-336.68</td>
 </tr>
 </tbody>
 </table>
@@ -854,11 +896,11 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <h3 data-number="9.2.8" class="anchored" data-anchor-id="using-augment-to-make-predictions"><span class="header-section-number">9.2.8</span> Using <code>augment</code> to make predictions</h3>
 <p>We can obtain residuals and predicted (fitted) values for the points used to fit the model with <code>augment</code> from the <code>broom</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5a, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5a, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">|&gt;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">log(bmi)</th>
@@ -874,7 +916,7 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: left;">Inactive</td>
 <td style="text-align: right;">3.376</td>
 <td style="text-align: right;">0.011</td>
-<td style="text-align: right;">-0.047</td>
+<td style="text-align: right;">-0.046</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">3.138</td>
@@ -907,11 +949,11 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <li>The <code>.resid</code> is the residual value (observed - fitted <code>log(bmi)</code>)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5a, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5a, <span class="at">se_fit =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">9</span>) <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;">log(bmi)</th>
@@ -929,7 +971,7 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: right;">0.003</td>
 <td style="text-align: right;">0.206</td>
 <td style="text-align: right;">0.000</td>
-<td style="text-align: right;">-0.227</td>
+<td style="text-align: right;">-0.224</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">3.138</td>
@@ -937,7 +979,7 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: right;">0.003</td>
 <td style="text-align: right;">0.206</td>
 <td style="text-align: right;">0.001</td>
-<td style="text-align: right;">-1.163</td>
+<td style="text-align: right;">-1.162</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3.293</td>
@@ -953,7 +995,7 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <td style="text-align: right;">0.002</td>
 <td style="text-align: right;">0.206</td>
 <td style="text-align: right;">0.000</td>
-<td style="text-align: right;">-0.008</td>
+<td style="text-align: right;">-0.009</td>
 </tr>
 </tbody>
 </table>
@@ -971,17 +1013,17 @@ activityInactive               0.06767944 0.12676300</code></pre>
 <h2 data-number="9.3" class="anchored" data-anchor-id="a-two-factor-anova-without-interaction"><span class="header-section-number">9.3</span> A Two-Factor ANOVA (without Interaction)</h2>
 <p>Let’s add <code>race_eth</code> to the predictor set for <code>log(BMI)</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model_5b <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity <span class="sc">+</span> race_eth, <span class="at">data =</span> smart_cle1_sh)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model_5b <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity <span class="sc">+</span> race_eth, <span class="at">data =</span> smart_cle1_sh)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: log(bmi)
             Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-activity     3  2.060 0.68652 16.5090 1.676e-10 ***
-race_eth     4  0.989 0.24716  5.9435 9.843e-05 ***
-Residuals 1125 46.783 0.04158                      
+activity     3  2.049 0.68283 16.4184 1.904e-10 ***
+race_eth     4  0.989 0.24731  5.9464 9.792e-05 ***
+Residuals 1125 46.788 0.04159                      
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -989,16 +1031,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Notice that the ANOVA model assesses these variables sequentially, so the SS(activity) = 2.058 is accounted for before we consider the SS(race_eth) = 0.990. Thus, in total, the model accounts for 2.058 + 0.990 = 3.048 of the sums of squares in <code>log(bmi)</code> in these data.</p>
 <p>If we flip the order in the model, like this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> race_eth <span class="sc">+</span> activity, <span class="at">data =</span> smart_cle1_sh) <span class="sc">|&gt;</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anova</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> race_eth <span class="sc">+</span> activity, <span class="at">data =</span> smart_cle1_sh) <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anova</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: log(bmi)
             Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-race_eth     4  1.119 0.27981  6.7287 2.371e-05 ***
-activity     3  1.929 0.64299 15.4620 7.332e-10 ***
-Residuals 1125 46.783 0.04158                      
+race_eth     4  1.120 0.27992  6.7304 2.363e-05 ***
+activity     3  1.918 0.63935 15.3729 8.314e-10 ***
+Residuals 1125 46.788 0.04159                      
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1010,11 +1052,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="9.3.1" class="anchored" data-anchor-id="model-coefficients"><span class="header-section-number">9.3.1</span> Model Coefficients</h3>
 <p>The model coefficients are unchanged regardless of the order of the variables in our two-factor ANOVA model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5b, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5b, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, conf.low, conf.high) <span class="sc">|&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 46%">
 <col style="width: 12%">
@@ -1036,8 +1078,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: left;">(Intercept)</td>
 <td style="text-align: right;">3.268</td>
 <td style="text-align: right;">0.010</td>
-<td style="text-align: right;">3.247</td>
-<td style="text-align: right;">3.288</td>
+<td style="text-align: right;">3.248</td>
+<td style="text-align: right;">3.289</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">activityActive</td>
@@ -1058,7 +1100,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: right;">0.092</td>
 <td style="text-align: right;">0.015</td>
 <td style="text-align: right;">0.063</td>
-<td style="text-align: right;">0.122</td>
+<td style="text-align: right;">0.121</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">race_ethBlack non-Hispanic</td>
@@ -1079,7 +1121,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: right;">0.020</td>
 <td style="text-align: right;">0.042</td>
 <td style="text-align: right;">-0.063</td>
-<td style="text-align: right;">0.103</td>
+<td style="text-align: right;">0.102</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">race_ethHispanic</td>
@@ -1105,7 +1147,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>For example, the predicted <code>log(BMI)</code> for a White Highly Active person is 3.268, as White and Highly Active are the baseline categories in our two factors.</p>
 <p>For all other combinations, we can make predictions as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>new_dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>new_dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">race_eth =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"White non-Hispanic"</span>,</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Black non-Hispanic"</span>,</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Other race non-Hispanic"</span>,</span>
@@ -1117,7 +1159,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>               <span class="fu">rep</span>(<span class="st">"Inactive"</span>, <span class="dv">5</span>))</span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5b, <span class="at">newdata =</span> new_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5b, <span class="at">newdata =</span> new_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 3
    race_eth                 activity              .fitted
@@ -1145,7 +1187,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5b, <span class="at">newdata =</span> new_dat) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(model_5b, <span class="at">newdata =</span> new_dat) <span class="sc">|&gt;</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">race_eth =</span> <span class="fu">fct_relevel</span>(<span class="fu">factor</span>(race_eth),</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"White non-Hispanic"</span>,</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"Black non-Hispanic"</span>,</span>
@@ -1164,9 +1206,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 5b predictions for log(BMI)"</span>,</span>
 <span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"race_eth and activity, no interaction so lines are parallel"</span>,</span>
 <span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Model Predicted log(BMI)"</span>,</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The lines joining the points for each <code>race_eth</code> category are parallel to each other. The groups always hold the same position relative to each other, regardless of their activity levels, and vice versa. There is no interaction in this model allowing the predicted effects of, say, <code>activity</code> on <code>log(BMI)</code> values to differ for the various <code>race_eth</code> groups. To do that, we’d have to fit the two-factor ANOVA model incorporating an interaction term.</p>
@@ -1176,19 +1222,19 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2 data-number="9.4" class="anchored" data-anchor-id="a-two-factor-anova-with-interaction"><span class="header-section-number">9.4</span> A Two-Factor ANOVA (with Interaction)</h2>
 <p>Let’s add the interaction of <code>activity</code> and <code>race_eth</code> (symbolized in R by <code>activity * race_eth</code>) to the model for <code>log(BMI)</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>model_5c <span class="ot">&lt;-</span>  </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>model_5c <span class="ot">&lt;-</span>  </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="fu">log</span>(bmi) <span class="sc">~</span> activity <span class="sc">*</span> race_eth, <span class="at">data =</span> smart_cle1_sh)</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5c)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: log(bmi)
                     Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-activity             3  2.060 0.68652 16.4468 1.839e-10 ***
-race_eth             4  0.989 0.24716  5.9211 0.0001026 ***
-activity:race_eth   12  0.324 0.02700  0.6469 0.8028368    
-Residuals         1113 46.459 0.04174                      
+activity             3  2.049 0.68283 16.3560  2.09e-10 ***
+race_eth             4  0.989 0.24731  5.9238 0.0001021 ***
+activity:race_eth   12  0.323 0.02688  0.6438 0.8056437    
+Residuals         1113 46.466 0.04175                      
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1198,11 +1244,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 data-number="9.4.1" class="anchored" data-anchor-id="model-coefficients-1"><span class="header-section-number">9.4.1</span> Model Coefficients</h3>
 <p>The model coefficients now include additional product terms that incorporate indicator variables for both activity and race_eth. For each of the product terms to take effect, both their activity and race_eth status must yield a 1 in the indicator variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5c, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_5c, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, conf.low, conf.high) <span class="sc">|&gt;</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small">
+<table class="caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 62%">
 <col style="width: 8%">
@@ -1236,7 +1282,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">activityInsufficiently_Active</td>
-<td style="text-align: right;">0.079</td>
+<td style="text-align: right;">0.078</td>
 <td style="text-align: right;">0.020</td>
 <td style="text-align: right;">0.039</td>
 <td style="text-align: right;">0.118</td>
@@ -1245,7 +1291,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: left;">activityInactive</td>
 <td style="text-align: right;">0.097</td>
 <td style="text-align: right;">0.018</td>
-<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">0.062</td>
 <td style="text-align: right;">0.132</td>
 </tr>
 <tr class="odd">
@@ -1264,10 +1310,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">race_ethMultiracial non-Hispanic</td>
-<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">0.065</td>
 <td style="text-align: right;">0.060</td>
-<td style="text-align: right;">-0.051</td>
-<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">-0.053</td>
+<td style="text-align: right;">0.183</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">race_ethHispanic</td>
@@ -1278,10 +1324,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">activityActive:race_ethBlack non-Hispanic</td>
-<td style="text-align: right;">-0.001</td>
+<td style="text-align: right;">-0.002</td>
 <td style="text-align: right;">0.048</td>
-<td style="text-align: right;">-0.096</td>
-<td style="text-align: right;">0.094</td>
+<td style="text-align: right;">-0.097</td>
+<td style="text-align: right;">0.093</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">activityInsufficiently_Active:race_ethBlack non-Hispanic</td>
@@ -1294,7 +1340,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: left;">activityInactive:race_ethBlack non-Hispanic</td>
 <td style="text-align: right;">0.008</td>
 <td style="text-align: right;">0.037</td>
-<td style="text-align: right;">-0.065</td>
+<td style="text-align: right;">-0.064</td>
 <td style="text-align: right;">0.080</td>
 </tr>
 <tr class="even">
@@ -1315,29 +1361,29 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <td style="text-align: left;">activityInactive:race_ethOther race non-Hispanic</td>
 <td style="text-align: right;">0.033</td>
 <td style="text-align: right;">0.129</td>
-<td style="text-align: right;">-0.221</td>
+<td style="text-align: right;">-0.220</td>
 <td style="text-align: right;">0.287</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">activityActive:race_ethMultiracial non-Hispanic</td>
-<td style="text-align: right;">-0.208</td>
+<td style="text-align: right;">-0.206</td>
 <td style="text-align: right;">0.134</td>
-<td style="text-align: right;">-0.470</td>
-<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">-0.469</td>
+<td style="text-align: right;">0.056</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">activityInsufficiently_Active:race_ethMultiracial non-Hispanic</td>
-<td style="text-align: right;">-0.050</td>
+<td style="text-align: right;">-0.049</td>
 <td style="text-align: right;">0.120</td>
-<td style="text-align: right;">-0.285</td>
-<td style="text-align: right;">0.184</td>
+<td style="text-align: right;">-0.284</td>
+<td style="text-align: right;">0.186</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">activityInactive:race_ethMultiracial non-Hispanic</td>
-<td style="text-align: right;">-0.056</td>
+<td style="text-align: right;">-0.054</td>
 <td style="text-align: right;">0.110</td>
-<td style="text-align: right;">-0.272</td>
-<td style="text-align: right;">0.160</td>
+<td style="text-align: right;">-0.270</td>
+<td style="text-align: right;">0.162</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">activityActive:race_ethHispanic</td>
@@ -1391,7 +1437,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>But the predicted <code>log(BMI)</code> for a Hispanic Inactive person would be 3.264 + 0.097 + 0.110 - 0.169 = 3.302.</p>
 <p>Again, we’ll plot the predicted <code>log(BMI)</code> predictions for each possible combination.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>new_dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>new_dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">race_eth =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"White non-Hispanic"</span>,</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Black non-Hispanic"</span>,</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Other race non-Hispanic"</span>,</span>
@@ -1422,9 +1468,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 5c predictions for log(BMI)"</span>,</span>
 <span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"race_eth and activity, with interaction"</span>,</span>
 <span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Model Predicted log(BMI)"</span>,</span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Note that the lines joining the points for each <code>race_eth</code> category are no longer parallel to each other. The race-ethnicity group relative positions on <code>log(BMI)</code> is now changing depending on the <code>activity</code> status.</p>
@@ -1441,15 +1491,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h4 data-number="9.4.2.1" class="anchored" data-anchor-id="the-interaction-plot"><span class="header-section-number">9.4.2.1</span> The Interaction Plot</h4>
 <p>A simple interaction plot is just a plot of the unadjusted outcome means, stratified by the two factors. For example, consider this plot for our two-factor ANOVA model. To obtain this plot, we first summarize the means within each group.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>summaries_5 <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>summaries_5 <span class="ot">&lt;-</span> smart_cle1_sh <span class="sc">|&gt;</span> </span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(activity, race_eth) <span class="sc">|&gt;</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(<span class="fu">log</span>(bmi)), </span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(<span class="fu">log</span>(bmi)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(<span class="fu">log</span>(bmi)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'activity'. You can override using the
 `.groups` argument.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>summaries_5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>summaries_5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 5
 # Groups:   activity [4]
@@ -1460,7 +1510,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
  3 Highly_Active         Other race non-Hispanic      7  3.19  0.198 
  4 Highly_Active         Multiracial non-Hispanic    12  3.33  0.187 
  5 Highly_Active         Hispanic                    12  3.37  0.296 
- 6 Active                White non-Hispanic         129  3.28  0.173 
+ 6 Active                White non-Hispanic         129  3.29  0.173 
  7 Active                Black non-Hispanic          31  3.35  0.224 
  8 Active                Other race non-Hispanic      2  3.15  0.0845
  9 Active                Multiracial non-Hispanic     3  3.14  0.121 
@@ -1478,22 +1528,26 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(summaries_5, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> mean, </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(summaries_5, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> mean, </span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">color =</span> race_eth, </span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">group =</span> race_eth)) <span class="sc">+</span></span>
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
 <span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
 <span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simple Interaction Plot for log(BMI)"</span>,</span>
 <span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"SMART CLE means by activity and race_eth"</span>,</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Mean of log(BMI)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Mean of log(BMI)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The interaction plot suggests that there is a modest interaction here. The White non-Hispanic and Black non-Hispanic groups appear pretty parallel (and they are the two largest groups) and Other race non-Hispanic has a fairly similar pattern, but the other two groups (Hispanic and Multiracial non-Hispanic) bounce around quite a bit based on activity level.</p>
 <p>An alternative would be to include a small “dodge” for each point and include error bars (means <span class="math inline">\(\pm\)</span> standard deviation) for each combination.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">=</span> <span class="fu">position_dodge</span>(<span class="fl">0.2</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">=</span> <span class="fu">position_dodge</span>(<span class="fl">0.2</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(summaries_5, <span class="fu">aes</span>(<span class="at">x =</span> activity, <span class="at">y =</span> mean, </span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">color =</span> race_eth, </span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">group =</span> race_eth)) <span class="sc">+</span></span>
@@ -1504,9 +1558,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">position =</span> pd) <span class="sc">+</span></span>
 <span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Interaction Plot for log(BMI) with Error Bars"</span>,</span>
 <span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"SMART CLE means by activity and race_eth"</span>,</span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Mean of log(BMI)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Mean of log(BMI)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="anovasmart_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="anovasmart_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Here, we see a warning flag because we have one combination (which turns out to be Insufficiently Active and Hispanic) with only one observation in it, so a standard deviation cannot be calculated. In general, I’ll stick with the simpler means plot most of the time.</p>
@@ -1515,16 +1573,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h4 data-number="9.4.2.2" class="anchored" data-anchor-id="does-the-interaction-account-for-substantial-variation"><span class="header-section-number">9.4.2.2</span> Does the interaction account for substantial variation?</h4>
 <p>In this case, we can look at the fraction of the overall sums of squares accounted for by the interaction.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_5c)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: log(bmi)
                     Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-activity             3  2.060 0.68652 16.4468 1.839e-10 ***
-race_eth             4  0.989 0.24716  5.9211 0.0001026 ***
-activity:race_eth   12  0.324 0.02700  0.6469 0.8028368    
-Residuals         1113 46.459 0.04174                      
+activity             3  2.049 0.68283 16.3560  2.09e-10 ***
+race_eth             4  0.989 0.24731  5.9238 0.0001021 ***
+activity:race_eth   12  0.323 0.02688  0.6438 0.8056437    
+Residuals         1113 46.466 0.04175                      
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1549,43 +1607,58 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -1593,207 +1666,360 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
       return codeEl.innerText;
     }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
       });
     }
-  }
-});
-</script>
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./datasummaries.html" class="pagination-link">
+      <a href="./datasummaries.html" class="pagination-link" aria-label="Summarizing `smart_cle1`">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summarizing <code>smart_cle1</code></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./anovaexamples.html" class="pagination-link">
+      <a href="./anovaexamples.html" class="pagination-link" aria-label="Two-Way ANOVA and Interaction">
         <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Two-Way ANOVA and Interaction</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

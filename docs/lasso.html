@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science for Biological, Medical and Health Research - 32&nbsp; NEW!! A Few LASSO Ideas</title>
+<title>32&nbsp; NEW!! A Few LASSO Ideas – Data Science for Biological, Medical and Health Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,7 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -66,22 +67,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <link href="./bayes.html" rel="next">
 <link href="./cox2.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-56845be1c3e1e64cc04b6f7b628b8285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,31 +99,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="nav-sidebar floating">
-
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lasso.html"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">NEW!! A Few LASSO Ideas</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lasso.html"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">NEW!! A Few LASSO Ideas</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -123,12 +159,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Data Science for Biological, Medical and Health Research</a> 
         <div class="sidebar-tools-main">
-    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Data-Science-for-Biological,-Medical-and-Health-Research.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -143,12 +181,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./incomplete.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">This is work in progress</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -370,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -412,12 +444,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="r-setup-used-here" class="level2" data-number="32.1">
 <h2 data-number="32.1" class="anchored" data-anchor-id="r-setup-used-here"><span class="header-section-number">32.1</span> R Setup Used Here</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">comment =</span> <span class="cn">NA</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
@@ -431,22 +465,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">conflicts_prefer</span>(dplyr<span class="sc">::</span>select)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">conflicts_prefer</span>(dplyr<span class="sc">::</span>select, base<span class="sc">::</span>max)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="data-load" class="level3" data-number="32.1.1">
 <h3 data-number="32.1.1" class="anchored" data-anchor-id="data-load"><span class="header-section-number">32.1.1</span> Data Load</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/pollution.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/pollution.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="the-pollution-data" class="level2" data-number="32.2">
 <h2 data-number="32.2" class="anchored" data-anchor-id="the-pollution-data"><span class="header-section-number">32.2</span> The <code>pollution</code> data</h2>
-<p>Consider again the <code>pollution</code> data set we developed in <a href="nonlinearity.html"><span>Chapter&nbsp;13</span></a> which contains 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961.</p>
+<p>Consider again the <code>pollution</code> data set we developed in <a href="nonlinearity.html" class="quarto-xref"><span>Chapter 13</span></a> which contains 15 independent variables and a measure of mortality, describing 60 US metropolitan areas in 1959-1961.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pollution</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pollution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 60 × 16
       x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12   x13
@@ -466,7 +500,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Here’s a codebook:</p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
 <col style="width: 90%">
@@ -549,8 +583,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="32.3" class="anchored" data-anchor-id="should-we-rescale-any-predictors"><span class="header-section-number">32.3</span> Should We Rescale any Predictors?</h2>
 <p>Let’s get some basic summary statistics for our candidate predictors. When we do, we see that variable <code>x8</code> is roughy 100 times larger than all of our other predictors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df_stats</span>(<span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>           x10 <span class="sc">+</span> x11 <span class="sc">+</span> x12 <span class="sc">+</span> x13 <span class="sc">+</span> x14 <span class="sc">+</span> x15, <span class="at">data =</span> pollution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df_stats</span>(<span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>           x10 <span class="sc">+</span> x11 <span class="sc">+</span> x12 <span class="sc">+</span> x13 <span class="sc">+</span> x14 <span class="sc">+</span> x15, <span class="at">data =</span> pollution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response     min       Q1   median       Q3     max        mean           sd
 1        x1   10.00   32.750   38.000   43.250   60.00   37.366667    9.9846775
@@ -588,67 +622,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Let’s dampen the size of that <code>x8</code> variable down a little to make our coefficient comparisons easier later, by dividing all of the <code>x8</code> values by 100.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x8 =</span> x8<span class="sc">/</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x8 =</span> x8<span class="sc">/</span><span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="a-kitchen-sink-model" class="level2" data-number="32.4">
 <h2 data-number="32.4" class="anchored" data-anchor-id="a-kitchen-sink-model"><span class="header-section-number">32.4</span> A Kitchen Sink Model</h2>
 <p>We’ll begin by fitting the obviously underpowered model with all 15 main effects used to predict our outcome.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mod_sink <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mod_sink <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                 x10 <span class="sc">+</span> x11 <span class="sc">+</span> x12 <span class="sc">+</span> x13 <span class="sc">+</span> x14 <span class="sc">+</span> x15, </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> pollution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> pollution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="considering-an-outcome-transformation" class="level3" data-number="32.4.1">
 <h3 data-number="32.4.1" class="anchored" data-anchor-id="considering-an-outcome-transformation"><span class="header-section-number">32.4.1</span> Considering an Outcome Transformation</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxcox</span>(mod_sink)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxcox</span>(mod_sink)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="lasso_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lasso_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>OK. In light of this Box-Cox plot, let’s consider taking the inverse of our outcome here. I’ll take that inverse and then standardize the result using the <code>scale()</code> function to both subtract the mean of the transformed outcome and divide by its standard deviation, so that our new outcome, which I’ll call <code>out_std</code> has mean 0, standard deviation 1, and a shape similar to that of the inverse of our <span class="math inline">\(y\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span> </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y_inverse =</span> <span class="dv">1</span><span class="sc">/</span>y,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">out_std =</span> <span class="fu">scale</span>(<span class="dv">1</span><span class="sc">/</span>y, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> y_inverse)) <span class="sc">+</span> <span class="fu">geom_density</span>()</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pollution, <span class="fu">aes</span>(<span class="at">x =</span> out_std)) <span class="sc">+</span> <span class="fu">geom_density</span>()</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">/</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">/</span> p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="lasso_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lasso_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>OK. So now, I’ll build a revised kitchen sink model to use this new outcome.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mod_sink2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(out_std <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mod_sink2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(out_std <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> </span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                 x10 <span class="sc">+</span> x11 <span class="sc">+</span> x12 <span class="sc">+</span> x13 <span class="sc">+</span> x14 <span class="sc">+</span> x15, <span class="at">data =</span> pollution)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_sink2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.9</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, conf.low, conf.high, p.value) <span class="sc">|&gt;</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
-<div id="tocmvgwmmg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tocmvgwmmg table {
+<div id="eqceqvytja" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eqceqvytja table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tocmvgwmmg thead, #tocmvgwmmg tbody, #tocmvgwmmg tfoot, #tocmvgwmmg tr, #tocmvgwmmg td, #tocmvgwmmg th {
+#eqceqvytja thead, #eqceqvytja tbody, #eqceqvytja tfoot, #eqceqvytja tr, #eqceqvytja td, #eqceqvytja th {
   border-style: none;
 }
 
-#tocmvgwmmg p {
+#eqceqvytja p {
   margin: 0;
   padding: 0;
 }
 
-#tocmvgwmmg .gt_table {
+#eqceqvytja .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -674,12 +715,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_caption {
+#eqceqvytja .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tocmvgwmmg .gt_title {
+#eqceqvytja .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -691,7 +732,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#tocmvgwmmg .gt_subtitle {
+#eqceqvytja .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -703,7 +744,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#tocmvgwmmg .gt_heading {
+#eqceqvytja .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -715,13 +756,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_bottom_border {
+#eqceqvytja .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_col_headings {
+#eqceqvytja .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -736,7 +777,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_col_heading {
+#eqceqvytja .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -756,7 +797,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tocmvgwmmg .gt_column_spanner_outer {
+#eqceqvytja .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -768,15 +809,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#tocmvgwmmg .gt_column_spanner_outer:first-child {
+#eqceqvytja .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tocmvgwmmg .gt_column_spanner_outer:last-child {
+#eqceqvytja .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tocmvgwmmg .gt_column_spanner {
+#eqceqvytja .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -788,11 +829,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#tocmvgwmmg .gt_spanner_row {
+#eqceqvytja .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tocmvgwmmg .gt_group_heading {
+#eqceqvytja .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -818,7 +859,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#tocmvgwmmg .gt_empty_group_heading {
+#eqceqvytja .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -833,15 +874,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#tocmvgwmmg .gt_from_md > :first-child {
+#eqceqvytja .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tocmvgwmmg .gt_from_md > :last-child {
+#eqceqvytja .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tocmvgwmmg .gt_row {
+#eqceqvytja .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -860,7 +901,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tocmvgwmmg .gt_stub {
+#eqceqvytja .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -873,7 +914,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tocmvgwmmg .gt_stub_row_group {
+#eqceqvytja .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -887,15 +928,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#tocmvgwmmg .gt_row_group_first td {
+#eqceqvytja .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tocmvgwmmg .gt_row_group_first th {
+#eqceqvytja .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tocmvgwmmg .gt_summary_row {
+#eqceqvytja .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -905,16 +946,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tocmvgwmmg .gt_first_summary_row {
+#eqceqvytja .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_first_summary_row.thick {
+#eqceqvytja .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tocmvgwmmg .gt_last_summary_row {
+#eqceqvytja .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -924,7 +965,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_grand_summary_row {
+#eqceqvytja .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -934,7 +975,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tocmvgwmmg .gt_first_grand_summary_row {
+#eqceqvytja .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -944,7 +985,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_last_grand_summary_row_top {
+#eqceqvytja .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -954,11 +995,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_striped {
+#eqceqvytja .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tocmvgwmmg .gt_table_body {
+#eqceqvytja .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -967,7 +1008,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_footnotes {
+#eqceqvytja .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -981,7 +1022,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_footnote {
+#eqceqvytja .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -990,7 +1031,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tocmvgwmmg .gt_sourcenotes {
+#eqceqvytja .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1004,7 +1045,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tocmvgwmmg .gt_sourcenote {
+#eqceqvytja .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1012,204 +1053,244 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tocmvgwmmg .gt_left {
+#eqceqvytja .gt_left {
   text-align: left;
 }
 
-#tocmvgwmmg .gt_center {
+#eqceqvytja .gt_center {
   text-align: center;
 }
 
-#tocmvgwmmg .gt_right {
+#eqceqvytja .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tocmvgwmmg .gt_font_normal {
+#eqceqvytja .gt_font_normal {
   font-weight: normal;
 }
 
-#tocmvgwmmg .gt_font_bold {
+#eqceqvytja .gt_font_bold {
   font-weight: bold;
 }
 
-#tocmvgwmmg .gt_font_italic {
+#eqceqvytja .gt_font_italic {
   font-style: italic;
 }
 
-#tocmvgwmmg .gt_super {
+#eqceqvytja .gt_super {
   font-size: 65%;
 }
 
-#tocmvgwmmg .gt_footnote_marks {
+#eqceqvytja .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tocmvgwmmg .gt_asterisk {
+#eqceqvytja .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tocmvgwmmg .gt_indent_1 {
+#eqceqvytja .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tocmvgwmmg .gt_indent_2 {
+#eqceqvytja .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tocmvgwmmg .gt_indent_3 {
+#eqceqvytja .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tocmvgwmmg .gt_indent_4 {
+#eqceqvytja .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tocmvgwmmg .gt_indent_5 {
+#eqceqvytja .gt_indent_5 {
   text-indent: 25px;
 }
+
+#eqceqvytja .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#eqceqvytja div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="term">term</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="estimate">estimate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std.error">std.error</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.low">conf.low</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.high">conf.high</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">−15.899</td>
-<td headers="std.error" class="gt_row gt_right">6.886</td>
-<td headers="conf.low" class="gt_row gt_right">−27.469</td>
-<td headers="conf.high" class="gt_row gt_right">−4.328</td>
-<td headers="p.value" class="gt_row gt_right">0.026</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x1</td>
-<td headers="estimate" class="gt_row gt_right">−0.035</td>
-<td headers="std.error" class="gt_row gt_right">0.015</td>
-<td headers="conf.low" class="gt_row gt_right">−0.059</td>
-<td headers="conf.high" class="gt_row gt_right">−0.011</td>
-<td headers="p.value" class="gt_row gt_right">0.020</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x2</td>
-<td headers="estimate" class="gt_row gt_right">0.036</td>
-<td headers="std.error" class="gt_row gt_right">0.017</td>
-<td headers="conf.low" class="gt_row gt_right">0.007</td>
-<td headers="conf.high" class="gt_row gt_right">0.066</td>
-<td headers="p.value" class="gt_row gt_right">0.044</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x3</td>
-<td headers="estimate" class="gt_row gt_right">0.055</td>
-<td headers="std.error" class="gt_row gt_right">0.030</td>
-<td headers="conf.low" class="gt_row gt_right">0.005</td>
-<td headers="conf.high" class="gt_row gt_right">0.105</td>
-<td headers="p.value" class="gt_row gt_right">0.074</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x4</td>
-<td headers="estimate" class="gt_row gt_right">0.176</td>
-<td headers="std.error" class="gt_row gt_right">0.134</td>
-<td headers="conf.low" class="gt_row gt_right">−0.049</td>
-<td headers="conf.high" class="gt_row gt_right">0.400</td>
-<td headers="p.value" class="gt_row gt_right">0.196</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x5</td>
-<td headers="estimate" class="gt_row gt_right">2.184</td>
-<td headers="std.error" class="gt_row gt_right">1.099</td>
-<td headers="conf.low" class="gt_row gt_right">0.338</td>
-<td headers="conf.high" class="gt_row gt_right">4.031</td>
-<td headers="p.value" class="gt_row gt_right">0.053</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x6</td>
-<td headers="estimate" class="gt_row gt_right">0.225</td>
-<td headers="std.error" class="gt_row gt_right">0.187</td>
-<td headers="conf.low" class="gt_row gt_right">−0.089</td>
-<td headers="conf.high" class="gt_row gt_right">0.539</td>
-<td headers="p.value" class="gt_row gt_right">0.234</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x7</td>
-<td headers="estimate" class="gt_row gt_right">0.016</td>
-<td headers="std.error" class="gt_row gt_right">0.028</td>
-<td headers="conf.low" class="gt_row gt_right">−0.031</td>
-<td headers="conf.high" class="gt_row gt_right">0.063</td>
-<td headers="p.value" class="gt_row gt_right">0.573</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x8</td>
-<td headers="estimate" class="gt_row gt_right">−0.006</td>
-<td headers="std.error" class="gt_row gt_right">0.006</td>
-<td headers="conf.low" class="gt_row gt_right">−0.017</td>
-<td headers="conf.high" class="gt_row gt_right">0.005</td>
-<td headers="p.value" class="gt_row gt_right">0.351</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x9</td>
-<td headers="estimate" class="gt_row gt_right">−0.070</td>
-<td headers="std.error" class="gt_row gt_right">0.021</td>
-<td headers="conf.low" class="gt_row gt_right">−0.105</td>
-<td headers="conf.high" class="gt_row gt_right">−0.035</td>
-<td headers="p.value" class="gt_row gt_right">0.002</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x10</td>
-<td headers="estimate" class="gt_row gt_right">0.012</td>
-<td headers="std.error" class="gt_row gt_right">0.026</td>
-<td headers="conf.low" class="gt_row gt_right">−0.031</td>
-<td headers="conf.high" class="gt_row gt_right">0.056</td>
-<td headers="p.value" class="gt_row gt_right">0.636</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x11</td>
-<td headers="estimate" class="gt_row gt_right">0.002</td>
-<td headers="std.error" class="gt_row gt_right">0.051</td>
-<td headers="conf.low" class="gt_row gt_right">−0.084</td>
-<td headers="conf.high" class="gt_row gt_right">0.087</td>
-<td headers="p.value" class="gt_row gt_right">0.974</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x12</td>
-<td headers="estimate" class="gt_row gt_right">0.011</td>
-<td headers="std.error" class="gt_row gt_right">0.008</td>
-<td headers="conf.low" class="gt_row gt_right">−0.002</td>
-<td headers="conf.high" class="gt_row gt_right">0.024</td>
-<td headers="p.value" class="gt_row gt_right">0.160</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x13</td>
-<td headers="estimate" class="gt_row gt_right">−0.022</td>
-<td headers="std.error" class="gt_row gt_right">0.016</td>
-<td headers="conf.low" class="gt_row gt_right">−0.049</td>
-<td headers="conf.high" class="gt_row gt_right">0.004</td>
-<td headers="p.value" class="gt_row gt_right">0.169</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x14</td>
-<td headers="estimate" class="gt_row gt_right">−0.001</td>
-<td headers="std.error" class="gt_row gt_right">0.002</td>
-<td headers="conf.low" class="gt_row gt_right">−0.005</td>
-<td headers="conf.high" class="gt_row gt_right">0.003</td>
-<td headers="p.value" class="gt_row gt_right">0.549</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x15</td>
-<td headers="estimate" class="gt_row gt_right">0.001</td>
-<td headers="std.error" class="gt_row gt_right">0.018</td>
-<td headers="conf.low" class="gt_row gt_right">−0.029</td>
-<td headers="conf.high" class="gt_row gt_right">0.032</td>
-<td headers="p.value" class="gt_row gt_right">0.936</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">term</th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">estimate</th>
+<th id="std.error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std.error</th>
+<th id="conf.low" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.low</th>
+<th id="conf.high" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.high</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">(Intercept)</td>
+<td class="gt_row gt_right" headers="estimate">−15.899</td>
+<td class="gt_row gt_right" headers="std.error">6.886</td>
+<td class="gt_row gt_right" headers="conf.low">−27.469</td>
+<td class="gt_row gt_right" headers="conf.high">−4.328</td>
+<td class="gt_row gt_right" headers="p.value">0.026</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x1</td>
+<td class="gt_row gt_right" headers="estimate">−0.035</td>
+<td class="gt_row gt_right" headers="std.error">0.015</td>
+<td class="gt_row gt_right" headers="conf.low">−0.059</td>
+<td class="gt_row gt_right" headers="conf.high">−0.011</td>
+<td class="gt_row gt_right" headers="p.value">0.020</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x2</td>
+<td class="gt_row gt_right" headers="estimate">0.036</td>
+<td class="gt_row gt_right" headers="std.error">0.017</td>
+<td class="gt_row gt_right" headers="conf.low">0.007</td>
+<td class="gt_row gt_right" headers="conf.high">0.066</td>
+<td class="gt_row gt_right" headers="p.value">0.044</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x3</td>
+<td class="gt_row gt_right" headers="estimate">0.055</td>
+<td class="gt_row gt_right" headers="std.error">0.030</td>
+<td class="gt_row gt_right" headers="conf.low">0.005</td>
+<td class="gt_row gt_right" headers="conf.high">0.105</td>
+<td class="gt_row gt_right" headers="p.value">0.074</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x4</td>
+<td class="gt_row gt_right" headers="estimate">0.176</td>
+<td class="gt_row gt_right" headers="std.error">0.134</td>
+<td class="gt_row gt_right" headers="conf.low">−0.049</td>
+<td class="gt_row gt_right" headers="conf.high">0.400</td>
+<td class="gt_row gt_right" headers="p.value">0.196</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x5</td>
+<td class="gt_row gt_right" headers="estimate">2.184</td>
+<td class="gt_row gt_right" headers="std.error">1.099</td>
+<td class="gt_row gt_right" headers="conf.low">0.338</td>
+<td class="gt_row gt_right" headers="conf.high">4.031</td>
+<td class="gt_row gt_right" headers="p.value">0.053</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x6</td>
+<td class="gt_row gt_right" headers="estimate">0.225</td>
+<td class="gt_row gt_right" headers="std.error">0.187</td>
+<td class="gt_row gt_right" headers="conf.low">−0.089</td>
+<td class="gt_row gt_right" headers="conf.high">0.539</td>
+<td class="gt_row gt_right" headers="p.value">0.234</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x7</td>
+<td class="gt_row gt_right" headers="estimate">0.016</td>
+<td class="gt_row gt_right" headers="std.error">0.028</td>
+<td class="gt_row gt_right" headers="conf.low">−0.031</td>
+<td class="gt_row gt_right" headers="conf.high">0.063</td>
+<td class="gt_row gt_right" headers="p.value">0.573</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x8</td>
+<td class="gt_row gt_right" headers="estimate">−0.006</td>
+<td class="gt_row gt_right" headers="std.error">0.006</td>
+<td class="gt_row gt_right" headers="conf.low">−0.017</td>
+<td class="gt_row gt_right" headers="conf.high">0.005</td>
+<td class="gt_row gt_right" headers="p.value">0.351</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x9</td>
+<td class="gt_row gt_right" headers="estimate">−0.070</td>
+<td class="gt_row gt_right" headers="std.error">0.021</td>
+<td class="gt_row gt_right" headers="conf.low">−0.105</td>
+<td class="gt_row gt_right" headers="conf.high">−0.035</td>
+<td class="gt_row gt_right" headers="p.value">0.002</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x10</td>
+<td class="gt_row gt_right" headers="estimate">0.012</td>
+<td class="gt_row gt_right" headers="std.error">0.026</td>
+<td class="gt_row gt_right" headers="conf.low">−0.031</td>
+<td class="gt_row gt_right" headers="conf.high">0.056</td>
+<td class="gt_row gt_right" headers="p.value">0.636</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x11</td>
+<td class="gt_row gt_right" headers="estimate">0.002</td>
+<td class="gt_row gt_right" headers="std.error">0.051</td>
+<td class="gt_row gt_right" headers="conf.low">−0.084</td>
+<td class="gt_row gt_right" headers="conf.high">0.087</td>
+<td class="gt_row gt_right" headers="p.value">0.974</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x12</td>
+<td class="gt_row gt_right" headers="estimate">0.011</td>
+<td class="gt_row gt_right" headers="std.error">0.008</td>
+<td class="gt_row gt_right" headers="conf.low">−0.002</td>
+<td class="gt_row gt_right" headers="conf.high">0.024</td>
+<td class="gt_row gt_right" headers="p.value">0.160</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x13</td>
+<td class="gt_row gt_right" headers="estimate">−0.022</td>
+<td class="gt_row gt_right" headers="std.error">0.016</td>
+<td class="gt_row gt_right" headers="conf.low">−0.049</td>
+<td class="gt_row gt_right" headers="conf.high">0.004</td>
+<td class="gt_row gt_right" headers="p.value">0.169</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x14</td>
+<td class="gt_row gt_right" headers="estimate">−0.001</td>
+<td class="gt_row gt_right" headers="std.error">0.002</td>
+<td class="gt_row gt_right" headers="conf.low">−0.005</td>
+<td class="gt_row gt_right" headers="conf.high">0.003</td>
+<td class="gt_row gt_right" headers="p.value">0.549</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x15</td>
+<td class="gt_row gt_right" headers="estimate">0.001</td>
+<td class="gt_row gt_right" headers="std.error">0.018</td>
+<td class="gt_row gt_right" headers="conf.low">−0.029</td>
+<td class="gt_row gt_right" headers="conf.high">0.032</td>
+<td class="gt_row gt_right" headers="p.value">0.936</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>Does this new model show a strong fit to the data?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_sink2) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_sink2) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
-<div id="oxlhxqdnde" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#oxlhxqdnde table {
+<div id="vtmkokwntn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vtmkokwntn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#oxlhxqdnde thead, #oxlhxqdnde tbody, #oxlhxqdnde tfoot, #oxlhxqdnde tr, #oxlhxqdnde td, #oxlhxqdnde th {
+#vtmkokwntn thead, #vtmkokwntn tbody, #vtmkokwntn tfoot, #vtmkokwntn tr, #vtmkokwntn td, #vtmkokwntn th {
   border-style: none;
 }
 
-#oxlhxqdnde p {
+#vtmkokwntn p {
   margin: 0;
   padding: 0;
 }
 
-#oxlhxqdnde .gt_table {
+#vtmkokwntn .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1235,12 +1316,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_caption {
+#vtmkokwntn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#oxlhxqdnde .gt_title {
+#vtmkokwntn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1252,7 +1333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#oxlhxqdnde .gt_subtitle {
+#vtmkokwntn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1264,7 +1345,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#oxlhxqdnde .gt_heading {
+#vtmkokwntn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1276,13 +1357,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_bottom_border {
+#vtmkokwntn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_col_headings {
+#vtmkokwntn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1297,7 +1378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_col_heading {
+#vtmkokwntn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1317,7 +1398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#oxlhxqdnde .gt_column_spanner_outer {
+#vtmkokwntn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1329,15 +1410,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#oxlhxqdnde .gt_column_spanner_outer:first-child {
+#vtmkokwntn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#oxlhxqdnde .gt_column_spanner_outer:last-child {
+#vtmkokwntn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#oxlhxqdnde .gt_column_spanner {
+#vtmkokwntn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1349,11 +1430,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#oxlhxqdnde .gt_spanner_row {
+#vtmkokwntn .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#oxlhxqdnde .gt_group_heading {
+#vtmkokwntn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1379,7 +1460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#oxlhxqdnde .gt_empty_group_heading {
+#vtmkokwntn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1394,15 +1475,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#oxlhxqdnde .gt_from_md > :first-child {
+#vtmkokwntn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#oxlhxqdnde .gt_from_md > :last-child {
+#vtmkokwntn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#oxlhxqdnde .gt_row {
+#vtmkokwntn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1421,7 +1502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#oxlhxqdnde .gt_stub {
+#vtmkokwntn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1434,7 +1515,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#oxlhxqdnde .gt_stub_row_group {
+#vtmkokwntn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1448,15 +1529,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#oxlhxqdnde .gt_row_group_first td {
+#vtmkokwntn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#oxlhxqdnde .gt_row_group_first th {
+#vtmkokwntn .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#oxlhxqdnde .gt_summary_row {
+#vtmkokwntn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1466,16 +1547,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#oxlhxqdnde .gt_first_summary_row {
+#vtmkokwntn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_first_summary_row.thick {
+#vtmkokwntn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#oxlhxqdnde .gt_last_summary_row {
+#vtmkokwntn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1485,7 +1566,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_grand_summary_row {
+#vtmkokwntn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1495,7 +1576,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#oxlhxqdnde .gt_first_grand_summary_row {
+#vtmkokwntn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1505,7 +1586,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_last_grand_summary_row_top {
+#vtmkokwntn .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1515,11 +1596,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_striped {
+#vtmkokwntn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#oxlhxqdnde .gt_table_body {
+#vtmkokwntn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1528,7 +1609,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_footnotes {
+#vtmkokwntn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1542,7 +1623,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_footnote {
+#vtmkokwntn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1551,7 +1632,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#oxlhxqdnde .gt_sourcenotes {
+#vtmkokwntn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1565,7 +1646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#oxlhxqdnde .gt_sourcenote {
+#vtmkokwntn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1573,115 +1654,125 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#oxlhxqdnde .gt_left {
+#vtmkokwntn .gt_left {
   text-align: left;
 }
 
-#oxlhxqdnde .gt_center {
+#vtmkokwntn .gt_center {
   text-align: center;
 }
 
-#oxlhxqdnde .gt_right {
+#vtmkokwntn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#oxlhxqdnde .gt_font_normal {
+#vtmkokwntn .gt_font_normal {
   font-weight: normal;
 }
 
-#oxlhxqdnde .gt_font_bold {
+#vtmkokwntn .gt_font_bold {
   font-weight: bold;
 }
 
-#oxlhxqdnde .gt_font_italic {
+#vtmkokwntn .gt_font_italic {
   font-style: italic;
 }
 
-#oxlhxqdnde .gt_super {
+#vtmkokwntn .gt_super {
   font-size: 65%;
 }
 
-#oxlhxqdnde .gt_footnote_marks {
+#vtmkokwntn .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#oxlhxqdnde .gt_asterisk {
+#vtmkokwntn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#oxlhxqdnde .gt_indent_1 {
+#vtmkokwntn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#oxlhxqdnde .gt_indent_2 {
+#vtmkokwntn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#oxlhxqdnde .gt_indent_3 {
+#vtmkokwntn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#oxlhxqdnde .gt_indent_4 {
+#vtmkokwntn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#oxlhxqdnde .gt_indent_5 {
+#vtmkokwntn .gt_indent_5 {
   text-indent: 25px;
 }
-</style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="r.squared">r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="adj.r.squared">adj.r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sigma">sigma</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="statistic">statistic</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df">df</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df.residual">df.residual</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="nobs">nobs</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="r.squared" class="gt_row gt_right">0.774</td>
-<td headers="adj.r.squared" class="gt_row gt_right">0.698</td>
-<td headers="sigma" class="gt_row gt_right">0.550</td>
-<td headers="statistic" class="gt_row gt_right">10.070</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td>
-<td headers="df" class="gt_row gt_right">15</td>
-<td headers="df.residual" class="gt_row gt_right">44</td>
-<td headers="nobs" class="gt_row gt_right">60</td></tr>
-  </tbody>
-  
-  
-</table>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_sink2) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
 
-<div id="aetgdeqlyd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#aetgdeqlyd table {
+#vtmkokwntn .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#vtmkokwntn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">r.squared</th>
+<th id="adj.r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">adj.r.squared</th>
+<th id="sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">sigma</th>
+<th id="statistic" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">statistic</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+<th id="df" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df</th>
+<th id="df.residual" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df.residual</th>
+<th id="nobs" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">nobs</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="r.squared">0.774</td>
+<td class="gt_row gt_right" headers="adj.r.squared">0.698</td>
+<td class="gt_row gt_right" headers="sigma">0.550</td>
+<td class="gt_row gt_right" headers="statistic">10.070</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+<td class="gt_row gt_right" headers="df">15</td>
+<td class="gt_row gt_right" headers="df.residual">44</td>
+<td class="gt_row gt_right" headers="nobs">60</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_sink2) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="uahlrwmqgk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uahlrwmqgk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#aetgdeqlyd thead, #aetgdeqlyd tbody, #aetgdeqlyd tfoot, #aetgdeqlyd tr, #aetgdeqlyd td, #aetgdeqlyd th {
+#uahlrwmqgk thead, #uahlrwmqgk tbody, #uahlrwmqgk tfoot, #uahlrwmqgk tr, #uahlrwmqgk td, #uahlrwmqgk th {
   border-style: none;
 }
 
-#aetgdeqlyd p {
+#uahlrwmqgk p {
   margin: 0;
   padding: 0;
 }
 
-#aetgdeqlyd .gt_table {
+#uahlrwmqgk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1707,12 +1798,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_caption {
+#uahlrwmqgk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#aetgdeqlyd .gt_title {
+#uahlrwmqgk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1724,7 +1815,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#aetgdeqlyd .gt_subtitle {
+#uahlrwmqgk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1736,7 +1827,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#aetgdeqlyd .gt_heading {
+#uahlrwmqgk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1748,13 +1839,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_bottom_border {
+#uahlrwmqgk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_col_headings {
+#uahlrwmqgk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1769,7 +1860,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_col_heading {
+#uahlrwmqgk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1789,7 +1880,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#aetgdeqlyd .gt_column_spanner_outer {
+#uahlrwmqgk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1801,15 +1892,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#aetgdeqlyd .gt_column_spanner_outer:first-child {
+#uahlrwmqgk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#aetgdeqlyd .gt_column_spanner_outer:last-child {
+#uahlrwmqgk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#aetgdeqlyd .gt_column_spanner {
+#uahlrwmqgk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1821,11 +1912,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#aetgdeqlyd .gt_spanner_row {
+#uahlrwmqgk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#aetgdeqlyd .gt_group_heading {
+#uahlrwmqgk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1851,7 +1942,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#aetgdeqlyd .gt_empty_group_heading {
+#uahlrwmqgk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1866,15 +1957,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#aetgdeqlyd .gt_from_md > :first-child {
+#uahlrwmqgk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#aetgdeqlyd .gt_from_md > :last-child {
+#uahlrwmqgk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#aetgdeqlyd .gt_row {
+#uahlrwmqgk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1893,7 +1984,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#aetgdeqlyd .gt_stub {
+#uahlrwmqgk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1906,7 +1997,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#aetgdeqlyd .gt_stub_row_group {
+#uahlrwmqgk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1920,15 +2011,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#aetgdeqlyd .gt_row_group_first td {
+#uahlrwmqgk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#aetgdeqlyd .gt_row_group_first th {
+#uahlrwmqgk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#aetgdeqlyd .gt_summary_row {
+#uahlrwmqgk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1938,16 +2029,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#aetgdeqlyd .gt_first_summary_row {
+#uahlrwmqgk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_first_summary_row.thick {
+#uahlrwmqgk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#aetgdeqlyd .gt_last_summary_row {
+#uahlrwmqgk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1957,7 +2048,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_grand_summary_row {
+#uahlrwmqgk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1967,7 +2058,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#aetgdeqlyd .gt_first_grand_summary_row {
+#uahlrwmqgk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1977,7 +2068,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_last_grand_summary_row_top {
+#uahlrwmqgk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1987,11 +2078,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_striped {
+#uahlrwmqgk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#aetgdeqlyd .gt_table_body {
+#uahlrwmqgk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2000,7 +2091,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_footnotes {
+#uahlrwmqgk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2014,7 +2105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_footnote {
+#uahlrwmqgk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2023,7 +2114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#aetgdeqlyd .gt_sourcenotes {
+#uahlrwmqgk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2037,7 +2128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#aetgdeqlyd .gt_sourcenote {
+#uahlrwmqgk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2045,84 +2136,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#aetgdeqlyd .gt_left {
+#uahlrwmqgk .gt_left {
   text-align: left;
 }
 
-#aetgdeqlyd .gt_center {
+#uahlrwmqgk .gt_center {
   text-align: center;
 }
 
-#aetgdeqlyd .gt_right {
+#uahlrwmqgk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#aetgdeqlyd .gt_font_normal {
+#uahlrwmqgk .gt_font_normal {
   font-weight: normal;
 }
 
-#aetgdeqlyd .gt_font_bold {
+#uahlrwmqgk .gt_font_bold {
   font-weight: bold;
 }
 
-#aetgdeqlyd .gt_font_italic {
+#uahlrwmqgk .gt_font_italic {
   font-style: italic;
 }
 
-#aetgdeqlyd .gt_super {
+#uahlrwmqgk .gt_super {
   font-size: 65%;
 }
 
-#aetgdeqlyd .gt_footnote_marks {
+#uahlrwmqgk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#aetgdeqlyd .gt_asterisk {
+#uahlrwmqgk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#aetgdeqlyd .gt_indent_1 {
+#uahlrwmqgk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#aetgdeqlyd .gt_indent_2 {
+#uahlrwmqgk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#aetgdeqlyd .gt_indent_3 {
+#uahlrwmqgk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#aetgdeqlyd .gt_indent_4 {
+#uahlrwmqgk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#aetgdeqlyd .gt_indent_5 {
+#uahlrwmqgk .gt_indent_5 {
   text-indent: 25px;
 }
+
+#uahlrwmqgk .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#uahlrwmqgk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="logLik">logLik</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="AIC">AIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BIC">BIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="deviance">deviance</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="logLik" class="gt_row gt_right">−39.96</td>
-<td headers="AIC" class="gt_row gt_right">113.92</td>
-<td headers="BIC" class="gt_row gt_right">149.52</td>
-<td headers="deviance" class="gt_row gt_right">13.31</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="logLik" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">logLik</th>
+<th id="AIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">AIC</th>
+<th id="BIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">BIC</th>
+<th id="deviance" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">deviance</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="logLik">−39.96</td>
+<td class="gt_row gt_right" headers="AIC">113.92</td>
+<td class="gt_row gt_right" headers="BIC">149.52</td>
+<td class="gt_row gt_right" headers="deviance">13.31</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -2130,7 +2232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="how-much-collinearity-are-we-dealing-with" class="level3" data-number="32.4.2">
 <h3 data-number="32.4.2" class="anchored" data-anchor-id="how-much-collinearity-are-we-dealing-with"><span class="header-section-number">32.4.2</span> How much collinearity are we dealing with?</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_sink2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_sink2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        x1         x2         x3         x4         x5         x6         x7 
   4.113888   6.143551   3.967774   7.470045   4.307618   4.860538   3.994781 
@@ -2148,25 +2250,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="32.5" class="anchored" data-anchor-id="using-the-lasso-to-suggest-a-smaller-model"><span class="header-section-number">32.5</span> Using the LASSO to suggest a smaller model</h2>
 <p>To begin, we will create a data matrix for our predictors, as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pred_x <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mod_sink2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pred_x <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mod_sink2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Next, we create a matrix of our outcome.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>out_y <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span> <span class="fu">select</span>(out_std) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>out_y <span class="ot">&lt;-</span> pollution <span class="sc">|&gt;</span> <span class="fu">select</span>(out_std) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The LASSO involves both a cross-validation step, and a fitting step. Here’s the code we’ll use in this case:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123456</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123456</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>cv_poll1 <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(pred_x, out_y, <span class="at">type.measure =</span> <span class="st">"mse"</span>, <span class="at">nfolds =</span> <span class="dv">10</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>mod_las1 <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(pred_x, out_y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> cv_poll1<span class="sc">$</span>lambda.min)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>mod_las1 <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(pred_x, out_y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> cv_poll1<span class="sc">$</span>lambda.min)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now, let’s look at what the LASSO does. As we can see from the tidied output below, some predictors are dropped from the model, while others have their coefficients shrunk towards zero as compared to what we saw in the “kitchen sink” model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_las1) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_las1) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
 <div id="zvpkdeizgc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#zvpkdeizgc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -2606,72 +2707,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #zvpkdeizgc .gt_indent_5 {
   text-indent: 25px;
 }
+
+#zvpkdeizgc .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#zvpkdeizgc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="term">term</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="step">step</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="estimate">estimate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="lambda">lambda</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="dev.ratio">dev.ratio</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">-2.345226117</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x1</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">-0.026289494</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x2</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">0.020872173</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x3</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">0.017666053</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x6</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">0.101973313</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x7</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">0.012515424</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x8</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">-0.006425945</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x9</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">-0.060226425</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x10</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">0.007342706</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x14</td>
-<td headers="step" class="gt_row gt_right">1</td>
-<td headers="estimate" class="gt_row gt_right">-0.003819796</td>
-<td headers="lambda" class="gt_row gt_right">0.03783146</td>
-<td headers="dev.ratio" class="gt_row gt_right">0.7335261</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">term</th>
+<th id="step" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">step</th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">estimate</th>
+<th id="lambda" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">lambda</th>
+<th id="dev.ratio" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">dev.ratio</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">(Intercept)</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">-2.345226117</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x1</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">-0.026289494</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x2</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">0.020872173</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x3</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">0.017666053</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x6</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">0.101973313</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x7</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">0.012515424</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x8</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">-0.006425945</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x9</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">-0.060226425</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x10</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">0.007342706</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x14</td>
+<td class="gt_row gt_right" headers="step">1</td>
+<td class="gt_row gt_right" headers="estimate">-0.003819796</td>
+<td class="gt_row gt_right" headers="lambda">0.03783146</td>
+<td class="gt_row gt_right" headers="dev.ratio">0.7335261</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -2681,10 +2811,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="32.6" class="anchored" data-anchor-id="would-the-9-predictor-model-be-a-big-improvement"><span class="header-section-number">32.6</span> Would the 9-predictor model be a big improvement?</h2>
 <p>Suppose we fit a new model inspired by this LASSO. It’s still just a linear model, with no shrinkage, here.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mod_3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(out_std <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10 <span class="sc">+</span> x14, </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mod_3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(out_std <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10 <span class="sc">+</span> x14, </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> pollution)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      x1       x2       x3       x6       x7       x8       x9      x10 
 1.850485 1.548039 1.867603 3.899194 2.318288 1.479122 2.281879 2.333836 
@@ -2694,11 +2824,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Well, the collinearity is certainly much improved.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.9</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.9</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, conf.low, conf.high, p.value) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
 <div id="rhghnrzmza" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#rhghnrzmza table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -3138,92 +3267,120 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #rhghnrzmza .gt_indent_5 {
   text-indent: 25px;
 }
+
+#rhghnrzmza .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#rhghnrzmza div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="term">term</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="estimate">estimate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std.error">std.error</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.low">conf.low</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.high">conf.high</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">−4.122</td>
-<td headers="std.error" class="gt_row gt_right">2.254</td>
-<td headers="conf.low" class="gt_row gt_right">−7.900</td>
-<td headers="conf.high" class="gt_row gt_right">−0.344</td>
-<td headers="p.value" class="gt_row gt_right">0.073</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x1</td>
-<td headers="estimate" class="gt_row gt_right">−0.031</td>
-<td headers="std.error" class="gt_row gt_right">0.010</td>
-<td headers="conf.low" class="gt_row gt_right">−0.048</td>
-<td headers="conf.high" class="gt_row gt_right">−0.015</td>
-<td headers="p.value" class="gt_row gt_right">0.002</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x2</td>
-<td headers="estimate" class="gt_row gt_right">0.024</td>
-<td headers="std.error" class="gt_row gt_right">0.009</td>
-<td headers="conf.low" class="gt_row gt_right">0.010</td>
-<td headers="conf.high" class="gt_row gt_right">0.039</td>
-<td headers="p.value" class="gt_row gt_right">0.007</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x3</td>
-<td headers="estimate" class="gt_row gt_right">0.040</td>
-<td headers="std.error" class="gt_row gt_right">0.020</td>
-<td headers="conf.low" class="gt_row gt_right">0.005</td>
-<td headers="conf.high" class="gt_row gt_right">0.074</td>
-<td headers="p.value" class="gt_row gt_right">0.058</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x6</td>
-<td headers="estimate" class="gt_row gt_right">0.057</td>
-<td headers="std.error" class="gt_row gt_right">0.166</td>
-<td headers="conf.low" class="gt_row gt_right">−0.222</td>
-<td headers="conf.high" class="gt_row gt_right">0.335</td>
-<td headers="p.value" class="gt_row gt_right">0.734</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x7</td>
-<td headers="estimate" class="gt_row gt_right">0.021</td>
-<td headers="std.error" class="gt_row gt_right">0.021</td>
-<td headers="conf.low" class="gt_row gt_right">−0.014</td>
-<td headers="conf.high" class="gt_row gt_right">0.056</td>
-<td headers="p.value" class="gt_row gt_right">0.328</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x8</td>
-<td headers="estimate" class="gt_row gt_right">−0.009</td>
-<td headers="std.error" class="gt_row gt_right">0.006</td>
-<td headers="conf.low" class="gt_row gt_right">−0.019</td>
-<td headers="conf.high" class="gt_row gt_right">0.001</td>
-<td headers="p.value" class="gt_row gt_right">0.129</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x9</td>
-<td headers="estimate" class="gt_row gt_right">−0.069</td>
-<td headers="std.error" class="gt_row gt_right">0.012</td>
-<td headers="conf.low" class="gt_row gt_right">−0.090</td>
-<td headers="conf.high" class="gt_row gt_right">−0.049</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x10</td>
-<td headers="estimate" class="gt_row gt_right">0.013</td>
-<td headers="std.error" class="gt_row gt_right">0.024</td>
-<td headers="conf.low" class="gt_row gt_right">−0.026</td>
-<td headers="conf.high" class="gt_row gt_right">0.053</td>
-<td headers="p.value" class="gt_row gt_right">0.581</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x14</td>
-<td headers="estimate" class="gt_row gt_right">−0.004</td>
-<td headers="std.error" class="gt_row gt_right">0.001</td>
-<td headers="conf.low" class="gt_row gt_right">−0.006</td>
-<td headers="conf.high" class="gt_row gt_right">−0.002</td>
-<td headers="p.value" class="gt_row gt_right">0.007</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">term</th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">estimate</th>
+<th id="std.error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std.error</th>
+<th id="conf.low" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.low</th>
+<th id="conf.high" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.high</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">(Intercept)</td>
+<td class="gt_row gt_right" headers="estimate">−4.122</td>
+<td class="gt_row gt_right" headers="std.error">2.254</td>
+<td class="gt_row gt_right" headers="conf.low">−7.900</td>
+<td class="gt_row gt_right" headers="conf.high">−0.344</td>
+<td class="gt_row gt_right" headers="p.value">0.073</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x1</td>
+<td class="gt_row gt_right" headers="estimate">−0.031</td>
+<td class="gt_row gt_right" headers="std.error">0.010</td>
+<td class="gt_row gt_right" headers="conf.low">−0.048</td>
+<td class="gt_row gt_right" headers="conf.high">−0.015</td>
+<td class="gt_row gt_right" headers="p.value">0.002</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x2</td>
+<td class="gt_row gt_right" headers="estimate">0.024</td>
+<td class="gt_row gt_right" headers="std.error">0.009</td>
+<td class="gt_row gt_right" headers="conf.low">0.010</td>
+<td class="gt_row gt_right" headers="conf.high">0.039</td>
+<td class="gt_row gt_right" headers="p.value">0.007</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x3</td>
+<td class="gt_row gt_right" headers="estimate">0.040</td>
+<td class="gt_row gt_right" headers="std.error">0.020</td>
+<td class="gt_row gt_right" headers="conf.low">0.005</td>
+<td class="gt_row gt_right" headers="conf.high">0.074</td>
+<td class="gt_row gt_right" headers="p.value">0.058</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x6</td>
+<td class="gt_row gt_right" headers="estimate">0.057</td>
+<td class="gt_row gt_right" headers="std.error">0.166</td>
+<td class="gt_row gt_right" headers="conf.low">−0.222</td>
+<td class="gt_row gt_right" headers="conf.high">0.335</td>
+<td class="gt_row gt_right" headers="p.value">0.734</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x7</td>
+<td class="gt_row gt_right" headers="estimate">0.021</td>
+<td class="gt_row gt_right" headers="std.error">0.021</td>
+<td class="gt_row gt_right" headers="conf.low">−0.014</td>
+<td class="gt_row gt_right" headers="conf.high">0.056</td>
+<td class="gt_row gt_right" headers="p.value">0.328</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x8</td>
+<td class="gt_row gt_right" headers="estimate">−0.009</td>
+<td class="gt_row gt_right" headers="std.error">0.006</td>
+<td class="gt_row gt_right" headers="conf.low">−0.019</td>
+<td class="gt_row gt_right" headers="conf.high">0.001</td>
+<td class="gt_row gt_right" headers="p.value">0.129</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x9</td>
+<td class="gt_row gt_right" headers="estimate">−0.069</td>
+<td class="gt_row gt_right" headers="std.error">0.012</td>
+<td class="gt_row gt_right" headers="conf.low">−0.090</td>
+<td class="gt_row gt_right" headers="conf.high">−0.049</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x10</td>
+<td class="gt_row gt_right" headers="estimate">0.013</td>
+<td class="gt_row gt_right" headers="std.error">0.024</td>
+<td class="gt_row gt_right" headers="conf.low">−0.026</td>
+<td class="gt_row gt_right" headers="conf.high">0.053</td>
+<td class="gt_row gt_right" headers="p.value">0.581</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x14</td>
+<td class="gt_row gt_right" headers="estimate">−0.004</td>
+<td class="gt_row gt_right" headers="std.error">0.001</td>
+<td class="gt_row gt_right" headers="conf.low">−0.006</td>
+<td class="gt_row gt_right" headers="conf.high">−0.002</td>
+<td class="gt_row gt_right" headers="p.value">0.007</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>Does this new model show a strong fit to the data?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_3) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_3) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
 <div id="ajsvjuyxzv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ajsvjuyxzv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -3663,39 +3820,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #ajsvjuyxzv .gt_indent_5 {
   text-indent: 25px;
 }
-</style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="r.squared">r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="adj.r.squared">adj.r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sigma">sigma</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="statistic">statistic</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df">df</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df.residual">df.residual</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="nobs">nobs</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="r.squared" class="gt_row gt_right">0.747</td>
-<td headers="adj.r.squared" class="gt_row gt_right">0.702</td>
-<td headers="sigma" class="gt_row gt_right">0.546</td>
-<td headers="statistic" class="gt_row gt_right">16.413</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td>
-<td headers="df" class="gt_row gt_right">9</td>
-<td headers="df.residual" class="gt_row gt_right">50</td>
-<td headers="nobs" class="gt_row gt_right">60</td></tr>
-  </tbody>
-  
-  
-</table>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_3) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
 
+#ajsvjuyxzv .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ajsvjuyxzv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">r.squared</th>
+<th id="adj.r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">adj.r.squared</th>
+<th id="sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">sigma</th>
+<th id="statistic" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">statistic</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+<th id="df" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df</th>
+<th id="df.residual" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df.residual</th>
+<th id="nobs" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">nobs</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="r.squared">0.747</td>
+<td class="gt_row gt_right" headers="adj.r.squared">0.702</td>
+<td class="gt_row gt_right" headers="sigma">0.546</td>
+<td class="gt_row gt_right" headers="statistic">16.413</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="df.residual">50</td>
+<td class="gt_row gt_right" headers="nobs">60</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_3) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
 <div id="cklitocteq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#cklitocteq table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -4135,41 +4302,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #cklitocteq .gt_indent_5 {
   text-indent: 25px;
 }
+
+#cklitocteq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#cklitocteq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="logLik">logLik</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="AIC">AIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BIC">BIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="deviance">deviance</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="logLik" class="gt_row gt_right">−43.39</td>
-<td headers="AIC" class="gt_row gt_right">108.78</td>
-<td headers="BIC" class="gt_row gt_right">131.81</td>
-<td headers="deviance" class="gt_row gt_right">14.92</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="logLik" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">logLik</th>
+<th id="AIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">AIC</th>
+<th id="BIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">BIC</th>
+<th id="deviance" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">deviance</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="logLik">−43.39</td>
+<td class="gt_row gt_right" headers="AIC">108.78</td>
+<td class="gt_row gt_right" headers="BIC">131.81</td>
+<td class="gt_row gt_right" headers="deviance">14.92</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>Finally, here’s a set of plots for regression diagnostics. How do things look?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="lasso_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lasso_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="using-stepwise-regression-to-suggest-a-smaller-model" class="level2" data-number="32.7">
 <h2 data-number="32.7" class="anchored" data-anchor-id="using-stepwise-regression-to-suggest-a-smaller-model"><span class="header-section-number">32.7</span> Using Stepwise Regression to suggest a smaller model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mod_4 <span class="ot">&lt;-</span> <span class="fu">step</span>(mod_sink2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mod_4 <span class="ot">&lt;-</span> <span class="fu">step</span>(mod_sink2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Start:  AIC=-58.35
 out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + 
@@ -4305,11 +4487,10 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 </div>
 <p>Here’s a summary of the fitted model after stepwise regression, which suggests a different set of 9 predictors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_4, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.9</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod_4, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.9</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, conf.low, conf.high, p.value) <span class="sc">|&gt;</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
 <div id="uxugymehew" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#uxugymehew table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -4749,91 +4930,119 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 #uxugymehew .gt_indent_5 {
   text-indent: 25px;
 }
+
+#uxugymehew .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#uxugymehew div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="term">term</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="estimate">estimate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std.error">std.error</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.low">conf.low</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="conf.high">conf.high</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">−17.332</td>
-<td headers="std.error" class="gt_row gt_right">5.257</td>
-<td headers="conf.low" class="gt_row gt_right">−26.142</td>
-<td headers="conf.high" class="gt_row gt_right">−8.522</td>
-<td headers="p.value" class="gt_row gt_right">0.002</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x1</td>
-<td headers="estimate" class="gt_row gt_right">−0.034</td>
-<td headers="std.error" class="gt_row gt_right">0.013</td>
-<td headers="conf.low" class="gt_row gt_right">−0.057</td>
-<td headers="conf.high" class="gt_row gt_right">−0.012</td>
-<td headers="p.value" class="gt_row gt_right">0.012</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x2</td>
-<td headers="estimate" class="gt_row gt_right">0.042</td>
-<td headers="std.error" class="gt_row gt_right">0.011</td>
-<td headers="conf.low" class="gt_row gt_right">0.024</td>
-<td headers="conf.high" class="gt_row gt_right">0.060</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x3</td>
-<td headers="estimate" class="gt_row gt_right">0.055</td>
-<td headers="std.error" class="gt_row gt_right">0.022</td>
-<td headers="conf.low" class="gt_row gt_right">0.018</td>
-<td headers="conf.high" class="gt_row gt_right">0.092</td>
-<td headers="p.value" class="gt_row gt_right">0.016</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x4</td>
-<td headers="estimate" class="gt_row gt_right">0.200</td>
-<td headers="std.error" class="gt_row gt_right">0.113</td>
-<td headers="conf.low" class="gt_row gt_right">0.011</td>
-<td headers="conf.high" class="gt_row gt_right">0.388</td>
-<td headers="p.value" class="gt_row gt_right">0.082</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x5</td>
-<td headers="estimate" class="gt_row gt_right">2.530</td>
-<td headers="std.error" class="gt_row gt_right">0.942</td>
-<td headers="conf.low" class="gt_row gt_right">0.951</td>
-<td headers="conf.high" class="gt_row gt_right">4.109</td>
-<td headers="p.value" class="gt_row gt_right">0.010</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x6</td>
-<td headers="estimate" class="gt_row gt_right">0.373</td>
-<td headers="std.error" class="gt_row gt_right">0.111</td>
-<td headers="conf.low" class="gt_row gt_right">0.186</td>
-<td headers="conf.high" class="gt_row gt_right">0.559</td>
-<td headers="p.value" class="gt_row gt_right">0.002</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x9</td>
-<td headers="estimate" class="gt_row gt_right">−0.073</td>
-<td headers="std.error" class="gt_row gt_right">0.015</td>
-<td headers="conf.low" class="gt_row gt_right">−0.099</td>
-<td headers="conf.high" class="gt_row gt_right">−0.048</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x12</td>
-<td headers="estimate" class="gt_row gt_right">0.015</td>
-<td headers="std.error" class="gt_row gt_right">0.005</td>
-<td headers="conf.low" class="gt_row gt_right">0.007</td>
-<td headers="conf.high" class="gt_row gt_right">0.023</td>
-<td headers="p.value" class="gt_row gt_right">0.004</td></tr>
-    <tr><td headers="term" class="gt_row gt_left">x13</td>
-<td headers="estimate" class="gt_row gt_right">−0.031</td>
-<td headers="std.error" class="gt_row gt_right">0.010</td>
-<td headers="conf.low" class="gt_row gt_right">−0.047</td>
-<td headers="conf.high" class="gt_row gt_right">−0.015</td>
-<td headers="p.value" class="gt_row gt_right">0.002</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">term</th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">estimate</th>
+<th id="std.error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std.error</th>
+<th id="conf.low" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.low</th>
+<th id="conf.high" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.high</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">(Intercept)</td>
+<td class="gt_row gt_right" headers="estimate">−17.332</td>
+<td class="gt_row gt_right" headers="std.error">5.257</td>
+<td class="gt_row gt_right" headers="conf.low">−26.142</td>
+<td class="gt_row gt_right" headers="conf.high">−8.522</td>
+<td class="gt_row gt_right" headers="p.value">0.002</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x1</td>
+<td class="gt_row gt_right" headers="estimate">−0.034</td>
+<td class="gt_row gt_right" headers="std.error">0.013</td>
+<td class="gt_row gt_right" headers="conf.low">−0.057</td>
+<td class="gt_row gt_right" headers="conf.high">−0.012</td>
+<td class="gt_row gt_right" headers="p.value">0.012</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x2</td>
+<td class="gt_row gt_right" headers="estimate">0.042</td>
+<td class="gt_row gt_right" headers="std.error">0.011</td>
+<td class="gt_row gt_right" headers="conf.low">0.024</td>
+<td class="gt_row gt_right" headers="conf.high">0.060</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x3</td>
+<td class="gt_row gt_right" headers="estimate">0.055</td>
+<td class="gt_row gt_right" headers="std.error">0.022</td>
+<td class="gt_row gt_right" headers="conf.low">0.018</td>
+<td class="gt_row gt_right" headers="conf.high">0.092</td>
+<td class="gt_row gt_right" headers="p.value">0.016</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x4</td>
+<td class="gt_row gt_right" headers="estimate">0.200</td>
+<td class="gt_row gt_right" headers="std.error">0.113</td>
+<td class="gt_row gt_right" headers="conf.low">0.011</td>
+<td class="gt_row gt_right" headers="conf.high">0.388</td>
+<td class="gt_row gt_right" headers="p.value">0.082</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x5</td>
+<td class="gt_row gt_right" headers="estimate">2.530</td>
+<td class="gt_row gt_right" headers="std.error">0.942</td>
+<td class="gt_row gt_right" headers="conf.low">0.951</td>
+<td class="gt_row gt_right" headers="conf.high">4.109</td>
+<td class="gt_row gt_right" headers="p.value">0.010</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x6</td>
+<td class="gt_row gt_right" headers="estimate">0.373</td>
+<td class="gt_row gt_right" headers="std.error">0.111</td>
+<td class="gt_row gt_right" headers="conf.low">0.186</td>
+<td class="gt_row gt_right" headers="conf.high">0.559</td>
+<td class="gt_row gt_right" headers="p.value">0.002</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x9</td>
+<td class="gt_row gt_right" headers="estimate">−0.073</td>
+<td class="gt_row gt_right" headers="std.error">0.015</td>
+<td class="gt_row gt_right" headers="conf.low">−0.099</td>
+<td class="gt_row gt_right" headers="conf.high">−0.048</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">x12</td>
+<td class="gt_row gt_right" headers="estimate">0.015</td>
+<td class="gt_row gt_right" headers="std.error">0.005</td>
+<td class="gt_row gt_right" headers="conf.low">0.007</td>
+<td class="gt_row gt_right" headers="conf.high">0.023</td>
+<td class="gt_row gt_right" headers="p.value">0.004</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">x13</td>
+<td class="gt_row gt_right" headers="estimate">−0.031</td>
+<td class="gt_row gt_right" headers="std.error">0.010</td>
+<td class="gt_row gt_right" headers="conf.low">−0.047</td>
+<td class="gt_row gt_right" headers="conf.high">−0.015</td>
+<td class="gt_row gt_right" headers="p.value">0.002</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_4) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_4) <span class="sc">|&gt;</span> <span class="fu">select</span>(r.squared<span class="sc">:</span>p.value, df, df.residual, nobs) <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(r.squared<span class="sc">:</span>p.value, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-
 <div id="tyfhguqdjo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#tyfhguqdjo table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -5273,39 +5482,49 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 #tyfhguqdjo .gt_indent_5 {
   text-indent: 25px;
 }
-</style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="r.squared">r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="adj.r.squared">adj.r.squared</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sigma">sigma</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="statistic">statistic</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p.value">p.value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df">df</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="df.residual">df.residual</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="nobs">nobs</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="r.squared" class="gt_row gt_right">0.767</td>
-<td headers="adj.r.squared" class="gt_row gt_right">0.725</td>
-<td headers="sigma" class="gt_row gt_right">0.524</td>
-<td headers="statistic" class="gt_row gt_right">18.274</td>
-<td headers="p.value" class="gt_row gt_right">0.000</td>
-<td headers="df" class="gt_row gt_right">9</td>
-<td headers="df.residual" class="gt_row gt_right">50</td>
-<td headers="nobs" class="gt_row gt_right">60</td></tr>
-  </tbody>
-  
-  
-</table>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_4) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
 
+#tyfhguqdjo .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#tyfhguqdjo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">r.squared</th>
+<th id="adj.r.squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">adj.r.squared</th>
+<th id="sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">sigma</th>
+<th id="statistic" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">statistic</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p.value</th>
+<th id="df" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df</th>
+<th id="df.residual" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df.residual</th>
+<th id="nobs" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">nobs</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="r.squared">0.767</td>
+<td class="gt_row gt_right" headers="adj.r.squared">0.725</td>
+<td class="gt_row gt_right" headers="sigma">0.524</td>
+<td class="gt_row gt_right" headers="statistic">18.274</td>
+<td class="gt_row gt_right" headers="p.value">0.000</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="df.residual">50</td>
+<td class="gt_row gt_right" headers="nobs">60</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(mod_4) <span class="sc">|&gt;</span> <span class="fu">select</span>(logLik, AIC, BIC, deviance) <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
 <div id="jqztnvcgzl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#jqztnvcgzl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -5745,31 +5964,42 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 #jqztnvcgzl .gt_indent_5 {
   text-indent: 25px;
 }
+
+#jqztnvcgzl .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#jqztnvcgzl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="logLik">logLik</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="AIC">AIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BIC">BIC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="deviance">deviance</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="logLik" class="gt_row gt_right">−40.95</td>
-<td headers="AIC" class="gt_row gt_right">103.90</td>
-<td headers="BIC" class="gt_row gt_right">126.93</td>
-<td headers="deviance" class="gt_row gt_right">13.75</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="logLik" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">logLik</th>
+<th id="AIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">AIC</th>
+<th id="BIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">BIC</th>
+<th id="deviance" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">deviance</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="logLik">−40.95</td>
+<td class="gt_row gt_right" headers="AIC">103.90</td>
+<td class="gt_row gt_right" headers="BIC">126.93</td>
+<td class="gt_row gt_right" headers="deviance">13.75</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>How is the collinearity in this model?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(mod_4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       x1        x2        x3        x4        x5        x6        x9       x12 
  3.724589  2.666789  2.359891  5.826631  3.483085  1.898922  3.981753 45.943057 
@@ -5779,22 +6009,26 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 </div>
 <p>That looks more troubling to me, at least as compared to <code>mod_3</code>. How about the residual plots? Do those for <code>mod_4</code> below look meaningfully different from the ones we built for our LASSO-inspired model <code>mod_3</code>?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<p><img src="lasso_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lasso_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We now seem to have a point with a pretty substantial Cook’s distance, specifically the point from row 8 of the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">8</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(x1<span class="sc">:</span>x12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">8</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(x1<span class="sc">:</span>x12)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
      x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12
   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 1    11    53    68   9.2  2.99  12.1  90.6    47   7.8  48.9  12.3   648</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">8</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(x13<span class="sc">:</span>x15, y, y_inverse, out_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pollution <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">8</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(x13<span class="sc">:</span>x15, y, y_inverse, out_std)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 6
     x13   x14   x15     y y_inverse out_std[,1]
@@ -5804,13 +6038,13 @@ out_std ~ x1 + x2 + x3 + x4 + x5 + x6 + x9 + x12 + x13
 </div>
 <p>So what is unusual about Row 8? Well, it has an especially large value of <code>x12</code> compared to the rest of the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(pollution<span class="sc">$</span>x12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(pollution<span class="sc">$</span>x12)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>pollution$x12 
-       n  missing distinct     Info     Mean      Gmd      .05      .10 
-      60        0       34    0.998    37.85    52.03     3.95     5.00 
-     .25      .50      .75      .90      .95 
-    7.00    14.50    30.25    56.90   106.95 
+       n  missing distinct     Info     Mean  pMedian      Gmd      .05 
+      60        0       34    0.998    37.85       18    52.03     3.95 
+     .10      .25      .50      .75      .90      .95 
+    5.00     7.00    14.50    30.25    56.90   106.95 
 
 lowest :   1   3   4   5   6, highest:  88 105 144 311 648</code></pre>
 </div>
@@ -5822,43 +6056,58 @@ lowest :   1   3   4   5   6, highest:  88 105 144 311 648</code></pre>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -5866,207 +6115,360 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
       return codeEl.innerText;
     }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
       });
     }
-  }
-});
-</script>
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./cox2.html" class="pagination-link">
+      <a href="./cox2.html" class="pagination-link" aria-label="Cox Regression Models, Part 2">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Cox Regression Models, Part 2</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./bayes.html" class="pagination-link">
+      <a href="./bayes.html" class="pagination-link" aria-label="NEW!! Bayes and a Linear Model">
         <span class="nav-page-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">NEW!! Bayes and a Linear Model</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

@@ -1,8 +1,8 @@
 # 431 Review: Comparing Rates {#sec-431-rates}
 
-In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled "431 Review" show elements of the two studies involved in a "[431 Project B](https://thomaselove.github.io/431-projectB-2022/)" using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called **nh432** that we developed in @sec-nh432-build and then summarized in @sec-nh432-book. Note that we'll ignore the issue of sampling weights and assume a "missing completely at random" (MCAR) mechanism in these "431 Review" chapters, so that we can work with complete cases.
+In this Chapter, we will review some key issues about comparing proportions or rates, mostly drawn from the 431 course. This and the other Chapters labeled "431 Review" show elements of the two studies involved in a "[431 Project B](https://thomaselove.github.io/431-projectB-2025/)" using the pre-pandemic (2017 - March 2020) data from the National Health and Nutrition Examination Survey (NHANES) called **nh432** that we developed in @sec-nh432-build and then summarized in @sec-nh432-book. Note that we'll ignore the issue of sampling weights and assume a "missing completely at random" (MCAR) mechanism in these "431 Review" chapters, so that we can work with complete cases.
 
-The 431 course notes are at <https://thomaselove.github.io/431-notes/> and will remain there until June 1.
+The 431 course book is found at <https://thomaselove.github.io/431-book/> and will remain there until June 1.
 
 ## R Setup
 
@@ -166,7 +166,7 @@ ggplot(dat2, aes(x = SEDATE)) +
        subtitle = "Identification of Groups")
 ```
 
-Now, we want to compare the Lowest SEDATE group (SED_F = [2, 200)) to the Highest SEDATE group (SED_F = [420, 1320]). To do that, we'll drop the middle group, and then look at the cross-tabulation of our two remaining SEDATE groups with our outcome: NOW_EXER (in factor form.)
+Now, we want to compare the Lowest SEDATE group (`SED_f` = [2, 200)) to the Highest SEDATE group (`SED_F` = [420, 1320]). To do that, we'll drop the middle group, and then look at the cross-tabulation of our two remaining SEDATE groups with our outcome: NOW_EXER (in factor form.)
 
 ```{r}
 dat2 <- dat2 |>

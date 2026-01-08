@@ -10,7 +10,7 @@ While these Notes share some of the features of a textbook, they are neither com
 - use new examples to show some of the same techniques,
 - refer to issues not mentioned in this document,
 
-but what we don't (always) do is follow these notes very precisely. We assume instead that you will read the materials and try to learn from them, just as you will attend classes and try to learn from them. We welcome feedback of all kinds on this document or anything else via our [Campuswire discussion forum](https://campuswire.com/).
+but what we don't (always) do is follow these notes very precisely. We assume instead that you will read the materials and try to learn from them, just as you will attend classes and try to learn from them. We welcome feedback of all kinds on this document or anything else via email to **431-help at case dot edu**.
 
 What you will mostly find are brief explanations of a key idea or summary, accompanied (most of the time) by R code and a demonstration of the results of applying that code.
 

@@ -20,7 +20,7 @@ library(conflicted)
 library(patchwork)
 library(tidyverse) 
 
-conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::select, base::max)
 
 theme_set(theme_bw())
 ```

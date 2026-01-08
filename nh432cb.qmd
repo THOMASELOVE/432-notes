@@ -112,7 +112,7 @@ nh_factor_vars <- nh432 |>
   select(where(~ is.factor(.x)))
 
 tbl_summary(nh_factor_vars,
-            label = c(RACEETH = "RACEETH: Race/Ethnicity",
+            label = list(RACEETH = "RACEETH: Race/Ethnicity",
                       EDUC = "EDUC: Educational Attainment",
                       SROH = "SROH: Self-reported Overall Health",
                       WTGOAL = "WTGOAL: Like to weigh more/less/the same?",
