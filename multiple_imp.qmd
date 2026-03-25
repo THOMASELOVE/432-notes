@@ -268,7 +268,7 @@ The model makes predictions for our transformed outcome, `phys_tr`. Now, we need
 
 ```{r}
 preds_m_1cc <- preds_m_1cc |>
-    tbl_df() |>
+    as_tibble() |>
     mutate(names = c("Sheena", "Jacob"),
            pred_physhealth = exp(fit) - 1,
            conf_low = exp(lwr) - 1,
@@ -445,7 +445,7 @@ Now, we need to back-transform the predictions and the confidence intervals that
 
 ```{r}
 preds_m_2cc <- preds_m_2cc |>
-    tbl_df() |>
+    as_tibble() |>
     mutate(names = c("Sheena", "Jacob"),
            pred_physhealth = exp(fit) - 1,
            conf_low = exp(lwr) - 1,
@@ -612,7 +612,7 @@ preds_m_16imp
 
 ```{r}
 preds_m_16imp <- preds_m_16imp |>
-    tbl_df() |>
+    as_tibble() |>
     mutate(names = c("Sheena", "Jacob"),
            pred_physhealth = exp(value) - 1) |>
     select(names, pred_physhealth)

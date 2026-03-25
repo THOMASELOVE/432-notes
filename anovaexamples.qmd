@@ -106,7 +106,7 @@ tidy(t_bond) |>
        y = "Difference in Mean Bond Strength")
 ```
 
-Based on these confidence intervals (which have a family-wise 90% confidence level), we see that D shows arger mean `strength` than A or B or C, and that C is also associated with larger mean `strength` than A. 
+Based on these confidence intervals (which have a family-wise 90% confidence level), we see that D shows larger mean `strength` than A or B or C, and that C is also associated with larger mean `strength` than A. 
 
 ## A Two-Way ANOVA: Looking at Two Factors
 

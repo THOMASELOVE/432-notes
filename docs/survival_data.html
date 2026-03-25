@@ -729,12 +729,6 @@ t_{(1)} \leq t_{(2)} \leq t_{(3)} \leq ... t_{(n)}
 <p>Another approach to plotting the Kaplan-Meier estimate comes from <code>ggsurvplot</code>, from the <strong>survminer</strong> package.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit1, <span class="at">data =</span> hem)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.
-ℹ The deprecated feature was likely used in the ggpubr package.
-  Please report the issue at &lt;https://github.com/kassambara/ggpubr/issues&gt;.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -750,12 +744,12 @@ t_{(1)} \leq t_{(2)} \leq t_{(3)} \leq ... t_{(n)}
 <h3 data-number="29.6.3" class="anchored" data-anchor-id="a-fancy-k-m-plot-with-a-number-at-risk-table"><span class="header-section-number">29.6.3</span> A “Fancy” K-M Plot with a number at risk table</h3>
 <p>We can do a lot more with these plots. Following the suggestions at https://github.com/kassambara/survminer/ we can create the following…</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit1, <span class="at">data =</span> hem,</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table =</span> <span class="cn">TRUE</span>, <span class="co"># Add risk table</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">xlab =</span> <span class="st">"Time in months"</span>, <span class="co"># adjust X axis label</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">break.time.by =</span> <span class="dv">12</span> <span class="co"># add tick every 12 months</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>   )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit1, <span class="at">data =</span> hem,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table =</span> <span class="cn">TRUE</span>, <span class="co"># Add risk table</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">xlab =</span> <span class="st">"Time in months"</span>, <span class="co"># adjust X axis label</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">break.time.by =</span> <span class="dv">12</span> <span class="co"># add tick every 12 months</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>   )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Ignoring unknown labels:
 • fill : "Strata"
@@ -783,8 +777,8 @@ Ignoring unknown labels:
 <h2 data-number="29.7" class="anchored" data-anchor-id="comparing-survival-across-the-two-genotypes"><span class="header-section-number">29.7</span> Comparing Survival Across the Two Genotypes</h2>
 <p>Now, suppose we want to compare the hemorrhage-free survival functions for subjects classified by their apoliprotein E genotype. Working with the same survival object <code>hemsurv</code> we now run the <code>survfit</code> function to compare across the two <code>genotype</code> groups.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>hemfit2 <span class="ot">&lt;-</span> <span class="fu">survfit</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(hemfit2, <span class="at">print.rmean=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>hemfit2 <span class="ot">&lt;-</span> <span class="fu">survfit</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(hemfit2, <span class="at">print.rmean=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call: survfit(formula = hemsurv ~ hem$genotype)
 
@@ -802,14 +796,14 @@ hem$genotype=1 38     14   33.9      3.77   37.5    24.9      NA
 <h3 data-number="29.7.1" class="anchored" data-anchor-id="kaplan-meier-survival-function-estimates-by-genotype"><span class="header-section-number">29.7.1</span> Kaplan-Meier Survival Function Estimates, by Genotype</h3>
 <p>I find I have to crank the figure height in Quarto up to at least 6 to get the risk table to show up nicely in this setting.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit2, <span class="at">data =</span> hem,</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab =</span> <span class="st">"Time in months"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">break.time.by =</span> <span class="dv">12</span>,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.labs =</span> <span class="fu">c</span>(<span class="st">"Homozygous"</span>, <span class="st">"Heterozygous"</span>),</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">risk.table.height =</span> <span class="fl">0.25</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>           )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit2, <span class="at">data =</span> hem,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab =</span> <span class="st">"Time in months"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">break.time.by =</span> <span class="dv">12</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.labs =</span> <span class="fu">c</span>(<span class="st">"Homozygous"</span>, <span class="st">"Heterozygous"</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">risk.table.height =</span> <span class="fl">0.25</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>           )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Ignoring unknown labels:
 • colour : "Strata"</code></pre>
@@ -829,7 +823,7 @@ hem$genotype=1 38     14   33.9      3.77   37.5    24.9      NA
 <h2 data-number="29.8" class="anchored" data-anchor-id="testing-the-difference-between-two-survival-curves"><span class="header-section-number">29.8</span> Testing the difference between two survival curves</h2>
 <p>To obtain a significance test comparing these two survival curves, we turn to a <em>log rank</em> test, which tests the null hypothesis <span class="math inline">\(H_0: S_1(t) = S_2(t)\)</span> for all <span class="math inline">\(t\)</span> where the two exposures have survival functions <span class="math inline">\(S_1(t)\)</span> and <span class="math inline">\(S_2(t)\)</span>. We use the <code>survdiff</code> function to explore this test, which uses a <span class="math inline">\(\chi^2\)</span> statistic to do the testing.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 survdiff(formula = hemsurv ~ hem$genotype)
@@ -849,7 +843,7 @@ hem$genotype=1 38       14     8.72      3.19      6.28
 <h3 data-number="29.8.1" class="anchored" data-anchor-id="alternative-log-rank-tests"><span class="header-section-number">29.8.1</span> Alternative log rank tests</h3>
 <p>An alternative approach to testing is the <em>Peto and Peto modification of the Gehan-Wilcoxon test</em>, which results from adding <code>rho=1</code> to the <code>survdiff</code> function (<code>rho=0</code>, the default, yields the log rank test.)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype, <span class="at">rho=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(hemsurv <span class="sc">~</span> hem<span class="sc">$</span>genotype, <span class="at">rho=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 survdiff(formula = hemsurv ~ hem$genotype, rho = 1)
@@ -871,18 +865,24 @@ hem$genotype=1 38    11.79     7.54      2.39      5.46
 <h2 data-number="29.9" class="anchored" data-anchor-id="a-fancy-k-m-plot-with-a-number-at-risk-table-1"><span class="header-section-number">29.9</span> A “Fancy” K-M Plot with a number at risk table</h2>
 <p>We can add the log rank test result to our “fancy” K-M plot. Visit https://github.com/kassambara/survminer/ for more options.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit2, <span class="at">data =</span> hem, <span class="at">size =</span> <span class="dv">1</span>,</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"purple"</span>, <span class="st">"darkgoldenrod"</span>), <span class="co"># custom colors</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">pval =</span> <span class="cn">TRUE</span>, <span class="co"># Add p-value</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table =</span> <span class="cn">TRUE</span>, <span class="co"># Add risk table</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table.height =</span> <span class="fl">0.25</span>, <span class="co"># change if you have &gt;2 groups</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table.y.text.col =</span> T, <span class="co"># show colors in table listing</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">xlab =</span> <span class="st">"Time in months"</span>, <span class="co"># adjust X axis label</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">break.time.by =</span> <span class="dv">12</span>, <span class="co"># break X axis in time intervals</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">legend.labs =</span> <span class="fu">c</span>(<span class="st">"Homozygous"</span>, <span class="st">"Heterozygous"</span>), <span class="co"># labels</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>   <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>() <span class="co"># Change ggplot2 theme</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>   )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(hemfit2, <span class="at">data =</span> hem, <span class="at">size =</span> <span class="dv">1</span>,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"purple"</span>, <span class="st">"darkgoldenrod"</span>), <span class="co"># custom colors</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">pval =</span> <span class="cn">TRUE</span>, <span class="co"># Add p-value</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table =</span> <span class="cn">TRUE</span>, <span class="co"># Add risk table</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table.height =</span> <span class="fl">0.25</span>, <span class="co"># change if you have &gt;2 groups</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">risk.table.y.text.col =</span> T, <span class="co"># show colors in table listing</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">xlab =</span> <span class="st">"Time in months"</span>, <span class="co"># adjust X axis label</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">break.time.by =</span> <span class="dv">12</span>, <span class="co"># break X axis in time intervals</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">legend.labs =</span> <span class="fu">c</span>(<span class="st">"Homozygous"</span>, <span class="st">"Heterozygous"</span>), <span class="co"># labels</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>   <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>() <span class="co"># Change ggplot2 theme</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>   )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.
+ℹ The deprecated feature was likely used in the ggpubr package.
+  Please report the issue at &lt;https://github.com/kassambara/ggpubr/issues&gt;.</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Ignoring unknown labels:
 • colour : "Strata"</code></pre>
