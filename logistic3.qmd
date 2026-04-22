@@ -64,7 +64,7 @@ For model A, our Nagelkerke $R^2$ = `r round(res_modC$stats["R2"],3)`, which is 
 
 ### Interpreting the C statistic and Plotting the ROC Curve
 
-The C statistic is a measure of the area under the receiver operating characteristic curve. [This link](http://blog.yhat.com/posts/roc-curves.html) has some nice material that provides some insight into the C statistic and ROC curve. 
+The C statistic is a measure of the area under the receiver operating characteristic curve. 
 
 - Recall that C ranges from 0 to 1. 0 = BAD, 1 = GOOD.
     + values of C less than 0.5 indicate that your prediction model is not even as good as simple random guessing of "yes" or "no" for your response.

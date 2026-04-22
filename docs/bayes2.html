@@ -415,9 +415,10 @@ window.Quarto = {
   <li><a href="#fitting-a-logistic-regression-model-with-glm" id="toc-fitting-a-logistic-regression-model-with-glm" class="nav-link" data-scroll-target="#fitting-a-logistic-regression-model-with-glm"><span class="header-section-number">34.4</span> Fitting a Logistic Regression Model with <code>glm()</code></a></li>
   <li><a href="#fitting-a-bayesian-logistic-regression" id="toc-fitting-a-bayesian-logistic-regression" class="nav-link" data-scroll-target="#fitting-a-bayesian-logistic-regression"><span class="header-section-number">34.5</span> Fitting a Bayesian Logistic Regression</a>
   <ul class="collapse">
-  <li><a href="#extracting-the-posterior" id="toc-extracting-the-posterior" class="nav-link" data-scroll-target="#extracting-the-posterior"><span class="header-section-number">34.5.1</span> Extracting the Posterior</a></li>
-  <li><a href="#describing-uncertainty" id="toc-describing-uncertainty" class="nav-link" data-scroll-target="#describing-uncertainty"><span class="header-section-number">34.5.2</span> Describing Uncertainty</a></li>
-  <li><a href="#visualizing-the-coefficients-and-credible-intervals" id="toc-visualizing-the-coefficients-and-credible-intervals" class="nav-link" data-scroll-target="#visualizing-the-coefficients-and-credible-intervals"><span class="header-section-number">34.5.3</span> Visualizing the Coefficients and Credible Intervals</a></li>
+  <li><a href="#parameters-and-performance" id="toc-parameters-and-performance" class="nav-link" data-scroll-target="#parameters-and-performance"><span class="header-section-number">34.5.1</span> Parameters and Performance</a></li>
+  <li><a href="#extracting-the-posterior" id="toc-extracting-the-posterior" class="nav-link" data-scroll-target="#extracting-the-posterior"><span class="header-section-number">34.5.2</span> Extracting the Posterior</a></li>
+  <li><a href="#describing-uncertainty" id="toc-describing-uncertainty" class="nav-link" data-scroll-target="#describing-uncertainty"><span class="header-section-number">34.5.3</span> Describing Uncertainty</a></li>
+  <li><a href="#visualizing-the-coefficients-and-credible-intervals" id="toc-visualizing-the-coefficients-and-credible-intervals" class="nav-link" data-scroll-target="#visualizing-the-coefficients-and-credible-intervals"><span class="header-section-number">34.5.4</span> Visualizing the Coefficients and Credible Intervals</a></li>
   </ul></li>
   <li><a href="#summarizing-the-posterior-distribution" id="toc-summarizing-the-posterior-distribution" class="nav-link" data-scroll-target="#summarizing-the-posterior-distribution"><span class="header-section-number">34.6</span> Summarizing the Posterior Distribution</a>
   <ul class="collapse">
@@ -428,6 +429,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#summarizing-the-priors-used" id="toc-summarizing-the-priors-used" class="nav-link" data-scroll-target="#summarizing-the-priors-used"><span class="header-section-number">34.7</span> Summarizing the Priors Used</a></li>
   <li><a href="#graphical-posterior-predictive-checks" id="toc-graphical-posterior-predictive-checks" class="nav-link" data-scroll-target="#graphical-posterior-predictive-checks"><span class="header-section-number">34.8</span> Graphical Posterior Predictive Checks</a></li>
+  <li><a href="#check_model-results-for-models-m1-and-m2" id="toc-check_model-results-for-models-m1-and-m2" class="nav-link" data-scroll-target="#check_model-results-for-models-m1-and-m2"><span class="header-section-number">34.9</span> check_model() results for models m1 and m2</a></li>
   </ul>
 </nav>
     </div>
@@ -475,12 +477,13 @@ window.Quarto = {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(insight)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(conflicted)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">conflicts_prefer</span>(dplyr<span class="sc">::</span>select, dplyr<span class="sc">::</span>filter, </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                 base<span class="sc">::</span>mean, base<span class="sc">::</span>range, base<span class="sc">::</span>max)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">conflicts_prefer</span>(dplyr<span class="sc">::</span>select, dplyr<span class="sc">::</span>filter, </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                 base<span class="sc">::</span>mean, base<span class="sc">::</span>range, base<span class="sc">::</span>max)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="return-to-the-smalldat-example" class="level2" data-number="34.2">
@@ -542,28 +545,28 @@ window.Quarto = {
 <h2 data-number="34.4" class="anchored" data-anchor-id="fitting-a-logistic-regression-model-with-glm"><span class="header-section-number">34.4</span> Fitting a Logistic Regression Model with <code>glm()</code></h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glm</span>((smoker <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> totchol <span class="sc">+</span> <span class="fu">factor</span>(educ), </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> smalldat)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> smalldat, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(m1) <span class="sc">|&gt;</span> <span class="fu">select</span>(nobs, df.residual, AIC, BIC, logLik, deviance, null.deviance) <span class="sc">|&gt;</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(AIC<span class="sc">:</span>null.deviance, <span class="at">decimals =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="vyzkantbao" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vyzkantbao table {
+<div id="okyyqcpouv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#okyyqcpouv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vyzkantbao thead, #vyzkantbao tbody, #vyzkantbao tfoot, #vyzkantbao tr, #vyzkantbao td, #vyzkantbao th {
+#okyyqcpouv thead, #okyyqcpouv tbody, #okyyqcpouv tfoot, #okyyqcpouv tr, #okyyqcpouv td, #okyyqcpouv th {
   border-style: none;
 }
 
-#vyzkantbao p {
+#okyyqcpouv p {
   margin: 0;
   padding: 0;
 }
 
-#vyzkantbao .gt_table {
+#okyyqcpouv .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -589,12 +592,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_caption {
+#okyyqcpouv .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vyzkantbao .gt_title {
+#okyyqcpouv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -606,7 +609,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#vyzkantbao .gt_subtitle {
+#okyyqcpouv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -618,7 +621,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#vyzkantbao .gt_heading {
+#okyyqcpouv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -630,13 +633,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_bottom_border {
+#okyyqcpouv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_col_headings {
+#okyyqcpouv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -651,7 +654,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_col_heading {
+#okyyqcpouv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -671,7 +674,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#vyzkantbao .gt_column_spanner_outer {
+#okyyqcpouv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -683,15 +686,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#vyzkantbao .gt_column_spanner_outer:first-child {
+#okyyqcpouv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vyzkantbao .gt_column_spanner_outer:last-child {
+#okyyqcpouv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vyzkantbao .gt_column_spanner {
+#okyyqcpouv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -703,11 +706,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#vyzkantbao .gt_spanner_row {
+#okyyqcpouv .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vyzkantbao .gt_group_heading {
+#okyyqcpouv .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -733,7 +736,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#vyzkantbao .gt_empty_group_heading {
+#okyyqcpouv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -748,15 +751,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#vyzkantbao .gt_from_md > :first-child {
+#okyyqcpouv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vyzkantbao .gt_from_md > :last-child {
+#okyyqcpouv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vyzkantbao .gt_row {
+#okyyqcpouv .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -775,7 +778,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#vyzkantbao .gt_stub {
+#okyyqcpouv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -788,7 +791,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vyzkantbao .gt_stub_row_group {
+#okyyqcpouv .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -802,15 +805,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#vyzkantbao .gt_row_group_first td {
+#okyyqcpouv .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vyzkantbao .gt_row_group_first th {
+#okyyqcpouv .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vyzkantbao .gt_summary_row {
+#okyyqcpouv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -820,16 +823,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vyzkantbao .gt_first_summary_row {
+#okyyqcpouv .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_first_summary_row.thick {
+#okyyqcpouv .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vyzkantbao .gt_last_summary_row {
+#okyyqcpouv .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -839,7 +842,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_grand_summary_row {
+#okyyqcpouv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -849,7 +852,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vyzkantbao .gt_first_grand_summary_row {
+#okyyqcpouv .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -859,7 +862,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_last_grand_summary_row_top {
+#okyyqcpouv .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -869,11 +872,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_striped {
+#okyyqcpouv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vyzkantbao .gt_table_body {
+#okyyqcpouv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -882,7 +885,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_footnotes {
+#okyyqcpouv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -896,7 +899,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_footnote {
+#okyyqcpouv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -905,7 +908,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vyzkantbao .gt_sourcenotes {
+#okyyqcpouv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -919,7 +922,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vyzkantbao .gt_sourcenote {
+#okyyqcpouv .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -927,72 +930,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vyzkantbao .gt_left {
+#okyyqcpouv .gt_left {
   text-align: left;
 }
 
-#vyzkantbao .gt_center {
+#okyyqcpouv .gt_center {
   text-align: center;
 }
 
-#vyzkantbao .gt_right {
+#okyyqcpouv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vyzkantbao .gt_font_normal {
+#okyyqcpouv .gt_font_normal {
   font-weight: normal;
 }
 
-#vyzkantbao .gt_font_bold {
+#okyyqcpouv .gt_font_bold {
   font-weight: bold;
 }
 
-#vyzkantbao .gt_font_italic {
+#okyyqcpouv .gt_font_italic {
   font-style: italic;
 }
 
-#vyzkantbao .gt_super {
+#okyyqcpouv .gt_super {
   font-size: 65%;
 }
 
-#vyzkantbao .gt_footnote_marks {
+#okyyqcpouv .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vyzkantbao .gt_asterisk {
+#okyyqcpouv .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vyzkantbao .gt_indent_1 {
+#okyyqcpouv .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vyzkantbao .gt_indent_2 {
+#okyyqcpouv .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vyzkantbao .gt_indent_3 {
+#okyyqcpouv .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vyzkantbao .gt_indent_4 {
+#okyyqcpouv .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vyzkantbao .gt_indent_5 {
+#okyyqcpouv .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vyzkantbao .katex-display {
+#okyyqcpouv .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vyzkantbao div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#okyyqcpouv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1013,11 +1016,11 @@ window.Quarto = {
 <tr class="odd">
 <td class="gt_row gt_right" headers="nobs">150</td>
 <td class="gt_row gt_right" headers="df.residual">143</td>
-<td class="gt_row gt_right" headers="AIC">218.30</td>
-<td class="gt_row gt_right" headers="BIC">242.39</td>
-<td class="gt_row gt_right" headers="logLik">−101.15</td>
-<td class="gt_row gt_right" headers="deviance">33.83</td>
-<td class="gt_row gt_right" headers="null.deviance">37.49</td>
+<td class="gt_row gt_right" headers="AIC">206.46</td>
+<td class="gt_row gt_right" headers="BIC">227.54</td>
+<td class="gt_row gt_right" headers="logLik">−96.23</td>
+<td class="gt_row gt_right" headers="deviance">192.46</td>
+<td class="gt_row gt_right" headers="null.deviance">207.92</td>
 </tr>
 </tbody>
 </table>
@@ -1029,23 +1032,23 @@ window.Quarto = {
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="kygcttlesy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kygcttlesy table {
+<div id="aybiorprqe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aybiorprqe table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kygcttlesy thead, #kygcttlesy tbody, #kygcttlesy tfoot, #kygcttlesy tr, #kygcttlesy td, #kygcttlesy th {
+#aybiorprqe thead, #aybiorprqe tbody, #aybiorprqe tfoot, #aybiorprqe tr, #aybiorprqe td, #aybiorprqe th {
   border-style: none;
 }
 
-#kygcttlesy p {
+#aybiorprqe p {
   margin: 0;
   padding: 0;
 }
 
-#kygcttlesy .gt_table {
+#aybiorprqe .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1071,12 +1074,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_caption {
+#aybiorprqe .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kygcttlesy .gt_title {
+#aybiorprqe .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1088,7 +1091,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#kygcttlesy .gt_subtitle {
+#aybiorprqe .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1100,7 +1103,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#kygcttlesy .gt_heading {
+#aybiorprqe .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1112,13 +1115,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_bottom_border {
+#aybiorprqe .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_col_headings {
+#aybiorprqe .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1133,7 +1136,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_col_heading {
+#aybiorprqe .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1153,7 +1156,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#kygcttlesy .gt_column_spanner_outer {
+#aybiorprqe .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1165,15 +1168,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#kygcttlesy .gt_column_spanner_outer:first-child {
+#aybiorprqe .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kygcttlesy .gt_column_spanner_outer:last-child {
+#aybiorprqe .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kygcttlesy .gt_column_spanner {
+#aybiorprqe .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1185,11 +1188,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#kygcttlesy .gt_spanner_row {
+#aybiorprqe .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kygcttlesy .gt_group_heading {
+#aybiorprqe .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1215,7 +1218,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#kygcttlesy .gt_empty_group_heading {
+#aybiorprqe .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1230,15 +1233,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#kygcttlesy .gt_from_md > :first-child {
+#aybiorprqe .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kygcttlesy .gt_from_md > :last-child {
+#aybiorprqe .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kygcttlesy .gt_row {
+#aybiorprqe .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1257,7 +1260,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#kygcttlesy .gt_stub {
+#aybiorprqe .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1270,7 +1273,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#kygcttlesy .gt_stub_row_group {
+#aybiorprqe .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1284,15 +1287,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#kygcttlesy .gt_row_group_first td {
+#aybiorprqe .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kygcttlesy .gt_row_group_first th {
+#aybiorprqe .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kygcttlesy .gt_summary_row {
+#aybiorprqe .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1302,16 +1305,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#kygcttlesy .gt_first_summary_row {
+#aybiorprqe .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_first_summary_row.thick {
+#aybiorprqe .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kygcttlesy .gt_last_summary_row {
+#aybiorprqe .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1321,7 +1324,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_grand_summary_row {
+#aybiorprqe .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1331,7 +1334,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#kygcttlesy .gt_first_grand_summary_row {
+#aybiorprqe .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1341,7 +1344,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_last_grand_summary_row_top {
+#aybiorprqe .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1351,11 +1354,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_striped {
+#aybiorprqe .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kygcttlesy .gt_table_body {
+#aybiorprqe .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1364,7 +1367,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_footnotes {
+#aybiorprqe .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1378,7 +1381,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_footnote {
+#aybiorprqe .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1387,7 +1390,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#kygcttlesy .gt_sourcenotes {
+#aybiorprqe .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1401,7 +1404,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#kygcttlesy .gt_sourcenote {
+#aybiorprqe .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1409,72 +1412,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#kygcttlesy .gt_left {
+#aybiorprqe .gt_left {
   text-align: left;
 }
 
-#kygcttlesy .gt_center {
+#aybiorprqe .gt_center {
   text-align: center;
 }
 
-#kygcttlesy .gt_right {
+#aybiorprqe .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kygcttlesy .gt_font_normal {
+#aybiorprqe .gt_font_normal {
   font-weight: normal;
 }
 
-#kygcttlesy .gt_font_bold {
+#aybiorprqe .gt_font_bold {
   font-weight: bold;
 }
 
-#kygcttlesy .gt_font_italic {
+#aybiorprqe .gt_font_italic {
   font-style: italic;
 }
 
-#kygcttlesy .gt_super {
+#aybiorprqe .gt_super {
   font-size: 65%;
 }
 
-#kygcttlesy .gt_footnote_marks {
+#aybiorprqe .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kygcttlesy .gt_asterisk {
+#aybiorprqe .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kygcttlesy .gt_indent_1 {
+#aybiorprqe .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kygcttlesy .gt_indent_2 {
+#aybiorprqe .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kygcttlesy .gt_indent_3 {
+#aybiorprqe .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kygcttlesy .gt_indent_4 {
+#aybiorprqe .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kygcttlesy .gt_indent_5 {
+#aybiorprqe .gt_indent_5 {
   text-indent: 25px;
 }
 
-#kygcttlesy .katex-display {
+#aybiorprqe .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#kygcttlesy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#aybiorprqe div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1494,66 +1497,66 @@ window.Quarto = {
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">(Intercept)</td>
-<td class="gt_row gt_right" headers="estimate">1.071</td>
-<td class="gt_row gt_right" headers="std.error">0.317</td>
-<td class="gt_row gt_right" headers="statistic">3.374</td>
-<td class="gt_row gt_right" headers="p.value">0.001</td>
-<td class="gt_row gt_right" headers="conf.low">0.449</td>
-<td class="gt_row gt_right" headers="conf.high">1.693</td>
+<td class="gt_row gt_right" headers="estimate">2.519</td>
+<td class="gt_row gt_right" headers="std.error">1.382</td>
+<td class="gt_row gt_right" headers="statistic">1.822</td>
+<td class="gt_row gt_right" headers="p.value">0.068</td>
+<td class="gt_row gt_right" headers="conf.low">−0.154</td>
+<td class="gt_row gt_right" headers="conf.high">5.295</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">age</td>
-<td class="gt_row gt_right" headers="estimate">−0.014</td>
-<td class="gt_row gt_right" headers="std.error">0.005</td>
-<td class="gt_row gt_right" headers="statistic">−2.872</td>
+<td class="gt_row gt_right" headers="estimate">−0.062</td>
+<td class="gt_row gt_right" headers="std.error">0.022</td>
+<td class="gt_row gt_right" headers="statistic">−2.818</td>
 <td class="gt_row gt_right" headers="p.value">0.005</td>
-<td class="gt_row gt_right" headers="conf.low">−0.024</td>
-<td class="gt_row gt_right" headers="conf.high">−0.004</td>
+<td class="gt_row gt_right" headers="conf.low">−0.107</td>
+<td class="gt_row gt_right" headers="conf.high">−0.020</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">sexM</td>
-<td class="gt_row gt_right" headers="estimate">0.131</td>
-<td class="gt_row gt_right" headers="std.error">0.083</td>
-<td class="gt_row gt_right" headers="statistic">1.578</td>
-<td class="gt_row gt_right" headers="p.value">0.117</td>
-<td class="gt_row gt_right" headers="conf.low">−0.032</td>
-<td class="gt_row gt_right" headers="conf.high">0.293</td>
+<td class="gt_row gt_right" headers="estimate">0.579</td>
+<td class="gt_row gt_right" headers="std.error">0.357</td>
+<td class="gt_row gt_right" headers="statistic">1.624</td>
+<td class="gt_row gt_right" headers="p.value">0.104</td>
+<td class="gt_row gt_right" headers="conf.low">−0.117</td>
+<td class="gt_row gt_right" headers="conf.high">1.286</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">totchol</td>
-<td class="gt_row gt_right" headers="estimate">0.001</td>
-<td class="gt_row gt_right" headers="std.error">0.001</td>
-<td class="gt_row gt_right" headers="statistic">0.531</td>
-<td class="gt_row gt_right" headers="p.value">0.597</td>
-<td class="gt_row gt_right" headers="conf.low">−0.002</td>
-<td class="gt_row gt_right" headers="conf.high">0.003</td>
+<td class="gt_row gt_right" headers="estimate">0.003</td>
+<td class="gt_row gt_right" headers="std.error">0.005</td>
+<td class="gt_row gt_right" headers="statistic">0.555</td>
+<td class="gt_row gt_right" headers="p.value">0.579</td>
+<td class="gt_row gt_right" headers="conf.low">−0.006</td>
+<td class="gt_row gt_right" headers="conf.high">0.012</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)2_Middle</td>
-<td class="gt_row gt_right" headers="estimate">−0.089</td>
-<td class="gt_row gt_right" headers="std.error">0.100</td>
-<td class="gt_row gt_right" headers="statistic">−0.894</td>
-<td class="gt_row gt_right" headers="p.value">0.373</td>
-<td class="gt_row gt_right" headers="conf.low">−0.284</td>
-<td class="gt_row gt_right" headers="conf.high">0.106</td>
+<td class="gt_row gt_right" headers="estimate">−0.402</td>
+<td class="gt_row gt_right" headers="std.error">0.432</td>
+<td class="gt_row gt_right" headers="statistic">−0.930</td>
+<td class="gt_row gt_right" headers="p.value">0.353</td>
+<td class="gt_row gt_right" headers="conf.low">−1.262</td>
+<td class="gt_row gt_right" headers="conf.high">0.440</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">factor(educ)3_High</td>
-<td class="gt_row gt_right" headers="estimate">−0.073</td>
-<td class="gt_row gt_right" headers="std.error">0.121</td>
-<td class="gt_row gt_right" headers="statistic">−0.604</td>
-<td class="gt_row gt_right" headers="p.value">0.547</td>
-<td class="gt_row gt_right" headers="conf.low">−0.309</td>
-<td class="gt_row gt_right" headers="conf.high">0.163</td>
+<td class="gt_row gt_right" headers="estimate">−0.320</td>
+<td class="gt_row gt_right" headers="std.error">0.520</td>
+<td class="gt_row gt_right" headers="statistic">−0.616</td>
+<td class="gt_row gt_right" headers="p.value">0.538</td>
+<td class="gt_row gt_right" headers="conf.low">−1.355</td>
+<td class="gt_row gt_right" headers="conf.high">0.698</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)4_VHigh</td>
-<td class="gt_row gt_right" headers="estimate">−0.242</td>
-<td class="gt_row gt_right" headers="std.error">0.126</td>
-<td class="gt_row gt_right" headers="statistic">−1.919</td>
-<td class="gt_row gt_right" headers="p.value">0.057</td>
-<td class="gt_row gt_right" headers="conf.low">−0.489</td>
-<td class="gt_row gt_right" headers="conf.high">0.005</td>
+<td class="gt_row gt_right" headers="estimate">−1.113</td>
+<td class="gt_row gt_right" headers="std.error">0.574</td>
+<td class="gt_row gt_right" headers="statistic">−1.939</td>
+<td class="gt_row gt_right" headers="p.value">0.053</td>
+<td class="gt_row gt_right" headers="conf.low">−2.289</td>
+<td class="gt_row gt_right" headers="conf.high">−0.017</td>
 </tr>
 </tbody>
 </table>
@@ -1565,23 +1568,23 @@ window.Quarto = {
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m1, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="rursjsakhp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rursjsakhp table {
+<div id="ikjmhqarnz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ikjmhqarnz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rursjsakhp thead, #rursjsakhp tbody, #rursjsakhp tfoot, #rursjsakhp tr, #rursjsakhp td, #rursjsakhp th {
+#ikjmhqarnz thead, #ikjmhqarnz tbody, #ikjmhqarnz tfoot, #ikjmhqarnz tr, #ikjmhqarnz td, #ikjmhqarnz th {
   border-style: none;
 }
 
-#rursjsakhp p {
+#ikjmhqarnz p {
   margin: 0;
   padding: 0;
 }
 
-#rursjsakhp .gt_table {
+#ikjmhqarnz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1607,12 +1610,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_caption {
+#ikjmhqarnz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rursjsakhp .gt_title {
+#ikjmhqarnz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1624,7 +1627,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#rursjsakhp .gt_subtitle {
+#ikjmhqarnz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1636,7 +1639,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#rursjsakhp .gt_heading {
+#ikjmhqarnz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1648,13 +1651,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_bottom_border {
+#ikjmhqarnz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_col_headings {
+#ikjmhqarnz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1669,7 +1672,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_col_heading {
+#ikjmhqarnz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1689,7 +1692,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#rursjsakhp .gt_column_spanner_outer {
+#ikjmhqarnz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1701,15 +1704,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#rursjsakhp .gt_column_spanner_outer:first-child {
+#ikjmhqarnz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rursjsakhp .gt_column_spanner_outer:last-child {
+#ikjmhqarnz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rursjsakhp .gt_column_spanner {
+#ikjmhqarnz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1721,11 +1724,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#rursjsakhp .gt_spanner_row {
+#ikjmhqarnz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rursjsakhp .gt_group_heading {
+#ikjmhqarnz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1751,7 +1754,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#rursjsakhp .gt_empty_group_heading {
+#ikjmhqarnz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1766,15 +1769,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#rursjsakhp .gt_from_md > :first-child {
+#ikjmhqarnz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rursjsakhp .gt_from_md > :last-child {
+#ikjmhqarnz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rursjsakhp .gt_row {
+#ikjmhqarnz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1793,7 +1796,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#rursjsakhp .gt_stub {
+#ikjmhqarnz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1806,7 +1809,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#rursjsakhp .gt_stub_row_group {
+#ikjmhqarnz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1820,15 +1823,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#rursjsakhp .gt_row_group_first td {
+#ikjmhqarnz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rursjsakhp .gt_row_group_first th {
+#ikjmhqarnz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rursjsakhp .gt_summary_row {
+#ikjmhqarnz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1838,16 +1841,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#rursjsakhp .gt_first_summary_row {
+#ikjmhqarnz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_first_summary_row.thick {
+#ikjmhqarnz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rursjsakhp .gt_last_summary_row {
+#ikjmhqarnz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1857,7 +1860,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_grand_summary_row {
+#ikjmhqarnz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1867,7 +1870,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#rursjsakhp .gt_first_grand_summary_row {
+#ikjmhqarnz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1877,7 +1880,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_last_grand_summary_row_top {
+#ikjmhqarnz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1887,11 +1890,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_striped {
+#ikjmhqarnz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rursjsakhp .gt_table_body {
+#ikjmhqarnz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1900,7 +1903,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_footnotes {
+#ikjmhqarnz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1914,7 +1917,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_footnote {
+#ikjmhqarnz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1923,7 +1926,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#rursjsakhp .gt_sourcenotes {
+#ikjmhqarnz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1937,7 +1940,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#rursjsakhp .gt_sourcenote {
+#ikjmhqarnz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1945,72 +1948,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#rursjsakhp .gt_left {
+#ikjmhqarnz .gt_left {
   text-align: left;
 }
 
-#rursjsakhp .gt_center {
+#ikjmhqarnz .gt_center {
   text-align: center;
 }
 
-#rursjsakhp .gt_right {
+#ikjmhqarnz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rursjsakhp .gt_font_normal {
+#ikjmhqarnz .gt_font_normal {
   font-weight: normal;
 }
 
-#rursjsakhp .gt_font_bold {
+#ikjmhqarnz .gt_font_bold {
   font-weight: bold;
 }
 
-#rursjsakhp .gt_font_italic {
+#ikjmhqarnz .gt_font_italic {
   font-style: italic;
 }
 
-#rursjsakhp .gt_super {
+#ikjmhqarnz .gt_super {
   font-size: 65%;
 }
 
-#rursjsakhp .gt_footnote_marks {
+#ikjmhqarnz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rursjsakhp .gt_asterisk {
+#ikjmhqarnz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rursjsakhp .gt_indent_1 {
+#ikjmhqarnz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rursjsakhp .gt_indent_2 {
+#ikjmhqarnz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rursjsakhp .gt_indent_3 {
+#ikjmhqarnz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rursjsakhp .gt_indent_4 {
+#ikjmhqarnz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rursjsakhp .gt_indent_5 {
+#ikjmhqarnz .gt_indent_5 {
   text-indent: 25px;
 }
 
-#rursjsakhp .katex-display {
+#ikjmhqarnz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#rursjsakhp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ikjmhqarnz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2030,71 +2033,104 @@ window.Quarto = {
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">(Intercept)</td>
-<td class="gt_row gt_right" headers="estimate">2.918</td>
-<td class="gt_row gt_right" headers="std.error">0.317</td>
-<td class="gt_row gt_right" headers="statistic">3.374</td>
-<td class="gt_row gt_right" headers="p.value">0.001</td>
-<td class="gt_row gt_right" headers="conf.low">1.566</td>
-<td class="gt_row gt_right" headers="conf.high">5.435</td>
+<td class="gt_row gt_right" headers="estimate">12.411</td>
+<td class="gt_row gt_right" headers="std.error">1.382</td>
+<td class="gt_row gt_right" headers="statistic">1.822</td>
+<td class="gt_row gt_right" headers="p.value">0.068</td>
+<td class="gt_row gt_right" headers="conf.low">0.857</td>
+<td class="gt_row gt_right" headers="conf.high">199.349</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">age</td>
-<td class="gt_row gt_right" headers="estimate">0.986</td>
-<td class="gt_row gt_right" headers="std.error">0.005</td>
-<td class="gt_row gt_right" headers="statistic">−2.872</td>
+<td class="gt_row gt_right" headers="estimate">0.940</td>
+<td class="gt_row gt_right" headers="std.error">0.022</td>
+<td class="gt_row gt_right" headers="statistic">−2.818</td>
 <td class="gt_row gt_right" headers="p.value">0.005</td>
-<td class="gt_row gt_right" headers="conf.low">0.977</td>
-<td class="gt_row gt_right" headers="conf.high">0.996</td>
+<td class="gt_row gt_right" headers="conf.low">0.899</td>
+<td class="gt_row gt_right" headers="conf.high">0.980</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">sexM</td>
-<td class="gt_row gt_right" headers="estimate">1.140</td>
-<td class="gt_row gt_right" headers="std.error">0.083</td>
-<td class="gt_row gt_right" headers="statistic">1.578</td>
-<td class="gt_row gt_right" headers="p.value">0.117</td>
-<td class="gt_row gt_right" headers="conf.low">0.969</td>
-<td class="gt_row gt_right" headers="conf.high">1.340</td>
+<td class="gt_row gt_right" headers="estimate">1.784</td>
+<td class="gt_row gt_right" headers="std.error">0.357</td>
+<td class="gt_row gt_right" headers="statistic">1.624</td>
+<td class="gt_row gt_right" headers="p.value">0.104</td>
+<td class="gt_row gt_right" headers="conf.low">0.890</td>
+<td class="gt_row gt_right" headers="conf.high">3.620</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">totchol</td>
-<td class="gt_row gt_right" headers="estimate">1.001</td>
-<td class="gt_row gt_right" headers="std.error">0.001</td>
-<td class="gt_row gt_right" headers="statistic">0.531</td>
-<td class="gt_row gt_right" headers="p.value">0.597</td>
-<td class="gt_row gt_right" headers="conf.low">0.998</td>
-<td class="gt_row gt_right" headers="conf.high">1.003</td>
+<td class="gt_row gt_right" headers="estimate">1.003</td>
+<td class="gt_row gt_right" headers="std.error">0.005</td>
+<td class="gt_row gt_right" headers="statistic">0.555</td>
+<td class="gt_row gt_right" headers="p.value">0.579</td>
+<td class="gt_row gt_right" headers="conf.low">0.994</td>
+<td class="gt_row gt_right" headers="conf.high">1.012</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)2_Middle</td>
-<td class="gt_row gt_right" headers="estimate">0.915</td>
-<td class="gt_row gt_right" headers="std.error">0.100</td>
-<td class="gt_row gt_right" headers="statistic">−0.894</td>
-<td class="gt_row gt_right" headers="p.value">0.373</td>
-<td class="gt_row gt_right" headers="conf.low">0.753</td>
-<td class="gt_row gt_right" headers="conf.high">1.112</td>
+<td class="gt_row gt_right" headers="estimate">0.669</td>
+<td class="gt_row gt_right" headers="std.error">0.432</td>
+<td class="gt_row gt_right" headers="statistic">−0.930</td>
+<td class="gt_row gt_right" headers="p.value">0.353</td>
+<td class="gt_row gt_right" headers="conf.low">0.283</td>
+<td class="gt_row gt_right" headers="conf.high">1.553</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">factor(educ)3_High</td>
-<td class="gt_row gt_right" headers="estimate">0.930</td>
-<td class="gt_row gt_right" headers="std.error">0.121</td>
-<td class="gt_row gt_right" headers="statistic">−0.604</td>
-<td class="gt_row gt_right" headers="p.value">0.547</td>
-<td class="gt_row gt_right" headers="conf.low">0.734</td>
-<td class="gt_row gt_right" headers="conf.high">1.177</td>
+<td class="gt_row gt_right" headers="estimate">0.726</td>
+<td class="gt_row gt_right" headers="std.error">0.520</td>
+<td class="gt_row gt_right" headers="statistic">−0.616</td>
+<td class="gt_row gt_right" headers="p.value">0.538</td>
+<td class="gt_row gt_right" headers="conf.low">0.258</td>
+<td class="gt_row gt_right" headers="conf.high">2.011</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)4_VHigh</td>
-<td class="gt_row gt_right" headers="estimate">0.785</td>
-<td class="gt_row gt_right" headers="std.error">0.126</td>
-<td class="gt_row gt_right" headers="statistic">−1.919</td>
-<td class="gt_row gt_right" headers="p.value">0.057</td>
-<td class="gt_row gt_right" headers="conf.low">0.613</td>
-<td class="gt_row gt_right" headers="conf.high">1.005</td>
+<td class="gt_row gt_right" headers="estimate">0.329</td>
+<td class="gt_row gt_right" headers="std.error">0.574</td>
+<td class="gt_row gt_right" headers="statistic">−1.939</td>
+<td class="gt_row gt_right" headers="p.value">0.053</td>
+<td class="gt_row gt_right" headers="conf.low">0.101</td>
+<td class="gt_row gt_right" headers="conf.high">0.983</td>
 </tr>
 </tbody>
 </table>
 
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(m1, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">ci =</span> <span class="fl">0.90</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter       | Odds Ratio |       SE |         90% CI |     z |     p
+------------------------------------------------------------------------
+(Intercept)     |      12.41 |    17.15 | [1.31, 126.18] |  1.82 | 0.068
+age             |       0.94 |     0.02 | [0.91,   0.97] | -2.82 | 0.005
+sex [M]         |       1.78 |     0.64 | [1.00,   3.23] |  1.62 | 0.104
+totchol         |       1.00 | 4.64e-03 | [0.99,   1.01] |  0.55 | 0.579
+educ [2_Middle] |       0.67 |     0.29 | [0.33,   1.36] | -0.93 | 0.353
+educ [3_High]   |       0.73 |     0.38 | [0.31,   1.71] | -0.62 | 0.538
+educ [4_VHigh]  |       0.33 |     0.19 | [0.12,   0.83] | -1.94 | 0.053</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Uncertainty intervals (profile-likelihood) and p-values (two-tailed)
+  computed using a Wald z-distribution approximation.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_performance</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Indices of model performance
+
+AIC   |  AICc |   BIC | Tjur's R2 |  RMSE | Sigma | Log_loss | Score_log
+------------------------------------------------------------------------
+206.5 | 207.3 | 227.5 |     0.099 | 0.475 |     1 |    0.642 |   -52.001
+
+AIC   | Score_spherical |   PCP
+-------------------------------
+206.5 |           0.009 | 0.549</code></pre>
 </div>
 </div>
 </section>
@@ -2103,33 +2139,29 @@ window.Quarto = {
 <p>Can we fit a model for the same data using a Bayesian approach?</p>
 <p>Yes, we can, for instance using the <code>stan_glm()</code> function from the <code>rstanarm</code> package.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">43234231</span>) <span class="co"># best to set a random seed first</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>((smoker <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> totchol <span class="sc">+</span> <span class="fu">factor</span>(educ), </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> smalldat, <span class="at">refresh =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">43234231</span>) <span class="co"># best to set a random seed first</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>((smoker <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> totchol <span class="sc">+</span> <span class="fu">factor</span>(educ), </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> smalldat, <span class="at">refresh =</span> <span class="dv">0</span>, <span class="at">family =</span> <span class="fu">binomial</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here the <code>refresh = 0</code> parameter stops the machine from printing out each of the updates it does while sampling, which is not generally something I need to look at. Here’s what’s placed in the <code>m2</code> object:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>stan_glm
- family:       gaussian [identity]
+ family:       binomial [logit]
  formula:      (smoker == 1) ~ age + sex + totchol + factor(educ)
  observations: 150
  predictors:   7
 ------
                      Median MAD_SD
-(Intercept)           1.1    0.3  
-age                   0.0    0.0  
-sexM                  0.1    0.1  
+(Intercept)           2.6    1.5  
+age                  -0.1    0.0  
+sexM                  0.6    0.4  
 totchol               0.0    0.0  
-factor(educ)2_Middle -0.1    0.1  
-factor(educ)3_High   -0.1    0.1  
-factor(educ)4_VHigh  -0.2    0.1  
-
-Auxiliary parameter(s):
-      Median MAD_SD
-sigma 0.5    0.0   
+factor(educ)2_Middle -0.4    0.4  
+factor(educ)3_High   -0.3    0.5  
+factor(educ)4_VHigh  -1.2    0.6  
 
 ------
 * For help interpreting the printed output see ?print.stanreg
@@ -2143,12 +2175,12 @@ sigma 0.5    0.0
 </ul>
 <p>Using the <code>summary()</code> function provides some additional information about the parameter estimates, but mostly some convergence diagnostics for the Markov Chain Monte Carlo procedure that the <code>rstanarm</code> package used to build the estimates.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Model Info:
  function:     stan_glm
- family:       gaussian [identity]
+ family:       binomial [logit]
  formula:      (smoker == 1) ~ age + sex + totchol + factor(educ)
  algorithm:    sampling
  sample:       4000 (posterior sample size)
@@ -2158,14 +2190,13 @@ Model Info:
 
 Estimates:
                        mean   sd   10%   50%   90%
-(Intercept)           1.1    0.3  0.7   1.1   1.5 
-age                   0.0    0.0  0.0   0.0   0.0 
-sexM                  0.1    0.1  0.0   0.1   0.2 
+(Intercept)           2.6    1.5  0.8   2.6   4.5 
+age                  -0.1    0.0 -0.1  -0.1   0.0 
+sexM                  0.6    0.4  0.1   0.6   1.1 
 totchol               0.0    0.0  0.0   0.0   0.0 
-factor(educ)2_Middle -0.1    0.1 -0.2  -0.1   0.0 
-factor(educ)3_High   -0.1    0.1 -0.2  -0.1   0.1 
-factor(educ)4_VHigh  -0.2    0.1 -0.4  -0.2  -0.1 
-sigma                 0.5    0.0  0.5   0.5   0.5 
+factor(educ)2_Middle -0.4    0.4 -1.0  -0.4   0.1 
+factor(educ)3_High   -0.3    0.5 -1.0  -0.3   0.4 
+factor(educ)4_VHigh  -1.2    0.6 -2.0  -1.2  -0.4 
 
 Fit Diagnostics:
            mean   sd   10%   50%   90%
@@ -2175,116 +2206,89 @@ The mean_ppd is the sample average posterior predictive distribution of the outc
 
 MCMC diagnostics
                      mcse Rhat n_eff
-(Intercept)          0.0  1.0  4790 
-age                  0.0  1.0  2700 
-sexM                 0.0  1.0  3922 
-totchol              0.0  1.0  3983 
-factor(educ)2_Middle 0.0  1.0  2847 
-factor(educ)3_High   0.0  1.0  3724 
-factor(educ)4_VHigh  0.0  1.0  3550 
-sigma                0.0  1.0  4324 
-mean_PPD             0.0  1.0  4262 
-log-posterior        0.0  1.0  1996 
+(Intercept)          0.0  1.0  5691 
+age                  0.0  1.0  3277 
+sexM                 0.0  1.0  5208 
+totchol              0.0  1.0  4007 
+factor(educ)2_Middle 0.0  1.0  3100 
+factor(educ)3_High   0.0  1.0  3597 
+factor(educ)4_VHigh  0.0  1.0  3881 
+mean_PPD             0.0  1.0  3755 
+log-posterior        0.0  1.0  1793 
 
 For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
 </div>
 </div>
-<section id="extracting-the-posterior" class="level3" data-number="34.5.1">
-<h3 data-number="34.5.1" class="anchored" data-anchor-id="extracting-the-posterior"><span class="header-section-number">34.5.1</span> Extracting the Posterior</h3>
+<section id="parameters-and-performance" class="level3" data-number="34.5.1">
+<h3 data-number="34.5.1" class="anchored" data-anchor-id="parameters-and-performance"><span class="header-section-number">34.5.1</span> Parameters and Performance</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(m2, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">ci =</span> <span class="fl">0.90</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter            | Median |         90% CI |     pd |  Rhat |  ESS |              Prior
+-------------------------------------------------------------------------------------------
+(Intercept)          |  13.61 | [1.36, 161.05] | 96.83% | 0.999 | 5691 | Normal (0 +- 2.50)
+age                  |   0.94 | [0.90,   0.97] | 99.80% | 0.999 | 3277 | Normal (0 +- 0.28)
+sexM                 |   1.83 | [1.00,   3.33] | 94.88% | 1.000 | 5208 | Normal (0 +- 5.05)
+totchol              |   1.00 | [0.99,   1.01] | 71.88% | 1.000 | 4007 | Normal (0 +- 0.06)
+factor(educ)2_Middle |   0.66 | [0.32,   1.34] | 83.67% | 1.000 | 3100 | Normal (0 +- 5.44)
+factor(educ)3_High   |   0.72 | [0.29,   1.80] | 72.40% | 1.000 | 3597 | Normal (0 +- 7.04)
+factor(educ)4_VHigh  |   0.31 | [0.11,   0.80] | 97.70% | 1.000 | 3881 | Normal (0 +- 7.33)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Uncertainty intervals (equal-tailed) computed using a MCMC distribution
+  approximation.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_performance</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Indices of model performance
+
+ELPD     | ELPD_SE | LOOIC | LOOIC_SE |  WAIC |    R2 |  RMSE | Sigma
+---------------------------------------------------------------------
+-104.058 |   4.282 | 208.1 |    8.564 | 208.0 | 0.131 | 0.475 |     1
+
+ELPD     | Log_loss | Score_log | Score_spherical
+-------------------------------------------------
+-104.058 |    0.642 |   -50.828 |           0.009</code></pre>
+</div>
+</div>
+</section>
+<section id="extracting-the-posterior" class="level3" data-number="34.5.2">
+<h3 data-number="34.5.2" class="anchored" data-anchor-id="extracting-the-posterior"><span class="header-section-number">34.5.2</span> Extracting the Posterior</h3>
 <p>Let’s extract the coefficients of our model, using the <code>get_parameters()</code> function from the <code>insight</code> package:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>posteriors <span class="ot">&lt;-</span> <span class="fu">get_parameters</span>(m2)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>posteriors <span class="ot">&lt;-</span> <span class="fu">get_parameters</span>(m2)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  (Intercept)          age       sexM       totchol factor(educ)2_Middle
-1   1.0395289 -0.004619993 0.25120820 -0.0012609246          -0.07421785
-2   1.3897359 -0.015504179 0.05308297 -0.0005806271          -0.05711548
-3   0.6960912 -0.012991489 0.12013110  0.0015857650           0.08652352
-4   0.3501038 -0.011626531 0.23179922  0.0024659073           0.12610455
-5   1.5843855 -0.009405856 0.05310819 -0.0025427990          -0.05049668
-6   1.0403138 -0.006376498 0.04919309 -0.0013779428           0.08575331
+<pre><code>  (Intercept)         age      sexM       totchol factor(educ)2_Middle
+1    4.016067 -0.07540620 0.1397881 -0.0001487149           -0.7074614
+2    4.723329 -0.06750631 0.3113829 -0.0062258920           -0.3945980
+3    3.058703 -0.05155403 0.6788520 -0.0044479167            0.3186364
+4    2.456194 -0.02381059 0.8612615 -0.0035917297           -0.8959018
+5    4.182175 -0.08553137 0.4827377 -0.0005896587            0.2710336
+6    3.088430 -0.07019592 0.8944691  0.0016432160           -0.6836971
   factor(educ)3_High factor(educ)4_VHigh
-1       -0.247278983         -0.34931693
-2       -0.027945532         -0.04715445
-3        0.098936630         -0.09453129
-4        0.055186994         -0.08377399
-5        0.003482159         -0.11669724
-6        0.123287117         -0.06056735</code></pre>
+1         -0.5300172          -1.3158221
+2          0.2797278          -0.7244426
+3          0.3331781          -1.0517935
+4         -0.5022896          -0.8820488
+5          0.1852210          -1.1152544
+6         -0.6119858          -1.0987494</code></pre>
 </div>
 </div>
 <p>In all, we have 4000 observations of this posterior distribution:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4000</code></pre>
 </div>
 </div>
 <p>Let’s visualize the posterior distribution of our parameter for <code>age</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posteriors, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"dodgerblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="bayes2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This distribution describes the probability (on the vertical axis) of various <code>age</code> effects (shown on the horizontal axis). Most of the distribution is between -0.025 and -0.005, with the peak being around -0.15.</p>
-<p>Remember that our <code>m1</code> fit with <code>glm()</code> had an estimated <span class="math inline">\(\beta\)</span> for <code>age</code> of -0.014, so, as is often the case, there is not a lot of difference between the two models in terms of the estimates they make.</p>
-<p>Here’s the mean and median of the <code>age</code> effect, across our 4000 simulations from the posterior distribution.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.01389409</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.01391701</code></pre>
-</div>
-</div>
-<p>And here are the results after exponentiation, so that the estimates describe odds ratios:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9862135</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9861794</code></pre>
-</div>
-</div>
-<p>Again, these are very close to what we obtained from least squares estimation.</p>
-<p>Another option is to take the mode (peak) of the posterior distribution, and this is called the maximum a posteriori (MAP) estimate:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_estimate</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>MAP Estimate
-
-Parameter | MAP_Estimate
-------------------------
-x         |        -0.01</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_estimate</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age)) <span class="co"># on odds ratio scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>MAP Estimate
-
-Parameter | MAP_Estimate
-------------------------
-x         |         0.99</code></pre>
-</div>
-</div>
-<p>Adding these estimates to our plot, we can see that they are quite close:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posteriors, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"dodgerblue"</span>) <span class="sc">+</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The mean in yellow</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(posteriors<span class="sc">$</span>age), <span class="at">color =</span> <span class="st">"yellow"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The median in red</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">median</span>(posteriors<span class="sc">$</span>age), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The MAP in purple</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.numeric</span>(<span class="fu">map_estimate</span>(posteriors<span class="sc">$</span>age)), <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posteriors, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"dodgerblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2293,40 +2297,102 @@ x         |         0.99</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="describing-uncertainty" class="level3" data-number="34.5.2">
-<h3 data-number="34.5.2" class="anchored" data-anchor-id="describing-uncertainty"><span class="header-section-number">34.5.2</span> Describing Uncertainty</h3>
-<p>We might describe the range of estimates for the <code>age</code> effect.</p>
+<p>This distribution describes the probability (on the vertical axis) of various <code>age</code> effects (shown on the horizontal axis). Most of the distribution is between -0.10 and -0.02, with the peak being around -0.06.</p>
+<p>Remember that our <code>m1</code> fit with <code>glm()</code> had an estimated <span class="math inline">\(\beta\)</span> for <code>age</code> of -0.014.</p>
+<p>Here’s the mean and median of the <code>age</code> effect, across our 4000 simulations from the posterior distribution.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.03166005  0.00409895</code></pre>
+<pre><code>[1] -0.06553402</code></pre>
 </div>
-</div>
-<p>Instead of showing the whole range, we usually compute the highest density interval at some percentage level, for instance a 95% credible interval which shows the range containing the 95% most probable effect values.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(posteriors<span class="sc">$</span>age, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>95% HDI: [-0.02,  0.00]</code></pre>
+<pre><code>[1] -0.0653023</code></pre>
 </div>
 </div>
-<p>So we conclude that the <code>age</code> effect has a 95% chance of falling within the [-0.02, 0.00] range. We can also exponentiate here, so as to provide the result in terms of an odds ratio.</p>
+<p>And here are the results after exponentiation, so that the estimates describe odds ratios:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age), <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>95% HDI: [0.98, 1.00]</code></pre>
+<pre><code>[1] 0.9368041</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9367842</code></pre>
 </div>
 </div>
-</section>
-<section id="visualizing-the-coefficients-and-credible-intervals" class="level3" data-number="34.5.3">
-<h3 data-number="34.5.3" class="anchored" data-anchor-id="visualizing-the-coefficients-and-credible-intervals"><span class="header-section-number">34.5.3</span> Visualizing the Coefficients and Credible Intervals</h3>
-<p>Here is a plot of the coefficients and parameters estimated in <code>m2</code>, along with credible intervals for their values. The inner interval (shaded region) here uses the default choice of 50%, and the outer interval (lines) uses a non-default choice of 95% (90% is the default choice here, as it turns out.) The point estimate shown here is the median of the posterior distribution, which is the default.</p>
+<p>Again, these are somewhat close to what we obtained from least squares estimation.</p>
+<p>Another option is to take the mode (peak) of the posterior distribution, and this is called the maximum a posteriori (MAP) estimate:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2, <span class="at">prob =</span> <span class="fl">0.5</span>, <span class="at">prob_outer =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_estimate</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MAP Estimate
+
+Parameter | MAP_Estimate
+------------------------
+x         |        -0.06</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_estimate</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age)) <span class="co"># on odds ratio scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MAP Estimate
+
+Parameter | MAP_Estimate
+------------------------
+x         |         0.94</code></pre>
+</div>
+</div>
+<p>Adding these estimates to our plot, we can see that they are quite close:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posteriors, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"dodgerblue"</span>) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The mean in yellow</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(posteriors<span class="sc">$</span>age), <span class="at">color =</span> <span class="st">"yellow"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The median in red</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">median</span>(posteriors<span class="sc">$</span>age), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The MAP in purple</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.numeric</span>(<span class="fu">map_estimate</span>(posteriors<span class="sc">$</span>age)), <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="bayes2_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="describing-uncertainty" class="level3" data-number="34.5.3">
+<h3 data-number="34.5.3" class="anchored" data-anchor-id="describing-uncertainty"><span class="header-section-number">34.5.3</span> Describing Uncertainty</h3>
+<p>We might describe the range of estimates for the <code>age</code> effect.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.14491202  0.01169277</code></pre>
+</div>
+</div>
+<p>Instead of showing the whole range, we usually compute the highest density interval at some percentage level, for instance a 95% credible interval which shows the range containing the 95% most probable effect values.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(posteriors<span class="sc">$</span>age, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% HDI: [-0.11, -0.02]</code></pre>
+</div>
+</div>
+<p>So we conclude that the <code>age</code> effect has a 95% chance of falling within the [-0.11, -0.02] range. We can also exponentiate here, so as to provide the result in terms of an odds ratio.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(<span class="fu">exp</span>(posteriors<span class="sc">$</span>age), <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% HDI: [0.89, 0.98]</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-coefficients-and-credible-intervals" class="level3" data-number="34.5.4">
+<h3 data-number="34.5.4" class="anchored" data-anchor-id="visualizing-the-coefficients-and-credible-intervals"><span class="header-section-number">34.5.4</span> Visualizing the Coefficients and Credible Intervals</h3>
+<p>Here is a plot of the coefficients and parameters estimated in <code>m2</code>, along with credible intervals for their values. The inner interval (shaded region) here uses the default choice of 50%, and the outer interval (lines) uses a non-default choice of 95% (90% is the default choice here, as it turns out.) The point estimate shown here is the median of the posterior distribution, which is the default.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m2, <span class="at">prob =</span> <span class="fl">0.5</span>, <span class="at">prob_outer =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="bayes2_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2338,7 +2404,7 @@ x         |         0.99</code></pre>
 <p>A more detailed set of summaries for the posterior distribution can be obtained from the <code>describe_posterior()</code> function from the <code>bayestestR</code> package.</p>
 <p>A brief tutorial on what is shown here is available at <a href="https://easystats.github.io/bayestestR/articles/bayestestR.html" class="uri">https://easystats.github.io/bayestestR/articles/bayestestR.html</a> and <a href="https://easystats.github.io/bayestestR/articles/example1.html" class="uri">https://easystats.github.io/bayestestR/articles/example1.html</a> and this is the source for much of what I’ve built in this little chapter.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_posterior</span>(posteriors, <span class="at">test =</span> <span class="fu">c</span>(<span class="st">"pd"</span>, <span class="st">"ROPE"</span>)) <span class="sc">|&gt;</span> <span class="fu">print_md</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_posterior</span>(posteriors, <span class="at">test =</span> <span class="fu">c</span>(<span class="st">"pd"</span>, <span class="st">"ROPE"</span>)) <span class="sc">|&gt;</span> <span class="fu">print_md</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Summary of Posterior Distribution</caption>
@@ -2355,7 +2421,7 @@ x         |         0.99</code></pre>
 <th style="text-align: left;">Parameter</th>
 <th style="text-align: right;">Median</th>
 <th style="text-align: left;">95% CI</th>
-<th style="text-align: right;">pd</th>
+<th style="text-align: left;">pd</th>
 <th style="text-align: left;">ROPE</th>
 <th style="text-align: right;">% in ROPE</th>
 </tr>
@@ -2363,59 +2429,59 @@ x         |         0.99</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">1.07</td>
-<td style="text-align: left;">[ 0.43, 1.70]</td>
-<td style="text-align: right;">100%</td>
+<td style="text-align: right;">2.61</td>
+<td style="text-align: left;">[-0.15, 5.56]</td>
+<td style="text-align: left;">96.83%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">0%</td>
+<td style="text-align: right;">1.05%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">age</td>
-<td style="text-align: right;">-0.01</td>
-<td style="text-align: left;">[-0.02, 0.00]</td>
-<td style="text-align: right;">99.85%</td>
+<td style="text-align: right;">-0.07</td>
+<td style="text-align: left;">[-0.11, -0.02]</td>
+<td style="text-align: left;">99.80%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">100%</td>
+<td style="text-align: right;">96.13%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sexM</td>
-<td style="text-align: right;">0.13</td>
-<td style="text-align: left;">[-0.04, 0.30]</td>
-<td style="text-align: right;">94.15%</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: left;">[-0.12, 1.32]</td>
+<td style="text-align: left;">94.88%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">35.08%</td>
+<td style="text-align: right;">6.26%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">totchol</td>
-<td style="text-align: right;">5.36e-04</td>
-<td style="text-align: left;">[ 0.00, 0.00]</td>
-<td style="text-align: right;">69.92%</td>
+<td style="text-align: right;">2.66e-03</td>
+<td style="text-align: left;">[-0.01, 0.01]</td>
+<td style="text-align: left;">71.88%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
 <td style="text-align: right;">100%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">factor(educ)2_Middle</td>
-<td style="text-align: right;">-0.08</td>
-<td style="text-align: left;">[-0.29, 0.11]</td>
-<td style="text-align: right;">79.77%</td>
+<td style="text-align: right;">-0.42</td>
+<td style="text-align: left;">[-1.27, 0.44]</td>
+<td style="text-align: left;">83.67%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">54.87%</td>
+<td style="text-align: right;">12.37%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">factor(educ)3_High</td>
-<td style="text-align: right;">-0.07</td>
-<td style="text-align: left;">[-0.30, 0.17]</td>
-<td style="text-align: right;">72.32%</td>
+<td style="text-align: right;">-0.33</td>
+<td style="text-align: left;">[-1.41, 0.73]</td>
+<td style="text-align: left;">72.40%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">53.47%</td>
+<td style="text-align: right;">12.89%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">factor(educ)4_VHigh</td>
-<td style="text-align: right;">-0.24</td>
-<td style="text-align: left;">[-0.49, 0.01]</td>
-<td style="text-align: right;">96.88%</td>
+<td style="text-align: right;">-1.16</td>
+<td style="text-align: left;">[-2.40, -0.03]</td>
+<td style="text-align: left;">97.70%</td>
 <td style="text-align: left;">[-0.10, 0.10]</td>
-<td style="text-align: right;">11.82%</td>
+<td style="text-align: right;">0.76%</td>
 </tr>
 </tbody>
 </table>
@@ -2435,22 +2501,22 @@ x         |         0.99</code></pre>
 <h3 data-number="34.6.2" class="anchored" data-anchor-id="probability-of-direction-pd-estimates."><span class="header-section-number">34.6.2</span> Probability of Direction (<code>pd</code>) estimates.</h3>
 <p>The <code>pd</code> estimate helps us understand whether each effect is positive or negative. For instance, regarding <code>age</code>, we see the proportion of the posterior that is in the direction of the median effect (negative), no matter what the “size” of the effect is, will be as follows.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>n_negative <span class="ot">&lt;-</span> posteriors <span class="sc">|&gt;</span> <span class="fu">filter</span>(age <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span> <span class="sc">*</span> n_negative <span class="sc">/</span> <span class="fu">nrow</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>n_negative <span class="ot">&lt;-</span> posteriors <span class="sc">|&gt;</span> <span class="fu">filter</span>(age <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span> <span class="sc">*</span> n_negative <span class="sc">/</span> <span class="fu">nrow</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 99.85</code></pre>
+<pre><code>[1] 99.8</code></pre>
 </div>
 </div>
 <p>So we see that the effect of <code>age</code> is negative with a probability of 99.85%, and this is called the <strong>probability of direction</strong> and abbreviated <strong>pd</strong>.</p>
 <p>We can also calculate this with</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_direction</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">p_direction</span>(posteriors<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Probability of Direction
 
 Parameter |     pd
 ------------------
-Posterior | 99.85%</code></pre>
+Posterior | 99.80%</code></pre>
 </div>
 </div>
 </section>
@@ -2459,7 +2525,7 @@ Posterior | 99.85%</code></pre>
 <p>Testing whether this distribution is different from 0 doesn’t make sense, as 0 is a single value (and the probability that any distribution is different from a single value is infinite). However, one way to assess significance could be to define an area around 0, which will consider as practically equivalent to zero (i.e., absence of, or a negligible, effect). This is called the Region of Practical Equivalence (ROPE).</p>
 <p>The default (semi-objective) way of defining the ROPE is to use (-0.1, 0.1) in this context. This is sometimes considered a “negligible” effect size.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rope_range</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rope_range</span>(posteriors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.1  0.1</code></pre>
 </div>
@@ -2471,9 +2537,9 @@ Posterior | 99.85%</code></pre>
 <section id="summarizing-the-coefficients-as-odds-ratios" class="level3" data-number="34.6.4">
 <h3 data-number="34.6.4" class="anchored" data-anchor-id="summarizing-the-coefficients-as-odds-ratios"><span class="header-section-number">34.6.4</span> Summarizing the Coefficients as Odds Ratios</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(m2, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(m2, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="nkjldjvczi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#nkjldjvczi table {
@@ -2938,52 +3004,52 @@ Posterior | 99.85%</code></pre>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">(Intercept)</td>
-<td class="gt_row gt_right" headers="estimate">2.912</td>
-<td class="gt_row gt_right" headers="std.error">0.949</td>
-<td class="gt_row gt_right" headers="conf.low">1.531</td>
-<td class="gt_row gt_right" headers="conf.high">5.492</td>
+<td class="gt_row gt_right" headers="estimate">13.607</td>
+<td class="gt_row gt_right" headers="std.error">19.888</td>
+<td class="gt_row gt_right" headers="conf.low">0.858</td>
+<td class="gt_row gt_right" headers="conf.high">259.727</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">age</td>
-<td class="gt_row gt_right" headers="estimate">0.986</td>
-<td class="gt_row gt_right" headers="std.error">0.005</td>
-<td class="gt_row gt_right" headers="conf.low">0.977</td>
-<td class="gt_row gt_right" headers="conf.high">0.996</td>
+<td class="gt_row gt_right" headers="estimate">0.937</td>
+<td class="gt_row gt_right" headers="std.error">0.021</td>
+<td class="gt_row gt_right" headers="conf.low">0.896</td>
+<td class="gt_row gt_right" headers="conf.high">0.979</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">sexM</td>
-<td class="gt_row gt_right" headers="estimate">1.141</td>
-<td class="gt_row gt_right" headers="std.error">0.096</td>
-<td class="gt_row gt_right" headers="conf.low">0.965</td>
-<td class="gt_row gt_right" headers="conf.high">1.348</td>
+<td class="gt_row gt_right" headers="estimate">1.827</td>
+<td class="gt_row gt_right" headers="std.error">0.661</td>
+<td class="gt_row gt_right" headers="conf.low">0.889</td>
+<td class="gt_row gt_right" headers="conf.high">3.732</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">totchol</td>
-<td class="gt_row gt_right" headers="estimate">1.001</td>
-<td class="gt_row gt_right" headers="std.error">0.001</td>
-<td class="gt_row gt_right" headers="conf.low">0.998</td>
-<td class="gt_row gt_right" headers="conf.high">1.003</td>
+<td class="gt_row gt_right" headers="estimate">1.003</td>
+<td class="gt_row gt_right" headers="std.error">0.005</td>
+<td class="gt_row gt_right" headers="conf.low">0.993</td>
+<td class="gt_row gt_right" headers="conf.high">1.012</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)2_Middle</td>
-<td class="gt_row gt_right" headers="estimate">0.920</td>
-<td class="gt_row gt_right" headers="std.error">0.093</td>
-<td class="gt_row gt_right" headers="conf.low">0.751</td>
-<td class="gt_row gt_right" headers="conf.high">1.121</td>
+<td class="gt_row gt_right" headers="estimate">0.655</td>
+<td class="gt_row gt_right" headers="std.error">0.282</td>
+<td class="gt_row gt_right" headers="conf.low">0.280</td>
+<td class="gt_row gt_right" headers="conf.high">1.560</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="term">factor(educ)3_High</td>
-<td class="gt_row gt_right" headers="estimate">0.931</td>
-<td class="gt_row gt_right" headers="std.error">0.111</td>
-<td class="gt_row gt_right" headers="conf.low">0.738</td>
-<td class="gt_row gt_right" headers="conf.high">1.188</td>
+<td class="gt_row gt_right" headers="estimate">0.716</td>
+<td class="gt_row gt_right" headers="std.error">0.392</td>
+<td class="gt_row gt_right" headers="conf.low">0.244</td>
+<td class="gt_row gt_right" headers="conf.high">2.072</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="term">factor(educ)4_VHigh</td>
-<td class="gt_row gt_right" headers="estimate">0.790</td>
-<td class="gt_row gt_right" headers="std.error">0.101</td>
-<td class="gt_row gt_right" headers="conf.low">0.616</td>
-<td class="gt_row gt_right" headers="conf.high">1.013</td>
+<td class="gt_row gt_right" headers="estimate">0.313</td>
+<td class="gt_row gt_right" headers="std.error">0.185</td>
+<td class="gt_row gt_right" headers="conf.low">0.091</td>
+<td class="gt_row gt_right" headers="conf.high">0.971</td>
 </tr>
 </tbody>
 </table>
@@ -2997,7 +3063,7 @@ Posterior | 99.85%</code></pre>
 <h2 data-number="34.7" class="anchored" data-anchor-id="summarizing-the-priors-used"><span class="header-section-number">34.7</span> Summarizing the Priors Used</h2>
 <p>From the <code>bayestestR</code> package, we also have the <code>describe_prior()</code> and <code>print_md()</code> functions to get the following summary of the priors we have assumed. Since we didn’t specify anything about the priors in fitting model <code>m2</code>, we are looking at the default choices, which are weakly informative priors following Normal distributions. Details on the default prior choices can be found at <a href="https://mc-stan.org/rstanarm/articles/priors.html" class="uri">https://mc-stan.org/rstanarm/articles/priors.html</a>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_prior</span>(m2) <span class="sc">|&gt;</span> <span class="fu">print_md</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_prior</span>(m2) <span class="sc">|&gt;</span> <span class="fu">print_md</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -3012,44 +3078,44 @@ Posterior | 99.85%</code></pre>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.49</td>
-<td style="text-align: right;">1.25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.50</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">age</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.28</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sexM</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">2.53</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">totchol</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.06</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">factor(educ)2_Middle</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">2.73</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.44</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">factor(educ)3_High</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">3.53</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.04</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">factor(educ)4_VHigh</td>
 <td style="text-align: right;">normal</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: right;">3.68</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.33</td>
 </tr>
 </tbody>
 </table>
@@ -3061,11 +3127,11 @@ Posterior | 99.85%</code></pre>
 <p>For more on these checks, visit <a href="https://mc-stan.org/rstanarm/articles/continuous.html#the-posterior-predictive-distribution-1" class="uri">https://mc-stan.org/rstanarm/articles/continuous.html#the-posterior-predictive-distribution-1</a>, for example.</p>
 <p>Here’s the first plot which compares the density function of the observed outcome <span class="math inline">\(y\)</span> (totchol) to several of the simulated data sets <span class="math inline">\(y_{rep}\)</span> from the posterior predictive distribution using the same predictor values as were used to fit the model.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(m2, <span class="at">nreps =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(m2, <span class="at">nreps =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="bayes2_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="bayes2_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -3073,19 +3139,44 @@ Posterior | 99.85%</code></pre>
 <p>The idea is that if the model is a good fit to the data we should be able to generate data <span class="math inline">\(y_{rep}\)</span> from the posterior predictive distribution that looks a lot like the observed data <span class="math inline">\(y\)</span>. That is, given <span class="math inline">\(y\)</span>, the <span class="math inline">\(y_{rep}\)</span> we generate should look plausible. We’d worry a bit if this plot showed histograms that were wildly different from one another.</p>
 <p>Another useful plot (shown below) made using <code>pp_check</code> shows the distribution of a test quantity <span class="math inline">\(T(y_{rep})\)</span> compared to <span class="math inline">\(T(y)\)</span>, the value of the quantity in the observed data. I like this scatterplot version which allows us to look at where the simulations’ mean and standard deviation fall compared to what the observed <code>totchol</code> values show us.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(m2, <span class="at">plotfun =</span> <span class="st">"stat_2d"</span>, <span class="at">stat =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"sd"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(m2, <span class="at">plotfun =</span> <span class="st">"stat_2d"</span>, <span class="at">stat =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"sd"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Note: in most cases the default test statistic 'mean' is too weak to detect anything of interest.</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="bayes2_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="bayes2_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We can see that the cloud of simulated means and standard deviations has the observed statistics near its center, although perhaps the standard deviations are a bit higher than we might like to see, typically. Ideally, the dot would be right in the center of this cloud of simulated results.</p>
+</section>
+<section id="check_model-results-for-models-m1-and-m2" class="level2" data-number="34.9">
+<h2 data-number="34.9" class="anchored" data-anchor-id="check_model-results-for-models-m1-and-m2"><span class="header-section-number">34.9</span> check_model() results for models m1 and m2</h2>
+<p>For our <code>glm()</code> model m1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="bayes2_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For our Bayesian model m2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="bayes2_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
